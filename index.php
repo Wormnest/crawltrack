@@ -307,7 +307,7 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 	include ("include/install.php");
 	include ("include/footer.php");
 }
-if ($navig == 0 OR $navig == 1 OR $navig == 2 OR $navig == 3 OR $navig == 4 OR $navig == 8 OR $navig == 11 OR $navig == 12 OR $navig == 13 OR $navig == 14 OR $navig == 16 OR $navig == 17 OR $navig == 18 OR $navig == 19 OR $navig == 20 OR $navig == 21 OR $navig == 22 OR $navig == 23) {
+if ($navig == 0 || $navig == 1 || $navig == 2 || $navig == 3 || $navig == 4 || $navig == 8 || $navig == 11 || $navig == 12 || $navig == 13 || $navig == 14 || $navig == 16 || $navig == 17 || $navig == 18 || $navig == 19 || $navig == 20 || $navig == 21 || $navig == 22 || $navig == 23) {
 	//close the cache function
 	close();
 } else {

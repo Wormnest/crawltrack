@@ -59,7 +59,7 @@ $totvalues = array_sum($datatransfert);
 //get the listlang files
 include ("../include/listlang.php");
 $crawltlang = $_GET['crawltlang'];
-if (($crawltlang == 'russian' && !file_exists('./artichow/font/simsun.ttf')) OR $crawltlang == 'bulgarian' OR $crawltlang == 'turkish') {
+if (($crawltlang == 'russian' && !file_exists('./artichow/font/simsun.ttf')) || $crawltlang == 'bulgarian' || $crawltlang == 'turkish') {
 	$crawltlang = 'english';
 }
 

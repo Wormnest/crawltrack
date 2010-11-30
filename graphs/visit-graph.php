@@ -74,7 +74,7 @@ if ($graphnameexplode[0] == 'visitshours') {
 
 //get language to use
 $crawltlang = $_GET['crawltlang'];
-if (($crawltlang == 'russian' && !file_exists('./artichow/font/simsun.ttf')) OR $crawltlang == 'bulgarian' OR $crawltlang == 'turkish') {
+if (($crawltlang == 'russian' && !file_exists('./artichow/font/simsun.ttf')) || $crawltlang == 'bulgarian' || $crawltlang == 'turkish') {
 	$crawltlang = 'english';
 }
 
@@ -86,7 +86,7 @@ if (file_exists("../language/" . $crawltlang . ".php") && in_array($crawltlang, 
 }
 
 //legend text
-if ($navig == 17 OR $navig == 18 OR $navig == 19) {
+if ($navig == 17 || $navig == 18 || $navig == 19) {
 	$legend1 = $language['hacking'];
 	$legend2 = $language['crawler_ip_used'];
 } elseif ($navig == 21) {
@@ -130,16 +130,16 @@ $graph = new Graph(700, 300);
 $group = new PlotGroup();
 $group->setBackgroundColor(new Color(173, 216, 230, 60));
 $group->setSpace(2, 2, 0.1, 0);
-if ($period == 2 OR $period == 3 OR ($period >= 100 && $period < 300)) {
+if ($period == 2 || $period == 3 || ($period >= 100 && $period < 300)) {
 	$group->setPadding(50, 85, 30, 60);
 } else {
 	$group->setPadding(50, 85, 30, 20);
 }
 
 //visits
-if ($navig == 2 OR $navig == 4 OR $navig == 17 OR $navig == 18 OR $navig == 19) {
+if ($navig == 2 || $navig == 4 || $navig == 17 || $navig == 18 || $navig == 19) {
 	$plot = new BarPlot($visit, 1, 2);
-} elseif ($navig == 21 OR $graphvisithours == 1) {
+} elseif ($navig == 21 || $graphvisithours == 1) {
 	$plot = new BarPlot($visit, 1, 1);
 } else {
 	$plot = new BarPlot($visit, 1, 3);
@@ -157,12 +157,12 @@ $plot->barShadow->smooth(TRUE);
 //legend
 $group->legend->add($plot, $legend1, LEGEND_BACKGROUND);
 $group->add($plot);
-if ($navig == 4 OR $navig == 21 OR $graphvisithours == 1) {
+if ($navig == 4 || $navig == 21 || $graphvisithours == 1) {
 } else {
 	//pages viewed
 	if ($navig == 2) {
 		$plot = new BarPlot($page2, 2, 2);
-	} elseif ($navig == 17 OR $navig == 18 OR $navig == 19) {
+	} elseif ($navig == 17 || $navig == 18 || $navig == 19) {
 		$plot = new BarPlot($crawl, 2, 2);
 	} else {
 		$plot = new BarPlot($page2, 2, 3);
@@ -189,7 +189,7 @@ if ($ttf == 'ok') {
 } else {
 	$group->legend->setTextFont(new Font(2));
 }
-if ($navig == 2 OR $navig == 17 OR $navig == 18 OR $navig == 19 OR $navig == 21 OR $graphvisithours == 1) {
+if ($navig == 2 || $navig == 17 || $navig == 18 || $navig == 19 || $navig == 21 || $graphvisithours == 1) {
 } else {
 	//crawler
 	if ($navig == 4) {
@@ -214,7 +214,7 @@ $group->legend->setBackgroundColor(new Color(255, 255, 255, 0));
 $group->legend->setPosition(0.995, 0.2);
 
 //X axis label
-if ($period == 0 OR $period >= 1000) {
+if ($period == 0 || $period >= 1000) {
 	for ($i = 0;$i < 24;$i++) {
 		$axex[$i] = $axex[$i] . "h";
 	}
@@ -227,7 +227,7 @@ if ($ttf == 'ok') {
 	$group->axis->left->label->setFont(new Font(2));
 	$group->axis->bottom->label->setFont(new Font(2));
 }
-if ($period == 2 OR $period == 3 OR ($period >= 100 && $period < 300)) {
+if ($period == 2 || $period == 3 || ($period >= 100 && $period < 300)) {
 	$group->axis->bottom->label->setAngle(45);
 	if ($ttf == 'ok') {
 		$group->axis->bottom->label->move(-10, 0);

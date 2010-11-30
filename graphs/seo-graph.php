@@ -68,7 +68,7 @@ if ($graphnameexplode[1] == 'permanent') {
 
 //get language to use
 $crawltlang = $_GET['crawltlang'];
-if (($crawltlang == 'russian' && !file_exists('./artichow/font/simsun.ttf')) OR $crawltlang == 'bulgarian' OR $crawltlang == 'turkish') {
+if (($crawltlang == 'russian' && !file_exists('./artichow/font/simsun.ttf')) || $crawltlang == 'bulgarian' || $crawltlang == 'turkish') {
 	$crawltlang = 'english';
 }
 
@@ -169,7 +169,7 @@ if ($typegraph == 'link') {
 		$google[$i] = 0;
 		$i++;
 	}
-} elseif ($typegraph == 'entry' OR $typegraph == 'email') {
+} elseif ($typegraph == 'entry' || $typegraph == 'email') {
 	$titlegraph = '';
 	foreach ($axex as $data) {
 		$cutdata = explode("-", $datatransfert[$data]);
@@ -269,7 +269,7 @@ $group = new PlotGroup();
 $group->setBackgroundColor(new Color(173, 216, 230, 60));
 $group->setSpace(2, 2, 0.1, 0);
 $group->setPadding(50, 20, 30, 90);
-if ($typegraph == 'link' OR $typegraph == 'page') {
+if ($typegraph == 'link' || $typegraph == 'page') {
 	require_once ("artichow/LinePlot.class.php");
 	if (function_exists('imageantialias')) {
 		$graph->setAntiAliasing(TRUE);
@@ -503,7 +503,7 @@ if ($typegraph == 'link' OR $typegraph == 'page') {
 
 //X axis label
 $group->axis->bottom->setLabelText($axex);
-if ($period == 2 OR ($period >= 100 && $period < 200)) {
+if ($period == 2 || ($period >= 100 && $period < 200)) {
 	$group->axis->bottom->label->setAngle(45);
 }
 if ($ttf == 'ok') {

@@ -62,7 +62,7 @@ if (file_exists("../cachecloseperiod/$graphname.gz")) {
 mysql_close($connexion);
 $totvalues = array_sum($datatransfert);
 $crawltlang = $_GET['crawltlang'];
-if (($crawltlang == 'russian' && !file_exists('./artichow/font/simsun.ttf')) OR $crawltlang == 'bulgarian'  OR $crawltlang == 'turkish') {
+if (($crawltlang == 'russian' && !file_exists('./artichow/font/simsun.ttf')) || $crawltlang == 'bulgarian'  || $crawltlang == 'turkish') {
 	$crawltlang = 'english';
 }
 
