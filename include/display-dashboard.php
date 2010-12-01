@@ -694,7 +694,8 @@ echo "<tr><th class='tableau2'>\n";
 echo "Alexa\n";
 echo "</th></tr>\n";
 echo "<tr><td class='tableau5' style=\"padding:0;\">\n";
-echo "<A href=\"http://www.alexa.com/siteinfo/" . $urlsite[$site] . "\"><SCRIPT type='text/javascript' language='JavaScript' src='http://xslt.alexa.com/site_stats/js/s/c?url=" . $urlsite[$site] . "'></SCRIPT></A></td></tr></table><br>";
+echo "<iframe name=\"I1\" src=\"php/alexa.php?url=".$urlsite[$site]."\" marginwidth=\"0\" marginheight=\"0\" scrolling=\"no\" border=\"no\"  width=\"468px\" height=\"60px\"></iframe></h2>\n";
+echo "</td></tr></table><br>";
 echo "</td>\n";
 echo "<td id='dashboard4'>\n";
 //hacking---------------------------------------------------------------------------------------------------------
