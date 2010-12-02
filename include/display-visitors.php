@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-visitors.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 02/12/2010
 //----------------------------------------------------------------------
 //----Technicals parameters-------------------------------------------------------------------------------
 $maxtime = 20; //maximum total time in second allow for the script to search link
@@ -95,10 +95,7 @@ if ($nbrresult >= 1) {
 			$parseurl = parse_url($ligne[0]);
 			if (isset($parseurl['host'])) {
 				@$refererlist[$parseurl['host']]++;
-				$ {
-					'detailreferer' . $parseurl['host']
-				}
-				[] = urldecode($ligne[0]);
+				${'detailreferer' . $parseurl['host']}[] = urldecode($ligne[0]);
 				if (!isset($linkstatut[$parseurl['host']])) {
 					if ($checklink == 1 && (isset($_SESSION['rightspamreferer']) && $_SESSION['rightspamreferer'] == 1)) {
 						if (!isset($_SESSION[$parseurl['host']])) {
@@ -514,14 +511,8 @@ if ($totalvisitor > 0) {
 		foreach ($refererlist as $key => $value) {
 			if ($comptligne % 2 == 0) {
 				echo "<tr><td class='tableau3g'>&nbsp;&nbsp;" . @crawltcuturl($key, 50) . "<br>\n";
-				$ {
-					'detailreferer' . $key
-				} = array_unique($ {
-					'detailreferer' . $key
-				});
-				foreach ($ {
-					'detailreferer' . $key
-				} as $value2) {
+				${'detailreferer' . $key} = array_unique(${'detailreferer' . $key});
+				foreach (${'detailreferer' . $key} as $value2) {
 					$value2 = str_replace("&", "&amp;", $value2);
 					$value2 = str_replace("\"", "'", $value2);
 					echo "<a href=\"" . $value2 . "\" rel='nofollow'>\n";
@@ -544,14 +535,8 @@ if ($totalvisitor > 0) {
 				echo "</td><td class='tableau5'>&nbsp;" . numbdisp($value) . "&nbsp;</td></tr>\n";
 			} else {
 				echo "<tr><td class='tableau30g'>&nbsp;&nbsp;" . @crawltcuturl($key, 50) . "<br>\n";
-				$ {
-					'detailreferer' . $key
-				} = array_unique($ {
-					'detailreferer' . $key
-				});
-				foreach ($ {
-					'detailreferer' . $key
-				} as $value2) {
+				${'detailreferer' . $key} = array_unique(${'detailreferer' . $key});
+				foreach (${'detailreferer' . $key} as $value2) {
 					$value2 = str_replace("&", "&amp;", $value2);
 					$value2 = str_replace("\"", "'", $value2);
 					echo "<a href=\"" . $value2 . "\" rel='nofollow'>\n";

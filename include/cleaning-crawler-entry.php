@@ -66,37 +66,26 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 	if ($visitstotal >= 1) {
 		while ($ligne = mysql_fetch_row($requetecleaning)) {
 			$listsiteidforcleaning[$ligne[1]] = $ligne[1];
-			$ {
-				$ligne[1] . 'listip'
-			}
-			[$ligne[2]] = $ligne[2];
+			${$ligne[1] . 'listip'}[$ligne[2]] = $ligne[2];
 			if ($ligne[3] == 4) {
-				$ {
-					$ligne[1] . 'listipie6'
-				}
-				[$ligne[2]] = $ligne[2];
-				$ {
-					$ligne[1] . 'idtosuppress'
-				}
-				[] = $ligne[0];
+				${$ligne[1] . 'listipie6'}[$ligne[2]] = $ligne[2];
+				${$ligne[1] . 'idtosuppress'}[] = $ligne[0];
 			}
 		}
 		mysql_free_result($requetecleaning);
 		
 		foreach ($listsiteidforcleaning as $value) {
-			if (isset($ {
-				$value . 'listipie6'
-			})) {
+			if (isset(${$value . 'listipie6'})) {
 				//suppress IE6 visit if it's more than 50% of the total and if there is more than 10 IP using IE6 
 				//suppress IE6 visit if it's more than 30% of the total and if there is more than 30 IP using IE6 
 				//suppress IE6 visit if it's more than 20% of the total and if there is more than 60 IP using IE6
 				
 				if (
-(count($ {$value . 'listipie6'}) / count($ {$value . 'listip'}) > 0.5 && count($ {$value . 'listipie6'}) > 10) ||
-(count($ {$value . 'listipie6'}) / count($ {$value . 'listip'}) > 0.3 && count($ {$value . 'listipie6'}) > 30) ||
-(count($ {$value . 'listipie6'}) / count($ {$value . 'listip'}) > 0.2 && count($ {$value . 'listipie6'}) > 60))
+(count(${$value . 'listipie6'}) / count(${$value . 'listip'}) > 0.5 && count(${$value . 'listipie6'}) > 10) ||
+(count(${$value . 'listipie6'}) / count(${$value . 'listip'}) > 0.3 && count(${$value . 'listipie6'}) > 30) ||
+(count(${$value . 'listipie6'}) / count(${$value . 'listip'}) > 0.2 && count(${$value . 'listipie6'}) > 60))
  {
-					$listidtosuppress = implode("','", $ {$value . 'idtosuppress'});
+					$listidtosuppress = implode("','", ${$value . 'idtosuppress'});
 					$sqlsuppress = "DELETE FROM crawlt_visits_human WHERE id_visit IN ('$listidtosuppress')";
 					$requetesuppress = db_query($sqlsuppress, $connexion);
 				}
@@ -198,19 +187,12 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 	
 	if ($resultnumber >= 1) {
 		while ($ligne = mysql_fetch_row($requete)) {
-			$ {
-				'iprange' . $ligne[0]
-			}
-			[$ligne[1]] = $ligne[1];
+			${'iprange' . $ligne[0]}[$ligne[1]] = $ligne[1];
 			$listiprange[$ligne[0]] = $ligne[0];
 		}
 		foreach ($listiprange as $shortip) {
-			if (count($ {
-				'iprange' . $shortip
-			}) > 1) {
-				$listbadip = $listbadip + $ {
-					'iprange' . $shortip
-				};
+			if (count(${'iprange' . $shortip}) > 1) {
+				$listbadip = $listbadip + ${'iprange' . $shortip};
 			}
 		}
 	}

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-hacking.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 02/12/2010
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -107,14 +107,8 @@ if (($nbrresult + $nbrattack404) >= 1) {
 			if (!empty($ligne[1])) {
 				$listip[$ligne[1]] = $ligne[1];
 				@$nbrvisits[$ligne[1]]++;
-				$ {
-					'page' . $ligne[1]
-				}
-				[] = $ligne[3];
-				$ {
-					'date' . $ligne[1]
-				}
-				[] = $ligne[4];
+				${'page' . $ligne[1]}[] = $ligne[3];
+				${'date' . $ligne[1]}[] = $ligne[4];
 			}
 		}
 	}
@@ -151,10 +145,7 @@ if (($nbrresult + $nbrattack404) >= 1) {
 	$nbrresult3 = mysql_num_rows($requete);
 	if ($nbrresult3 >= 1) {
 		while ($ligne = mysql_fetch_row($requete)) {
-			$ {
-				'attack' . $ligne[0]
-			}
-			[] = $ligne[1];
+			${'attack' . $ligne[0]}[] = $ligne[1];
 		}
 	}
 	//group by attacker-------------------------------------------------------------------------------------------
@@ -167,9 +158,7 @@ if (($nbrresult + $nbrattack404) >= 1) {
 		$listattack = array();
 		$pagetype2 = 0;
 		$pagetype3 = 0;
-		foreach ($ {
-			'page' . $crawlip
-		} as $page) {
+		foreach (${'page' . $crawlip} as $page) {
 			crawltattacksql($page);
 			//give a page type1
 			$pagelength = floor(strlen($page) / 10) * 10;
@@ -191,9 +180,7 @@ if (($nbrresult + $nbrattack404) >= 1) {
 		$typepagevalue = max($pagetype1);
 		$pagetype = array();
 		//check the time period used
-		foreach ($ {
-			'date' . $crawlip
-		} as $datehacking) {
+		foreach (${'date' . $crawlip} as $datehacking) {
 			if ($period == 0 || $period >= 1000) {
 				//on a one day period we class per hour period
 				$time = explode('hr', $datehacking);
@@ -249,20 +236,10 @@ if (($nbrresult + $nbrattack404) >= 1) {
 	usort($totallistattack, "strcasecmp");
 	$nbrparameters = 0;
 	foreach ($totallistattack as $attack) {
-		if (isset($ {
-			'attack' . $attack
-		})) {
-			if (is_array($ {
-				'attack' . $attack
-			})) {
-				$ {
-					'attack' . $attack
-				} = array_unique($ {
-					'attack' . $attack
-				});
-				foreach ($ {
-					'attack' . $attack
-				} as $script) {
+		if (isset(${'attack' . $attack})) {
+			if (is_array(${'attack' . $attack})) {
+				${'attack' . $attack} = array_unique(${'attack' . $attack});
+				foreach (${'attack' . $attack} as $script) {
 					$listscript[] = $script;
 				}
 			} else {
@@ -398,15 +375,11 @@ if (($nbrresult + $nbrattack404) >= 1) {
 			//prepare data for display (group by attacker)
 			foreach ($tableauip as $ip) {
 				//prepare details of attacks
-				foreach ($ {
-					'page' . $ip
-				} as $page) {
+				foreach (${'page' . $ip} as $page) {
 					crawltattacksql($page);
 				}
 				//prepare time of attack
-				foreach ($ {
-					'date' . $ip
-				} as $datehacking) {
+				foreach (${'date' . $ip} as $datehacking) {
 					$tabledatedisplay[] = $datehacking;
 				}
 				//prepare IP used
@@ -445,20 +418,10 @@ if (($nbrresult + $nbrattack404) >= 1) {
 			$firsttime = 0;
 			usort($listattack, "strcasecmp");
 			foreach ($listattack as $attack) {
-				if (isset($ {
-					'attack' . $attack
-				})) {
-					if (is_array($ {
-						'attack' . $attack
-					})) {
-						$ {
-							'attack' . $attack
-						} = array_unique($ {
-							'attack' . $attack
-						});
-						foreach ($ {
-							'attack' . $attack
-						} as $script) {
+				if (isset(${'attack' . $attack})) {
+					if (is_array(${'attack' . $attack})) {
+						${'attack' . $attack} = array_unique(${'attack' . $attack});
+						foreach (${'attack' . $attack} as $script) {
 							$listscript[] = $script;
 						}
 					} elseif ($firsttime == 0) {

@@ -97,10 +97,7 @@ if ($num_rows > 0) {
 	while ($ligne = mysql_fetch_row($requete)) {
 		$nbrerrorcrawler++;
 		$crawlerlist[$ligne[1]] = $ligne[1];
-		$ {
-			'crawler' . $ligne[1]
-		}
-		[$ligne[0]] = $ligne[0];
+		${'crawler' . $ligne[1]}[$ligne[0]] = $ligne[0];
 		@$nbrvisits[$ligne[1] . "-" . $ligne[0]]++;
 	}
 }
@@ -140,10 +137,7 @@ if ($num_rows > 0) {
 	while ($ligne = mysql_fetch_row($requete)) {
 		$nbrerrorextern++;
 		@$nbrexternvisits[$ligne[1]]++;
-		$ {
-			'extern' . $ligne[1]
-		}
-		[$ligne[0]] = $ligne[0];
+		${'extern' . $ligne[1]}[$ligne[0]] = $ligne[0];
 	}
 }
 arsort($nbrexternvisits);
@@ -164,10 +158,7 @@ if ($num_rows > 0) {
 	while ($ligne = mysql_fetch_row($requete)) {
 		$nbrerrorintern++;
 		@$nbrinternvisits[$ligne[1]]++;
-		$ {
-			'intern' . $ligne[1]
-		}
-		[$ligne[0]] = $ligne[0];
+		${'intern' . $ligne[1]}[$ligne[0]] = $ligne[0];
 	}
 }
 //mysql connexion close
@@ -222,9 +213,7 @@ if ($nbrerrorintern > 0) {
 			echo "</div>\n";
 		}
 		echo "<td class='tableau5g'>\n";
-		foreach ($ {
-			'intern' . $page
-		} as $url) {
+		foreach (${'intern' . $page} as $url) {
 			echo "&nbsp;&nbsp;<a href='" . $url . "'>" . crawltcutkeyword($url, '50') . "</a><br>\n";
 		}
 		echo "</td>\n";
@@ -257,9 +246,7 @@ if ($nbrerrorextern > 0) {
 			echo "</div>\n";
 		}
 		echo "<td class='tableau5g'>\n";
-		foreach ($ {
-			'extern' . $page
-		} as $url) {
+		foreach (${'extern' . $page} as $url) {
 			echo "&nbsp;&nbsp;<a href='" . $url . "'>" . crawltcutkeyword($url, '50') . "</a><br>\n";
 		}
 		echo "</td>\n";
@@ -306,9 +293,7 @@ if ($nbrerrorcrawler > 0) {
 	foreach ($crawlerlist as $crawler) {
 		echo "<tr><td class='tableau3hg'>&nbsp;&nbsp;" . $crawler . "</td>\n";
 		echo "<td class='tableau5g'>\n";
-		foreach ($ {
-			'crawler' . $crawler
-		} as $url) {
+		foreach (${'crawler' . $crawler} as $url) {
 			echo "&nbsp;&nbsp;" . crawltcutkeyword($url, '105') . "<br>\n";
 		}
 		echo "</td>\n";

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-crawlers-info.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 02/12/2010
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -78,19 +78,10 @@ if ($nbrresult1 >= 1) {
 				$ligne[0]='MSN Bot - Bingbot';
 			}
 			$listcrawler[$ligne[0]] = $ligne[0];
-			$ {
-				'ipcrawler' . $ligne[0]
-			}
-			[] = $ligne[1];
+			${'ipcrawler' . $ligne[0]}[] = $ligne[1];
 			$listip[$ligne[1]] = $ligne[1];
-			@$ {
-				'nbrvisits' . $ligne[0]
-			}
-			[$ligne[1]]++;
-			$ {
-				'crawler' . $ligne[1]
-			}
-			[] = $ligne[0];
+			@${'nbrvisits' . $ligne[0]}[$ligne[1]]++;
+			${'crawler' . $ligne[1]}[] = $ligne[0];
 			$usercrawler[$ligne[0]] = $ligne[3];
 		}
 	}
@@ -192,6 +183,7 @@ if ($nbrresult1 >= 1) {
 		echo "<div align='center'onmouseover=\"javascript:montre();\">\n";
 		echo "<img src=\"./graphs/origine-graph.php?graphname=$graphname&amp;crawltlang=$crawltlang\" alt=\"graph\"  width=\"450px\" height=\"200px\"/>\n";
 		echo "</div>\n";
+
 		//order per crawler name
 		asort($listcrawler);
 		echo "<div class='tableau' align='center'>\n";
@@ -208,48 +200,27 @@ if ($nbrresult1 >= 1) {
 		echo "<th class='tableau2'>\n";
 		echo "" . $language['crawler_country'] . "\n";
 		echo "</th></tr>\n";
+
 		//counter for alternate color lane
 		$comptligne = 2;
 		foreach ($listcrawler as $crawl) {
 			$crawldisplay = htmlentities($crawl);
 			//suppression of double entries in the tables
-			$ {
-				'ipcrawler' . $crawl
-			} = array_unique($ {
-				'ipcrawler' . $crawl
-			});
-			sort($ {
-				'ipcrawler' . $crawl
-			});
+			${'ipcrawler' . $crawl} = array_unique(${'ipcrawler' . $crawl});
+			sort(${'ipcrawler' . $crawl});
 			if ($comptligne % 2 == 0) {
 				echo "<tr><td class='tableau3h'><a href='index.php?navig=2&amp;period=" . $period . "&amp;site=" . $site . "&amp;crawler=" . $crawl . "&amp;graphpos=" . $graphpos . "'>" . $crawldisplay . "</a></td>\n";
 				echo "<td class='tableau3g' width='20%'>\n";
-				foreach ($ {
-					'ipcrawler' . $crawl
-				} as $ip) {
-					$nbip = count($ {
-						'crawler' . $ip
-					});
+				foreach (${'ipcrawler' . $crawl} as $ip) {
+					$nbip = count(${'crawler' . $ip});
 					if ($nbip > 1 && $nbrresult1 < 30000) {
 						//test to see in case of different crawlers using the same ip if the owner is the same only if there is less
 						//than 30000 hit to avoid script memory issue
 						for ($i = 0;$i < $nbip;$i++) {
-							$ {
-								'difuser' . $ip
-							}
-							[] = $usercrawler[$ {
-								'crawler' . $ip
-							}
-							[$i]];
+							${'difuser' . $ip}[] = $usercrawler[${'crawler' . $ip}[$i]];
 						}
-						$ {
-							'difuser' . $ip
-						} = array_unique($ {
-							'difuser' . $ip
-						});
-						$nbuser = count($ {
-							'difuser' . $ip
-						});
+						${'difuser' . $ip} = array_unique(${'difuser' . $ip});
+						$nbuser = count(${'difuser' . $ip});
 						if ($nbuser > 1) {
 							$teststrangeip = true;
 						} else {
@@ -266,19 +237,12 @@ if ($nbrresult1 >= 1) {
 				}
 				echo "</td>\n";
 				echo "<td class='tableau3' >\n";
-				foreach ($ {
-					'ipcrawler' . $crawl
-				} as $ip) {
-					echo "" . numbdisp($ {
-						'nbrvisits' . $crawl
-					}
-					[$ip]) . "<br>\n";
+				foreach (${'ipcrawler' . $crawl} as $ip) {
+					echo "" . numbdisp(${'nbrvisits' . $crawl}[$ip]) . "<br>\n";
 				}
 				echo "</td>\n";
 				echo "<td class='tableau5g' width='25%'>\n";
-				foreach ($ {
-					'ipcrawler' . $crawl
-				} as $ip) {
+				foreach (${'ipcrawler' . $crawl} as $ip) {
 					if (isset($countrycode[$ip])) {
 						$code = $countrycode[$ip];
 						echo "&nbsp;&nbsp;&nbsp;<img src=\"./images/flags/$code.gif\" width=\"16px\" height=\"11px\"  border=\"0\" alt=\"$country[$code]\">&nbsp;&nbsp;$country[$code]<br>\n";
@@ -290,31 +254,15 @@ if ($nbrresult1 >= 1) {
 			} else {
 				echo "<tr><td class='tableau30h'><a href='index.php?navig=2&amp;period=" . $period . "&amp;site=" . $site . "&amp;crawler=" . $crawl . "&amp;graphpos=" . $graphpos . "'>" . $crawldisplay . "</a></td>\n";
 				echo "<td class='tableau30g' width='20%'>\n";
-				foreach ($ {
-					'ipcrawler' . $crawl
-				} as $ip) {
-					$nbip = count($ {
-						'crawler' . $ip
-					});
+				foreach (${'ipcrawler' . $crawl} as $ip) {
+					$nbip = count(${'crawler' . $ip});
 					if ($nbip > 1 && $nbrresult1 < 30000) {
 						//test to see in case of different crawlers using the same ip if the owner is the same
-						for ($i = 0;$i < $nbip;$i++) {
-							$ {
-								'difuser' . $ip
-							}
-							[] = $usercrawler[$ {
-								'crawler' . $ip
-							}
-							[$i]];
+						for ($i = 0; $i < $nbip; $i++) {
+							${'difuser' . $ip}[] = $usercrawler[${'crawler' . $ip}[$i]];
 						}
-						$ {
-							'difuser' . $ip
-						} = array_unique($ {
-							'difuser' . $ip
-						});
-						$nbuser = count($ {
-							'difuser' . $ip
-						});
+						${'difuser' . $ip} = array_unique(${'difuser' . $ip});
+						$nbuser = count(${'difuser' . $ip});
 						if ($nbuser > 1) {
 							$teststrangeip = 1;
 						} else {
@@ -331,19 +279,12 @@ if ($nbrresult1 >= 1) {
 				}
 				echo "</td>\n";
 				echo "<td class='tableau30' >\n";
-				foreach ($ {
-					'ipcrawler' . $crawl
-				} as $ip) {
-					echo "" . numbdisp($ {
-						'nbrvisits' . $crawl
-					}
-					[$ip]) . "<br>\n";
+				foreach (${'ipcrawler' . $crawl} as $ip) {
+					echo "" . numbdisp(${'nbrvisits' . $crawl}[$ip]) . "<br>\n";
 				}
 				echo "</td>\n";
 				echo "<td class='tableau50g' width='25%'>\n";
-				foreach ($ {
-					'ipcrawler' . $crawl
-				} as $ip) {
+				foreach (${'ipcrawler' . $crawl} as $ip) {
 					if (isset($countrycode[$ip])) {
 						$code = $countrycode[$ip];
 						echo "&nbsp;&nbsp;&nbsp;<img src=\"./images/flags/$code.gif\" width=\"16px\" height=\"11px\"  border=\"0\" alt=\"$country[$code]\">&nbsp;&nbsp;$country[$code]<br>\n";
