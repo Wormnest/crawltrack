@@ -17,7 +17,7 @@
 //  Last update: 01/12/2010
 //----------------------------------------------------------------------
 $url= $_GET['url'];
-echo"<html><head></head><body>";
-echo"<A href=\"http://www.alexa.com/siteinfo/" .$url. "\" target=\"blank\"><SCRIPT type='text/javascript' language='JavaScript' src='http://xslt.alexa.com/site_stats/js/s/c?url=".$url. "'></SCRIPT></A>";
-echo"</body></html>";
 ?>
+<html><head></head><body>
+<a href="http://www.alexa.com/siteinfo/<?php echo $url; ?>" target="blank"><script type="text/javascript" src="http://xslt.alexa.com/site_stats/js/s/c?url=<?php echo $url; ?>"></script></a>
+</body></html>
