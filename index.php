@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.7
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: index.php
 //----------------------------------------------------------------------
-//  Last update: 09/11/2010
+//  Last update: 02/12/2010
 //----------------------------------------------------------------------
 
 // make sure PHP version  >= 4.3.2 is used (and even this version is waaaay too old, 29-May-2003)
@@ -131,7 +131,7 @@ if (file_exists("language/" . $crawltlang . ".php") && in_array($crawltlang, $li
 	exit('<h1>No language files available !!!!</h1>');
 }
 //version id
-$versionid = '327';
+$versionid = '328';
 // do not modify
 define('IN_CRAWLT', TRUE);
 // session start 'crawlt'
