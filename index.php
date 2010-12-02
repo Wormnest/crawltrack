@@ -180,7 +180,7 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 	} elseif ($navig == 17) {
 		$main = ("include/display-hacking.php");
 	} elseif ($navig == 18) {
-		$main = ("include/display-hacking-css.php");
+		$main = ("include/display-hacking-xss.php");
 	} elseif ($navig == 19) {
 		$main = ("include/display-hacking-sql.php");
 	} elseif ($navig == 20) {
