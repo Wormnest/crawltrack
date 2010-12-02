@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,23 +14,23 @@
 //----------------------------------------------------------------------
 // file: footer.php
 //----------------------------------------------------------------------
-//  Last update: 19/09/2010
+//  Last update: 02/12/2010
 //----------------------------------------------------------------------
 
 ?>
 </div>
 <?php include ("include/sponsors.php"); ?>
 	<div class="footer">
-		<table width='100%'><tr><td width='33%'>&nbsp;</td><td valign='top'>
-			<a href="http://www.crawltrack.net" onclick="window.open(this.href);return(false);">
-			CrawlTrack</a>
-			</td><td align='right' valign='top' width='33%'>
+		<table width="100%">
+			<tr><td width="33%">&nbsp;</td><td valign="top">
+			<a href="http://www.crawltrack.net" onclick="window.open(this.href);return(false);">CrawlTrack</a>
+			</td><td align="right" valign="top" width="33%">
 			<?php
-if (!isset($crawlencode)) {
-	$crawlencode = '';
-}
-?>
-			<a href="index.php?navig=<?php echo $navig ?>&amp;graphpos=<?php echo $graphpos ?>&amp;period=<?php echo $period ?>&amp;site=<?php echo $site ?>&amp;crawler=<?php echo $crawlencode ?>"><img src="./images/star.png" width="16" height="16" border="0" title="<?php echo $language['bookmark'] ?>" alt="<?php echo $language['bookmark'] ?>"></a>
+			if (!isset($crawlencode)) {
+				$crawlencode = '';
+			}
+			?>
+			<a href="index.php?navig=<?php echo $navig ?>&amp;graphpos=<?php echo $graphpos ?>&amp;period=<?php echo $period ?>&amp;site=<?php echo $site ?>&amp;crawler=<?php echo $crawlencode ?>"><img src="./images/star.png" width="16" height="16" border="0" title="<?php echo $language['bookmark'] ?>" alt="<?php echo $language['bookmark'] ?>" /></a>
 			</td></tr>
 		</table>
 	</div>
