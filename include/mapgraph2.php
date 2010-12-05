@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file:mapgraph2.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 05/15/2010
 //----------------------------------------------------------------------
 //initialize array
 $axexlabel = array();
@@ -342,11 +342,11 @@ if ($period == 3 || ($period >= 200 && $period < 300)) {
 	$y2 = 211;
 }
 if ($typegraph == 'link') {
-	echo "<MAP ID=\"seolink\" NAME=\"seolink\">\n";
+	echo "<map id=\"seolink\" name=\"seolink\">\n";
 	$iday = 0;
 	$x = 65.3;
 	do {
-		echo "<AREA SHAPE=\"RECT\" COORDS=\"" . $x . "," . $y . "," . $x2 . "," . $y2 . "\" onmouseover=\"javascript:montre('smenu" . ($iday + 9) . "');\" onmouseout=\"javascript:montre();\"";
+		echo "<area shape=\"rect\" coords=\"" . $x . "," . $y . "," . $x2 . "," . $y2 . "\" onmouseover=\"javascript:montre('smenu" . ($iday + 9) . "');\" onmouseout=\"javascript:montre();\"";
 		$dateday = $axex[$iday];
 		$periodtogo = $totperiod[$dateday];
 		echo "href=\"index.php?navig=$navig&amp;period=$periodtogo&amp;site=$site&amp;graphpos=$graphpos\" alt=\"go\">\n";
@@ -354,7 +354,7 @@ if ($typegraph == 'link') {
 		$x2 = $x2 + $widthzone;
 		$iday++;
 	} while ($iday < $nbday);
-	echo "</MAP>\n";
+	echo "</map>\n";
 	$iday = 0;
 	do {
 		echo "<div id=\"smenu" . ($iday + 9) . "\"  style=\"display:none; font-size:13px; color:#003399; font-family:Verdana,Geneva, Arial, Helvetica, Sans-Serif; text-align:left; border:2px solid navy; position:absolute; top:8px; left:300px; background:#eee;\">\n";
@@ -366,11 +366,11 @@ if ($typegraph == 'link') {
 		$iday++;
 	} while ($iday < $nbday);
 } elseif ($typegraph == 'page') {
-	echo "<MAP ID=\"seopage\" NAME=\"seopage\">\n";
+	echo "<map id=\"seopage\" name=\"seopage\">\n";
 	$iday = 0;
 	$x = 65.3;
 	do {
-		echo "<AREA SHAPE=\"RECT\" COORDS=\"" . $x . "," . $y . "," . $x2 . "," . $y2 . "\" onmouseover=\"javascript:montre('smenu" . ($iday + 70) . "');\" onmouseout=\"javascript:montre();\"";
+		echo "<area shape=\"rect\" coords=\"" . $x . "," . $y . "," . $x2 . "," . $y2 . "\" onmouseover=\"javascript:montre('smenu" . ($iday + 70) . "');\" onmouseout=\"javascript:montre();\"";
 		$dateday = $axex[$iday];
 		$periodtogo = $totperiod[$dateday];
 		echo "href=\"index.php?navig=$navig&amp;period=$periodtogo&amp;site=$site&amp;graphpos=$graphpos\" alt=\"go\">\n";
@@ -378,7 +378,7 @@ if ($typegraph == 'link') {
 		$x2 = $x2 + $widthzone;
 		$iday++;
 	} while ($iday < $nbday);
-	echo "</MAP>\n";
+	echo "</map>\n";
 	$iday = 0;
 	
 	do {
@@ -392,11 +392,11 @@ if ($typegraph == 'link') {
 		$iday++;
 	} while ($iday < $nbday);
 } elseif ($typegraph == 'entry') {
-	echo "<MAP ID=\"seoentry\" NAME=\"seoentry\">\n";
+	echo "<map id=\"seoentry\" name=\"seoentry\">\n";
 	$iday = 0;
 	$x = 65.3;
 	do {
-		echo "<AREA SHAPE=\"RECT\" COORDS=\"" . $x . "," . $y . "," . $x2 . "," . $y2 . "\" onmouseover=\"javascript:montre('smenu" . ($iday + 131) . "');\" onmouseout=\"javascript:montre();\"";
+		echo "<area shape=\"rect\" coords=\"" . $x . "," . $y . "," . $x2 . "," . $y2 . "\" onmouseover=\"javascript:montre('smenu" . ($iday + 131) . "');\" onmouseout=\"javascript:montre();\"";
 		$dateday = $axex[$iday];
 		$periodtogo = $totperiod[$dateday];
 		echo "href=\"index.php?navig=$navig&amp;period=$periodtogo&amp;site=$site&amp;graphpos=$graphpos\" alt=\"go\">\n";
@@ -404,7 +404,7 @@ if ($typegraph == 'link') {
 		$x2 = $x2 + $widthzone;
 		$iday++;
 	} while ($iday < $nbday);
-	echo "</MAP>\n";
+	echo "</map>\n";
 	$iday = 0;
 	
 	do {
@@ -418,12 +418,12 @@ if ($typegraph == 'link') {
 		$iday++;
 	} while ($iday < $nbday);
 } elseif ($typegraph == 'bookmark') {
-	echo "<MAP ID=\"bookmark\" NAME=\"bookmark\">\n";
+	echo "<map id=\"bookmark\" name=\"bookmark\">\n";
 	$iday = 0;
 	$x = 65.3;
 	
 	do {
-		echo "<AREA SHAPE=\"RECT\" COORDS=\"" . $x . "," . $y . "," . $x2 . "," . $y2 . "\" onmouseover=\"javascript:montre('smenu" . ($iday + 192) . "');\" onmouseout=\"javascript:montre();\"";
+		echo "<area shape=\"rect\" coords=\"" . $x . "," . $y . "," . $x2 . "," . $y2 . "\" onmouseover=\"javascript:montre('smenu" . ($iday + 192) . "');\" onmouseout=\"javascript:montre();\"";
 		$dateday = $axex[$iday];
 		$periodtogo = $totperiod[$dateday];
 		echo "href=\"index.php?navig=$navig&amp;period=$periodtogo&amp;site=$site&amp;graphpos=$graphpos\" alt=\"go\">\n";
@@ -431,7 +431,7 @@ if ($typegraph == 'link') {
 		$x2 = $x2 + $widthzone;
 		$iday++;
 	} while ($iday < $nbday);
-	echo "</MAP>\n";
+	echo "</map>\n";
 	$iday = 0;
 	do {
 		echo "<div id=\"smenu" . ($iday + 192) . "\"  style=\"display:none; font-size:13px; color:#003399; font-family:Verdana,Geneva, Arial, Helvetica, Sans-Serif; text-align:left; border:2px solid navy; position:absolute; top:8px; left:300px; background:#eee;\">\n";

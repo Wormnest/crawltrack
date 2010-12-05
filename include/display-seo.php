@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-seo.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 05/12/2010
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -257,7 +257,7 @@ if ($period != 5) {
 	//mapgraph
 	$typegraph = 'link';
 	include "include/mapgraph2.php";
-	echo "<img src=\"./graphs/seo-graph.php?typegraph=$typegraph&amp;crawltlang=$crawltlang&amp;period=$period&amp;graphname=$graphname\" USEMAP=\"#seolink\" border=\"0\" alt=\"graph\" >\n";
+	echo "<img src=\"./graphs/seo-graph.php?typegraph=$typegraph&amp;crawltlang=$crawltlang&amp;period=$period&amp;graphname=$graphname\" usemap=\"#seolink\" border=\"0\" alt=\"graph\" >\n";
 	echo "&nbsp;</div><br>\n";
 	echo "<div class='imprimgraph'>\n";
 	echo "&nbsp;<br><br><br><br><br><br><br><br><br><br><br><br><br><br></div>\n";
@@ -266,7 +266,7 @@ if ($period != 5) {
 	//mapgraph
 	$typegraph = 'page';
 	include "include/mapgraph2.php";
-	echo "<img src=\"./graphs/seo-graph.php?typegraph=$typegraph&amp;crawltlang=$crawltlang&amp;period=$period&amp;graphname=$graphname\" USEMAP=\"#seopage\" border=\"0\" alt=\"graph\" >\n";
+	echo "<img src=\"./graphs/seo-graph.php?typegraph=$typegraph&amp;crawltlang=$crawltlang&amp;period=$period&amp;graphname=$graphname\" usemap=\"#seopage\" border=\"0\" alt=\"graph\" >\n";
 	echo "&nbsp;</div><br>\n";
 	echo "<div class='imprimgraph'>\n";
 	echo "&nbsp;<br><br><br><br></div>\n";
@@ -275,7 +275,7 @@ if ($period != 5) {
 	//mapgraph
 	$typegraph = 'bookmark';
 	include "include/mapgraph2.php";
-	echo "<img src=\"./graphs/seo-graph.php?typegraph=$typegraph&amp;crawltlang=$crawltlang&amp;period=$period&amp;graphname=$graphname\" USEMAP=\"#bookmark\" border=\"0\" alt=\"graph\" >\n";
+	echo "<img src=\"./graphs/seo-graph.php?typegraph=$typegraph&amp;crawltlang=$crawltlang&amp;period=$period&amp;graphname=$graphname\" usemap=\"#bookmark\" border=\"0\" alt=\"graph\" >\n";
 	echo "&nbsp;</div><br>\n";
 	echo "<div class='imprimgraph'>\n";
 	echo "&nbsp;<br><br><br><br>\n";

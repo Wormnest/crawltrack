@@ -323,7 +323,7 @@ mysql_close($connexion);
 						$nbonevisits[$key] = 0;
 					}
 					echo "<td class='tableau3'>" . numbdisp($nbvisits2[$key]) . "</td>\n";
-					echo "<td class='tableau3'>" . numbdisp2(($nbonevisits[$key] / $nbvisits2[$key]) * 100) . " %</td>\n";
+					echo "<td class='tableau3'>" . numbdisp(($nbonevisits[$key] / $nbvisits2[$key]) * 100, 1) . " %</td>\n";
 					echo "<td class='tableau3'>" . date("d/m/Y", $firstdatedisplay[$key]) . "<br>" . date("G:i", $firstdatedisplay[$key]) . "</td>\n";
 					echo "<td class='tableau3'>" . date("d/m/Y", $lastdatedisplay[$key]) . "<br>" . date("G:i", $lastdatedisplay[$key]) . "</td>\n";
 					echo "<td class='tableau5'>" . $deltatime . "</td></tr>\n";
@@ -345,7 +345,7 @@ mysql_close($connexion);
 						$nbonevisits[$key] = 0;
 					}
 					echo "<td class='tableau30'>" . numbdisp($nbvisits2[$key]) . "</td>\n";
-					echo "<td class='tableau30'>" . numbdisp2(($nbonevisits[$key] / $nbvisits2[$key]) * 100) . " %</td>\n";
+					echo "<td class='tableau30'>" . numbdisp(($nbonevisits[$key] / $nbvisits2[$key]) * 100, 1) . " %</td>\n";
 					echo "<td class='tableau30'>" . date("d/m/Y", $firstdatedisplay[$key]) . "<br>" . date("G:i", $firstdatedisplay[$key]) . "</td>\n";
 					echo "<td class='tableau30'>" . date("d/m/Y", $lastdatedisplay[$key]) . "<br>" . date("G:i", $lastdatedisplay[$key]) . "</td>\n";
 					echo "<td class='tableau50'>" . $deltatime . "</td></tr>\n";

@@ -339,8 +339,8 @@ if ($totalvisitor > 0) {
 	echo "<tr><td class='tableau3'>" . numbdisp($totalvisitor) . "</td>\n";
 	echo "<td class='tableau3'>" . numbdisp($nbrvisitor) . "</td>\n";
 	echo "<td class='tableau3'>" . numbdisp($nbrpage) . "</td>\n";
-	echo "<td class='tableau3'>" . numbdisp2($nbrpage / $totalvisitor) . "</td>\n";
-	echo "<td class='tableau5'>" . numbdisp2(($onepage / $nbrvisitor) * 100) . " %</td></tr>\n";
+	echo "<td class='tableau3'>" . numbdisp($nbrpage / $totalvisitor, 1) . "</td>\n";
+	echo "<td class='tableau5'>" . numbdisp(($onepage / $nbrvisitor) * 100, 1) . " %</td></tr>\n";
 	echo "</table></div><br>\n";
 	//graph
 	if ($visitsendgoogle > 0) {
@@ -421,10 +421,10 @@ if ($totalvisitor > 0) {
 	foreach ($nbrvisitorbrowser as $key => $value) {
 		if ($comptligne % 2 == 0) {
 			echo "<tr><td class='tableau3g'>&nbsp;&nbsp;" . $crawltbrowserlist2[$key] . "</td>\n";
-			echo "<td class='tableau5'>" . numbdisp($value) . "&nbsp;&nbsp;(" . numbdisp2(($value / $nbrvisitor) * 100) . "%)</td></tr>\n";
+			echo "<td class='tableau5'>" . numbdisp($value) . "&nbsp;&nbsp;(" . numbdisp(($value / $nbrvisitor) * 100, 1) . "%)</td></tr>\n";
 		} else {
 			echo "<tr><td class='tableau30g'>&nbsp;&nbsp;" . $crawltbrowserlist2[$key] . "</td>\n";
-			echo "<td class='tableau50'>" . numbdisp($value) . "&nbsp;&nbsp;(" . numbdisp2(($value / $nbrvisitor) * 100) . "%)</td></tr>\n";
+			echo "<td class='tableau50'>" . numbdisp($value) . "&nbsp;&nbsp;(" . numbdisp(($value / $nbrvisitor) * 100, 1) . "%)</td></tr>\n";
 		}
 		$comptligne++;
 	}
@@ -453,10 +453,10 @@ if ($totalvisitor > 0) {
 	foreach ($values2 as $key => $value) {
 		if ($comptligne % 2 == 0) {
 			echo "<tr><td class='tableau3g'>&nbsp;&nbsp;" . $language[$key] . "</td>\n";
-			echo "<td class='tableau5'>" . numbdisp($value) . "&nbsp;&nbsp;(" . numbdisp2(($value / $totalvisitor) * 100) . "%)</td></tr>\n";
+			echo "<td class='tableau5'>" . numbdisp($value) . "&nbsp;&nbsp;(" . numbdisp(($value / $totalvisitor) * 100, 1) . "%)</td></tr>\n";
 		} else {
 			echo "<tr><td class='tableau30g'>&nbsp;&nbsp;" . $language[$key] . "</td>\n";
-			echo "<td class='tableau50'>" . numbdisp($value) . "&nbsp;&nbsp;(" . numbdisp2(($value / $totalvisitor) * 100) . "%)</td></tr>\n";
+			echo "<td class='tableau50'>" . numbdisp($value) . "&nbsp;&nbsp;(" . numbdisp(($value / $totalvisitor) * 100, 1) . "%)</td></tr>\n";
 		}
 		$comptligne++;
 	}
@@ -474,10 +474,10 @@ if ($totalvisitor > 0) {
 	foreach ($nbrcountry as $key => $value) {
 		if ($comptligne % 2 == 0) {
 			echo "<tr><td class='tableau3g'>&nbsp;&nbsp;&nbsp;<img src=\"./images/flags/$key.gif\" width=\"16px\" height=\"11px\"  border=\"0\" alt=\"$country[$key]\">&nbsp;" . $country[$key] . "</td>\n";
-			echo "<td class='tableau5'>" . numbdisp($value) . "&nbsp;&nbsp;(" . numbdisp2(($value / $nbrvisitor) * 100) . "%)</td></tr>\n";
+			echo "<td class='tableau5'>" . numbdisp($value) . "&nbsp;&nbsp;(" . numbdisp(($value / $nbrvisitor) * 100, 1) . "%)</td></tr>\n";
 		} else {
 			echo "<tr><td class='tableau30g'>&nbsp;&nbsp;&nbsp;<img src=\"./images/flags/$key.gif\" width=\"16px\" height=\"11px\"  border=\"0\" alt=\"$country[$key]\">&nbsp;" . $country[$key] . "</td>\n";
-			echo "<td class='tableau50'>" . numbdisp($value) . "&nbsp;&nbsp;(" . numbdisp2(($value / $nbrvisitor) * 100) . "%)</td></tr>\n";
+			echo "<td class='tableau50'>" . numbdisp($value) . "&nbsp;&nbsp;(" . numbdisp(($value / $nbrvisitor) * 100, 1) . "%)</td></tr>\n";
 		}
 		$comptligne++;
 	}

@@ -16,35 +16,16 @@
 //----------------------------------------------------------------------
 //  Last update:12/09/2010
 //----------------------------------------------------------------------
-//function to format the numbers for display
-function numbdisp($value) {
+//function to format the numbers with specified decimals for display
+function numbdisp($value, $decimals = 0) {
 	global $crawltlang;
+	// Use a default value if needed
+	if($decimals > 2 || $decimals < 0 || is_null($decimals))
+		$decimals = 0;
 	if ($crawltlang == 'french') {
-		$value = number_format($value, 0, ",", " ");
+		$value = number_format($value,  $decimals, ",", " ");
 	} else {
-		$value = number_format($value, 0, ".", ",");
-	}
-	return $value;
-}
-
-//function to format the numbers with 1 decimals for display
-function numbdisp2($value) {
-	global $crawltlang;
-	if ($crawltlang == 'french') {
-		$value = number_format($value, 1, ",", " ");
-	} else {
-		$value = number_format($value, 1, ".", ",");
-	}
-	return $value;
-}
-
-//function to format the numbers with 2 decimals for display
-function numbdisp3($value) {
-	global $crawltlang;
-	if ($crawltlang == 'french') {
-		$value = number_format($value, 2, ",", " ");
-	} else {
-		$value = number_format($value, 2, ".", ",");
+		$value = number_format($value,  $decimals, ".", ",");
 	}
 	return $value;
 }

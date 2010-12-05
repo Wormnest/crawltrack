@@ -456,17 +456,17 @@ if (count($UVlast7days) > 6) {
 	//short term
 	$evolutionuniquevisitorST = GetEvol($UVlast7days);
 	if ($evolutionuniquevisitorST >= 0) {
-		$evolutionuniquevisitorSTD = "<span id='green'>+ " . numbdisp3($evolutionuniquevisitorST) . " %</span>";
+		$evolutionuniquevisitorSTD = "<span id='green'>+ " . numbdisp($evolutionuniquevisitorST, 2) . " %</span>";
 	} else {
-		$evolutionuniquevisitorSTD = "<span id='red'>" . numbdisp3($evolutionuniquevisitorST) . " %</span>";
+		$evolutionuniquevisitorSTD = "<span id='red'>" . numbdisp($evolutionuniquevisitorST, 2) . " %</span>";
 	}
 	//long term
 	if (count($UVlast30days) > 29) {
 		$evolutionuniquevisitorLT = GetEvol($UVlast30days);
 		if ($evolutionuniquevisitorLT >= 0) {
-			$evolutionuniquevisitorLTD = "<span id='green'>+ " . numbdisp3($evolutionuniquevisitorLT) . " %</span>";
+			$evolutionuniquevisitorLTD = "<span id='green'>+ " . numbdisp($evolutionuniquevisitorLT, 2) . " %</span>";
 		} else {
-			$evolutionuniquevisitorLTD = "<span id='red'>" . numbdisp3($evolutionuniquevisitorLT) . " %</span>";
+			$evolutionuniquevisitorLTD = "<span id='red'>" . numbdisp($evolutionuniquevisitorLT, 2) . " %</span>";
 		}
 	} else {
 		$evolutionuniquevisitorLTD = "<span id='green'> N/A </span>";
@@ -505,7 +505,7 @@ echo "<tr><td class='tableau3'>" . numbdisp($totalvisitor) . "</td>\n";
 echo "<td class='tableau3'>" . numbdisp($nbrvisitor) . "</td>\n";
 echo "<td class='tableau3'>" . numbdisp($nbrpage) . "</td>\n";
 if ($nbrvisitor > 0) {
-	$bouncerate = numbdisp2(($onepage / $nbrvisitor) * 100) . " %";
+	$bouncerate = numbdisp(($onepage / $nbrvisitor) * 100, 1) . " %";
 } else {
 	$bouncerate = "N/A";
 }
@@ -524,10 +524,10 @@ $comptligne = 2;
 foreach ($values2 as $key => $value) {
 	if ($comptligne % 2 == 0) {
 		echo "<tr><td class='tableau3g'>&nbsp;&nbsp;" . $key . "</td>\n";
-		echo "<td class='tableau5'>" . numbdisp($value) . "&nbsp;&nbsp;(" . numbdisp2(($value / $totalvisitor) * 100) . "%)</td></tr>\n";
+		echo "<td class='tableau5'>" . numbdisp($value) . "&nbsp;&nbsp;(" . numbdisp(($value / $totalvisitor) * 100, 1) . "%)</td></tr>\n";
 	} else {
 		echo "<tr><td class='tableau30g'>&nbsp;&nbsp;" . $key . "</td>\n";
-		echo "<td class='tableau50'>" . numbdisp($value) . "&nbsp;&nbsp;(" . numbdisp2(($value / $totalvisitor) * 100) . "%)</td></tr>\n";
+		echo "<td class='tableau50'>" . numbdisp($value) . "&nbsp;&nbsp;(" . numbdisp(($value / $totalvisitor) * 100, 1) . "%)</td></tr>\n";
 	}
 	$comptligne++;
 }

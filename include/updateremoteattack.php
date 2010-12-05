@@ -119,13 +119,13 @@ if (!$file || $nofile) {
 					$i = 0;
 					for ($j = 1;$j <= $nbr;$j++) {
 						$updatelistid[$j] = $tabdata[$i];
-						$i = $i + 1;
+						$i++;
 						$updatelistattack[$j] = $tabdata[$i];
-						$i = $i + 1;
+						$i++;
 						$updatelistscript[$j] = $tabdata[$i];
-						$i = $i + 1;
+						$i++;
 						$updatelisttype[$j] = $tabdata[$i];
-						$i = $i + 1;
+						$i++;
 					}
 					$sqlexist = "SELECT * FROM crawlt_attack";
 					$requeteexist = db_query($sqlexist, $connexion);

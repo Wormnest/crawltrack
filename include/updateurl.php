@@ -97,19 +97,19 @@ if ($validsite == 0) {
 		$requeteupdatesite = db_query($sqlupdatesite, $connexion);
 		mysql_close($connexion);
 	}
-	echo "<p>" . $language['update'] . "</p>\n";
+	?>
+	<p><?php echo $language['update']; ?></p>
 	
-	//continue
-	echo "<div class=\"form\">\n";
-	echo "<form action=\"index.php\" method=\"POST\" >\n";
-	echo "<table class=\"centrer\">\n";
-	echo "<tr>\n";
-	echo "<td colspan=\"2\">\n";
-	echo "<input name='ok' type='submit'  value='ok' size='20'>\n";
-	echo "</td>\n";
-	echo "</tr>\n";
-	echo "</table>\n";
-	echo "</form>\n";
-	echo "</div>";
-}
-?>
+	<!-- continue -->
+	<div class="form">
+	<form action="index.php" method="POST" >
+		<table class="centrer">
+		<tr>
+		<td colspan="2">
+		<input name="ok" type="submit"  value="ok" size="20">
+		</td>
+		</tr>
+		</table>
+	</form>
+	</div>
+<?php } ?>

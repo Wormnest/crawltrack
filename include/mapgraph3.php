@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file:mapgraph3.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 05/12/2010
 //----------------------------------------------------------------------
 //create table for graph
 if ($navig == 23) {
@@ -104,11 +104,11 @@ if ($period == 3 || ($period >= 200 && $period < 300)) {
 	$y2 = 211;
 }
 
-echo "<MAP ID=\"seoentry\" NAME=\"seoentry\">\n";
+echo "<map id=\"seoentry\" name=\"seoentry\">\n";
 $iday = 0;
 $x = 65.3;
 do {
-	echo "<AREA SHAPE=\"RECT\" COORDS=\"" . $x . "," . $y . "," . $x2 . "," . $y2 . "\" onmouseover=\"javascript:montre('smenu" . ($iday + 131) . "');\" onmouseout=\"javascript:montre();\"";
+	echo "<area shape=\"rect\" coords=\"" . $x . "," . $y . "," . $x2 . "," . $y2 . "\" onmouseover=\"javascript:montre('smenu" . ($iday + 131) . "');\" onmouseout=\"javascript:montre();\"";
 	$dateday = $axex[$iday];
 	$periodtogo = $totperiod[$dateday];
 	echo "href=\"index.php?navig=$navig&amp;period=$periodtogo&amp;site=$site&amp;graphpos=$graphpos\" alt=\"go\">\n";
@@ -116,7 +116,7 @@ do {
 	$x2 = $x2 + $widthzone;
 	$iday++;
 } while ($iday < $nbday);
-echo "</MAP>\n";
+echo "</map>\n";
 $iday = 0;
 do {
 	echo "<div id=\"smenu" . ($iday + 131) . "\"  style=\"display:none; font-size:12px; color:#003399; font-family:Verdana,Geneva, Arial, Helvetica, Sans-Serif; text-align:left; border:2px solid navy; position:absolute; top:30px; left:0px; background:#eee; width:100%;\">\n";

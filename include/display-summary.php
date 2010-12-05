@@ -260,17 +260,17 @@ if (count($UVlast7days) > 6) {
 	//short term
 	$evolutionuniquevisitorST = GetEvol($UVlast7days);
 	if ($evolutionuniquevisitorST >= 0) {
-		$evolutionuniquevisitorSTD = "<span id='green'>+ " . numbdisp3($evolutionuniquevisitorST) . " %</span>";
+		$evolutionuniquevisitorSTD = "<span id='green'>+ " . numbdisp($evolutionuniquevisitorST, 2) . " %</span>";
 	} else {
-		$evolutionuniquevisitorSTD = "<span id='red'>" . numbdisp3($evolutionuniquevisitorST) . " %</span>";
+		$evolutionuniquevisitorSTD = "<span id='red'>" . numbdisp($evolutionuniquevisitorST, 2) . " %</span>";
 	}
 	//long term
 	if (count($UVlast30days) > 29) {
 		$evolutionuniquevisitorLT = GetEvol($UVlast30days);
 		if ($evolutionuniquevisitorLT >= 0) {
-			$evolutionuniquevisitorLTD = "<span id='green'>+ " . numbdisp3($evolutionuniquevisitorLT) . " %</span>";
+			$evolutionuniquevisitorLTD = "<span id='green'>+ " . numbdisp($evolutionuniquevisitorLT, 2) . " %</span>";
 		} else {
-			$evolutionuniquevisitorLTD = "<span id='red'>" . numbdisp3($evolutionuniquevisitorLT) . " %</span>";
+			$evolutionuniquevisitorLTD = "<span id='red'>" . numbdisp($evolutionuniquevisitorLT, 2) . " %</span>";
 		}
 	} else {
 		$evolutionuniquevisitorLTD = "<span id='green'> N/A </span>";

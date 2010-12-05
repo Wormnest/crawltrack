@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.7
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: mapgraph.php
 //----------------------------------------------------------------------
-//  Last update: 09/11/2010
+//  Last update: 05/12/2010
 //----------------------------------------------------------------------
 //initialize array
 $axexlabel=array();
@@ -517,11 +517,11 @@ if ($period == 0 || $period >= 1000) {
 	$y = 30;
 	$y2 = 280;
 }
-echo "<MAP ID=\"visit\" NAME=\"visit\">\n";
+echo "<map id=\"visit\" name=\"visit\">\n";
 $iday = 0;
 $x = 66;
 do {
-	echo "<AREA SHAPE=\"RECT\" COORDS=\"" . $x . "," . $y . "," . $x2 . "," . $y2 . "\" onmouseover=\"javascript:montre('smenu" . ($iday + 9) . "');\" onmouseout=\"javascript:montre();\" alt=\"go\"";
+	echo "<area shape=\"rect\" coords=\"" . $x . "," . $y . "," . $x2 . "," . $y2 . "\" onmouseover=\"javascript:montre('smenu" . ($iday + 9) . "');\" onmouseout=\"javascript:montre();\" alt=\"go\"";
 	if ($period != 0 && $period < 1000) {
 		$dateday = $axex[$iday];
 		$periodtogo = $totperiod[$dateday];
@@ -533,7 +533,7 @@ do {
 	$x2 = $x2 + $widthzone;
 	$iday++;
 } while ($iday < $nbday);
-echo "</MAP>\n";
+echo "</map>\n";
 $iday = 0;
 
 do {
