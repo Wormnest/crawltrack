@@ -1,4 +1,4 @@
-Crawltrack 3.2.6
+Crawltrack 3.2.8
 
 README
 ------

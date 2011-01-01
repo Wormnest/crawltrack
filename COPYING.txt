@@ -1,5 +1,5 @@
 CrawlTrack 
-Copyright (C) 2005-2010  Jean-Denis Brun
+Copyright (C) 2005-2011  Jean-Denis Brun
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU General Public License
@@ -20,7 +20,7 @@ Contact : www.crawltrack.net
 
 
 CrawlTrack 
-Copyright (C) 2005-2010  Jean-Denis Brun
+Copyright (C) 2005-2011  Jean-Denis Brun
 
    Ce programme est un logiciel libre ; vous pouvez le redistribuer et/ou
 le modifier au titre des clauses de la Licence Publique Générale GNU,
