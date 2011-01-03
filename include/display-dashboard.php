@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.7
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-dashboard.php
 //----------------------------------------------------------------------
-//  Last update: 23/10/2010
+//  Last update: 31/12/2010
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -106,7 +106,7 @@ if ($period == 3 || ($period >= 200 && $period < 300) || $period >= 1000 || ($pe
     FROM crawlt_visits
     INNER JOIN crawlt_crawler
     ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
-    WHERE  date >='" . sql_quote($daterequestseo) . "'
+    WHERE DATE(crawlt_visits.date) ='" . sql_quote($daterequestseo) . "'
     AND crawlt_site_id_site='" . sql_quote($site) . "'
     AND crawler_name IN ('GoogleBot','MSN Bot','Slurp Inktomi (Yahoo)','Ask Jeeves/Teoma','Exabot','Baiduspider','Bingbot') 
     GROUP BY  crawler_name";
@@ -133,7 +133,7 @@ if ($period == 3 || ($period >= 200 && $period < 300) || $period >= 1000 || ($pe
     FROM crawlt_visits
     INNER JOIN crawlt_crawler
     ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
-    WHERE  date >='" . sql_quote($daterequestseo) . "'
+    WHERE DATE(crawlt_visits.date) >='" . sql_quote($daterequestseo) . "'
     AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'
     AND crawler_name IN ('GoogleBot','MSN Bot','Slurp Inktomi (Yahoo)','Ask Jeeves/Teoma','Exabot','Baiduspider','Bingbot')
     GROUP BY crawler_name";
