@@ -155,7 +155,8 @@ if ($suppressdata == 1) {
 			LEFT OUTER JOIN crawlt_visits_human
 			ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page       
 			WHERE crawlt_visits.crawlt_pages_id_page IS NULL
-			AND crawlt_visits_human.crawlt_id_page IS NULL";
+			AND crawlt_visits_human.crawlt_id_page IS NULL
+			LIMIT 0,100000";
 		$requete = db_query($sql, $connexion);
 		$nbrresult = mysql_num_rows($requete);
 		if ($nbrresult >= 1) {
@@ -176,7 +177,7 @@ if ($suppressdata == 1) {
 				FROM  crawlt_referer
 				LEFT OUTER JOIN crawlt_visits_human
 				ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer       
-				WHERE crawlt_visits_human.crawlt_id_referer IS NULL LIMIT 100000";
+				WHERE crawlt_visits_human.crawlt_id_referer IS NULL LIMIT 0,100000";
 			$requete = db_query($sql, $connexion);
 			$nbrresult = mysql_num_rows($requete);
 			
@@ -199,7 +200,7 @@ if ($suppressdata == 1) {
 				FROM  crawlt_keyword
 				LEFT OUTER JOIN crawlt_visits_human
 				ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword       
-				WHERE crawlt_visits_human.crawlt_keyword_id_keyword IS NULL LIMIT 100000";
+				WHERE crawlt_visits_human.crawlt_keyword_id_keyword IS NULL LIMIT 0,100000";
 			$requete = db_query($sql, $connexion);
 			$nbrresult = mysql_num_rows($requete);
 			if ($nbrresult >= 1) {
