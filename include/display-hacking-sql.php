@@ -114,7 +114,7 @@ if (($nbrresult + $nbrattack404) >= 1) {
 	}
 	//query to get the country code
 	if (function_exists('geoip_country_code_by_name')) {
-		// The server is running a standalone version of GeoIP
+		// The server is running a (faster) standalone version of GeoIP
 		foreach ($listip as $ip) {
 			$code = geoip_country_code_by_name($ip);
 			if ($code !== false) {

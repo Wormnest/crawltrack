@@ -52,7 +52,7 @@ include ("include/menusite.php");
 include ("include/timecache.php");
 //mysql query
 if ($period >= 10) {
-	$sqlstats = "SELECT crawler_name,  crawlt_ip_used, date, crawler_info
+	$sqlstats = "SELECT crawler_name, crawlt_ip_used, date, crawler_info
     FROM crawlt_visits
     INNER JOIN crawlt_crawler
     ON  crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
@@ -60,7 +60,7 @@ if ($period >= 10) {
     AND  date <'" . sql_quote($daterequest2) . "'     
     AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'";
 } else {
-	$sqlstats = "SELECT crawler_name,  crawlt_ip_used, date, crawler_info
+	$sqlstats = "SELECT crawler_name, crawlt_ip_used, date, crawler_info
     FROM crawlt_visits
     INNER JOIN crawlt_crawler
     ON  crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
@@ -89,7 +89,7 @@ if ($nbrresult1 >= 1) {
 	if ($testip) {
 		//query to get the country code
 		if (function_exists('geoip_country_code_by_name')) {
-			// The server is running a standalone version of GeoIP
+			// The server is running a (faster) standalone version of GeoIP
 			foreach ($listip as $ip) {
 				$codeip = "code-" . $ip;
 				if (isset($_SESSION[$codeip])) {
@@ -171,7 +171,7 @@ if ($nbrresult1 >= 1) {
 			$sql2 = "UPDATE crawlt_graph SET graph_values='" . sql_quote($datatransferttograph) . "'
                   WHERE name= '" . sql_quote($graphname) . "'";
 		} else {
-			$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . sql_quote($graphname) . "','" . sql_quote($datatransferttograph) . "')";
+			$sql2 = "INSERT INTO crawlt_graph (name, graph_values) VALUES ( '" . sql_quote($graphname) . "','" . sql_quote($datatransferttograph) . "')";
 		}
 		$requete2 = db_query($sql2, $connexion);
 		//mysql connexion close

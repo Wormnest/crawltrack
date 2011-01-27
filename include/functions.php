@@ -264,8 +264,8 @@ function crawltkeywordwindow($keyword) {
 	return $value;
 }
 
-//function to treat css attacks url
-function crawltattackcss($page) {
+//function to treat xss attacks url
+function crawltattackxss($page) {
 	global $listattack, $tableurldisplay, $totallistattack, $listbadsite, $crawltcssaattack;
 	if (strncmp($page, 'http://', 7) == 0) {
 		$page = substr($page, 7);
@@ -718,7 +718,7 @@ if ($period == 0) {
 	$datebeginlocal = date("Y-m-d H:i:s", (strtotime($datelocal) - 604800));
 } elseif ($period == 5) {
 	//case since installation
-	$sql = "SELECT  MIN(date) FROM crawlt_visits
+	$sql = "SELECT  MIN(date) AS min_date FROM crawlt_visits
     WHERE crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'";
 	$requete = db_query($sql, $connexion);
 	$nbrresult = mysql_num_rows($requete);

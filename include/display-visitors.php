@@ -155,7 +155,7 @@ if ($checklink == 1 && (isset($_SESSION['rightspamreferer']) && $_SESSION['right
 //origin graph preparation
 //query to get the country code
 if (function_exists('geoip_country_code_by_name')) {
-	// The server is running a standalone version of GeoIP
+	// The server is running a (faster) standalone version of GeoIP
 	foreach ($listip as $ip) {
 		$codeip = "code-" . $ip;
 		if (isset($_SESSION[$codeip])) {

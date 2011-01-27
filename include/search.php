@@ -197,7 +197,7 @@ if ($validform == 0) {
 			} else {
 				//query to get the country code
 				if (function_exists('geoip_country_code_by_name')) {
-					// The server is running a standalone version of GeoIP
+					// The server is running a (faster) standalone version of GeoIP
 					$code = geoip_country_code_by_name($ip);
 					if ($code !== false) {
 						$code = strtolower($code);

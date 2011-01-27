@@ -118,7 +118,7 @@ if (($nbrresult + $nbrattack404) >= 1) {
 	}
 	//query to get the country code
 	if (function_exists('geoip_country_code_by_name')) {
-		// The server is running a standalone version of GeoIP
+		// The server is running a (faster) standalone version of GeoIP
 		foreach ($listip as $ip) {
 			$code = geoip_country_code_by_name($ip);
 			if ($code !== false) {
@@ -164,7 +164,7 @@ if (($nbrresult + $nbrattack404) >= 1) {
 		$pagetype2 = 0;
 		$pagetype3 = 0;
 		foreach (${'page' . $crawlip} as $page) {
-			crawltattackcss($page);
+			crawltattackxss($page);
 			//give a page type1
 			$pagelength = floor(strlen($page) / 10) * 10;
 			if ($pagelength < 51) {
@@ -396,7 +396,7 @@ if (($nbrresult + $nbrattack404) >= 1) {
 				$nbrgoodsite = 0;
 				//prepare details of attacks
 				foreach (${'page' . $ip} as $page) {
-					crawltattackcss($page);
+					crawltattackxss($page);
 				}
 				//prepare time of attack
 				foreach (${'date' . $ip} as $datehacking) {
