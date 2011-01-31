@@ -75,7 +75,7 @@ if ($validlogin == 1) {
 			fwrite($file, $content);
 			fclose($file);
 		}
-		@chmod($path . '/include', 0705);
+		@chmod($path . '/include', 0755);
 		
 		//empty the cache table
 		$sqlcache = "TRUNCATE TABLE crawlt_cache";
