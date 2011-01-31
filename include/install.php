@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: install.php
 //----------------------------------------------------------------------
-//  Last update: 02/12/2010
+//  Last update: 31/01/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -91,7 +91,7 @@ define('IN_CRAWLT_INSTALL', TRUE);
 		<h4><?php echo $language['menu_install_2']; ?></h4>
 		<h4><?php echo $language['menu_install_3']; ?></h4>
 	</div>
-	include "include/createtable.php
+	<?php include("include/createtable.php"); ?>
 <?php elseif($validform == 4): ?>
 	<!-- site creation -->
 	<h1><?php echo $language['install']; ?></h1>
@@ -100,7 +100,7 @@ define('IN_CRAWLT_INSTALL', TRUE);
 		<h5><?php echo $language['menu_install_2']; ?></h5>
 		<h4><?php echo $language['menu_install_3']; ?></h4>
 	</div>
-	include "include/createsite.php
+	<?php include("include/createsite.php"); ?>
 <?php elseif($validform == 6): ?>
 	<!-- user right -->
 	<h1><?php echo $language['install']; ?></h1>
@@ -109,7 +109,7 @@ define('IN_CRAWLT_INSTALL', TRUE);
 		<h5><?php echo $language['menu_install_2']; ?></h5>
 		<h5><?php echo $language['menu_install_3']; ?></h5>
 	</div>
-	<?php include "include/loginsetup.php" ?>
+	<?php include("include/loginsetup.php"); ?>
 <?php else: ?>
 	<!-- language choice -->
 	<br /><h1>Welcome in the CrawlTrack installation</h1>

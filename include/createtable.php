@@ -47,7 +47,7 @@ if (empty($idmysql) || empty($passwordmysql) || empty($hostmysql) || empty($base
 else {
 	//check if file already exist
 	if (file_exists('include/configconnect.php')) {
-		$filename = $path . '/include/configconnect.php';
+		$config_filepath = $path . '/include/configconnect.php';
 	} else {
 		//file didn't exist, we can create it
 		
@@ -58,12 +58,12 @@ else {
 		$final_file_content = preg_replace('/PASSWORD/', $passwordmysql, $final_file_content);
 		$final_file_content = preg_replace('/DATABASE/', $basemysql, $final_file_content);
 		$final_file_content = preg_replace('/HOST/', $hostmysql, $final_file_content);
-		$filename = $path . '/include/configconnect.php';
+		$config_filepath = $path . '/include/configconnect.php';
 		$filedir = $path . '/include';
 		
 		//chmod the directory
 		@chmod($filedir, 0755);
-		if ($file = fopen($filename, "w")) {
+		if ($file = fopen($config_filepath, "w")) {
 			fwrite($file, $final_file_content);
 			fclose($file);
 		}
@@ -71,7 +71,7 @@ else {
 	//crawltrack file creation
 	//check if file already exist
 	if (file_exists('crawltrack.php')) {
-		$filename2 = $path . '/crawltrack.php';
+		$crawltrack_filepath = $path . '/crawltrack.php';
 	} else {
 		//file didn't exist, we can create it
 		
@@ -87,12 +87,12 @@ else {
 		// Replace the values
 		$final_file_content = preg_replace('/FILE_PATH/', $path, $ref_file_content);
 		$final_file_content = preg_replace('/URL_CRAWLTRACK/', $url_crawlt, $final_file_content);
-		$filename2 = $path . '/crawltrack.php';
+		$crawltrack_filepath = $path . '/crawltrack.php';
 		$filedir = $path;
 		
 		//chmod the directory
 		@chmod($filedir, 0755);
-		if ($file2 = fopen($filename2, "w")) {
+		if ($file2 = fopen($crawltrack_filepath, "w")) {
 			fwrite($file2, $final_file_content);
 			fclose($file2);
 		}
@@ -125,8 +125,8 @@ else {
 			//suppress the files
 			@chmod($path, 0755);
 			@chmod($path . '/include', 0755);
-			unlink($filename);
-			unlink($filename2);
+			unlink($config_filepath);
+			unlink($crawltrack_filepath);
 			echo "<p>" . $language['step2_install_no_ok'] . "</p>";
 			echo "<div class=\"form\">\n";
 			echo "<form action=\"index.php\" method=\"POST\" >\n";
@@ -148,8 +148,8 @@ else {
 				//suppress the files
 				@chmod($path, 0755);
 				@chmod($path . '/include', 0755);
-				unlink($filename);
-				unlink($filename2);
+				unlink($config_filepath);
+				unlink($crawltrack_filepath);
 				echo "<p>" . $language['step3_install_no_ok'] . "</p>";
 				echo "<div class=\"form\">\n";
 				echo "<form action=\"index.php\" method=\"POST\" >\n";
