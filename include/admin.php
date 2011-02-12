@@ -360,7 +360,7 @@ if ($_SESSION['rightadmin'] == 1) {
 				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">\n";
 			echo "<input type=\"hidden\" name ='navig' value=\"6\">\n";
 			echo "<input type=\"hidden\" name ='validform' value=\"98\">\n";
-			echo $language['numberrowdisplay'] . "<input name='rowdisplay'  value='$rowdisplay' type='text' maxlength='5' size='5px' style=\" font-size:13px; font-weight:bold; color: #003399;
+			echo $language['numberrowdisplay'] . "<br><input name='rowdisplay'  value='$rowdisplay' type='text' maxlength='5' size='5px' style=\" font-size:13px; font-weight:bold; color: #003399;
 			font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif; float:left\"/><input name='ok' type='submit'  value=' OK ' size='20' style=\" float:left\">\n";
 			echo "</form><br><br>\n";
 			echo "<form action=\"index.php\" method=\"POST\" z-index:0 style=\" font-size:13px; font-weight:bold; color: #003399;
