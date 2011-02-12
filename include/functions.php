@@ -16,29 +16,6 @@
 //----------------------------------------------------------------------
 //  Last update:12/02/2011
 //----------------------------------------------------------------------
-//Function to generate, save and return a token
-//Function coming from Site du zéro (http://www.siteduzero.com/tutoriel-3-157576-securisation-des-failles-csrf.html)
-function generate_token($nom = '')
-{
-	$token = uniqid(rand(), true);
-	$_SESSION[$nom.'_token'] = $token;
-	$_SESSION[$nom.'_token_time'] = time();
-	return $token;
-}
-//function to check the token
-//Function coming from Site du zéro (http://www.siteduzero.com/tutoriel-3-157576-securisation-des-failles-csrf.html)
-function check_token($temps, $host, $nom = '')
-{
-$parseurl=parse_url($_SERVER['HTTP_REFERER']);
-$hostcheck=$parseurl['host'];
-if(isset($_SESSION[$nom.'_token']) && isset($_SESSION[$nom.'_token_time']) && isset($_POST['token']))
-	if($_SESSION[$nom.'_token'] == $_POST['token'])
-		if($_SESSION[$nom.'_token_time'] >= (time() - $temps))
-			if($hostcheck == $host)
-				return true;
-return false;
-}
-
 //function to format the numbers with specified decimals for display
 function numbdisp($value, $decimals = 0) {
 	global $crawltlang;
