@@ -17,5 +17,5 @@
 //  Last update: 12/02/2011
 //----------------------------------------------------------------------
 $secret_key= "to improve security replace that sentence by your own one";
-$validity_time=600;
+$validity_time = 600;
 ?>
