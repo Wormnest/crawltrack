@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: adminlang.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 12/02/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -26,7 +26,7 @@ if ($validlogin == 1) {
 	$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
 	$sqlupdatemail = "UPDATE crawlt_config SET lang='" . sql_quote($crawltnewlang) . "'";
 	$requeteupdatemail = db_query($sqlupdatemail, $connexion);
-	if ($crawltnewlang == "russian" || $crawltnewlang == "bulgarian" || $crawltnewlang == "turkish") {
+	if ($crawltnewlang == "russian" || $crawltnewlang == "bulgarian" || $crawltnewlang == "turkish" || $crawltnewlang == "italian") {
 		$sqlupdate = "UPDATE crawlt_config SET typecharset='1'";
 		$requeteupdate = db_query($sqlupdate, $connexion);
 	mysql_close($connexion);
@@ -91,6 +91,11 @@ if ($validlogin == 1) {
 		echo "<input type=\"radio\" name=\"newlang\" value=\"bulgarian\" checked>" . $language['bulgarian'] . "</h2>\n";
 	} else {
 		echo "<input type=\"radio\" name=\"newlang\" value=\"bulgarian\" >" . $language['bulgarian'] . "</h2>\n";
+	}
+	if ($crawltlang == 'italian') {
+		echo "<input type=\"radio\" name=\"newlang\" value=\"italian\" checked>" . $language['italian'] . "</h2>\n";
+	} else {
+		echo "<input type=\"radio\" name=\"newlang\" value=\"italian\" >" . $language['italian'] . "</h2>\n";
 	}
 	echo "<input name=\"ok\" type=\"submit\"  value=\"OK\" >\n";
 	echo "</form>\n";
