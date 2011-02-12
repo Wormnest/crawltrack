@@ -1378,4 +1378,7 @@ INSERT INTO `crawlt_crawler` (`id_crawler`, `crawler_user_agent`, `crawler_name`
 (1377,'Jomjaibot/1.0 Crawl (http://www.jomrank.com/,  http://www.thaiwebdb.com)','Jomjaibot','http://www.jomrank.com','Jomrank'),
 (1378,'Cityreview Robot (+http://www.cityreview.org/crawler/)','Cityreview Robot','http://www.cityreview.org/crawler/','Cityreview'),
 (1379,'Sogou Orion spider/4.0(+http://www.sogou.com/docs/help/webmasters.htm#07)','Sogou web spider','http://www.sogou.com/docs/help/webmasters.htm#07','Sogou'),
-(1380,'FyberSpider/1.3 (http://www.fybersearch.com/fyberspider.php)','FyberSpider','http://www.fybersearch.com/fyberspider.php','FyberSearch')
+(1380,'FyberSpider/1.3 (http://www.fybersearch.com/fyberspider.php)','FyberSpider','http://www.fybersearch.com/fyberspider.php','FyberSearch'),
+(1381,'wikiwix-bot-3.0','Wikiwix-bot','http://www.wikiwix.com','Wikiwix'),
+(1382,'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)','Bingbot','http://www.bing.com/bingbot.htm)','Bing'),
+(1383,'ScoutJet','ScoutJet','http://www.scoutjet.com/','ScoutJet')
