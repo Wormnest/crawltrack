@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: adminuser.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 12/02/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -35,7 +35,7 @@ if ($validlogin == 1) {
 		echo "<input type=\"hidden\" name ='site' value='$site'>\n";
 		echo "<input name='ok' type='submit'  value=' " . $language['back_to_form'] . " ' size='20'>\n";
 		echo "</form>\n";
-		echo "</div>\n";
+		echo "</div><br><br>\n";
 	} else {
 		//database connection
 		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
@@ -61,7 +61,7 @@ if ($validlogin == 1) {
 			echo "<input type=\"hidden\" name ='site' value='$site'>\n";
 			echo "<input name='ok' type='submit'  value=' " . $language['back_to_form'] . " ' size='20'>\n";
 			echo "</form>\n";
-			echo "</div>\n";
+			echo "</div><br><br>\n";
 		} else {
 			//add the login in the database
 			
@@ -81,7 +81,7 @@ if ($validlogin == 1) {
 				echo "<input type=\"hidden\" name ='navig' value='6'>\n";
 				echo "<input name='ok' type='submit'  value='OK' size='20'>\n";
 				echo "</form>\n";
-				echo "</div>\n";
+				echo "</div><br><br>\n";
 			} else {
 				echo "<br><br><h2>" . $language['user_creation'] . "</h2>\n";
 				echo "<p>" . $language['login_no_ok2'] . "</p>";
@@ -96,7 +96,7 @@ if ($validlogin == 1) {
 				echo "<input type=\"hidden\" name ='password3' value='$password3'>\n";
 				echo "<input name='ok' type='submit'  value=' " . $language['retry'] . " ' size='20'>\n";
 				echo "</form>\n";
-				echo "</div>\n";
+				echo "</div><br><br>\n";
 			}
 		}
 	}
@@ -140,6 +140,6 @@ else {
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
-	echo "</form>\n";
+	echo "</form><br><br>\n";
 }
 ?>
