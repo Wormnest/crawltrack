@@ -152,12 +152,12 @@ if ($validlogin == 0) {
 	if ($times == 0) {
 	?>
 	document.write("<h5><?php echo $language['time_server']; ?></h5>");
-	document.write("<h2><a href='index.php?decal=" + diffh + "&amp;navig=6&amp;validform=18&amp;validlogin=1'><?php echo $language['yes']; ?></a>&nbsp;&nbsp;&nbsp;<a href='index.php?navig=6'><?php echo $language['no']; ?></a></h2>");
+	document.write("<h2><a href='index.php?decal=" + diffh + "&amp;navig=6&amp;validform=18&amp;validlogin=1'><?php echo $language['yes']; ?></a>&nbsp;&nbsp;&nbsp;<a href='index.php?navig=6'><?php echo $language['no']; ?></a></h2><br><br>");
 	<?php
 	} else {
 	?>
 	document.write("<h5><?php echo $language['time_local']; ?></h5>");
-	document.write("<h2><a href='index.php?decal=" + diffh + "&amp;navig=6&amp;validform=18&amp;validlogin=2'><?php echo $language['yes']; ?></a>&nbsp;&nbsp;&nbsp;<a href='index.php?navig=6'><?php echo $language['no']; ?></a></h2>");
+	document.write("<h2><a href='index.php?decal=" + diffh + "&amp;navig=6&amp;validform=18&amp;validlogin=2'><?php echo $language['yes']; ?></a>&nbsp;&nbsp;&nbsp;<a href='index.php?navig=6'><?php echo $language['no']; ?></a></h2><br><br>");
 	<?php
 	}
 ?>
