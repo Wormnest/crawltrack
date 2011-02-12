@@ -115,9 +115,7 @@ if ($validuser == 1) {
 //create token
 //Thanks to François Lasselin (http://blog.nalis.fr/index.php?post/2009/09/28/Securisation-stateless-PHP-avec-un-jeton-de-session-%28token%29-protection-CSRF-en-PHP)
 $validity_time = 600;
-$parseurl=parse_url($_SERVER['HTTP_REFERER']);
-$hostcheck=$parseurl['host'];
-$token_clair=$secret_key.$hostcheck.$_SERVER['HTTP_USER_AGENT'];
+$token_clair=$secret_key.$_SERVER['HTTP_HOST'].$_SERVER['HTTP_USER_AGENT'];
 $informations=time()."-".$user;
 $token = hash('sha256', $token_clair.$informations);
 setcookie("session_token", $token, time()+$validity_time,'/');
@@ -125,7 +123,6 @@ setcookie("session_informations", $informations, time()+$validity_time,'/');
 
 // we define session variables
 $_SESSION['userlogin'] = $userlogin;
-$_SESSION['userpass'] = $userpass;
 $_SESSION['rightsite'] = $rightsite;
 $_SESSION['rightadmin'] = $rightadmin;
 $_SESSION['rightspamreferer'] = 1;
