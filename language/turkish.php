@@ -1,6 +1,6 @@
 ﻿<?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.5
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker // Bot takip sayacı
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // Translator : Korhan MULCAR 
 //----------------------------------------------------------------------
-//  Last update: 30/08/2010
+//  Last update: 12/02/2011
 //----------------------------------------------------------------------
 $language= array();
 //installation
@@ -563,6 +563,8 @@ $language['positionthreemonth']="Üç ay önceki konum";
 $language['googledetail']="Google'daki konumun detayları ve gelen hitler";
 //3.2.3
 $language['bulgarian']="Bulgar";
+//3.2.8
+$language['italian']="İtalyanca";
 //country code
 $country = array(
     "ad" => "Andorra",

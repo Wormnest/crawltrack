@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -12,7 +12,7 @@
 //----------------------------------------------------------------------
 // file: frenchiso.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 12/02/2011
 //----------------------------------------------------------------------
 $language= array();
 //installation
@@ -580,6 +580,8 @@ $language['positionthreemonth']="Position il y a trois mois";
 $language['googledetail']="Détail position dans Google et nombre de hits correspondant";
 //3.2.3
 $language['bulgarian']="Bulgare";
+//3.2.8
+$language['italian']="Italien";
 //country code
 $country = array(
 "ad" => "Andorre",

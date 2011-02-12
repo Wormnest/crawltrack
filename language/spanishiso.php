@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.3
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: spanishiso.php
 //----------------------------------------------------------------------
-//  Last update: 31/05/2010
+//  Last update: 12/02/2011
 //----------------------------------------------------------------------
 $language= array();
 //installation
@@ -565,6 +565,8 @@ $language['positionthreemonth']="Position three months ago";
 $language['googledetail']="Details of position in Google and hits generated";
 //3.2.3
 $language['bulgarian']="Búlgaro";
+//3.2.8
+$language['italian']="Italiano";
 //country code
 $country = array(
     "ad" => "Andorra",
