@@ -284,55 +284,43 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 		}
 	} else {
 		//check token
+		//Thanks to François Lasselin (http://blog.nalis.fr/index.php?post/2009/09/28/Securisation-stateless-PHP-avec-un-jeton-de-session-%28token%29-protection-CSRF-en-PHP)
 		include ("include/configtoken.php");
-		// ici, on doit renouveller le cookie en générant un jeton actualité (notament l'heure et url)
-		// on calcul le token prédictible, sauf la clef secrete connue du serveur uniquement
-		$token_clair= $secret_key.$_SERVER['HTTP_REFERER'].$_SERVER['HTTP_USER_AGENT'];
-
-		//on recrypte avec les informations transmises dans le cookie en clair
+		$token_clair= $secret_key.$_SERVER['HTTP_HOST'].$_SERVER['HTTP_USER_AGENT'];
 		$token = hash('sha256', $token_clair.$_COOKIE["session_informations"]);
-
-if(strcmp($_COOKIE["session_token"], $token)==0)
- {
-  // Si ils sont identique ont peut récupéré les informations
-  list($date, $user) = split('[-]', $_COOKIE["session_informations"]);
-
-  // On vérifie que la session n'est pas expirée
-  if($date+ $validity_time>time() AND $date <time())
-  {
-		//test to see if version is up-to-date
-		if (!isset($version)) {
-			$version = 100;
-		}
-		if ($version == $versionid) {
-			include ("include/nocache.php");
-			//installation is up-to-date, display stats
-			include ("include/header.php");
-			include ("$main");
-			include ("include/footer.php");
-		} else {
-			//update the installation
-			include ("include/header.php");
-			include ("include/updatecrawltrack.php");
-			include ("include/footer.php");
-		}
-
-
-
-  }
-  else
-  {
-    echo "wrong timing<br>";
-    exit;
-  }
-}
-else
-{
-  echo "token check failed<br>";
-  exit;
-}
-
-
+		if(strcmp($_COOKIE["session_token"], $token)==0)
+			{
+			list($date, $user) = split('[-]', $_COOKIE["session_informations"]);
+			if($date+ $validity_time>time() AND $date <=time())
+				{
+					//test to see if version is up-to-date
+					if (!isset($version)) {
+						$version = 100;
+					}
+					if ($version == $versionid) {
+						include ("include/nocache.php");
+						//installation is up-to-date, display stats
+						include ("include/header.php");
+						include ("$main");
+						include ("include/footer.php");
+					} else {
+						//update the installation
+						include ("include/header.php");
+						include ("include/updatecrawltrack.php");
+						include ("include/footer.php");
+					}
+				}
+			else
+				{
+				echo "wrong timing<br>";
+				exit;
+				}
+			}
+		else
+			{
+			echo "token check failed<br>";
+			exit;
+			}
 	}
 } else {
 	//display install
