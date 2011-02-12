@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.7
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: updatecrawltrack.php
 //----------------------------------------------------------------------
-//  Last update: 09/11/2010
+//  Last update: 12/02/2011
 //----------------------------------------------------------------------
 //this file is needed to update from a previous release
 if (!defined('IN_CRAWLT')) {
@@ -160,7 +160,7 @@ $requetecache = mysql_query($sqlcache, $connexion) or exit("MySQL query error");
 
 // Just check if the main errors mesages array are empty
 if (empty($tables_actions_error_messages) && empty($fields_actions_error_messages) && $process_ok) {
-	$sqlupdateversion = "UPDATE crawlt_config SET version='327'";
+	$sqlupdateversion = "UPDATE crawlt_config SET version='328'";
 	$requeteupdateversion = mysql_query($sqlupdateversion, $connexion);
 	$a = substr($versionid, 0, 1);
 	$b = substr($versionid, 1, 1);
