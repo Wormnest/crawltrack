@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: adminusersuppress.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 12/02/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -55,7 +55,7 @@ if ($suppressuser == 1) {
 			echo "<input type=\"hidden\" name ='navig' value='6'>\n";
 			echo "<input name='ok' type='submit'  value='OK' size='20'>\n";
 			echo "</form>\n";
-			echo "</div>\n";
+			echo "</div><br><br>\n";
 		} else {
 			echo "<br><br><h1>" . $language['user_suppress_no_ok'] . "</h1>\n";
 			echo "<div class=\"form\">\n";
@@ -63,7 +63,7 @@ if ($suppressuser == 1) {
 			echo "<input type=\"hidden\" name ='navig' value='6'>\n";
 			echo "<input name='ok' type='submit'  value='OK' size='20'>\n";
 			echo "</form>\n";
-			echo "</div>\n";
+			echo "</div><br><br>\n";
 		}
 	mysql_close($connexion);
 	} else {
@@ -104,7 +104,7 @@ if ($suppressuser == 1) {
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</form>\n";
-		echo "</div>";
+		echo "</div><br><br>";
 	}
 } else {
 	//database connection
@@ -125,7 +125,7 @@ if ($suppressuser == 1) {
 		//display
 		echo "<br><br><h1>" . $language['user_suppress'] . "</h1>\n";
 		echo "<div class='tableau' align='center'>\n";
-		echo "<table   cellpadding='0px' cellspacing='0' width='450px'>\n";
+		echo "<table   cellpadding='0px' cellspacing='0' width='550px'>\n";
 		echo "<tr><th class='tableau2' colspan='2'>\n";
 		echo "" . $language['user_list'] . "\n";
 		echo "</th></tr>\n";
@@ -145,7 +145,7 @@ if ($suppressuser == 1) {
 			echo "</td></tr>\n";
 		}
 		echo "</table></div>\n";
-		echo "<br>\n";
+		echo "<br><br>\n";
 	} else {
 		echo "<br><br><h1>" . $language['user_suppress'] . "</h1>\n";
 		echo "<div class='tableau' align='center'>\n";
@@ -154,7 +154,7 @@ if ($suppressuser == 1) {
 		echo "" . $language['user_list'] . "\n";
 		echo "</th></tr>\n";
 		echo "</table></div>\n";
-		echo "<br>\n";
+		echo "<br><br>\n";
 	}
 }
 ?>

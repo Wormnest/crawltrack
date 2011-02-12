@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: admindatasuppress.php
 //----------------------------------------------------------------------
-//  Last update: 05/01/2011
+//  Last update: 12/02/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -233,7 +233,7 @@ if ($suppressdata == 1) {
 			echo "<input type=\"hidden\" name ='navig' value='6'>\n";
 			echo "<input name='ok' type='submit'  value='OK' size='20'>\n";
 			echo "</form>\n";
-			echo "</div>\n";
+			echo "</div><br><br>\n";
 		} else {
 			echo "<br><br><h1>" . $language['data_suppress_no_ok'] . "</h1>\n";
 			echo "<div class=\"form\">\n";
@@ -241,7 +241,7 @@ if ($suppressdata == 1) {
 			echo "<input type=\"hidden\" name ='navig' value='6'>\n";
 			echo "<input name='ok' type='submit'  value='OK' size='20'>\n";
 			echo "</form>\n";
-			echo "</div>\n";
+			echo "</div><br><br>\n";
 		}
 mysql_close($connexion);
 	} else {
@@ -312,7 +312,7 @@ mysql_close($connexion);
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</form>\n";
-		echo "</div>";
+		echo "</div><br><br>";
 	}
 } else {
 	echo "<br><br><h1>" . $language['data_suppress'] . "</h1>\n";

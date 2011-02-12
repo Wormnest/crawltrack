@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: adminsitesuppress.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 12/02/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -91,14 +91,14 @@ if ($suppresssite == 1) {
 			$requeteoptimize2 = db_query($sqloptimize2, $connexion);
 		}
 		mysql_close($connexion);
-		if ($requetedelete && $requetedelete2 && $requetedelete3) {
+		if ($requetedelete && $requetedelete2 ) {
 			echo "<br><br><h1>" . $language['site_suppress_ok'] . "</h1>\n";
 			echo "<div class=\"form\">\n";
 			echo "<form action=\"index.php\" method=\"POST\" >\n";
 			echo "<input type=\"hidden\" name ='navig' value='6'>\n";
 			echo "<input name='ok' type='submit'  value='OK' size='20'>\n";
 			echo "</form>\n";
-			echo "</div>\n";
+			echo "</div><br><br>\n";
 		} else {
 			echo "<br><br><h1>" . $language['site_suppress_no_ok'] . "</h1>\n";
 			echo "<div class=\"form\">\n";
@@ -106,7 +106,7 @@ if ($suppresssite == 1) {
 			echo "<input type=\"hidden\" name ='navig' value='6'>\n";
 			echo "<input name='ok' type='submit'  value='OK' size='20'>\n";
 			echo "</form>\n";
-			echo "</div>\n";
+			echo "</div><br><br>\n";
 		}
 	} else {
 		//validation of suppression
@@ -147,7 +147,7 @@ if ($suppresssite == 1) {
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</form>\n";
-		echo "</div>";
+		echo "</div><br><br>";
 	}
 } else {
 	//database connection
@@ -190,7 +190,7 @@ if ($suppresssite == 1) {
 			echo "</td></tr>\n";
 		}
 		echo "</table></div>\n";
-		echo "<br>\n";
+		echo "<br><br>\n";
 	} else {
 		//display
 		echo "<br><br><h1>" . $language['site_suppress'] . "</h1>\n";
@@ -200,7 +200,7 @@ if ($suppresssite == 1) {
 		echo "" . $language['site_list'] . "\n";
 		echo "</th></tr>\n";
 		echo "</table></div>\n";
-		echo "<br>\n";
+		echo "<br><br>\n";
 	}
 mysql_close($connexion);
 }

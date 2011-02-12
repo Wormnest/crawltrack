@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: adminmodifsite.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 12/02/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -47,7 +47,7 @@ if ($validsite == 1) {
 	echo "</td>\n";
 	echo "</tr>\n";
 	echo "</table>\n";
-	echo "</form>\n";
+	echo "</form><br><br>\n";
 } elseif ($validsite == 2) {
 	//check if data is empty
 	if (empty($sitename) || empty($siteurl)) {
@@ -62,7 +62,7 @@ if ($validsite == 1) {
 		echo "<input type=\"hidden\" name ='siteurl' value='$siteurldisplay'>\n";
 		echo "<input name='ok' type='submit'  value=' " . $language['back_to_form'] . " ' size='20'>\n";
 		echo "</form>\n";
-		echo "</div>\n";
+		echo "</div><br><br>\n";
 	} else {
 		//update database
 		
@@ -87,7 +87,7 @@ if ($validsite == 1) {
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
-		echo "</form><br>\n";
+		echo "</form><br><br>\n";
 	}
 } else {
 	//first arrival on the page
@@ -133,6 +133,6 @@ if ($validsite == 1) {
 		}
 		$comptligne++;
 	}
-	echo "</table><br>\n";
+	echo "</table><br><br><br>\n";
 }
 ?>
