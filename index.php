@@ -285,7 +285,7 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 	} else {
 		//check token
 		//Thanks to François Lasselin (http://blog.nalis.fr/index.php?post/2009/09/28/Securisation-stateless-PHP-avec-un-jeton-de-session-%28token%29-protection-CSRF-en-PHP)
-		include ("include/configtoken.php");
+		$validity_time = 600;
 		$token_clair= $secret_key.$_SERVER['HTTP_HOST'].$_SERVER['HTTP_USER_AGENT'];
 		$token = hash('sha256', $token_clair.$_COOKIE["session_informations"]);
 		if(strcmp($_COOKIE["session_token"], $token)==0)
