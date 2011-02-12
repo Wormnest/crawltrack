@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: admin.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 12/02/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -412,7 +412,7 @@ if ($_SESSION['rightadmin'] == 1) {
 			}
 			echo "<input name='ok' type='submit'  value=' OK ' size='20' >\n";
 			echo "</form>&nbsp;\n";
-			if ($crawltlang != "russian" && $crawltlang != "bulgarian" && $crawltlang !="turkish") {
+			if ($crawltlang != "russian" && $crawltlang != "bulgarian" && $crawltlang !="turkish" && $crawltlang !="italian") {
 				echo "<form action=\"index.php\" method=\"POST\" z-index:0 style=\" font-size:13px; font-weight:bold; color: #003399;
 			font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif; \">\n";
 				echo "<input type=\"hidden\" name ='navig' value=\"6\">\n";
