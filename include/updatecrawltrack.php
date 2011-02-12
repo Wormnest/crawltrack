@@ -52,8 +52,8 @@ if (!$existing_crawlt_config_table) {
 }
 
 //----------------------------------------------------------------------------------------------------
-//update configconnect.php file if version <150
-if ($version < 150) {
+//update configconnect.php file if version <328
+if ($version < 328) {
 	//update the configconnect file
 	
 	//determine the path to the file
@@ -78,6 +78,7 @@ if ($version < 150) {
 	$final_file_content = preg_replace('/PASSWORD/', $crawltpassword, $final_file_content);
 	$final_file_content = preg_replace('/DATABASE/', $crawltdb, $final_file_content);
 	$final_file_content = preg_replace('/HOST/', $crawlthost, $final_file_content);
+	$final_file_content = preg_replace('/SECRETSENTENCE/', random(30), $final_file_content);
 	if ($file = fopen($filename, "w")) {
 		fwrite($file, $final_file_content);
 		fclose($file);
