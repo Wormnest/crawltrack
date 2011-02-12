@@ -112,7 +112,22 @@ if ($validuser == 1) {
 		$_SESSION['flag'] = true;
 	}
 
-	if(check_token(600, $_SERVER['HTTP_HOST'], 'login')) {
+//create token
+include ("../include/configtoken.php");
+// le jeton est composé de la clef secrète, de l'url du service et du user-agent
+$token_clair=$secret_key."https://".$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"].$_SERVER['HTTP_USER_AGENT'];
+// On pourra ainsi s'assurer de leur authenticité.
+$informations=time()."-".$user;
+// On encode le jeton
+$token = hash('sha256', $token_clair.$informations);
+// On poste les cookies
+setcookie("session_token", $token, time()+$validity_time);
+setcookie("session_informations", $informations, time()+$validity_time);
+
+
+
+
+
 		// we define session variables
 		$_SESSION['userlogin'] = $userlogin;
 		$_SESSION['userpass'] = $userpass;
@@ -129,10 +144,7 @@ if ($validuser == 1) {
 			header("Location: ../index.php?navig=$navig&period=$period&site=$site&crawler=$crawlencode&graphpos=$graphpos&displayall=$displayall");
 			exit;
 		}
-	}
-	else {
-	exit('<h1>Hacking attempt !!!!</h1>');
-	}
+
 
 } else {
 	header("Location: ../index.php?navig=$navig&period=$period&site=$site&crawler=$crawlencode&graphpos=$graphpos&displayall=$displayall");
