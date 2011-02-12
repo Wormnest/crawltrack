@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.7
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: sponsors.php
 //----------------------------------------------------------------------
-//  Last update: 23/09/2010
+//  Last update: 12/02/2011
 //----------------------------------------------------------------------
 
 ?>
@@ -27,12 +27,12 @@
 <?php
 if ($crawltlang == 'french' || $crawltlang == 'frenchiso') {
 ?>
- <p > <a  href="http://www.crawlprotect.com/fr" target="_blank" style="font: bold 10pt Arial; text-decoration: underline; color: #00008b;">CrawlProtect</a><br>
+ <p > <a  href="http://www.crawltrack.net/crawlprotect/fr" target="_blank" style="font: bold 10pt Arial; text-decoration: underline; color: #00008b;">CrawlProtect</a><br>
 <span style="font: normal 10pt Arial; text-decoration: none; color: #000;">Vous prot&eacute;gez d&eacute;j&agrave; votre site des pirates avec CrawlTrack, vous pouvez faire mieux encore avec CrawlProtect</span></p>
 <?php
 } else {
 ?>
- <p > <a  href="http://www.crawlprotect.com" target="_blank" style="font: bold 10pt Arial; text-decoration: underline; color: #00008b;">CrawlProtect</a><br>
+ <p > <a  href="http://www.crawltrack.net/crawlprotect/" target="_blank" style="font: bold 10pt Arial; text-decoration: underline; color: #00008b;">CrawlProtect</a><br>
 <span style="font: normal 10pt Arial; text-decoration: none; color: #000;">You already protect your site from hackers with CrawlTrack, you can do more with CrawlProtect</span></p>
 <?php
 }
