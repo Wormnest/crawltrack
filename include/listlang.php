@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,8 +14,8 @@
 //----------------------------------------------------------------------
 // file: listlang.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 12/02/2011
 //----------------------------------------------------------------------
 //list of languages available
-$listlangcrawlt = array("english", "french", "spanish", "german", "turkish", "dutch", "englishiso", "frenchiso", "spanishiso", "germaniso", "dutchiso", "russian", "bulgarian");
+$listlangcrawlt = array("english", "french", "spanish", "german", "turkish", "dutch", "englishiso", "frenchiso", "spanishiso", "germaniso", "dutchiso", "russian", "bulgarian","italian");
 ?>
