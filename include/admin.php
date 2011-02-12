@@ -149,7 +149,7 @@ if ($_SESSION['rightadmin'] == 1) {
 			include ("include/adminpublicstats.php");
 		break;
 		case 22:
-			include ("include/testcrawlercreation.php");
+			include ("include/adminfirstweekday.php");
 		break;
 		case 23:
 			include ("include/adminmodifsite.php");
