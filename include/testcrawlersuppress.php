@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: testcrawlersuppress.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 12/02/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -82,7 +82,7 @@ if ($suppresscrawler == 1) {
 			echo "<input type=\"hidden\" name ='navig' value='6'>\n";
 			echo "<input name='ok' type='submit'  value='OK' size='20'>\n";
 			echo "</form>\n";
-			echo "</div>\n";
+			echo "</div><br><br>\n";
 		} else {
 			echo "<br><br><h1>" . $language['crawler_suppress_no_ok'] . "</h1>\n";
 			echo "<div class=\"form\">\n";
@@ -90,7 +90,7 @@ if ($suppresscrawler == 1) {
 			echo "<input type=\"hidden\" name ='navig' value='6'>\n";
 			echo "<input name='ok' type='submit'  value='OK' size='20'>\n";
 			echo "</form>\n";
-			echo "</div>\n";
+			echo "</div><br><br>\n";
 		}
 	} else {
 		echo "<br><br><h1>" . $language['crawler_test_no_exist'] . "</h1>\n";
@@ -126,6 +126,6 @@ if ($suppresscrawler == 1) {
 	echo "</table>\n";
 	echo "</form>\n";
 	echo "</div>";
-	echo "<br>\n";
+	echo "<br><br>\n";
 }
 ?>
