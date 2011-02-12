@@ -107,22 +107,29 @@ if ($validuser == 1) {
 		session_start();
 		$_SESSION['flag'] = true;
 	}
-	// we define session variables
-	$_SESSION['userlogin'] = $userlogin;
-	$_SESSION['userpass'] = $userpass;
-	$_SESSION['rightsite'] = $rightsite;
-	$_SESSION['rightadmin'] = $rightadmin;
-	$_SESSION['rightspamreferer'] = 1;
-	if (!isset($_SESSION['clearcache'])) {
-		$_SESSION['clearcache'] = "0";
+
+	if(check_token(600, $_SERVER['HTTP_HOST'], 'login')) {
+		// we define session variables
+		$_SESSION['userlogin'] = $userlogin;
+		$_SESSION['userpass'] = $userpass;
+		$_SESSION['rightsite'] = $rightsite;
+		$_SESSION['rightadmin'] = $rightadmin;
+		$_SESSION['rightspamreferer'] = 1;
+		if (!isset($_SESSION['clearcache'])) {
+			$_SESSION['clearcache'] = "0";
+		}
+		if ($crawltpublic == 1 && $logitself != 1) {
+			header("Location: ../index.php?navig=6&graphpos=$graphpos");
+			exit;
+		} else {
+			header("Location: ../index.php?navig=$navig&period=$period&site=$site&crawler=$crawlencode&graphpos=$graphpos&displayall=$displayall");
+			exit;
+		}
 	}
-	if ($crawltpublic == 1 && $logitself != 1) {
-		header("Location: ../index.php?navig=6&graphpos=$graphpos");
-		exit;
-	} else {
-		header("Location: ../index.php?navig=$navig&period=$period&site=$site&crawler=$crawlencode&graphpos=$graphpos&displayall=$displayall");
-		exit;
+	else {
+	exit('<h1>Hacking attempt !!!!</h1>');
 	}
+
 } else {
 	header("Location: ../index.php?navig=$navig&period=$period&site=$site&crawler=$crawlencode&graphpos=$graphpos&displayall=$displayall");
 	exit;
