@@ -113,37 +113,32 @@ if ($validuser == 1) {
 	}
 
 //create token
+//Thanks to François Lasselin (http://blog.nalis.fr/index.php?post/2009/09/28/Securisation-stateless-PHP-avec-un-jeton-de-session-%28token%29-protection-CSRF-en-PHP)
 include ("../include/configtoken.php");
-// le jeton est composé de la clef secrète, de l'url du service et du user-agent
-$token_clair=$secret_key."https://".$_SERVER["SERVER_NAME"].$_SERVER["REQUEST_URI"].$_SERVER['HTTP_USER_AGENT'];
-// On pourra ainsi s'assurer de leur authenticité.
+$parseurl=parse_url($_SERVER['HTTP_REFERER']);
+$hostcheck=$parseurl['host'];
+$token_clair=$secret_key.$hostcheck.$_SERVER['HTTP_USER_AGENT'];
 $informations=time()."-".$user;
-// On encode le jeton
 $token = hash('sha256', $token_clair.$informations);
-// On poste les cookies
-setcookie("session_token", $token, time()+$validity_time);
-setcookie("session_informations", $informations, time()+$validity_time);
+setcookie("session_token", $token, time()+$validity_time,'/');
+setcookie("session_informations", $informations, time()+$validity_time,'/');
 
-
-
-
-
-		// we define session variables
-		$_SESSION['userlogin'] = $userlogin;
-		$_SESSION['userpass'] = $userpass;
-		$_SESSION['rightsite'] = $rightsite;
-		$_SESSION['rightadmin'] = $rightadmin;
-		$_SESSION['rightspamreferer'] = 1;
-		if (!isset($_SESSION['clearcache'])) {
-			$_SESSION['clearcache'] = "0";
-		}
-		if ($crawltpublic == 1 && $logitself != 1) {
-			header("Location: ../index.php?navig=6&graphpos=$graphpos");
-			exit;
-		} else {
-			header("Location: ../index.php?navig=$navig&period=$period&site=$site&crawler=$crawlencode&graphpos=$graphpos&displayall=$displayall");
-			exit;
-		}
+// we define session variables
+$_SESSION['userlogin'] = $userlogin;
+$_SESSION['userpass'] = $userpass;
+$_SESSION['rightsite'] = $rightsite;
+$_SESSION['rightadmin'] = $rightadmin;
+$_SESSION['rightspamreferer'] = 1;
+if (!isset($_SESSION['clearcache'])) {
+	$_SESSION['clearcache'] = "0";
+}
+if ($crawltpublic == 1 && $logitself != 1) {
+	header("Location: ../index.php?navig=6&graphpos=$graphpos");
+	exit;
+} else {
+	header("Location: ../index.php?navig=$navig&period=$period&site=$site&crawler=$crawlencode&graphpos=$graphpos&displayall=$displayall");
+	exit;
+}
 
 
 } else {
