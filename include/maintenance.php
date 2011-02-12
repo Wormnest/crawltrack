@@ -137,7 +137,7 @@ if(!isset($tables_to_check) || empty($tables_to_check))
 				update_id int(10) unsigned default NULL,
 				PRIMARY KEY  (idcrawlt_update)
 			)",
-			'insert_query' => "INSERT INTO crawlt_update VALUES (1,'95')",
+			'insert_query' => "INSERT INTO crawlt_update VALUES (1,'96')",
 			'execute_after' => 'update_crawlt_update'
 		),
 		array(
