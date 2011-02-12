@@ -195,7 +195,7 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 		$main = ("include/display-dashboard.php");
 	}
 	//  IF NO SESSION LOGIN
-	if (!isset($_SESSION['userlogin']) && !isset($_SESSION['userpass'])) {
+	if (!isset($_SESSION['userlogin'])) {
 		if ($crawltpublic == 1 && $navig != 6 && $logitself != 1) {
 			//case free access to the stats
 			if (!isset($_SESSION['rightsite'])) {
