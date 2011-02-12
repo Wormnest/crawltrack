@@ -30,7 +30,7 @@ if ($validlogin == 1) {
 			$userpass = $ligne->crawlt_password;
 		}
 
-	if ($password1 != $userpass || empty($password2) || empty($password3) || $password2 != $password3) {
+	if (md5($password1) != $userpass || empty($password2) || empty($password3) || $password2 != $password3) {
 		echo "<p>" . $language['login_no_ok'] . "</p>";
 		echo "<div class=\"form\">\n";
 		echo "<form action=\"index.php\" method=\"POST\" >\n";
