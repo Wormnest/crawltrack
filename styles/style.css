@@ -669,6 +669,18 @@ padding:0;
   background-color: #FFFFFF;
   }
 
+.tableau3red {
+  font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  font-size: 13px;
+  font-weight:bold;
+  height:25px;  
+  color: #ff0000;
+  text-align: center;
+  border-bottom: 2px solid #000080;
+  border-left: 2px solid #000080;
+  background-color: #FFFFFF;
+  }
+
 .tableau3p {
   font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
   font-size: 10px;
@@ -729,7 +741,17 @@ padding:0;
   border-left: 2px solid #000080;
   background-color: #FFFFFF;
   }
-
+.tableau3gred {
+  font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  font-size: 13px;
+  font-weight:bold;
+  height:25px;  
+  color: #ff0000;
+  text-align: left;
+  border-bottom: 2px solid #000080;
+  border-left: 2px solid #000080;
+  background-color: #FFFFFF;
+  }
 .tableau3hg {
   font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
   font-size: 12px;
@@ -813,6 +835,18 @@ padding:0;
   background-color: #E6E6FA;
   }
 
+.tableau30red {
+  font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  font-size: 13px;
+  font-weight:bold;
+  height:25px;   
+  color: #ff0000;
+  text-align: center;
+  border-bottom: 2px solid #000080;
+  border-left: 2px solid #000080;
+  background-color: #E6E6FA;
+  }
+
 .tableau30p {
   font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
   font-size: 10px;
@@ -873,7 +907,17 @@ padding:0;
   background-color: #E6E6FA;
   }
   
-  
+.tableau30gred {
+  font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  font-size: 13px;
+  font-weight:bold;
+  height:25px;   
+  color: #ff0000;
+  text-align: left;
+  border-bottom: 2px solid #000080;
+  border-left: 2px solid #000080;
+  background-color: #E6E6FA;
+  } 
 .tableau30hg {
   font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
   font-size: 12px;
@@ -987,6 +1031,19 @@ padding:0;
   background-color: #FFFFFF;
   }
 
+.tableau5red {
+  font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  font-size: 13px;
+  font-weight:bold;
+  height:25px;  
+  color: #ff0000;
+  text-align: center;
+  border-bottom: 2px solid #000080;
+  border-right: 2px solid #000080;
+  border-left: 2px solid #000080;
+  background-color: #FFFFFF;
+  }
+
 .tableau5sf {
   font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
   font-size: 10px;
@@ -1069,6 +1126,20 @@ padding:0;
   border-left: 2px solid #000080;
   background-color: #E6E6FA;
   }
+
+.tableau50red {
+  font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  font-size: 13px;
+  font-weight:bold;
+   height:25px; 
+  color: #ff0000;
+  text-align: center;
+  border-bottom: 2px solid #000080;
+  border-right: 2px solid #000080;
+  border-left: 2px solid #000080;
+  background-color: #E6E6FA;
+  }
+
 .tableau50sf {
   font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
   font-size: 10px;
