@@ -735,11 +735,20 @@ echo "</th></tr>\n";
 //counter for alternate color lane
 $comptligne = 2;
 foreach ($count as $key => $value) {
-	if ($comptligne % 2 == 0) {
+	if ($comptligne % 2 == 0 && $countperiod[$key]>0) {
+		echo "<tr><td class='tableau3gred'>&nbsp;&nbsp;" . crawltcuturl($key, 30) . "</td>\n";
+		echo "<td class='tableau3red'>&nbsp;&nbsp;" . numbdisp($countperiod[$key]) . "</td>\n";
+		echo "<td class='tableau5red'>" . numbdisp($value) . "</td></tr>\n";
+	} elseif ($comptligne % 2 == 0 && $countperiod[$key]==0) {
 		echo "<tr><td class='tableau3g'>&nbsp;&nbsp;" . crawltcuturl($key, 30) . "</td>\n";
 		echo "<td class='tableau3'>&nbsp;&nbsp;" . numbdisp($countperiod[$key]) . "</td>\n";
 		echo "<td class='tableau5'>" . numbdisp($value) . "</td></tr>\n";
-	} else {
+	} elseif ($comptligne % 2 != 0 && $countperiod[$key]>0) {
+		echo "<tr><td class='tableau30gred'>&nbsp;&nbsp;" . crawltcuturl($key, 30) . "</td>\n";
+		echo "<td class='tableau30red'>&nbsp;&nbsp;" . numbdisp($countperiod[$key]) . "</td>\n";
+		echo "<td class='tableau50red'>" . numbdisp($value) . "</td></tr>\n";
+	}
+	else {
 		echo "<tr><td class='tableau30g'>&nbsp;&nbsp;" . crawltcuturl($key, 30) . "</td>\n";
 		echo "<td class='tableau30'>&nbsp;&nbsp;" . numbdisp($countperiod[$key]) . "</td>\n";
 		echo "<td class='tableau50'>" . numbdisp($value) . "</td></tr>\n";
