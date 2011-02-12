@@ -88,9 +88,9 @@ if ($validlogin == 1) {
 		echo "<input type=\"radio\" name=\"newlang\" value=\"russian\" >" . $language['russian'] . "\n";
 	}
 	if ($crawltlang == 'bulgarian') {
-		echo "<input type=\"radio\" name=\"newlang\" value=\"bulgarian\" checked>" . $language['bulgarian'] . "</h2>\n";
+		echo "<input type=\"radio\" name=\"newlang\" value=\"bulgarian\" checked>" . $language['bulgarian'] . "\n";
 	} else {
-		echo "<input type=\"radio\" name=\"newlang\" value=\"bulgarian\" >" . $language['bulgarian'] . "</h2>\n";
+		echo "<input type=\"radio\" name=\"newlang\" value=\"bulgarian\" >" . $language['bulgarian'] . "\n";
 	}
 	if ($crawltlang == 'italian') {
 		echo "<input type=\"radio\" name=\"newlang\" value=\"italian\" checked>" . $language['italian'] . "</h2>\n";
