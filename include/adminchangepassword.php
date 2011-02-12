@@ -42,7 +42,7 @@ if ($validlogin == 1) {
 		$requetelogin = db_query($sqllogin, $connexion);
 		mysql_close($connexion);
 
-		$_SESSION['userpass']=$password1;
+		$_SESSION['userpass']=$password2;
 
 		echo "<br><br><p>" . $language['update'] . "</p><br><br>";
 		
