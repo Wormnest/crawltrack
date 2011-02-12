@@ -235,6 +235,11 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 			}
 		} else {
 			//token CSRF
+			if (!isset($_SESSION['flag'])) {
+				session_name('crawlt');
+				session_start();
+				$_SESSION['flag'] = true;
+			}
 			$token = generate_token('login');
 			//get values
 			if (isset($_POST['userlogin'])) {
@@ -286,21 +291,32 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 			include ("include/footer.php");
 		}
 	} else {
-		//test to see if version is up-to-date
-		if (!isset($version)) {
-			$version = 100;
+		//check token
+		if (!isset($_SESSION['flag'])) {
+				session_name('crawlt');
+				session_start();
+				$_SESSION['flag'] = true;
+			}
+		if(check_token(600, $_SERVER['HTTP_HOST'], 'login')) {
+			//test to see if version is up-to-date
+			if (!isset($version)) {
+				$version = 100;
+			}
+			if ($version == $versionid) {
+				include ("include/nocache.php");
+				//installation is up-to-date, display stats
+				include ("include/header.php");
+				include ("$main");
+				include ("include/footer.php");
+			} else {
+				//update the installation
+				include ("include/header.php");
+				include ("include/updatecrawltrack.php");
+				include ("include/footer.php");
+			}
 		}
-		if ($version == $versionid) {
-			include ("include/nocache.php");
-			//installation is up-to-date, display stats
-			include ("include/header.php");
-			include ("$main");
-			include ("include/footer.php");
-		} else {
-			//update the installation
-			include ("include/header.php");
-			include ("include/updatecrawltrack.php");
-			include ("include/footer.php");
+		else {
+		exit('<h1>Hacking attempt !!!!</h1>');
 		}
 	}
 } else {
