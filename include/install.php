@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: install.php
 //----------------------------------------------------------------------
-//  Last update: 31/01/2011
+//  Last update: 12/02/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -125,6 +125,7 @@ define('IN_CRAWLT_INSTALL', TRUE);
 				<input type="radio" name="lang" value="russian" />Russian<br />
 				<input type="radio" name="lang" value="bulgarian" />Bulgarian
 				<input type="radio" name="lang" value="french" />French
+				<input type="radio" name="lang" value="italian" />Italian
 			</h1>
 			<input type="hidden" name="navig" value="6" />
 			<input type="hidden" name="validform" value="1" />
