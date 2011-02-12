@@ -78,7 +78,7 @@ if ($version < 328) {
 	$final_file_content = preg_replace('/PASSWORD/', $crawltpassword, $final_file_content);
 	$final_file_content = preg_replace('/DATABASE/', $crawltdb, $final_file_content);
 	$final_file_content = preg_replace('/HOST/', $crawlthost, $final_file_content);
-	$final_file_content = preg_replace('/SECRETSENTENCE/', random(30), $final_file_content);
+	$final_file_content = preg_replace('/SECRETSENTENCE/', random(50), $final_file_content);
 	if ($file = fopen($filename, "w")) {
 		fwrite($file, $final_file_content);
 		fclose($file);

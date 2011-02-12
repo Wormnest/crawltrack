@@ -58,7 +58,7 @@ else {
 		$final_file_content = preg_replace('/PASSWORD/', $passwordmysql, $final_file_content);
 		$final_file_content = preg_replace('/DATABASE/', $basemysql, $final_file_content);
 		$final_file_content = preg_replace('/HOST/', $hostmysql, $final_file_content);
-		$final_file_content = preg_replace('/SECRETSENTENCE/', random(30), $final_file_content);
+		$final_file_content = preg_replace('/SECRETSENTENCE/', random(50), $final_file_content);
 		$config_filepath = $path . '/include/configconnect.php';
 		$filedir = $path . '/include';
 		
