@@ -234,13 +234,6 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 				include ("include/footer.php");
 			}
 		} else {
-			//token CSRF
-			if (!isset($_SESSION['flag'])) {
-				session_name('crawlt');
-				session_start();
-				$_SESSION['flag'] = true;
-			}
-			$token = generate_token('login');
 			//get values
 			if (isset($_POST['userlogin'])) {
 				$userlogin = htmlentities($_POST['userlogin']);
@@ -281,7 +274,6 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 			echo "<input type=\"hidden\" name ='validform' value=\"$validform\">\n";
 			echo "<input type=\"hidden\" name ='displayall' value=\"$displayall\">\n";
 			echo "<input type=\"hidden\" name ='logitself' value=\"$logitself\">\n";
-			echo "<input type=\"hidden\" name ='token' value=\"$token\">\n";
 			echo "<tr><td><input name='ok' type='submit'  value='OK' size='20'></td></tr>\n";
 			echo "</table></form>\n";
 			echo "<script type=\"text/javascript\"> document.forms[\"login\"].elements[\"userlogin\"].focus()</script>\n";
@@ -291,6 +283,23 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 			include ("include/footer.php");
 		}
 	} else {
+		//check token
+		include ("include/configtoken.php");
+		// ici, on doit renouveller le cookie en générant un jeton actualité (notament l'heure et url)
+		// on calcul le token prédictible, sauf la clef secrete connue du serveur uniquement
+		$token_clair= $secret_key.$_SERVER['HTTP_REFERER'].$_SERVER['HTTP_USER_AGENT'];
+
+		//on recrypte avec les informations transmises dans le cookie en clair
+		$token = hash('sha256', $token_clair.$_COOKIE["session_informations"]);
+
+if(strcmp($_COOKIE["session_token"], $token)==0)
+ {
+  // Si ils sont identique ont peut récupéré les informations
+  list($date, $user) = split('[-]', $_COOKIE["session_informations"]);
+
+  // On vérifie que la session n'est pas expirée
+  if($date+ $validity_time>time() AND $date <time())
+  {
 		//test to see if version is up-to-date
 		if (!isset($version)) {
 			$version = 100;
@@ -307,6 +316,23 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 			include ("include/updatecrawltrack.php");
 			include ("include/footer.php");
 		}
+
+
+
+  }
+  else
+  {
+    echo "wrong timing<br>";
+    exit;
+  }
+}
+else
+{
+  echo "token check failed<br>";
+  exit;
+}
+
+
 	}
 } else {
 	//display install
