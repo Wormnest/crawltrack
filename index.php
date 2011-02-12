@@ -234,6 +234,8 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 				include ("include/footer.php");
 			}
 		} else {
+			//token CSRF
+			$token = generate_token('login');
 			//get values
 			if (isset($_POST['userlogin'])) {
 				$userlogin = htmlentities($_POST['userlogin']);
@@ -274,6 +276,7 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 			echo "<input type=\"hidden\" name ='validform' value=\"$validform\">\n";
 			echo "<input type=\"hidden\" name ='displayall' value=\"$displayall\">\n";
 			echo "<input type=\"hidden\" name ='logitself' value=\"$logitself\">\n";
+			echo "<input type=\"hidden\" name ='token' value=\"$token\">\n";
 			echo "<tr><td><input name='ok' type='submit'  value='OK' size='20'></td></tr>\n";
 			echo "</table></form>\n";
 			echo "<script type=\"text/javascript\"> document.forms[\"login\"].elements[\"userlogin\"].focus()</script>\n";
