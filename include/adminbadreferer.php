@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: adminbadreferer.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 12/02/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -64,7 +64,7 @@ if ($suppresscrawler == 1) {
 			echo "<input type=\"hidden\" name ='validform' value=\"32\">";
 			echo "<input name='ok' type='submit'  value='OK' size='20'>\n";
 			echo "</form>\n";
-			echo "</div>\n";
+			echo "</div><br><br>\n";
 		} else {
 			echo "<br><br><h1>" . $language['goodsite_suppress_no_ok'] . "</h1>\n";
 			echo "<div class=\"form\">\n";
@@ -73,7 +73,7 @@ if ($suppresscrawler == 1) {
 			echo "<input type=\"hidden\" name ='validform' value=\"32\">";
 			echo "<input name='ok' type='submit'  value='OK' size='20'>\n";
 			echo "</form>\n";
-			echo "</div>\n";
+			echo "</div><br><br>\n";
 		}
 	} else {
 		//validation of suppression
@@ -113,7 +113,7 @@ if ($suppresscrawler == 1) {
 		echo "</tr>\n";
 		echo "</table>\n";
 		echo "</form>\n";
-		echo "</div>";
+		echo "</div><br><br>";
 	}
 } elseif ($validsite == 1 && empty($siteurl)) {
 	echo "<br><br><p>" . $language['goodsite_no_ok'] . "</p>";
@@ -125,7 +125,7 @@ if ($suppresscrawler == 1) {
 	echo "<input type=\"hidden\" name ='siteurl' value='$siteurldisplay'>\n";
 	echo "<input name='ok' type='submit'  value=' " . $language['back_to_form'] . " ' size='20'>\n";
 	echo "</form>\n";
-	echo "</div>\n";
+	echo "</div><br><br>\n";
 } elseif ($validsite == 1 && !empty($siteurl)) {
 	//add the site in the database
 	//treat the url to have only the host
@@ -154,7 +154,7 @@ if ($suppresscrawler == 1) {
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
-		echo "</form>\n";
+		echo "</form><br><br>\n";
 	} else {
 		//the site didn't exist, we can add it in the database
 		$sqlsite2 = "INSERT INTO crawlt_badreferer (referer) VALUES ('" . sql_quote($siteurl) . "')";
@@ -173,7 +173,7 @@ if ($suppresscrawler == 1) {
 			echo "</td>\n";
 			echo "</tr>\n";
 			echo "</table>\n";
-			echo "</form>\n";
+			echo "</form><br><br>\n";
 		}
 	}
 mysql_close($connexion);
@@ -232,7 +232,7 @@ mysql_close($connexion);
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
-		echo "</form></div>\n";
+		echo "</form></div><br><br>\n";
 	} else {
 		//display
 		echo "<br><br><h1>" . $language['badreferer_list'] . "<br><span class='smalltext'>" . $language['badreferer_list2'] . "</span></h1>\n";
@@ -264,7 +264,7 @@ mysql_close($connexion);
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
-		echo "</form></div>\n";
+		echo "</form></div><br><br>\n";
 	}
 }
 ?>
