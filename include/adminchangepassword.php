@@ -20,7 +20,17 @@ if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
 }
 if ($validlogin == 1) {
-	if ($password1 != $_SESSION['userpass'] || empty($password2) || empty($password3) || $password2 != $password3) {
+		//database connection
+		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
+		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+		$sqllogin = "SELECT crawlt_password FROM crawlt_login WHERE crawlt_user='" . sql_quote($_SESSION['userlogin']) . "'";
+		$requetelogin = mysql_query($sqllogin, $connexion) or die("MySQL query error");
+		mysql_close($connexion);
+		while ($ligne = mysql_fetch_object($requetelogin)) {
+			$userpass = $ligne->crawlt_password;
+		}
+
+	if ($password1 != $userpass || empty($password2) || empty($password3) || $password2 != $password3) {
 		echo "<p>" . $language['login_no_ok'] . "</p>";
 		echo "<div class=\"form\">\n";
 		echo "<form action=\"index.php\" method=\"POST\" >\n";
@@ -37,12 +47,9 @@ if ($validlogin == 1) {
 		//database connection
 		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
 		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
-		$sqllogin = "UPDATE crawlt_login SET  crawlt_password='" . sql_quote($pass) . "'
-        WHERE crawlt_user='" . sql_quote($_SESSION['userlogin']) . "'";
+		$sqllogin = "UPDATE crawlt_login SET  crawlt_password='" . sql_quote($pass) . "' WHERE crawlt_user='" . sql_quote($_SESSION['userlogin']) . "'";
 		$requetelogin = db_query($sqllogin, $connexion);
 		mysql_close($connexion);
-
-		$_SESSION['userpass']=$password2;
 
 		echo "<br><br><p>" . $language['update'] . "</p><br><br>";
 		
