@@ -312,13 +312,15 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 				}
 			else
 				{
-				echo "wrong timing<br>";
+				@session_destroy();
+				header("Location: index.php");
 				exit;
 				}
 			}
 		else
 			{
-			echo "token check failed<br>";
+			@session_destroy();
+			header("Location: index.php");
 			exit;
 			}
 	}
