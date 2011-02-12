@@ -16,6 +16,17 @@
 //----------------------------------------------------------------------
 //  Last update:12/02/2011
 //----------------------------------------------------------------------
+
+//create a unique and random string, thanks to phpsources(http://www.phpsources.org/scripts87-PHP.htm)
+function random($car) {
+	$string = "";
+	$chaine = "abcdefghijklmnpqrstuvwxy";
+	srand((double)microtime()*1000000);
+	for($i=0; $i<$car; $i++) {
+	$string .= $chaine[rand()%strlen($chaine)];
+	}
+	return $string;
+}
 //function to format the numbers with specified decimals for display
 function numbdisp($value, $decimals = 0) {
 	global $crawltlang;
