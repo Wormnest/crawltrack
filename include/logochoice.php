@@ -48,7 +48,7 @@ if ($navig == 6) {
 }
 ?>
 <input type="hidden" name="navig" value="<?php echo $navig; ?>" />
-<input type="hidden" name="validform" value="<?php $validform; ?>" />
+<input type="hidden" name="validform" value="<?php echo $validform; ?>" />
 <table>
 <tr>
 <td>
