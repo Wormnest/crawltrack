@@ -20,7 +20,6 @@
 //Function coming from Site du zéro (http://www.siteduzero.com/tutoriel-3-157576-securisation-des-failles-csrf.html)
 function generate_token($nom = '')
 {
-	session_start();
 	$token = uniqid(rand(), true);
 	$_SESSION[$nom.'_token'] = $token;
 	$_SESSION[$nom.'_token_time'] = time();
@@ -28,13 +27,14 @@ function generate_token($nom = '')
 }
 //function to check the token
 //Function coming from Site du zéro (http://www.siteduzero.com/tutoriel-3-157576-securisation-des-failles-csrf.html)
-function check_token($temps, $referer, $nom = '')
+function check_token($temps, $host, $nom = '')
 {
-session_start();
+$parseurl=parse_url($_SERVER['HTTP_REFERER']);
+$hostcheck=$parseurl['host'];
 if(isset($_SESSION[$nom.'_token']) && isset($_SESSION[$nom.'_token_time']) && isset($_POST['token']))
 	if($_SESSION[$nom.'_token'] == $_POST['token'])
 		if($_SESSION[$nom.'_token_time'] >= (time() - $temps))
-			if($_SERVER['HTTP_REFERER'] == $referer)
+			if($hostcheck == $host)
 				return true;
 return false;
 }
