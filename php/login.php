@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.5
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,12 +14,16 @@
 //----------------------------------------------------------------------
 // file: login.php
 //----------------------------------------------------------------------
-//  Last update: 05/09/2010
+//  Last update: 12/02/2011
 //----------------------------------------------------------------------
 error_reporting(0);
 //database connection
 include ("../include/configconnect.php");
 include ("../include/post.php");
+$crawlencode = urlencode($crawler);
+//get the functions files
+$times = 0;
+include ("../include/functions.php");
 if (isset($crawlthost)) //version >= 150
 {
 	$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
