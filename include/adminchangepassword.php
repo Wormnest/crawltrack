@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: adminchangepassword.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 12/02/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -29,7 +29,7 @@ if ($validlogin == 1) {
 		echo "<input type=\"hidden\" name ='validlogin' value='0'>\n";
 		echo "<input name='ok' type='submit'  value=' " . $language['back_to_form'] . " ' size='20'>\n";
 		echo "</form>\n";
-		echo "</div>\n";
+		echo "</div><br><br>\n";
 	} else {
 		//password treatment
 		$pass = md5($password2);
@@ -53,7 +53,7 @@ if ($validlogin == 1) {
 		echo "</td>\n";
 		echo "</tr>\n";
 		echo "</table>\n";
-		echo "</form><br>\n";
+		echo "</form><br><br>\n";
 	}
 } else {
 	//first arrival on the page
@@ -89,6 +89,6 @@ if ($validlogin == 1) {
 	echo "</tr>\n";
 	echo "</table>\n";
 	echo "</form>\n";
-	echo "</div>\n";
+	echo "</div><br><br>\n";
 }
 ?>
