@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: admindatasuppress.php
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
+//  Last update: 13/02/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -130,6 +130,16 @@ if ($suppressdata == 1) {
 				break;
 				case 15: //suppress all human visits more than 1 month old
 					$ts = strtotime("-1 month");
+					$datetosuppress = date("Y", $ts) . "-" . date("m", $ts) . "-01";
+					$table_name = 'crawlt_visits_human';
+				break;
+				case 17: //suppress all bots visits more than 2 year old
+					$ts = strtotime("-2 years");
+					$datetosuppress = date("Y", $ts) . "-" . date("m", $ts) . "-01";
+					$table_name = 'crawlt_visits';
+				break;
+				case 18: //suppress all human visits more than 2 year old
+					$ts = strtotime("-2 years");
 					$datetosuppress = date("Y", $ts) . "-" . date("m", $ts) . "-01";
 					$table_name = 'crawlt_visits_human';
 				break;
@@ -279,6 +289,10 @@ mysql_close($connexion);
 			$datatosuppressdisplay = $language['one_month_data_human'];
 		} elseif ($datatosuppress == 16) {
 			$datatosuppressdisplay = $language['attack_data'];
+		} elseif ($datatosuppress == 17) {
+			$datatosuppressdisplay = $language['two_year_data'];
+		} elseif ($datatosuppress == 18) {
+			$datatosuppressdisplay = $language['two_year_data_human'];
 		} else {
 			exit('<h1>Hacking attempt !!!!</h1>');
 		}
@@ -325,6 +339,7 @@ mysql_close($connexion);
 	echo "<form action=\"index.php\" method=\"POST\" >\n";
 	echo "<input type=\"radio\" name=\"datatosuppress\" value=\"16\" >" . $language['attack_data'] . "<br><hr>\n";
 	echo "<input type=\"radio\" name=\"datatosuppress\" value=\"1\" >" . $language['other_bot'] . "<br><hr>\n";
+	echo "<input type=\"radio\" name=\"datatosuppress\" value=\"17\" >" . $language['two_year_data'] . "<br><br>\n";
 	echo "<input type=\"radio\" name=\"datatosuppress\" value=\"2\" >" . $language['one_year_data'] . "<br><br>\n";
 	echo "<input type=\"radio\" name=\"datatosuppress\" value=\"3\">" . $language['six_months_data'] . "<br><br>\n";
 	echo "<input type=\"radio\" name=\"datatosuppress\" value=\"4\">" . $language['five_months_data'] . "<br><br>\n";
@@ -332,6 +347,7 @@ mysql_close($connexion);
 	echo "<input type=\"radio\" name=\"datatosuppress\" value=\"6\">" . $language['three_months_data'] . "<br><br>\n";
 	echo "<input type=\"radio\" name=\"datatosuppress\" value=\"7\">" . $language['two_months_data'] . "<br><br>\n";
 	echo "<input type=\"radio\" name=\"datatosuppress\" value=\"8\">" . $language['one_month_data'] . "<br><hr>\n";
+	echo "<input type=\"radio\" name=\"datatosuppress\" value=\"18\" >" . $language['two_year_data_human'] . "<br><br>\n";
 	echo "<input type=\"radio\" name=\"datatosuppress\" value=\"9\" >" . $language['one_year_data_human'] . "<br><br>\n";
 	echo "<input type=\"radio\" name=\"datatosuppress\" value=\"10\">" . $language['six_months_data_human'] . "<br><br>\n";
 	echo "<input type=\"radio\" name=\"datatosuppress\" value=\"11\">" . $language['five_months_data_human'] . "<br><br>\n";
