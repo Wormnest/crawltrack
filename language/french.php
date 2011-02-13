@@ -566,6 +566,8 @@ $language['googledetail']="Détail position dans Google et nombre de hits corres
 $language['bulgarian']="Bulgare";
 //3.2.8
 $language['italian']="Italien";
+$language['two_year_data']="toutes les visites de robot vieilles de plus de deux ans";
+$language['two_year_data_human']="toutes les données visiteurs vieilles de plus de deux ans";
 //country code
 $country = array(
 "ad" => "Andorre",

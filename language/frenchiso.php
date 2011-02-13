@@ -12,7 +12,7 @@
 //----------------------------------------------------------------------
 // file: frenchiso.php
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
+//  Last update: 13/02/2011
 //----------------------------------------------------------------------
 $language= array();
 //installation
@@ -582,6 +582,8 @@ $language['googledetail']="Détail position dans Google et nombre de hits corresp
 $language['bulgarian']="Bulgare";
 //3.2.8
 $language['italian']="Italien";
+$language['two_year_data']="toutes les visites de robot vieilles de plus de deux ans";
+$language['two_year_data_human']="toutes les données visiteurs vieilles de plus de deux ans";
 //country code
 $country = array(
 "ad" => "Andorre",

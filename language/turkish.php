@@ -565,6 +565,8 @@ $language['googledetail']="Google'daki konumun detayları ve gelen hitler";
 $language['bulgarian']="Bulgar";
 //3.2.8
 $language['italian']="İtalyanca";
+$language['two_year_data']="İki yıl  içinde  bütün  eski  robot  ziyaretleri";
+$language['two_year_data_human']="iki yıldan fazla tüm  eski  ziyaretçi";
 //country code
 $country = array(
     "ad" => "Andorra",

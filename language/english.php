@@ -568,6 +568,8 @@ $language['googledetail']="Details of position in Google and hits generated";
 $language['bulgarian']="Bulgarian";
 //3.2.8
 $language['italian']="Italian";
+$language['two_year_data']="all the old robot visits over two years";
+$language['two_year_data_human']="all the old visitors from more than two years";
 //country code
 $country = array(
 

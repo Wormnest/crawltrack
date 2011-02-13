@@ -564,6 +564,8 @@ $language['googledetail']="Детайлите за позицията в Google 
 $language['bulgarian']="Български";
 //3.2.8
 $language['italian']="Италиански";
+$language['two_year_data']="всички стари  посещения  робот  за две години";
+$language['two_year_data_human']="всички стари  посетители от повече от две години";
 //country code
 $country = array(
 

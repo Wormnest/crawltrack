@@ -568,6 +568,8 @@ $language['googledetail']="Dettagli di posizione in Google e accessi generati";
 $language['bulgarian']="Bulgaro";
 //3.2.8
 $language['italian']="Italiano";
+$language['two_year_data']="tutte le visite ai vecchi robots in 2 anni";
+$language['two_year_data_human']="tutti i vecchi visitatori da più di 2 anni";
 //country code
 $country = array(
 
