@@ -51,12 +51,12 @@ $language['new_site']="Aggiungi un nuovo sito web";
 $language['tag']="Tag da inserire nelle tue pagine";
 //modified in 2.3.0
 $language['create_tag']="<p><b>Tag Come usare CrawlTrack:</b><br><ul id=\"listtag\">
-<li>Il tag CrawlTrack è un file php, è necessario inserirlo in un file .PHP</li>
-<li>I tag CrawlTrack devono essere tra i tag <? e php?>, se non ci sono questi tag sulla tua pagina, è necessario aggiungere prima e dopo il tag CrawlTrack.</li>
+<li>Il tag CrawlTrack Ã¨ un file php, Ã¨ necessario inserirlo in un file .PHP</li>
+<li>I tag CrawlTrack devono essere tra i tag <? e php?>, se non ci sono questi tag sulla tua pagina, Ã¨ necessario aggiungere prima e dopo il tag CrawlTrack.</li>
 <li>Se il vostro sito non usa pagine PHP, vedere la documentazione su www.crawltrack.net.</li>
 <li>Per la migliore protezione anti-hacking, porre il tag CrawlTrack come prima riga nella tua pagina, subito dopo <?.</li>
 <li>Se si utilizza qualsiasi tipo di script di gestione dei contenuti (forum di discussione, blog, gallery, CMS, ecc), dare una occhiata ai www.crawltrack.net / doccms.php per trovare il posto migliore per inserire l'etichetta.</li>
-<li>Il tag CrawlTrack non darà assolutamente alcun output visibile sulle pagine (anche nel codice sorgente).</li>
+<li>Il tag CrawlTrack non darÃ  assolutamente alcun output visibile sulle pagine (anche nel codice sorgente).</li>
 <li>Se si desidera sostenere CrawlTrack e vedere il logo con un link al www.crawltrack.net, troverete modelli logo qui sotto che possono essere messi in qualsiasi posto sulle tue pagine.</li>
 <li>Per qualsiasi altra domanda, consultare la documentazione sul www.crawltrack.net o utilizzare il forum di supporto sullo stesso sito.</li></ul></p><br>" ;
 $language['site_name2']="Scegli un sito web";
@@ -75,7 +75,7 @@ $language['login']="Login";
 $language['password']="Password";
 $language['valid_password']="Inserisci di nuovo la password.";
 $language['login_no_ok']="Informazione mancante o passwords non coincidenti, controlla e riprova.";
-$language['login_ok']="L'Account è set-up.";
+$language['login_ok']="L'Account Ã¨ set-up.";
 $language['login_no_ok2']="Problemi durante il set-up dell'account, riprova.";
 $language['login_user']="Crea un account utente";
 $language['login_user_what']="L'Utente ha accesso a tutte le statistiche del sito";
@@ -125,7 +125,7 @@ $language['result_user_crawler']="Ci sono dei crawlers di quell'utente.";
 $language['result_user_1']="Utente:&nbsp;";
 $language['result_crawler_1']="Cerca keyword:&nbsp;";
 $language['no_answer']="Non ci sono risposte.";
-$language['to_many_answer']="Ci sono più di 100 risposte (vista limitata a 100 linee).";
+$language['to_many_answer']="Ci sono piÃ¹ di 100 risposte (vista limitata a 100 linee).";
 //admin
 $language['user_create']="Crea un nuovo account utente.";
 $language['user_site_create']="Crea un nuovo account utente singolo del sito.";
@@ -140,10 +140,10 @@ $language['crawler_url']="URL Utente (tipo questo: http://www.example.com)";
 $language['crawler_url2']="URL Utente:";
 $language['crawler_ip']="IP:";
 $language['crawler_no_ok']="Informazione mancante, controlla il modulo e riprova.";
-$language['exist']="Questo crawler è già nel database";
+$language['exist']="Questo crawler Ã¨ giÃ  nel database";
 $language['exist_data']="Ecco le informazioni che lo riguardano nel database:";
 $language['crawler_no_ok2']="Problema con la creazione del crawler, riprova.";
-$language['crawler_ok']="Il crawler è stato aggiunto al database.";
+$language['crawler_ok']="Il crawler Ã¨ stato aggiunto al database.";
 $language['user_suppress']="Elimina un account utente o utente-sito.";
 $language['user_list']="Lista logins utente e utenti-sito";
 $language['suppress_user']="Elimina questo account";
@@ -167,10 +167,10 @@ $language['crawler_suppress_no_ok']="Problema con la eliminazione del crawler, r
 $language['crawler_test_creation']="Crea un test crawler.";
 $language['crawler_test_suppress']="Elimina il test crawler.";
 $language['crawler_test_text']="Una volta creato il test crawler, visita il tuo sito con lo stesso computer e browaser utilizzati per creare il crawler."; 
-$language['crawler_test_text2']="Se tutto è OK, la tua visita sarà visualizzata in CrawlTrack con visita crawler Test-Crawltrack. Non dimenticare di eliminare il test crawler una volta terminato.";
+$language['crawler_test_text2']="Se tutto Ã¨ OK, la tua visita sarÃ  visualizzata in CrawlTrack con visita crawler Test-Crawltrack. Non dimenticare di eliminare il test crawler una volta terminato.";
 $language['crawler_test_no_exist']="Il test crawler non esiste nel database.";
-$language['exist_site']="Questo sito è già nel database";
-$language['exist_login']="Questo login è già nel database";
+$language['exist_site']="Questo sito Ã¨ giÃ  nel database";
+$language['exist_login']="Questo login Ã¨ giÃ  nel database";
 //1.2.0
 $language['update_title']="Aggiornamento lista Crawlers.";
 $language['update_crawler']="Aggiorna la lista crawlers.";
@@ -178,15 +178,15 @@ $language['list_up_to_date']="Non esiste una lista crawlers aggiornata disponibi
 $language['update_ok']="Aggiornamento effettuato.";
 $language['crawler_add']="crawlers sono stati aggiunti al database";
 $language['no_access']="Aggiornamento Online non disponibile.<br><br>Per aggiornare, clicca sul link qui sotto per scaricare l'ultima lista crawlers, fai l'upload di crawlerlist.php nella cartella include di CrawlTrack e riavvia la procedura di aggiornamento.";
-$language['no_access2']="Link con www.CrawlTrack.net fallito, riprova più tardi.";
-$language['download_update']="Se hai già effettuato l'upload della nuova lista sul tuo sito, clicca sul bottone qui sotto per aggiornare il tuo database.";
+$language['no_access2']="Link con www.CrawlTrack.net fallito, riprova piÃ¹ tardi.";
+$language['download_update']="Se hai giÃ  effettuato l'upload della nuova lista sul tuo sito, clicca sul bottone qui sotto per aggiornare il tuo database.";
 $language['download']="Download della lista crawlers.";
-$language['your_list']="La lista che stai usando è:";
-$language['crawltrack_list']="la lista disponibile su www.Crawltrack.net è:";
+$language['your_list']="La lista che stai usando Ã¨:";
+$language['crawltrack_list']="la lista disponibile su www.Crawltrack.net Ã¨:";
 $language['no_update']="Non aggiornare la lista crawlers.";
 $language['no_crawler_list']="Il file crawlerlist.php non esiste nella cartella include.";
 //1.3.0
-$language['use_user_agent']="L'intercettazione del Crawler è eseguita da user agent o da IP. Inserisci uno dei due.";
+$language['use_user_agent']="L'intercettazione del Crawler Ã¨ eseguita da user agent o da IP. Inserisci uno dei due.";
 $language['user_agent_or_ip']="User agent o IP";
 $language['crawler_ip']="IP:";
 $language['table_mod_ok']="Aggiornamento Crawlt_crawler OK.";
@@ -202,10 +202,10 @@ $language['data_suppress_no_ok']="Problema durante l'archiviazione , riprova.";
 $language['data_suppress_validation']="Sicuro di voler achiviare tutti &nbsp;";
 $language['data_suppress']="Archivia le informazioni piu vecchie sulla tabella visite.";
 $language['data_suppress2']="Archivia tutto...";
-$language['one_year_data']="informazione più vecchie di un anno.";
-$language['six_months_data']="informazione più vecchia di 6 mesi.";
-$language['one_month_data']="informazione più vecchia di 1 mese.";
-$language['oldest_data']="Le date più vecchie dal &nbsp;";
+$language['one_year_data']="informazione piÃ¹ vecchie di un anno.";
+$language['six_months_data']="informazione piÃ¹ vecchia di 6 mesi.";
+$language['one_month_data']="informazione piÃ¹ vecchia di 1 mese.";
+$language['oldest_data']="Le date piÃ¹ vecchie dal &nbsp;";
 $language['no_data']="Non ci sono dati nella tabella visite.";
 //1.4.0
 $language['time_set_up']="Time shift";
@@ -228,15 +228,15 @@ $language['print']="Stampa";
 $language['ip_suppress_ok']="Le visite sono state eliminate con successo.";
 $language['ip_suppress_no_ok']="Problema con la cancellazione delle visite, riprova.";
 $language['no_ip']="Non ci sono record IP per questo periodo.";
-$language['ip_suppress_validation']="Questo IP è stato usato da differenti crawlers, quindi non ci sono dubbi concernenti l'origine di queste visite. Vuoi eliminare le visite da questo IP dalla tabella visite?";
+$language['ip_suppress_validation']="Questo IP Ã¨ stato usato da differenti crawlers, quindi non ci sono dubbi concernenti l'origine di queste visite. Vuoi eliminare le visite da questo IP dalla tabella visite?";
 $language['ip_suppress_validation2']="Sicuro di voler eliminare le visite partite da questo IP?";
 $language['ip_suppress_validation3']="Se vuoi negare l'accesso al tuo sito da questo IP, aggiungi la seguente linea al tuo file .htaccess nella root del tuo sito:";
 $language['ip_suppress']="Elimina un IP";
 $language['diff-day-before']="compara con il giorno precedente";
 $language['daily-stats']="Statistiche giornaliere";
-$language['top-crawler']="Crawler più attivo:";
+$language['top-crawler']="Crawler piÃ¹ attivo:";
 $language['stat-access']="Vedi statistiche dettagliate";
-$language['stat-crawltrack']="Questa informazione è stata raccolta usando:";
+$language['stat-crawltrack']="Questa informazione Ã¨ stata raccolta usando:";
 $language['nbr-pages-top-crawler']="visita";
 $language['of-site']="del sito";
 $language['mail']="Ricevi sommario giornaliero tramite email.";
@@ -247,36 +247,36 @@ $language['set_up_mail2']="Email del sommario giornaliero attivata. Vuoi disatti
 $language['update']="Modifica effettuata.";
 $language['search_ip']="Traccia un indirizzo IP";
 $language['ip']="Indirizzo IP";
-$language['maxmind']="Il tracking è stato effettuato usando il database GeoLite, creato da Maxmind, disponibile al seguente indirizzo:";
+$language['maxmind']="Il tracking Ã¨ stato effettuato usando il database GeoLite, creato da Maxmind, disponibile al seguente indirizzo:";
 $language['ip_no_ok']="Indirizzo IP inserito non valido.";
 $language['public']="Permetti l'acesso pubblico alle statistiche.";
-$language['public-set-up2']="L'accesso alle tue statistiche è ora pubblico, vuoi proteggerlo con un password?";
-$language['public-set-up']="L'accesso alle tue statistiche è ora protetto da password, vuoi renderlo pubblico?";
-$language['public2']="Solo la pagina Tools rimarrà protetta da password";
-$language['admin_protected']="L'accesso alla pagina Tools è protetta.";
+$language['public-set-up2']="L'accesso alle tue statistiche Ã¨ ora pubblico, vuoi proteggerlo con un password?";
+$language['public-set-up']="L'accesso alle tue statistiche Ã¨ ora protetto da password, vuoi renderlo pubblico?";
+$language['public2']="Solo la pagina Tools rimarrÃ  protetta da password";
+$language['admin_protected']="L'accesso alla pagina Tools Ã¨ protetta.";
 $language['no_data_to_suppress']="Non ci sono dati da archiviare per il periodo richiesto.";
 $language['data_suppress3']="L'archiviazione delle informazioni riduce la dimensione del database, ma i dati corrispondenti non saranno
- isponibili per la visualizzazione delle statistiche. Sarà disponibile solo una tabella sommaria (guarda Crawlers/Archivio).
- Arcdhiviare le informazioni è la cosa migliore solo se hai realmente bisogno di ridurre la dimensione del tuo database; i dettagli saranno persi definitivamente.";
+ isponibili per la visualizzazione delle statistiche. SarÃ  disponibile solo una tabella sommaria (guarda Crawlers/Archivio).
+ Arcdhiviare le informazioni Ã¨ la cosa migliore solo se hai realmente bisogno di ridurre la dimensione del tuo database; i dettagli saranno persi definitivamente.";
 $language['archive']="Archivi";
 $language['month2']="Mese";
 $language['top_visits']="Top 3 nel numero di visite";
 $language['top_pages']="Top 3 nel numero di pagine viste";
 $language['no-archive']="Non ci sono dati archiviati.";
-$language['use-archive']="Dal momento che parte dei dati è stata archiviata, questi valori non sono completi.";
+$language['use-archive']="Dal momento che parte dei dati Ã¨ stata archiviata, questi valori non sono completi.";
 $language['url_update']="Aggiorna i dati del sito";
 $language['set_up_url']="Completa la tabella seguente con il dominio del sito tipo: www.example.com (senza http:// all'inizio e / alla fine)."; 
 $language['site_url']="Dominio Sito:";
 //1.6.0
 $language['page_cache']="Cache Pagina a: ";
 //1.7.0
-$language['step1_install_no_ok4']="Problema durante il riempimento della tabella IP, questo può succedere su qualche host la cui tabella contenga più di 78,000 linee. Puoi sia riprovare che continuare senza questa tabella. Se continui, non potrai visualizzare il paese di origine dei crawlers. Vedi la pagina 'Troubleshooting' della documentazione su www.crawltrack.net per riempire manualmente la tabella.";
+$language['step1_install_no_ok4']="Problema durante il riempimento della tabella IP, questo puÃ² succedere su qualche host la cui tabella contenga piÃ¹ di 78,000 linee. Puoi sia riprovare che continuare senza questa tabella. Se continui, non potrai visualizzare il paese di origine dei crawlers. Vedi la pagina 'Troubleshooting' della documentazione su www.crawltrack.net per riempire manualmente la tabella.";
 $language['show_all']="Mostra tutte le linee";
 $language['from']="da";
 $language['to']="a";
 $language['firstweekday-title']="Scegli il primo giorno della settimana";
-$language['firstweekday-set-up2']="Il primo giorno della settimana è Lunedì, vuoi cambiarlo in Domenica?";
-$language['firstweekday-set-up']="Il primo giorno della settimana è Domenica, vuoi cambiarlo in Lunedì?";
+$language['firstweekday-set-up2']="Il primo giorno della settimana Ã¨ LunedÃ¬, vuoi cambiarlo in Domenica?";
+$language['firstweekday-set-up']="Il primo giorno della settimana Ã¨ Domenica, vuoi cambiarlo in LunedÃ¬?";
 $language['01']="Gennaio";
 $language['02']="Febbraio";
 $language['03']="Marzo";
@@ -289,11 +289,11 @@ $language['09']="Settembre";
 $language['10']="Ottobre";
 $language['11']="Novembre";
 $language['12']="Dicembre";
-$language['day0']="Lunedì";
-$language['day1']="Martedì";
-$language['day2']="Mercoledì";
-$language['day3']="Giovedì";
-$language['day4']="Venerdì";
+$language['day0']="LunedÃ¬";
+$language['day1']="MartedÃ¬";
+$language['day2']="MercoledÃ¬";
+$language['day3']="GiovedÃ¬";
+$language['day4']="VenerdÃ¬";
 $language['day5']="Sabatoy";
 $language['day6']="Domenica";
 //2.0.0
@@ -324,13 +324,13 @@ $language['no-info-day-before']="Nessuna informazione del giorno precedente";
 $language['data_human_suppress_ok']="Informazione eliminata con successo.";
 $language['data_human_suppress_no_ok']="Problema con la eliminazione dell'informazione, riprova.";
 $language['data_human_suppress_validation']="Sicuro di voler eliminare tutte &nbsp;";
-$language['data_human_suppress']="Elimina le informazioni più vecchie nella tabella delle visite umane(keywords e pagine iniziali).";
+$language['data_human_suppress']="Elimina le informazioni piÃ¹ vecchie nella tabella delle visite umane(keywords e pagine iniziali).";
 $language['data_human_suppress2']="Elimina...";
-$language['one_year_human_data']="informazione vecchie più di un anno";
-$language['six_months_human_data']="informazione vecchia più di 6 mesi";
-$language['one_month_human_data']="informazione vecchia più di un mese";
+$language['one_year_human_data']="informazione vecchie piÃ¹ di un anno";
+$language['six_months_human_data']="informazione vecchia piÃ¹ di 6 mesi";
+$language['one_month_human_data']="informazione vecchia piÃ¹ di un mese";
 $language['data_human_suppress3']="L'eliminazione dell'informazione riduce la dimensione del database, ma le informazioni non saranno disponibili
-per la visualizzazione delle statistiche. La cosa migliore è cancellare l'informazione solo se veramente vuoi ridurre la dimensione del database; l'informazione è irrimediabilmente persa.";
+per la visualizzazione delle statistiche. La cosa migliore Ã¨ cancellare l'informazione solo se veramente vuoi ridurre la dimensione del database; l'informazione Ã¨ irrimediabilmente persa.";
 $language['no_data_human_to_suppress']="Non ci sono dati nella tabella delle visite umane.";
 $language['choose_language']="Scegli il tuo linguaggio.";
 //2.1.0
@@ -350,9 +350,9 @@ $language['lastthreemonths']="3 ultimi mesi";
 $language['set_up_mail3']="Stai usando il seguente indirizzo:";
 $language['set_up_mail4']="Aggiungi un indirizzo";
 $language['set_up_mail5']="Inserisci il nuovo indirizzo Email.";
-$language['set_up_mail6']="Elimina uno o più indirizzi Email";
+$language['set_up_mail6']="Elimina uno o piÃ¹ indirizzi Email";
 $language['set_up_mail7']="Elimina gli indirizzi selezionati";
-$language['chmod_no_ok']="L'aggiornamento del file crawltrack.php file non è andato a buon fine, CHMOD 777 la cartella CrawlTrack e rifai l'aggiornamento. Per ragioni di sicurezza, non dimenticare di fare CHMOD 711 al termine dell'aggiornamento.";
+$language['chmod_no_ok']="L'aggiornamento del file crawltrack.php file non Ã¨ andato a buon fine, CHMOD 777 la cartella CrawlTrack e rifai l'aggiornamento. Per ragioni di sicurezza, non dimenticare di fare CHMOD 711 al termine dell'aggiornamento.";
 $language['display_parameters']="Mostra i parametri";
 $language['ordertype']="Ordina:";
 $language['orderbydate']="per data";
@@ -392,7 +392,7 @@ $language['parameter']="Parametri";
 $language['script']="Script";
 $language['attack_add']="Gli attacchi sono stati aggiunti al database";
 $language['no_access_attack']="Aggiornamento online non disponibile.<br><br>Per aggiornare, clicca sul link qui sotto per scaricare l'ultima lista di attacchi, fai l'upload del file attacklist.php nella cartella include di CrawlTrack e riavvia l'aggiornamento.";
-$language['download_update_attack']="Se hai già fatto l'upload della nuova lista di attacchi sul tuo sito, clicca sul bottone qui sotto per aggiornare il database.";
+$language['download_update_attack']="Se hai giÃ  fatto l'upload della nuova lista di attacchi sul tuo sito, clicca sul bottone qui sotto per aggiornare il database.";
 $language['download_attack']="Scarica la lista di attacchi.";
 $language['no_attack_list']="Il file attacklist.php non esiste nella tua cartella include.";
 $language['change_password']="Cambia la tua password";
@@ -412,18 +412,18 @@ $language['list_empty']="Non ci sono ancora siti puliti";
 $language['add_goodsite']="Aggiungi un sito pulito alla lista";
 $language['goodsite_no_ok']="Devi inserire un URL del sito.";
 $language['attack-blocked']="Tutti questi attacchi sono stati bloccati da CrawlTrack come richiesto";
-$language['attack-no-blocked']="Stai attento che il tuo CrawlTrack non è settato per bloccare attacchi (guarda la pagina Tools)";
+$language['attack-no-blocked']="Stai attento che il tuo CrawlTrack non Ã¨ settato per bloccare attacchi (guarda la pagina Tools)";
 $language['attack_parameters']="Hacking protection parameters";
 $language['attack_action']="Azione da intraprendere quando un attacco viene intercettato";
 $language['attack_block']="Registralo e bloccalo";
 $language['attack_no_block']="Limitati a registrarlo";
 $language['attack_block_alert']="Prima di bloccare gli attacchi (importante per la sicurezza del tuo sito), dai uno sguardo alla documentazione
 (su www.crawltrack.net) per assicurarti che bloccare gli attacchi non causi un problema con i visitatori normali del tuo sito.";
-$language['crawltrack-backlink']="CrawlTrack è free, se ti piace e vuoi condividerlo, perché non metti un link nelle pagine del tuo sito?<br><br>Se scegli
+$language['crawltrack-backlink']="CrawlTrack Ã¨ free, se ti piace e vuoi condividerlo, perchÃ© non metti un link nelle pagine del tuo sito?<br><br>Se scegli
 l'opzione 'nologo' per il tag tracking, puoi usare questa grafica alternativa (una versione per un PHP ed un'altra per HTML) da inserire ovunque sulle tue pagine.";
 $language['session_id_parameters']="Trattamento Session ID";
 $language['remove_session_id']="Rimuovi ID Sessione da pagina URL";
-$language['session_id_alert']="Rimuovendo l'ID Sessione dalla pagina URL non si avrà l'opportunità di avere più voci nella tabella delle pagine se usi scripts con ID Sessione nell'URL.";
+$language['session_id_alert']="Rimuovendo l'ID Sessione dalla pagina URL non si avrÃ  l'opportunitÃ  di avere piÃ¹ voci nella tabella delle pagine se usi scripts con ID Sessione nell'URL.";
 $language['session_id_used']="ID Sessione usati";
 //3.0.0
 $language['webmaster_dashboard']="Postazione Webmaster";
@@ -445,7 +445,7 @@ $language['direct']="Arrivi Direti";
 $language['average_pages']="Pagine viste per visita";
 $language['stats_visitors']="Statistiche Visitatori";
 $language['count_in_stats']="Non contare le tue visite nei seguenti siti:";
-$language['stats_visitors_other_domain']="Se uno dei siti è ospitato su un altro server; devi copiare il file crawltsetcookie.php (puoi trovarlo nella cartella php di Crawltrack) nella root del tuo sito prima clicca su OK perché a tua scelta sia presa in considerazione.";
+$language['stats_visitors_other_domain']="Se uno dei siti Ã¨ ospitato su un altro server; devi copiare il file crawltsetcookie.php (puoi trovarlo nella cartella php di Crawltrack) nella root del tuo sito prima clicca su OK perchÃ© a tua scelta sia presa in considerazione.";
 $language['main_crawlers']="Crawlers principali";
 $language['magnifier']="Fai una ricerca nel database CrawlTrack";
 $language['refresh']="Svuota la cache e ricalcola i dati";
@@ -465,14 +465,14 @@ $language['badreferer_list2']="Le Visite da questi siti non saranno prese in con
 $language['badreferer_list3']="La lista di siti attuale per i referer spammers";
 $language['badreferer_site']="Sito Webs di referer spammers";
 
-$language['goodreferer']="Sicuro di voler mettere questo campo nella lista di siti che ha un link al tuo sito? Una volta aggiunto a questa lista, le visite non saranno più prese in considerazione da CrawlTrack senza ulteriore controllo.";
+$language['goodreferer']="Sicuro di voler mettere questo campo nella lista di siti che ha un link al tuo sito? Una volta aggiunto a questa lista, le visite non saranno piÃ¹ prese in considerazione da CrawlTrack senza ulteriore controllo.";
 $language['goodreferer2']="Setta questo campo nella lista di siti che hanno un link al tuo sito";
 
 $language['goodreferer_update']="Aggiorna la lista di siti che hanno un link al tuo sito";
 $language['add_goodreferer']="Aggiungi il link ad un sito web al tuo sito dalla lista";
 $language['listgoodreferer_empty']="Non ci sono siti che hanno un link al tuo sito";
 $language['goodreferer_list']="Siti che hanno un link al tuo sito";
-$language['goodreferer_list2']="Le visits da questi siti non saranno più prese in considerazione da CrawlTrack senza ulteriore controllo.";
+$language['goodreferer_list2']="Le visits da questi siti non saranno piÃ¹ prese in considerazione da CrawlTrack senza ulteriore controllo.";
 $language['goodreferer_list3']="La lista attuale di siti che hanno un link al tuo sito";
 $language['goodreferer_site']="Sito con un link al tuo sito";
 
@@ -482,9 +482,9 @@ $language['download_period']="Oltre il periodo";
 $language['download_link']="Counta downloads";
 $language['download_link2']="<b>I tuoi downloads che sono stati conteggiati da CrawlTrack:</b><br><br>
 -I files scaricabili devono essere ospitati su uno dei siti controllati da CrawlTrack.<br>
--il link per il download (per un file la cui collocazione è http://www.example.com/folder/file.zip) deve essere nella forma :";
+-il link per il download (per un file la cui collocazione Ã¨ http://www.example.com/folder/file.zip) deve essere nella forma :";
 $language['download_link3']="http://www.example.com/folder/file.zip";
-$language['download_link4']="Questo è tutto, nessun'altra manipolazione è richiesta.";
+$language['download_link4']="Questo Ã¨ tutto, nessun'altra manipolazione Ã¨ richiesta.";
 $language['error']="Errori 404";
 $language['number']="Numero";
 $language['outer-referer']="Links Esterni";
@@ -518,7 +518,7 @@ $language['four_months_data']="tutte le visite ai vecchi robots in 4 mesi";
 $language['three_months_data']="tutte le visite ai vecchi robots in 3 mesi";
 $language['two_months_data']="tutte le visite ai vecchi robots in 2 mesi";
 $language['one_month_data']="tutte le visite ai vecchi robots in 1 mese";
-$language['one_year_data_human']="tutti i vecchi visitatori da più di un anno";
+$language['one_year_data_human']="tutti i vecchi visitatori da piÃ¹ di un anno";
 $language['six_months_data_human']="tutti i vecchi visitatori altre i 6 mesi";
 $language['five_months_data_human']="tutti i vecchi visitatori altre i 5 mesi";
 $language['four_months_data_human']="tutti i vecchi visitatori altre i 4 mesi";
@@ -526,7 +526,7 @@ $language['three_months_data_human']="tutti i vecchi visitatori altre i 3 mesi";
 $language['two_months_data_human']="tutti i vecchi visitatori altre i 2 mesi";
 $language['one_month_data_human']="tutti i vecchi visitatori altre 1 mese";
 $language['attack_data']="tutti i dati concernenti gli attacchi di pirateria";
-$language['oldest_data']="Il più vecchi di &nbsp;";
+$language['oldest_data']="Il piÃ¹ vecchi di &nbsp;";
 $language['no_data']="Non ci sono datiNon ci sono dati nella tabella di visite.";
 $language['no_data_to_suppress']="Non ci sono dati da eliminare per il periodo richiesto.";
 $language['data_suppress3']="Attenzione! L'eliminazione dei dati riduce la dimensione del database, ma a parte questo tutti i dati andranno rrimediabilmente perduti.";
@@ -537,7 +537,7 @@ $language['deltatime']="Frequenza di visite";
 $language['nbr_tot_visit_seo']="Origine visite";
 $language['url_parameters']="Parametri nell'URL";
 $language['remove_parameter']="Rimuovi i parametri URL";
-$language['remove_parameter_alert']="RImuovendo i parametri URL sicuramente previene un eccessivo ingrossamento della pagina della tabella, per contro ogni tipo di URL: www.example.com/index.php?article=225 sarà registrato nella forma www.example.com / index.php dando un minor numero di dettagli sulle pagine visitate.";
+$language['remove_parameter_alert']="RImuovendo i parametri URL sicuramente previene un eccessivo ingrossamento della pagina della tabella, per contro ogni tipo di URL: www.example.com/index.php?article=225 sarÃ  registrato nella forma www.example.com / index.php dando un minor numero di dettagli sulle pagine visitate.";
 $language['bookmark']="Usa l'indirizzo di questa pagina nei Preferiti";
 $language['evolution']="Trend numero di visitatori unici";
 $language['perday']="per giorno";
@@ -555,7 +555,7 @@ $language['hits-per-hour']="Accessi per ora";
 $language['russian']="Russo";
 //3.1.2
 $language['besponsor']="Usa CrawlTrack per presentare i tuoi prodotti e servizi a centinaia di Webmasters.";
-$language['ad-on-crawltrack']="<a href=\"http://translate.google.fr/translate?u=http%3A%2F%2Fwww.ad42.com%2Fzone.aspx%3Fidz%3D6690%26ida%3D-1&sl=fr&tl=en&hl=fr&ie=UTF-8\" target=\"_blank\">Perché non usare CrawlTrack per presentare i tuoi prodotti e servizi a centinaia di webmasters?</a>";
+$language['ad-on-crawltrack']="<a href=\"http://translate.google.fr/translate?u=http%3A%2F%2Fwww.ad42.com%2Fzone.aspx%3Fidz%3D6690%26ida%3D-1&sl=fr&tl=en&hl=fr&ie=UTF-8\" target=\"_blank\">PerchÃ© non usare CrawlTrack per presentare i tuoi prodotti e servizi a centinaia di webmasters?</a>";
 //3.2.0
 $language['baidu']="Baidu";
 $language['googleposition']="Posizione<br>in Google";
@@ -569,7 +569,7 @@ $language['bulgarian']="Bulgaro";
 //3.2.8
 $language['italian']="Italiano";
 $language['two_year_data']="tutte le visite ai vecchi robots in 2 anni";
-$language['two_year_data_human']="tutti i vecchi visitatori da più di 2 anni";
+$language['two_year_data_human']="tutti i vecchi visitatori da piÃ¹ di 2 anni";
 //country code
 $country = array(
 
