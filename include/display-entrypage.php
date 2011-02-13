@@ -28,7 +28,7 @@ $visitkeywordask = array();
 $visitkeywordexalead = array();
 $visitkeyword = array();
 
-$cachename = $navig . $period . $site . $order . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang;
+$cachename = $navig . $period . $site . $order.$rowdisplay . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang;
 
 //start the caching
 cache($cachename);
