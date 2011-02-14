@@ -207,7 +207,7 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 						continue;
 					}
 					unlink("cache/$entry");
-				}
+				}				
 			}
 			// session start 'crawlt'
 			if (!isset($_SESSION)) {
