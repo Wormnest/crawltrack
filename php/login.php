@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: login.php
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
+//  Last update: 14/02/2011
 //----------------------------------------------------------------------
 error_reporting(0);
 //database connection
@@ -42,7 +42,18 @@ while (false !== $entry = $dir->read()) {
 	}
 	unlink("../cache/$entry");
 }
-
+//clear the cachecloseperiod folder if there is more than 200 files in it to avoid to have it oversized
+$list = glob("../cachecloseperiod/*.gz"); 
+if(count($list)>200) {
+	$dir = dir('../cachecloseperiod/');
+	while (false !== $entry = $dir->read()) {
+		// Skip pointers
+		if ($entry == '.' || $entry == '..') {
+			continue;
+		}
+		unlink("../cachecloseperiod/$entry");
+	}		
+}
 //clear cache table
 $sqlcache = "TRUNCATE TABLE crawlt_cache";
 $requetecache = mysql_query($sqlcache, $connexion);
