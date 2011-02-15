@@ -72,6 +72,10 @@ if ($crawltlang == 'french' || $crawltlang == 'frenchiso') {
 ?>
   <a class="adHeadline" href="http://translate.google.fr/translate?hl=fr&sl=fr&tl=ru&u=http%3A%2F%2Fwww.ad42.com%2Fzone.aspx%3Fidz%3D6690%26ida%3D-1" target="_blank">
 <?php
+} elseif ($crawltlang == 'italian') {
+?>
+  <a class="adHeadline" href="http://translate.google.fr/translate?hl=fr&sl=fr&tl=it&u=http%3A%2F%2Fwww.ad42.com%2Fzone.aspx%3Fidz%3D6690%26ida%3D-1" target="_blank">
+<?php
 } else {
 ?>
   <a class="adHeadline" href="http://translate.google.fr/translate?u=http%3A%2F%2Fwww.ad42.com%2Fzone.aspx%3Fidz%3D6690%26ida%3D-1&sl=fr&tl=en&hl=fr&ie=UTF-8" target="_blank">

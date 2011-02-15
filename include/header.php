@@ -58,6 +58,10 @@ if ($crawltcharset == 1) {
 		{
 		echo"<meta http-equiv=\"Content-Language\" content=\"bg\">\n";
 		}
+	elseif( $language['go_install']=="Istalla")
+		{
+		echo"<meta http-equiv=\"Content-Language\" content=\"it\">\n";
+		}	
 	else
 		{
 		echo"<meta http-equiv=\"Content-Language\" content=\"en\">\n";
