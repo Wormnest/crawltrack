@@ -31,13 +31,13 @@ $uagent = array();
 $table = array();
 $crawlencode = urlencode($crawler);
 if ($period >= 1000) {
-	$cachename = "permanent-" . $navig . "-" . $site . "-" . $crawlencode."-" . $order."-" . $rowdisplay . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
+	$cachename = "permanent-" . $navig . "-" . $site . "-" . $crawlencode."-" . $order."-" . $rowdisplay . "-".$crawltlang . "-".$displayall . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
 } elseif ($period >= 100 && $period < 200) //previous month
 {
-	$cachename = "permanent-month" . $navig . "-" . $site . "-" . $crawlencode."-" . $order."-" . $rowdisplay . "-" . date("Y-m", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
+	$cachename = "permanent-month" . $navig . "-" . $site . "-" . $crawlencode."-" . $order."-" . $rowdisplay . "-".$crawltlang . "-".$displayall . "-" . date("Y-m", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
 } elseif ($period >= 200 && $period < 300) //previous year
 {
-	$cachename = "permanent-year" . $navig . "-" . $site . "-" . $crawlencode."-" . $order."-" . $rowdisplay . "-" . date("Y", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
+	$cachename = "permanent-year" . $navig . "-" . $site . "-" . $crawlencode."-" . $order."-" . $rowdisplay . "-".$crawltlang . "-".$displayall . "-" . date("Y", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
 } else {
 	$cachename = $navig . $period . $site . $order.$rowdisplay . $crawlencode . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang;
 }

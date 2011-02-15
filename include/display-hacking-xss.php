@@ -37,13 +37,13 @@ $totallistattack = array();
 $listscript = array();
 $nbrvisits2 = array();
 if ($period >= 1000) {
-	$cachename = "permanent-" . $navig . "-" . $site . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
+	$cachename = "permanent-" . $navig . "-" . $site . "-".$crawltlang . "-".$displayall . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
 } elseif ($period >= 100 && $period < 200) //previous month
 {
-	$cachename = "permanent-month" . $navig . "-" . $site . "-" . date("Y-m", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
+	$cachename = "permanent-month" . $navig . "-" . $site . "-".$crawltlang . "-".$displayall . "-" . date("Y-m", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
 } elseif ($period >= 200 && $period < 300) //previous year
 {
-	$cachename = "permanent-year" . $navig . "-" . $site . "-" . date("Y", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
+	$cachename = "permanent-year" . $navig . "-" . $site . "-".$crawltlang . "-".$displayall . "-" . date("Y", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
 } else {
 	$cachename = $navig . $period . $site . $firstdayweek . $localday . $graphpos . $crawltlang . $displayall;
 }
@@ -154,9 +154,12 @@ if (($nbrresult + $nbrattack404) >= 1) {
 	}
 	//group by attacker-------------------------------------------------------------------------------------------
 	/*definition of same attacker:
-	   -same injected page(s) with the same crawler(s) and using the same type of url (length)
-	   and in the same period of time 
-	   (yes it's not 100% accurate but it's the better I have till now)
+	   -same injected page(s) with the same crawler(s) and using the same type of url (length)
+
+	   and in the same period of time 
+
+	   (yes it's not 100% accurate but it's the better I have till now)
+
 	*/
 	foreach ($nbrvisits as $crawlip => $value) {
 		$listbadsite = array();

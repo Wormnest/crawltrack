@@ -20,13 +20,13 @@ if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
 }
 if ($period >= 1000) {
-	$cachename = "permanent-" . $navig . "-" . $site . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
+	$cachename = "permanent-" . $navig . "-" . $site . "-".$crawltlang . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
 } elseif ($period >= 100 && $period < 200) //previous month
 {
-	$cachename = "permanent-month" . $navig . "-" . $site . "-" . date("Y-m", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
+	$cachename = "permanent-month" . $navig . "-" . $site . "-".$crawltlang . "-" . date("Y-m", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
 } elseif ($period >= 200 && $period < 300) //previous year
 {
-	$cachename = "permanent-year" . $navig . "-" . $site . "-" . date("Y", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
+	$cachename = "permanent-year" . $navig . "-" . $site . "-".$crawltlang . "-" . date("Y", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
 } else {
 	$cachename = $navig . $period . $site . $firstdayweek . $localday . $graphpos . $crawltlang;
 }
