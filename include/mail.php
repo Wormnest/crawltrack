@@ -615,12 +615,14 @@ foreach ($listsitecrawlt as $site) {
 	}
 	
 	//send the mail
-	equire_once ("$crawltpath/phpmailer/class.phpmailer.php");
+	require_once ("$crawltpath/phpmailer/class.phpmailer.php");
 	$mail = new PHPMailer();
 	if ($crawltcharset != 1) {
 		$mail->CharSet = 'iso-8859-1';
-	else
+		
+	} else {
 		$mail->CharSet = 'utf-8';
+	}	
 	$mail->IsMail(); // telling the class to use Mail
 	//if you want to use smtp server comment the previous line and use the following ones:
 	/*
