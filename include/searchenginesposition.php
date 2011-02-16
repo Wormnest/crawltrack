@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.8
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: searchenginesposition.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 16/02/2011
 //----------------------------------------------------------------------
 //nusoap
 require_once (dirname(__FILE__).'/../nusoap/class.nusoap_base.php');
@@ -111,19 +111,24 @@ if ($crawltloop < $crawltnbrresult) {
 				}
 			}
 			//check if the date already exists in the table
-			$crawltsqlcheck = "SELECT date,id_site  FROM crawlt_seo_position
+			$crawltsqlcheck = "SELECT date,id_site, linkyahoo  FROM crawlt_seo_position
                         WHERE date= '" . crawlt_sql_quote($crawltdatetoday2) . "'
                         AND id_site='" . crawlt_sql_quote($crawltidsite) . "'";
 			$crawltrequetecheck = mysql_query($crawltsqlcheck, $crawltconnexion);
 			$crawltnbrresultcheck = mysql_num_rows($crawltrequetecheck);
 			if ($crawltnbrresultcheck >= 1) {
+				$crawltligne = mysql_fetch_assoc($crawltrequetecheck);
+				$crawltexitingvalue = $crawltligne['linkyahoo'];
+				if($crawltexitingvalue == 0) {
 				$crawltsqlseo = "UPDATE crawlt_seo_position SET linkyahoo='" . crawlt_sql_quote($crawltnbryahoo1) . "'
                           WHERE date= '" . crawlt_sql_quote($crawltdatetoday2) . "'
                           AND id_site='" . crawlt_sql_quote($crawltidsite) . "'";
+                      $crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
+					  }
 			} else {
 				$crawltsqlseo = "INSERT INTO crawlt_seo_position (date,id_site, linkyahoo, pageyahoo, linkmsn, pagemsn, nbrdelicious, tagdelicious, linkexalead, pageexalead, linkgoogle, pagegoogle) VALUES ( '" . crawlt_sql_quote($crawltdatetoday2) . "','" . crawlt_sql_quote($crawltidsite) . "','" . crawlt_sql_quote($crawltnbryahoo1) . "','0','0','0','0',' ','0','0','0','0')";
+				$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
 			}
-			$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
 			$crawltloop2next = $crawltloop2 + 1;
 			//update the crawlt_config table
 			$crawltsqlupdateseo = "UPDATE crawlt_config SET loop2='" . crawlt_sql_quote($crawltloop2next) . "'";
@@ -144,19 +149,24 @@ if ($crawltloop < $crawltnbrresult) {
 				}
 			}
 			//check if the date already exists in the table
-			$crawltsqlcheck = "SELECT date,id_site  FROM crawlt_seo_position
+			$crawltsqlcheck = "SELECT date,id_site,pageyahoo  FROM crawlt_seo_position
                         WHERE date= '" . crawlt_sql_quote($crawltdatetoday2) . "'
                         AND id_site='" . crawlt_sql_quote($crawltidsite) . "'";
 			$crawltrequetecheck = mysql_query($crawltsqlcheck, $crawltconnexion);
 			$crawltnbrresultcheck = mysql_num_rows($crawltrequetecheck);
 			if ($crawltnbrresultcheck >= 1) {
+				$crawltligne = mysql_fetch_assoc($crawltrequetecheck);
+				$crawltexitingvalue = $crawltligne['pageyahoo'];
+				if($crawltexitingvalue == 0) {
 				$crawltsqlseo = "UPDATE crawlt_seo_position SET pageyahoo='" . crawlt_sql_quote($crawltnbryahoo2) . "'
                           WHERE date= '" . crawlt_sql_quote($crawltdatetoday2) . "'
                           AND id_site='" . crawlt_sql_quote($crawltidsite) . "'";
+                      $crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
+					  }
 			} else {
 				$crawltsqlseo = "INSERT INTO crawlt_seo_position (date,id_site, linkyahoo, pageyahoo, linkmsn, pagemsn, nbrdelicious, tagdelicious, linkexalead, pageexalead, linkgoogle, pagegoogle) VALUES ( '" . crawlt_sql_quote($crawltdatetoday2) . "','" . crawlt_sql_quote($crawltidsite) . "','0','" . crawlt_sql_quote($crawltnbryahoo2) . "','0','0','0',' ','0','0','0','0')";
-			}
 			$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
+			}
 			//update the crawlt_config table
 			$crawltloopnext = $crawltloop + 1;
 			$crawltsqlupdateseo = "UPDATE crawlt_config SET loop2='0', loop1='" . crawlt_sql_quote($crawltloopnext) . "'";
@@ -191,16 +201,20 @@ if ($crawltloop < $crawltnbrresult) {
 			}
 			//insert values in the crawlt_seo_position table
 			//check if the date already exists in the table
-			$crawltsqlcheck = "SELECT `date`, id_site  FROM crawlt_seo_position
+			$crawltsqlcheck = "SELECT `date`, id_site, linkexalead  FROM crawlt_seo_position
                         WHERE `date`= '" . crawlt_sql_quote($crawltdatetoday2) . "'
                         AND id_site='" . crawlt_sql_quote($crawltsite) . "'";
 			$crawltrequetecheck = mysql_query($crawltsqlcheck, $crawltconnexion);
 			$crawltnbrresultcheck = mysql_num_rows($crawltrequetecheck);
 			if ($crawltnbrresultcheck >= 1) {
+				$crawltligne = mysql_fetch_assoc($crawltrequetecheck);
+				$crawltexitingvalue = $crawltligne['linkexalead'];
+				if($crawltexitingvalue == 0) {
 				$crawltsqlseo = "UPDATE crawlt_seo_position SET linkexalead='" . crawlt_sql_quote($crawltnbrexalead1) . "'
                           WHERE `date`= '" . crawlt_sql_quote($crawltdatetoday2) . "'
                           AND id_site='" . crawlt_sql_quote($crawltsite) . "'";
 				$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
+			}
 			} else {
 				$crawltsqlseo = "INSERT INTO crawlt_seo_position (`date`, id_site, linkyahoo, pageyahoo, linkmsn, pagemsn, nbrdelicious, tagdelicious, linkexalead, pageexalead, linkgoogle, pagegoogle) VALUES ( '" . crawlt_sql_quote($crawltdatetoday2) . "','" . crawlt_sql_quote($crawltsite) . "','0','0','0','0','0',' ','" . crawlt_sql_quote($crawltnbrexalead1) . "','0','0','0')";
 				$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
@@ -224,16 +238,20 @@ if ($crawltloop < $crawltnbrresult) {
 			}
 			//insert values in the crawlt_seo_position table
 			//check if the date already exists in the table
-			$crawltsqlcheck = "SELECT `date`, id_site  FROM crawlt_seo_position
+			$crawltsqlcheck = "SELECT `date`, id_site, pageexalead  FROM crawlt_seo_position
                         WHERE `date`= '" . crawlt_sql_quote($crawltdatetoday2) . "'
                         AND id_site='" . crawlt_sql_quote($crawltsite) . "'";
 			$crawltrequetecheck = mysql_query($crawltsqlcheck, $crawltconnexion);
 			$crawltnbrresultcheck = mysql_num_rows($crawltrequetecheck);
 			if ($crawltnbrresultcheck >= 1) {
+				$crawltligne = mysql_fetch_assoc($crawltrequetecheck);
+				$crawltexitingvalue = $crawltligne['pageexalead'];
+				if($crawltexitingvalue == 0) {				
 				$crawltsqlseo = "UPDATE crawlt_seo_position SET pageexalead='" . crawlt_sql_quote($crawltnbrexalead2) . "'
                           WHERE `date`= '" . crawlt_sql_quote($crawltdatetoday2) . "'
                           AND id_site='" . crawlt_sql_quote($crawltsite) . "'";
 				$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
+			}
 			} else {
 				$crawltsqlseo = "INSERT INTO crawlt_seo_position (date,id_site, linkyahoo, pageyahoo, linkmsn, pagemsn, nbrdelicious, tagdelicious, linkexalead, pageexalead, linkgoogle, pagegoogle) VALUES ( '" . crawlt_sql_quote($crawltdatetoday2) . "','" . crawlt_sql_quote($crawltsite) . "','0','0','0','0','0',' ','0','" . crawlt_sql_quote($crawltnbrexalead2) . "','0','0')";
 				$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
@@ -257,19 +275,24 @@ if ($crawltloop < $crawltnbrresult) {
 			}
 			//insert values in the crawlt_seo_position table
 			//check if the date already exists in the table
-			$crawltsqlcheck = "SELECT `date`, id_site  FROM crawlt_seo_position
+			$crawltsqlcheck = "SELECT `date`, id_site, pagemsn  FROM crawlt_seo_position
 				WHERE `date`= '" . crawlt_sql_quote($crawltdatetoday2) . "'
 				AND id_site='" . crawlt_sql_quote($crawltsite) . "'";
 			$crawltrequetecheck = mysql_query($crawltsqlcheck, $crawltconnexion);
 			$crawltnbrresultcheck = mysql_num_rows($crawltrequetecheck);
 			if ($crawltnbrresultcheck >= 1) {
+				$crawltligne = mysql_fetch_assoc($crawltrequetecheck);
+				$crawltexitingvalue = $crawltligne['pagemsn'];
+				if($crawltexitingvalue == 0) {
 				$crawltsqlseo = "UPDATE crawlt_seo_position SET pagemsn='" . crawlt_sql_quote($crawltnbrmsn2) . "'
 					WHERE `date`= '" . crawlt_sql_quote($crawltdatetoday2) . "'
 					AND id_site='" . crawlt_sql_quote($crawltsite) . "'";
+				$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
+				}
 			} else {
 				$crawltsqlseo = "INSERT INTO crawlt_seo_position (`date`, id_site, linkyahoo, pageyahoo, linkmsn, pagemsn, nbrdelicious, tagdelicious, linkexalead, pageexalead, linkgoogle, pagegoogle) VALUES ( '" . crawlt_sql_quote($crawltdatetoday2) . "','" . crawlt_sql_quote($crawltsite) . "','0','0','0','" . crawlt_sql_quote($crawltnbrmsn2) . "','0',' ','0','0','0','0')";
+				$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);			
 			}
-			$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
 			//update the crawlt_config table
 			$crawltloopnext = $crawltloop + 1;
 			$crawltsqlupdateseo = "UPDATE crawlt_config SET loop2='0', loop1='" . crawlt_sql_quote($crawltloopnext) . "'";
@@ -333,19 +356,24 @@ if ($crawltloop < $crawltnbrresult) {
 		}
 		//insert values in the crawlt_seo_position table
 		//check if the date already exists in the table
-		$crawltsqlcheck = "SELECT `date`, id_site  FROM crawlt_seo_position
+		$crawltsqlcheck = "SELECT `date`, id_site, nbrdelicious  FROM crawlt_seo_position
 			WHERE `date`= '" . crawlt_sql_quote($crawltdatetoday2) . "'
 			AND id_site='" . crawlt_sql_quote($crawltsite) . "'";
 		$crawltrequetecheck = mysql_query($crawltsqlcheck, $crawltconnexion);
 		$nbrresultcheck = mysql_num_rows($crawltrequetecheck);
 		if ($nbrresultcheck >= 1) {
+				$crawltligne = mysql_fetch_assoc($crawltrequetecheck);
+				$crawltexitingvalue = $crawltligne['nbrdelicious'];
+				if($crawltexitingvalue == 0) {
 			$crawltsqlseo = "UPDATE crawlt_seo_position SET nbrdelicious='" . crawlt_sql_quote($crawltnbrtagdelicious) . "',tagdelicious='" . crawlt_sql_quote($crawlttagtab) . "'
 				WHERE date= '" . crawlt_sql_quote($crawltdatetoday2) . "'
 				AND id_site='" . crawlt_sql_quote($crawltsite) . "'";
+			$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
+			}
 		} else {
 			$crawltsqlseo = "INSERT INTO crawlt_seo_position (`date`, id_site, linkyahoo, pageyahoo, linkmsn, pagemsn, nbrdelicious, tagdelicious, linkexalead, pageexalead, linkgoogle, pagegoogle) VALUES ( '" . crawlt_sql_quote($crawltdatetoday2) . "','" . crawlt_sql_quote($crawltsite) . "','0','0','0','0','" . crawlt_sql_quote($crawltnbrtagdelicious) . "','" . crawlt_sql_quote($crawlttagtab) . "','0','0','0','0')";
+			$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
 		}
-		$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
 		//update the crawlt_config table
 		$crawltloopnext = $crawltloop + 1;
 		$crawltsqlupdateseo = "UPDATE crawlt_config SET loop2='0', loop1='" . crawlt_sql_quote($crawltloopnext) . "'";
@@ -384,19 +412,24 @@ if ($crawltloop < $crawltnbrresult) {
 				}
 			}
 			//check if the date already exists in the table
-			$crawltsqlcheck = "SELECT `date`, id_site  FROM crawlt_seo_position
+			$crawltsqlcheck = "SELECT `date`, id_site, linkgoogle  FROM crawlt_seo_position
 				WHERE `date`= '" . crawlt_sql_quote($crawltdatetoday2) . "'
 				AND id_site='" . crawlt_sql_quote($crawltsite) . "'";
 			$crawltrequetecheck = mysql_query($crawltsqlcheck, $crawltconnexion);
 			$crawltnbrresultcheck = mysql_num_rows($crawltrequetecheck);
 			if ($crawltnbrresultcheck >= 1) {
+				$crawltligne = mysql_fetch_assoc($crawltrequetecheck);
+				$crawltexitingvalue = $crawltligne['linkgoogle'];
+				if($crawltexitingvalue == 0) {
 				$crawltsqlseo = "UPDATE crawlt_seo_position SET linkgoogle='" . crawlt_sql_quote($crawltnbrgoogle1) . "'
 					WHERE `date`= '" . crawlt_sql_quote($crawltdatetoday2) . "'
 					AND id_site='" . crawlt_sql_quote($crawltsite) . "'";
+				$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
+				}					
 			} else {
 				$crawltsqlseo = "INSERT INTO crawlt_seo_position (`date`, id_site, linkyahoo, pageyahoo, linkmsn, pagemsn, nbrdelicious, tagdelicious, linkexalead, pageexalead, linkgoogle, pagegoogle) VALUES ( '" . crawlt_sql_quote($crawltdatetoday2) . "','" . crawlt_sql_quote($crawltsite) . "','0','0','0','0','0',' ','0','0','" . crawlt_sql_quote($crawltnbrgoogle1) . "','0')";
+				$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
 			}
-			$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
 			$crawltloop2next = $crawltloop2 + 1;
 			//update the crawlt_config table
 			$crawltsqlupdateseo = "UPDATE crawlt_config SET loop2='" . crawlt_sql_quote($crawltloop2next) . "'";
@@ -422,19 +455,24 @@ if ($crawltloop < $crawltnbrresult) {
 				}
 			}
 			//check if the date already exists in the table
-			$crawltsqlcheck = "SELECT `date`, id_site  FROM crawlt_seo_position
+			$crawltsqlcheck = "SELECT `date`, id_site, pagegoogle  FROM crawlt_seo_position
 				WHERE `date`= '" . crawlt_sql_quote($crawltdatetoday2) . "'
 				AND id_site='" . crawlt_sql_quote($crawltsite) . "'";
 			$crawltrequetecheck = mysql_query($crawltsqlcheck, $crawltconnexion);
 			$crawltnbrresultcheck = mysql_num_rows($crawltrequetecheck);
 			if ($crawltnbrresultcheck >= 1) {
+				$crawltligne = mysql_fetch_assoc($crawltrequetecheck);
+				$crawltexitingvalue = $crawltligne['pagegoogle'];
+				if($crawltexitingvalue == 0) {
 				$crawltsqlseo = "UPDATE crawlt_seo_position SET pagegoogle='" . crawlt_sql_quote($crawltnbrgoogle2) . "'
 					WHERE `date`= '" . crawlt_sql_quote($crawltdatetoday2) . "'
 					AND id_site='" . crawlt_sql_quote($crawltsite) . "'";
+				$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
+				}					
 			} else {
 				$crawltsqlseo = "INSERT INTO crawlt_seo_position (`date`, id_site, linkyahoo, pageyahoo, linkmsn, pagemsn, nbrdelicious, tagdelicious, linkexalead, pageexalead, linkgoogle, pagegoogle) VALUES ( '" . crawlt_sql_quote($crawltdatetoday2) . "','" . crawlt_sql_quote($crawltsite) . "','0','0','0','0','0',' ','0','0','0','" . crawlt_sql_quote($crawltnbrgoogle2) . "')";
+				$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
 			}
-			$crawltrequeteseo = mysql_query($crawltsqlseo, $crawltconnexion);
 			//update the crawlt_config table
 			$crawltloopnext = $crawltloop + 1;
 			$crawltsqlupdateseo = "UPDATE crawlt_config SET loop2='0', loop1='" . crawlt_sql_quote($crawltloopnext) . "'";
