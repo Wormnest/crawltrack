@@ -109,7 +109,7 @@ if (file_exists('include/configconnect.php')) {
 	$charset = 0;
 	$crawltcharset = 1;
 }
-require_once ("include/post.php");
+include ("include/post.php");
 if ($charset == 1) {
 	if ($crawltcharset != 1) {
 		$crawltlang = $crawltlang . "iso";
@@ -312,15 +312,17 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 				}
 			else
 				{
-				@session_destroy();
-				header("Location: index.php");
+				unset($_SESSION['userlogin']);
+				$crawlencode = urlencode($crawler);
+				header("Location: index.php?navig=$navig&period=$period&site=$site&crawler=$crawlencode&graphpos=$graphpos&displayall=$displayall");
 				exit;
 				}
 			}
 		else
 			{
-			@session_destroy();
-			header("Location: index.php");
+			unset($_SESSION['userlogin']);
+			$crawlencode = urlencode($crawler);
+			header("Location: index.php?navig=$navig&period=$period&site=$site&crawler=$crawlencode&graphpos=$graphpos&displayall=$displayall");
 			exit;
 			}
 	}
