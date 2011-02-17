@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: updatecrawltrack.php
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
+//  Last update: 18/02/2011
 //----------------------------------------------------------------------
 //this file is needed to update from a previous release
 if (!defined('IN_CRAWLT')) {
@@ -87,9 +87,9 @@ if ($version < 328) {
 	}
 }
 //----------------------------------------------------------------------------------------------------
-//update crawltrack.php file if version <326
+//update crawltrack.php file if version <328
 $crawltrack_php_updated = false;
-if ($version < 326) {
+if ($version < 328) {
 	//update the crawltrack file
 	
 	//determine the path to the file
