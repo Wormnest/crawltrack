@@ -1,0 +1,187 @@
+/*
+//----------------------------------------------------------------------
+//  CrawlTrack 3.1.0
+//----------------------------------------------------------------------
+// Crawler Tracker for website
+//----------------------------------------------------------------------
+// Author: Jean-Denis Brun
+//----------------------------------------------------------------------
+// Website: www.crawltrack.net
+//----------------------------------------------------------------------
+// That script is distributed under GNU GPL license
+//----------------------------------------------------------------------
+// file: stylewindow.css
+//----------------------------------------------------------------------
+*/
+
+body {
+  margin:0;
+   padding:0;
+   }
+   
+h1 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #003399;
+   font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  text-align:center; 
+}
+
+
+
+
+h2 {
+  font-size: 16px;
+   font-weight: bold; 
+  color: #003399;
+   font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  text-align:left;
+  padding-left:5px;
+  padding-right:5px;     
+}
+
+h3 {
+  font-size: 10px;
+  color: #003399;
+   font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+}
+
+h4 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #003399;
+   font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  text-align:left; 
+}
+
+h5 {
+  font-size: 14px;
+  color: #003399;
+   font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  text-align:left; 
+}
+
+#header {
+height: 47px;
+background-color: #7EAAFF;
+font-size: 35px;
+font-weight:bold;
+ color: #000;
+font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif; 
+text-align:left;
+padding-left:10px;
+border-bottom: 2px solid #000080;
+
+  }
+.headertext {
+
+font-size: 18px;
+font-weight:bold;
+  
+color: #000;
+font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+text-align:left;
+
+  }
+
+.date {
+  font-size: 12px;
+   font-weight: bold;
+  color: #003399;
+   font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  text-align:left;
+  padding-left:5px;
+  padding-top:0px;
+  line-height:1em;       
+}
+
+.content {
+  font-size: 12px;
+  color: #003399;
+   font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  text-align:left;
+  padding-left:20px;
+  padding-top:5px;      
+}
+
+.smalltext {
+  font-size: 9px;
+  color: #003399;
+   font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  text-align:center; 
+}
+.browntitle{
+  color: #A52A2A;
+}
+
+.tableau1 {
+  font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  font-size: 14px;
+  font-weight:bold;
+  color: #003399;
+  text-align: center;
+  border-top: 2px solid #003399;
+  border-bottom: 2px solid #003399;
+  border-left: 2px solid #003399;
+  background-color: #00BFFF;
+  }
+  
+.tableau2 {
+  font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  font-size: 14px;
+  font-weight:bold;  
+  color: #003399;
+  text-align: center;
+  border: 2px solid #003399;
+  background-color: #00BFFF;
+  }
+  
+.tableau3 {
+  font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  font-size: 12px;
+  font-weight:bold;
+  height:25px;  
+  color: #003399;
+  text-align: center;
+  border-bottom: 2px solid #003399;
+  border-left: 2px solid #003399;
+  background-color: #FFFFFF;
+  }
+.tableau30 {
+  font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  font-size: 12px;
+  font-weight:bold;
+  height:25px;   
+  color: #003399;
+  text-align: center;
+  border-bottom: 2px solid #003399;
+  border-left: 2px solid #003399;
+  background-color: #E6E6FA;
+  }  
+  
+.tableau5 {
+  font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  font-size: 12px;
+  font-weight:bold;
+  height:25px;  
+  color: #003399;
+  text-align: center;
+  border-bottom: 2px solid #003399;
+  border-right: 2px solid #003399;
+  border-left: 2px solid #003399;
+  background-color: #FFFFFF;
+  }
+  
+.tableau50 {
+  font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+  font-size: 12px;
+  font-weight:bold;
+   height:25px; 
+  color: #003399;
+  text-align: center;
+  border-bottom: 2px solid #003399;
+  border-right: 2px solid #003399;
+  border-left: 2px solid #003399;
+  background-color: #E6E6FA;
+  }  
+  
