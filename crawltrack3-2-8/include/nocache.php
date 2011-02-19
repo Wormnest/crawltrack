@@ -1,3 +1,0 @@
-<?php
-$nocachetest = 0;
-?>
