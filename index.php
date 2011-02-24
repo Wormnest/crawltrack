@@ -17,8 +17,8 @@
 //  Last update: 02/12/2010
 //----------------------------------------------------------------------
 
-// make sure PHP version  >= 5.1.2 is used 
-if (version_compare(PHP_VERSION, '5.1.2', '<')) exit("Sorry, CrawlTrack needs at least PHP version 5.1.2 to run ! You are running version " . PHP_VERSION . " \n");
+// make sure PHP version  >= 4.3.2 is used (and even this version is waaaay too old, 29-May-2003)
+if (version_compare(PHP_VERSION, '4.3.2', '<')) exit("Sorry, CrawlTrack needs at least PHP version 4.3.2 to run ! You are running version " . PHP_VERSION . " \n");
 
 error_reporting(0);
 //initialize array & data
