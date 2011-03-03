@@ -31,7 +31,7 @@ foreach ($listsite as $siteid) {
 	if ($sitechoice == 0) {
 		echo '<input type="radio" name="site" value="' . $siteid . '" checked="checked" />' . $namesite[$siteid] . '<br /><br />'."\n";
 	} else {
-		echo '<input type"radio" name="site" value="' . $siteid . '" />' . $namesite[$siteid] . '<br /><br />'."\n";
+		echo '<input type="radio" name="site" value="' . $siteid . '" />' . $namesite[$siteid] . '<br /><br />'."\n";
 	}
 	$sitechoice = 1;
 }
