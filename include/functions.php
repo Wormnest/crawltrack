@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: functions.php
 //----------------------------------------------------------------------
-//  Last update: 24/02/2011
+//  Last update: 09/03/2011
 //----------------------------------------------------------------------
 
 /*
@@ -770,9 +770,25 @@ function crawltbackforward($title, $period, $daytodaylocal, $monthtodaylocal, $y
 	}
 	if ($period == 0 || $period >= 1000) {
 		$testdate = 1;
+		$dateoftheday=$yeartodaylocal."-".$monthtodaylocal."-".$daytodaylocal;
+		$dayenglish=date('D', strtotime($dateoftheday));
+		if($dayenglish=='Mon') {
+			$jour='day0';
+		} elseif($dayenglish=='Tue') {
+			$jour='day1';
+		} elseif($dayenglish=='Wed') {		
+			$jour='day2';
+		} elseif($dayenglish=='Thu') {		
+			$jour='day3';
+		} elseif($dayenglish=='Fri') {		
+			$jour='day4';
+		} elseif($dayenglish=='Sat') {	
+			$jour='day5';
+		} elseif($dayenglish=='Sun') {			
+			$jour='day6';	}
 		if ($period == 0) {
 			$value = "
-            <h2>" . $language['display_period'] . "&nbsp;" . $daytodaylocal . "/" . $monthtodaylocal . "/" . $yeartodaylocal . "</h2>           
+            <h2>" . $language['display_period'] . "&nbsp;" .$language[$jour]."&nbsp;". $daytodaylocal . "/" . $monthtodaylocal . "/" . $yeartodaylocal . "</h2>           
             <h2><a href=\"index.php?navig=$navig&amp;period=1000&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/control_back_blue.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"back\"></a>
             <img src=\"./images/control_play.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"play\">
             <img src=\"./images/control_end.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"end\"></h2>";
@@ -783,7 +799,7 @@ function crawltbackforward($title, $period, $daytodaylocal, $monthtodaylocal, $y
 				$periodgo = 0;
 			}
 			$value = "
-            <h2>" . $language['display_period'] . "&nbsp;" . $daytodaylocal . "/" . $monthtodaylocal . "/" . $yeartodaylocal . "</h2>                 
+            <h2>" . $language['display_period'] . "&nbsp;" .$language[$jour]."&nbsp;". $daytodaylocal . "/" . $monthtodaylocal . "/" . $yeartodaylocal . "</h2>                 
             <h2><a href=\"index.php?navig=$navig&amp;period=$periodback&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/control_back_blue.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"back\"></a>
             <a href=\"index.php?navig=$navig&amp;period=$periodgo&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/control_play_blue.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"play\"></a>
             <a href=\"index.php?navig=$navig&amp;period=0&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/control_end_blue.png\" width=\"16\" height=\"16\" border=\"0\" alt=\"end\"></a></h2>";
