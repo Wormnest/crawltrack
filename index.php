@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack 3.2.9
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: index.php
 //----------------------------------------------------------------------
-//  Last update: 02/12/2010
+//  Last update: 09/03/2011
 //----------------------------------------------------------------------
 
 // make sure PHP version  >= 4.3.2 is used (and even this version is waaaay too old, 29-May-2003)
@@ -131,7 +131,7 @@ if (file_exists("language/" . $crawltlang . ".php") && in_array($crawltlang, $li
 	exit('<h1>No language files available !!!!</h1>');
 }
 //version id
-$versionid = '328';
+$versionid = '329';
 // do not modify
 define('IN_CRAWLT', TRUE);
 // session start 'crawlt'
@@ -290,7 +290,7 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 		$token = hash('sha256', $token_clair.$_COOKIE["session_informations"]);
 		if(strcmp($_COOKIE["session_token"], $token)==0)
 			{
-			list($date, $user) = split('[-]', $_COOKIE["session_informations"]);
+			list($date, $user) = preg_split('[-]', $_COOKIE["session_informations"]);
 			if($date+ $validity_time>time() AND $date <=time())
 				{
 					//test to see if version is up-to-date
