@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.9
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: visitors-claculation.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 09/03/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -528,20 +528,19 @@ if (count($listip) < 10000) //test to avoid overload in case of more than 10000 
 {
 	$nottoomuchip = 1;
 	$crawltlistip = implode("','", $listip);
-	$sql = "SELECT  crawlt_id_page  
+	$sql = "SELECT  COUNT(crawlt_id_page) as numrow  
 		FROM crawlt_visits_human
 		WHERE  $datetolookfor 
 		AND crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
 		AND crawlt_ip IN ('$crawltlistip')";
 } else {
 	$nottoomuchip = 0;
-	$sql = "SELECT  crawlt_id_page  
+	$sql = "SELECT  COUNT(crawlt_id_page) as numrow  
 		FROM crawlt_visits_human
 		WHERE  $datetolookfor 
 		AND crawlt_site_id_site='" . crawlt_sql_quote($site) . "'";
 }
-$requete = db_query($sql, $connexion);
-$nbrpage = mysql_num_rows($requete);
+$nbrpage = mysql_result(db_query($sql),0,"numrow");
 
 //query to have the number of visitor with only one page view (to caculate bounce rate)
 if ($nottoomuchip == 1) {

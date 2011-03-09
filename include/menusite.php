@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.2.9
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: menusite.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 09/03/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -57,14 +57,13 @@ if ($_SESSION['rightsite'] == 0) {
 		if ($navig == 2 || $navig == 3) {
 			if (!isset($_SESSION[$sitename2])) {
 				//query to have the total number of page for the site
-				$sqlstats = "SELECT DISTINCT crawlt_pages_id_page FROM crawlt_visits
+				$sqlstats = "SELECT COUNT(DISTINCT crawlt_pages_id_page) as numrow FROM crawlt_visits
 					WHERE  crawlt_site_id_site='" . sql_quote($site) . "'
 					AND crawlt_crawler_id_crawler !='0'
 					AND crawlt_crawler_id_crawler !='65500'
 					AND crawlt_crawler_id_crawler !='65501'
 					";
-				$requetestats = db_query($sqlstats, $connexion);
-				$nbrpagestotal = mysql_num_rows($requetestats);
+				$nbrpagestotal = mysql_result(db_query($sqlstats),0,"numrow");
 				$_SESSION[$sitename2] = $nbrpagestotal;
 			} else {
 				$nbrpagestotal = $_SESSION[$sitename2];
@@ -88,13 +87,13 @@ if ($_SESSION['rightsite'] == 0) {
 		foreach ($listsites as $id => $sitename3) {
 			if ($id == $site && isset($_SESSION[$sitename3])) {
 				echo "<option value=\"$id\" selected style=\" font-size:13px; font-weight:bold; color: #003399;
-				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $sitename3 . "&nbsp;&bull;&nbsp;" . $_SESSION[$sitename3] . " &nbsp;" . $language['page'] . "</option>\n";
+				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $sitename3 . "&nbsp;&bull;&nbsp;" . numbdisp($_SESSION[$sitename3]) . " &nbsp;" . $language['page'] . "</option>\n";
 			} elseif ($id == $site && !isset($_SESSION[$sitename3])) {
 				echo "<option value=\"$id\" selected style=\" font-size:13px; font-weight:bold; color: #003399;
 				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $sitename3 . "</option>\n";
 			} elseif (isset($_SESSION[$sitename3])) {
 				echo "<option value=\"$id\" style=\" font-size:13px; font-weight:bold; color: #003399;
-				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $sitename3 . "&nbsp;&bull;&nbsp;" . $_SESSION[$sitename3] . " &nbsp;" . $language['page'] . "</option>\n";
+				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $sitename3 . "&nbsp;&bull;&nbsp;" . numbdisp($_SESSION[$sitename3]) . " &nbsp;" . $language['page'] . "</option>\n";
 			} else {
 				echo "<option value=\"$id\" style=\" font-size:13px; font-weight:bold; color: #003399;
 				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $sitename3 . "</option>\n";
