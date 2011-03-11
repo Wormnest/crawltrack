@@ -117,15 +117,15 @@ define('IN_CRAWLT_INSTALL', TRUE);
 	<div class="form">
 		<form action="index.php" method="POST">
 			<h1><table width="750px">        
-				<tr><td align="left"><input type="radio" name="lang" value="english" /><img border="0" src="../images/flags/gb.png" alt="english" width="18px" height="12px">&nbsp;&nbsp;English</td>
-				<td align="left"><input type="radio" name="lang" value="spanish" /><img border="0" src="../images/flags/es.png" alt="spanish" width="18px" height="12px">&nbsp;&nbsp;Spanish</td>
-				<td align="left"><input type="radio" name="lang" value="german" /><img border="0" src="../images/flags/de.png" alt="german" width="18px" height="12px">&nbsp;&nbsp;German</td></tr>
-				<tr><td align="left"><input type="radio" name="lang" value="turkish" /><img border="0" src="../images/flags/tr.png" alt="turkish" width="18" height="12px">&nbsp;&nbsp;Turkish</td>
-				<td align="left"><input type="radio" name="lang" value="dutch" /><img border="0" src="../images/flags/nl.png" alt="dutch" width="18px" height="12px">&nbsp;&nbsp;Dutch</td>
-				<td align="left"><input type="radio" name="lang" value="russian" /><img border="0" src="../images/flags/ru.png" alt="russian" width="18px" height="12px">&nbsp;&nbsp;Russian</td></tr>
-				<tr><td align="left"><input type="radio" name="lang" value="bulgarian" /><img border="0" src="../images/flags/bg.png" alt="bulgarian" width="18px" height="12px">&nbsp;&nbsp;Bulgarian</td>
-				<td align="left"><input type="radio" name="lang" value="french" /><img border="0" src="../images/flags/fr.png" alt="french" width="18px" height="12px">&nbsp;&nbsp;French</td>
-				<td align="left"><input type="radio" name="lang" value="italian" /><img border="0" src="../images/flags/it.png" alt="italian" width="18px" height="12px">&nbsp;&nbsp;Italian</td></tr>
+				<tr><td align="left"><input type="radio" name="lang" value="english" /><img border="0" src="./images/flags/gb.gif" alt="english" width="18px" height="12px">&nbsp;&nbsp;English</td>
+				<td align="left"><input type="radio" name="lang" value="spanish" /><img border="0" src="./images/flags/es.gif" alt="spanish" width="18px" height="12px">&nbsp;&nbsp;Spanish</td>
+				<td align="left"><input type="radio" name="lang" value="german" /><img border="0" src="./images/flags/de.gif" alt="german" width="18px" height="12px">&nbsp;&nbsp;German</td></tr>
+				<tr><td align="left"><input type="radio" name="lang" value="turkish" /><img border="0" src="./images/flags/tr.gif" alt="turkish" width="18" height="12px">&nbsp;&nbsp;Turkish</td>
+				<td align="left"><input type="radio" name="lang" value="dutch" /><img border="0" src="./images/flags/nl.gif" alt="dutch" width="18px" height="12px">&nbsp;&nbsp;Dutch</td>
+				<td align="left"><input type="radio" name="lang" value="russian" /><img border="0" src="./images/flags/ru.gif" alt="russian" width="18px" height="12px">&nbsp;&nbsp;Russian</td></tr>
+				<tr><td align="left"><input type="radio" name="lang" value="bulgarian" /><img border="0" src="./images/flags/bg.gif" alt="bulgarian" width="18px" height="12px">&nbsp;&nbsp;Bulgarian</td>
+				<td align="left"><input type="radio" name="lang" value="french" /><img border="0" src="./images/flags/fr.gif" alt="french" width="18px" height="12px">&nbsp;&nbsp;French</td>
+				<td align="left"><input type="radio" name="lang" value="italian" /><img border="0" src="./images/flags/it.gif" alt="italian" width="18px" height="12px">&nbsp;&nbsp;Italian</td></tr>
 			</table></h1>
 			<input type="hidden" name="navig" value="6" />
 			<input type="hidden" name="validform" value="1" />
