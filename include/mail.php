@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack 3.2.9
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: mail.php
 //----------------------------------------------------------------------
-//  Last update 02/12/2010
+//  Last update 12/03/2011
 //----------------------------------------------------------------------
 //update the crawlt_config table
 $sqlcrawltupdatemail = "UPDATE crawlt_config SET datelastmail='" . crawlt_sql_quote($crawltdatetoday) . "'";
@@ -634,7 +634,7 @@ foreach ($listsitecrawlt as $site) {
 	} else {
 		$mail->IsHTML(false);
 	}
-	$mail->FromName = "CrawlTrack 3-2-8";
+	$mail->FromName = "CrawlTrack 3-2-9";
 	$mail->Subject = $language['mailsubject'] . "--" . $crawltsitename[$site];
 	$mail->Body = $crawltmessage;
 	$crawltemail = explode(',', $crawltdest);
