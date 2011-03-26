@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack 3.3.0
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-dashboard.php
 //----------------------------------------------------------------------
-//  Last update: 31/12/2010
+//  Last update: 27/03/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -689,12 +689,14 @@ if ($linkdelicious == 0) {
 }
 echo "</table></div>\n";
 //Alexa traffic rank
+//to avoid problem if the url is enter in the database with http://
+$crawlturlsite = strip_protocol($urlsite[$site]);
 echo "<br><table   cellpadding='0px' cellspacing='0' width='468px' style=\"margin:auto;\">\n";
 echo "<tr><th class='tableau2'>\n";
 echo "Alexa\n";
 echo "</th></tr>\n";
 echo "<tr><td class='tableau5' style=\"padding:0;\">\n";
-echo "<iframe name=\"I1\" src=\"php/alexa.php?url=".$urlsite[$site]."\" marginwidth=\"0\" marginheight=\"0\" scrolling=\"no\" border=\"no\"  width=\"468px\" height=\"60px\"></iframe></h2>\n";
+echo "<iframe name=\"I1\" src=\"php/alexa.php?url=".$crawlturlsite."\" marginwidth=\"0\" marginheight=\"0\" scrolling=\"no\" border=\"no\"  width=\"468px\" height=\"60px\"></iframe></h2>\n";
 echo "</td></tr></table><br>";
 echo "</td>\n";
 echo "<td id='dashboard4'>\n";
