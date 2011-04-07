@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack 3.3.0
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-pages-visitors.php
 //----------------------------------------------------------------------
-//  Last update: 13/02/2011
+//  Last update: 07/04/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -58,7 +58,8 @@ if ($nottoomuchip == 1) {
   ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page  
   WHERE $datetolookfor    
   AND crawlt_visits_human.crawlt_site_id_site='" . sql_quote($site) . "' 
-  AND crawlt_ip IN ('$crawltlistip')   
+  AND crawlt_ip IN ('$crawltlistip')
+  AND  crawlt_visits_human.crawlt_error =0  
   GROUP BY crawlt_id_page";
 } else {
 	$sqlstats = "SELECT  crawlt_id_page,   COUNT(id_visit),
@@ -67,7 +68,8 @@ if ($nottoomuchip == 1) {
   INNER JOIN crawlt_pages
   ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
   WHERE $datetolookfor    
-  AND crawlt_visits_human.crawlt_site_id_site='" . sql_quote($site) . "'   
+  AND crawlt_visits_human.crawlt_site_id_site='" . sql_quote($site) . "' 
+  AND  crawlt_visits_human.crawlt_error =0   
   GROUP BY crawlt_id_page";
 }
 $requetestats = db_query($sqlstats, $connexion);
