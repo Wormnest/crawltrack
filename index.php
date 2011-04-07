@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.9
+//  CrawlTrack 3.3.0
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -131,7 +131,7 @@ if (file_exists("language/" . $crawltlang . ".php") && in_array($crawltlang, $li
 	exit('<h1>No language files available !!!!</h1>');
 }
 //version id
-$versionid = '329';
+$versionid = '330';
 // do not modify
 define('IN_CRAWLT', TRUE);
 // session start 'crawlt'
