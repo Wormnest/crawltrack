@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.9
+//  CrawlTrack 3.3.0
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: mail.php
 //----------------------------------------------------------------------
-//  Last update 12/03/2011
+//  Last update 07/04/2011
 //----------------------------------------------------------------------
 //update the crawlt_config table
 $sqlcrawltupdatemail = "UPDATE crawlt_config SET datelastmail='" . crawlt_sql_quote($crawltdatetoday) . "'";
@@ -542,9 +542,6 @@ foreach ($listsitecrawlt as $site) {
 		$crawltmessage.= "<a href=\"http://www.crawltrack.net\" style='font-size:18px;font-weight:bold; color:#000; text-decoration: none;'>CrawlTrack</a>\n";
 		$crawltmessage.= "</div>\n";
 		$crawltmessage.= "</div>\n";
-		$crawltmessage.= "<br><br><div style='background-color: #ffffff; text-align:center; '/>\n";
-		$crawltmessage.= "<b>" . $language['ad-on-crawltrack'] . "</b>\n";
-		$crawltmessage.= "</div><br><br>\n";
 	} else {
 		//case text email
 		$crawltmessage = "Site: " . $crawltsitename[$site] . "-------------- " . $language['daily-stats'] . ": " . $crawltdaytoday . "/" . $crawltmonthtoday . "/" . $crawltyeartoday . "\n\n";
@@ -634,7 +631,7 @@ foreach ($listsitecrawlt as $site) {
 	} else {
 		$mail->IsHTML(false);
 	}
-	$mail->FromName = "CrawlTrack 3-2-9";
+	$mail->FromName = "CrawlTrack 3-3-0";
 	$mail->Subject = $language['mailsubject'] . "--" . $crawltsitename[$site];
 	$mail->Body = $crawltmessage;
 	$crawltemail = explode(',', $crawltdest);
