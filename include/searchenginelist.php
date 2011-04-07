@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack 3.3.0
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -21,7 +21,7 @@
  * Authors : phpMyVisites team and community
 */
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
+//  Last update: 07/04/2011
 //----------------------------------------------------------------------
 $crawltcssaattack = array("http:", "ftp:", "https:", "http%3a", "https%3a", "ht%20tp:", "htt%20p:", "http%20:", "h%20ttp:", "/etc/passwd", "ShellAdresi.TXT", "[evil_root]?", "http%3A%2F%2F","%68%74%74%70%3a","%68%74%74%70%73%3a","%48%54%54%50%3a","%48%54%54%50%53%3a","%3C?");
 $crawltsqlaattack = array("%20select%20", "%20like%20", "%20or%20", "%20where%20","%20SELECT%20", "%20LIKE%20", "%20OR%20", "%20WHERE%20");
@@ -307,7 +307,11 @@ $crawltbrowserlist = array(
 "compatible; MSIE 7.0; Windows NT 6.0;",
 "compatible; MSIE 8.0; Windows NT 5.2;",
 "compatible; MSIE 8.0; Windows NT 6.0;",
+"compatible; MSIE 9.0; Windows NT 6.0;",
+//Internet explorer-windows Seven
+"compatible; MSIE 7.0; Windows NT 6.1;",
 "compatible; MSIE 8.0; Windows NT 6.1;",
+"compatible; MSIE 9.0; Windows NT 6.1;",
 //Internet explorer pocket
 "compatible; MSIE 4.01; Windows CE;",
 //PlayStation
@@ -355,6 +359,7 @@ $crawltbrowserlist2 = array(
 "21" => "Safari Nokia",
 "22" => "Opera Mini",
 "23" => "Safari iPad",
+"24" => "Internet Explorer 9",
 );
 
 
