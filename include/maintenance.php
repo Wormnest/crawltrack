@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.9
+//  CrawlTrack 3.3.0
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: maintenance.php
 //----------------------------------------------------------------------
-//  Last update: 09/03/2011
+//  Last update: 07/04/2011
 //----------------------------------------------------------------------
 // This file will manage all maintenance actions, database level (initial creation and updates)
 
@@ -178,7 +178,7 @@ if(!isset($tables_to_check) || empty($tables_to_check))
 				PRIMARY KEY  (id_config)
 				)",
 			'insert_query' => "INSERT INTO crawlt_config (id_config, timeshift, public, mail, datelastmail, addressmail, lang, version, firstdayweek, rowdisplay, orderdisplay, typemail, typecharset, blockattack, sessionid, includeparameter) 
-			VALUES ('1','0','0','0','0','','".sql_quote($crawltlang)."','329','Monday','30','0','1','1','0','0','0')"
+			VALUES ('1','0','0','0','0','','".sql_quote($crawltlang)."','330','Monday','30','0','1','1','0','0','0')"
 		),
 		array(
 			'table_name' => 'crawlt_update_attack',
