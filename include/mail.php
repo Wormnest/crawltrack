@@ -542,6 +542,9 @@ foreach ($listsitecrawlt as $site) {
 		$crawltmessage.= "<a href=\"http://www.crawltrack.net\" style='font-size:18px;font-weight:bold; color:#000; text-decoration: none;'>CrawlTrack</a>\n";
 		$crawltmessage.= "</div>\n";
 		$crawltmessage.= "</div>\n";
+		$crawltmessage.= "<br><br><div style='background-color: #ffffff; text-align:center; '/>\n";
+		$crawltmessage.= "<b>" . $language['ad-on-crawltrack'] . "</b>\n";
+		$crawltmessage.= "</div><br><br>\n";		
 	} else {
 		//case text email
 		$crawltmessage = "Site: " . $crawltsitename[$site] . "-------------- " . $language['daily-stats'] . ": " . $crawltdaytoday . "/" . $crawltmonthtoday . "/" . $crawltyeartoday . "\n\n";
