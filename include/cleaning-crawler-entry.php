@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.7
+//  CrawlTrack 3.3.0
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: cleaning-crawler-entry.php
 //----------------------------------------------------------------------
-//  Last update: 22/10/2010
+//  Last update: 07/05/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -198,7 +198,7 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 	}
 	mysql_free_result($requete);
 	//---------------------------------------------------------------------------------------------------
-	//query to detect IP with more than 3 pages viewed with less than 2 second per page or with more than 50 pages viewed (good change to have an unknow crawler detected as a visitor)
+	//query to detect IP with more than 3 pages viewed with less than 2 second per page or with more than 200 pages viewed (good change to have an unknow crawler detected as a visitor)
 	$sql = "SELECT  crawlt_ip, COUNT(DISTINCT id_visit), MAX(`date`), MIN(`date`)  
 		FROM crawlt_visits_human 
 		WHERE $datetolookfor
@@ -209,7 +209,7 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 	while ($ligne = mysql_fetch_row($requete)) {
 		$timeperpage[$ligne[0]] = (strtotime($ligne[2]) - strtotime($ligne[3])) / $ligne[1];
 		$nbvisits[$ligne[0]] = $ligne[1];
-		if (($timeperpage[$ligne[0]] < 2 && $nbvisits[$ligne[0]] > 3) || $nbvisits[$ligne[0]] > 50) {
+		if (($timeperpage[$ligne[0]] < 2 && $nbvisits[$ligne[0]] > 3) || $nbvisits[$ligne[0]] > 200) {
 			$listbadip[$ligne[0]] = $ligne[0];
 		}
 	}
