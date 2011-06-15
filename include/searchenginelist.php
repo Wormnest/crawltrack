@@ -165,6 +165,7 @@ $crawltgooglelist = array(
 "www.google.com.vc",
 "www.google.com.vn",
 "www.google.co.bw",
+"www.google.co.ck",
 "www.google.co.cr",
 "www.google.co.gg",
 "www.google.co.hu",
