@@ -674,6 +674,7 @@ $country = array(
 "ir" => "Iran",
 "is" => "Islande",
 "it" => "Italie",
+"je" => "Jersey",
 "jm" => "Jamaïque",
 "jo" => "Jordanie",
 "jp" => "Japon",
