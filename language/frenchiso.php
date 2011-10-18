@@ -562,7 +562,8 @@ $language['bounce_rate']="Taux de rebond";
 $language['visit_summary']="Visites cumulées sur l'ensemble des sites";
 $language['data']="Données";
 $language['index']="Index";
-$language['sponsorship']="Ils supportent CrawlTrack :";//3.1.0
+$language['sponsorship']="Ils supportent CrawlTrack :";
+//3.1.0
 $language['browser']="Navigateurs";
 $language['visitor-browser']="Navigateurs utilisés par les visiteurs";
 $language['hits-per-hour']="Hits par heure";
@@ -690,6 +691,7 @@ $country = array(
 "ir" => "Iran",
 "is" => "Islande",
 "it" => "Italie",
+"je" => "Jersey",
 "jm" => "Jamaïque",
 "jo" => "Jordanie",
 "jp" => "Japon",
