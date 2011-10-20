@@ -668,6 +668,7 @@ $country = array(
 "id" => "Indonésie",
 "ie" => "Irlande",
 "il" => "Israël",
+"im" => "Ile de Man",
 "in" => "Inde",
 "io" => "Ter. Brit. Océan Indien",
 "iq" => "Iraq",
