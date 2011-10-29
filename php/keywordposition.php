@@ -85,9 +85,9 @@ echo "<p align=\"right\"><input type=button name=\"close\" value=\"" . $language
 echo "<h1>" . $language['keyword'] . ":<span class=\"browntitle\"> " . $keyworddisplay . "</span></h1>\n";
 echo "<div align=\"center\">\n";
 echo "<hr>\n";
-echo "<iframe name=\"I1\" src=\"http://www.ask.com/web?q=$keywordurl \" marginwidth=\"1\" marginheight=\"1\" scrolling=\"auto\" border=\"1\" bordercolor=\"#003399\" frameborder=\"1px\" width=\"900px\" height=\"300px\"></iframe>\n";
+echo "<iframe name=\"I1\" src=\"http://www.ask.com/web?q=$keywordurl\" marginwidth=\"1\" marginheight=\"1\" scrolling=\"auto\" border=\"1\" bordercolor=\"#003399\" frameborder=\"1px\" width=\"900px\" height=\"300px\"></iframe>\n";
 echo "<hr>\n";
-echo "<iframe name=\"I2\" src=\"google/google.php?q=$keywordurl\" marginwidth=\"1\" marginheight=\"1\" scrolling=\"auto\" border=\"1\" bordercolor=\"#003399\" frameborder=\"1px\" width=\"900px\" height=\"300px\"></iframe>\n";
+echo "<iframe name=\"I2\" src=\"google/google.php?q=$keywordurl&lang=$crawltlang\" marginwidth=\"1\" marginheight=\"1\" scrolling=\"auto\" border=\"1\" bordercolor=\"#003399\" frameborder=\"1px\" width=\"900px\" height=\"300px\"></iframe>\n";
 echo "<hr>\n";
 echo "<iframe name=\"I3\" src=\"http://search.live.com/results.aspx?q=$keywordurl\" marginwidth=\"1\" marginheight=\"1\" scrolling=\"auto\" border=\"1\" bordercolor=\"#003399\" frameborder=\"1px\" width=\"900px\" height=\"300px\"></iframe>\n";
 echo "<hr>\n";
