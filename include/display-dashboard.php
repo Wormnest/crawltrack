@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-dashboard.php
 //----------------------------------------------------------------------
-//  Last update: 27/03/2011
+//  Last update: 29/10/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -186,7 +186,6 @@ $requeteseo = db_query($sqlseo, $connexion);
 $nbrresult = mysql_num_rows($requeteseo);
 if ($nbrresult >= 1) {
 	while ($ligneseo = mysql_fetch_row($requeteseo)) {
-		$tablinkdelicious[] = $ligneseo[3];
 		$tablinkexalead[] = $ligneseo[4];
 		$tabpageexalead[] = $ligneseo[5];
 		$tablinkgoogle[] = $ligneseo[6];
@@ -194,20 +193,17 @@ if ($nbrresult >= 1) {
 	}
 	//preparation of values for display
 	if ($period == 0 || $period >= 1000) {
-		$linkdelicious = numbdisp($tablinkdelicious[($nbrresult - 1) ]);
 		$linkexalead = numbdisp($tablinkexalead[($nbrresult - 1) ]);
 		$pageexalead = numbdisp($tabpageexalead[($nbrresult - 1) ]);
 		$linkgoogle = numbdisp($tablinkgoogle[($nbrresult - 1) ]);
 		$pagegoogle = numbdisp($tabpagegoogle[($nbrresult - 1) ]);
 	} else {
-		$linkdelicious = numbdisp($tablinkdelicious[0]) . "-->" . numbdisp($tablinkdelicious[($nbrresult - 1) ]);
 		$linkexalead = numbdisp($tablinkexalead[0]) . " --> " . numbdisp($tablinkexalead[($nbrresult - 1) ]);
 		$pageexalead = numbdisp($tabpageexalead[0]) . " --> " . numbdisp($tabpageexalead[($nbrresult - 1) ]);
 		$linkgoogle = numbdisp($tablinkgoogle[0]) . " --> " . numbdisp($tablinkgoogle[($nbrresult - 1) ]);
 		$pagegoogle = numbdisp($tabpagegoogle[0]) . " --> " . numbdisp($tabpagegoogle[($nbrresult - 1) ]);
 	}
 } else {
-	$linkdelicious = 0;
 	$valueindexationend = 0;
 	$valueindexationbeginning = 0;
 	$linkexalead = 0;
@@ -628,26 +624,7 @@ if ((@$tabpageexalead[0] == @$tabpageexalead[($nbrresult - 1) ]) && @$tabpageexa
 	echo "<td class='tableau50'>" . $pageexalead . "</td></tr>\n";
 }
 echo "</table><br>\n";
-echo "<table   cellpadding='0px' cellspacing='0' width='100%'>\n";
-echo "<tr onmouseover=\"javascript:montre();\">\n";
-echo "<th class='tableau1' width=\"24%\">\n";
-echo "&nbsp;\n";
-echo "</th>\n";
-echo "<th class='tableau2'>\n";
-echo "" . $language['nbr_tot_bookmark'] . "\n";
-echo "</th></tr>\n";
-echo "<tr><td class='tableau3g' >&nbsp;&nbsp;" . $language['delicious'] . "\n";
-if ($period == 0 && $linkdelicious == 0) {
-	echo "<a href=\"./php/searchenginespositionrefresh.php?retry=delicious&amp;navig=$navig&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/refresh.png\" style=\"border:0; width:16px; height:16px\" alt=\"refresh\"></a></td>\n";
-} else {
-	echo "</td>\n";
-}
-if ($linkdelicious == 0) {
-	echo "<td class='tableau5' >-</td></tr>\n";
-} else {
-	echo "<td class='tableau5'>" . $linkdelicious . "</td></tr>\n";
-}
-echo "</table></div>\n";
+
 //Alexa traffic rank
 //to avoid problem if the url is enter in the database with http://
 $crawlturlsite = strip_protocol($urlsite[$site]);
