@@ -194,9 +194,6 @@ if ($nbrresult >= 1) {
 	}
 	//preparation of values for display
 	if ($period == 0 || $period >= 1000) {
-		$linkyahoo = numbdisp($tablinkyahoo[($nbrresult - 1) ]);
-		$pageyahoo = numbdisp($tabpageyahoo[($nbrresult - 1) ]);
-		$pagemsn = numbdisp($tabpagemsn[($nbrresult - 1) ]);
 		$linkdelicious = numbdisp($tablinkdelicious[($nbrresult - 1) ]);
 		$linkexalead = numbdisp($tablinkexalead[($nbrresult - 1) ]);
 		$pageexalead = numbdisp($tabpageexalead[($nbrresult - 1) ]);
