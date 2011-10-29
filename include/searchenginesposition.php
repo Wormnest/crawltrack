@@ -36,23 +36,20 @@ require_once (dirname(__FILE__).'/../nusoap/class.soapclient.php');
 $crawltsql = "SELECT id_site, url  FROM crawlt_site";
 $crawltrequete = mysql_query($crawltsql, $crawltconnexion);
 $crawltnbrresult = mysql_num_rows($crawltrequete);
-$crawltnbrresult2 = ($crawltnbrresult * 2);
-$crawltnbrresult3 = ($crawltnbrresult * 3);
-$crawltnbrresult4 = ($crawltnbrresult * 4);
+
 //initialize array
 $listsitecrawlt = array();
 $crawltsiteurl = array();
-$maxsite=0;
+
 if ($crawltnbrresult >= 1) {
 	while ($crawltligne = mysql_fetch_row($crawltrequete)) {
 		$listsitecrawlt[] = $crawltligne[0];
 		$crawltsiteurl[$crawltligne[0]] = $crawltligne[1];
-		$maxsite=$crawltligne[0];
 	}
 }
 //looking for position in search engines database using api
 //test loop position
-if ($crawltloop <= $maxsite) {
+if ($crawltloop < $crawltnbrresult) {
 	//google
 	$crawltidsite = $listsitecrawlt[$crawltloop];
 	$crawlturlsite = $crawltsiteurl[$crawltidsite];
