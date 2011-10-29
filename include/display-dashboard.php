@@ -186,28 +186,20 @@ $requeteseo = db_query($sqlseo, $connexion);
 $nbrresult = mysql_num_rows($requeteseo);
 if ($nbrresult >= 1) {
 	while ($ligneseo = mysql_fetch_row($requeteseo)) {
-		$tablinkexalead[] = $ligneseo[4];
-		$tabpageexalead[] = $ligneseo[5];
 		$tablinkgoogle[] = $ligneseo[6];
 		$tabpagegoogle[] = $ligneseo[7];
 	}
 	//preparation of values for display
 	if ($period == 0 || $period >= 1000) {
-		$linkexalead = numbdisp($tablinkexalead[($nbrresult - 1) ]);
-		$pageexalead = numbdisp($tabpageexalead[($nbrresult - 1) ]);
 		$linkgoogle = numbdisp($tablinkgoogle[($nbrresult - 1) ]);
 		$pagegoogle = numbdisp($tabpagegoogle[($nbrresult - 1) ]);
 	} else {
-		$linkexalead = numbdisp($tablinkexalead[0]) . " --> " . numbdisp($tablinkexalead[($nbrresult - 1) ]);
-		$pageexalead = numbdisp($tabpageexalead[0]) . " --> " . numbdisp($tabpageexalead[($nbrresult - 1) ]);
 		$linkgoogle = numbdisp($tablinkgoogle[0]) . " --> " . numbdisp($tablinkgoogle[($nbrresult - 1) ]);
 		$pagegoogle = numbdisp($tabpagegoogle[0]) . " --> " . numbdisp($tabpagegoogle[($nbrresult - 1) ]);
 	}
 } else {
 	$valueindexationend = 0;
 	$valueindexationbeginning = 0;
-	$linkexalead = 0;
-	$pageexalead = 0;
 	$linkgoogle = 0;
 	$pagegoogle = 0;
 }
@@ -606,22 +598,6 @@ if ((@$tabpagegoogle[0] == @$tabpagegoogle[($nbrresult - 1) ]) && @$tabpagegoogl
 	echo "<td class='tableau5'>-</td></tr>\n";
 } else {
 	echo "<td class='tableau5'>" . $pagegoogle . "</td></tr>\n";
-}
-echo "<tr><td class='tableau30g'>&nbsp;&nbsp;" . $language['exalead'] . "\n";
-if ($period == 0 && ($linkexalead == 0 || $pageexalead == 0)) {
-	echo "<a href=\"./php/searchenginespositionrefresh.php?retry=exalead&amp;navig=$navig&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/refresh.png\" width=\"16\" height=\"16\" border=\"0\" ></a></td>\n";
-} else {
-	echo "</td>\n";
-}
-if ((@$tablinkexalead[0] == @$tablinkexalead[($nbrresult - 1) ]) && @$tablinkexalead[0] == 0) {
-	echo "<td class='tableau30' >-</td>\n";
-} else {
-	echo "<td class='tableau30'>" . $linkexalead . "</td>\n";
-}
-if ((@$tabpageexalead[0] == @$tabpageexalead[($nbrresult - 1) ]) && @$tabpageexalead[0] == 0) {
-	echo "<td class='tableau50'>-</td></tr>\n";
-} else {
-	echo "<td class='tableau50'>" . $pageexalead . "</td></tr>\n";
 }
 echo "</table><br>\n";
 
