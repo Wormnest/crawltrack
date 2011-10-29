@@ -210,13 +210,11 @@ if ($typegraph == 'link') {
 			}
 			if ($data3 <= $today1) {
 				$cutdata = explode("-", $datatransfert[$data]);
-				$exalead[$i] = $cutdata[2];
 				$google[$i] = $cutdata[3];
 			}
 		} elseif ($period == 2) {
 			if ($data <= $today1) {
 				$cutdata = explode("-", $datatransfert[$data]);
-				$exalead[$i] = $cutdata[2];
 				$google[$i] = $cutdata[3];
 			}
 		} elseif ($period == 3) {
@@ -224,12 +222,10 @@ if ($typegraph == 'link') {
 			$data3 = $data2[0];
 			if ($data3 <= $today1) {
 				$cutdata = explode("-", $datatransfert[$data]);
-				$exalead[$i] = $cutdata[2];
 				$google[$i] = $cutdata[3];
 			}
 		} else {
 			$cutdata = explode("-", $datatransfert[$data]);
-			$exalead[$i] = $cutdata[2];
 			$google[$i] = $cutdata[3];
 		}
 		$i++;
@@ -276,15 +272,6 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setThickness(4);
 	$group->add($plot);
 	$group->legend->add($plot, $language['google'], LEGEND_LINE);
-	$plot = new LinePlot($exalead);
-	// Change line color
-	$plot->setColor(new Color(150, 0, 0));
-	// Change mark type
-	$plot->mark->setType(MARK_SQUARE);
-	$plot->mark->border->show();
-	$plot->setThickness(4);
-	$group->add($plot);
-	$group->legend->add($plot, $language['exalead'], LEGEND_LINE);
 
 
 	$group->legend->setBackgroundColor(new Color(255, 255, 255, 0));
