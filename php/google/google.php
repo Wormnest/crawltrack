@@ -70,29 +70,6 @@ foreach($json->responseData->results as $searchresult)
 		</div>';
 		}
 	}
-$url = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&start=9&q=" . rawurlencode($keywordurl);	
-$handle = fopen($url, 'rb');
-$body = '';
-while (!feof($handle)) {
-$body .= fread($handle, 8192);
-}
-fclose($handle);
-
-$json = new Services_JSON();
-$json = $json->decode($body);
- 
-foreach($json->responseData->results as $searchresult)
-	{
-	if($searchresult->GsearchResultClass == 'GwebSearch')
-		{
-		$formattedresults .= '
-		<div class="google">
-		<h3><a href="' . $searchresult->unescapedUrl . '">' . $searchresult->titleNoFormatting . '</a></h3>
-		<p class="content">' . $searchresult->content . '</p>
-		<p class="linkurl">' . $searchresult->visibleUrl . '</p>
-		</div>';
-		}
-	}
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
