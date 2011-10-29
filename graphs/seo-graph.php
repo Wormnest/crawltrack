@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.3.1
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -16,7 +16,7 @@
 //----------------------------------------------------------------------
 // this graph is made with artichow    website: www.artichow.org
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 29/10/2011
 //----------------------------------------------------------------------
 error_reporting(0);
 //initialize array
@@ -210,16 +210,12 @@ if ($typegraph == 'link') {
 			}
 			if ($data3 <= $today1) {
 				$cutdata = explode("-", $datatransfert[$data]);
-				$msn[$i] = $cutdata[1];
-				$yahoo[$i] = $cutdata[0];
 				$exalead[$i] = $cutdata[2];
 				$google[$i] = $cutdata[3];
 			}
 		} elseif ($period == 2) {
 			if ($data <= $today1) {
 				$cutdata = explode("-", $datatransfert[$data]);
-				$msn[$i] = $cutdata[1];
-				$yahoo[$i] = $cutdata[0];
 				$exalead[$i] = $cutdata[2];
 				$google[$i] = $cutdata[3];
 			}
@@ -228,15 +224,11 @@ if ($typegraph == 'link') {
 			$data3 = $data2[0];
 			if ($data3 <= $today1) {
 				$cutdata = explode("-", $datatransfert[$data]);
-				$msn[$i] = $cutdata[1];
-				$yahoo[$i] = $cutdata[0];
 				$exalead[$i] = $cutdata[2];
 				$google[$i] = $cutdata[3];
 			}
 		} else {
 			$cutdata = explode("-", $datatransfert[$data]);
-			$msn[$i] = $cutdata[1];
-			$yahoo[$i] = $cutdata[0];
 			$exalead[$i] = $cutdata[2];
 			$google[$i] = $cutdata[3];
 		}
@@ -293,27 +285,8 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setThickness(4);
 	$group->add($plot);
 	$group->legend->add($plot, $language['exalead'], LEGEND_LINE);
-	if ($typegraph == 'page') {
-		$plot = new LinePlot($msn);
-		// Change line color
-		$plot->setColor(new Color(0, 128, 0));
-		// Change mark type
-		$plot->mark->setType(MARK_SQUARE);
-		$plot->mark->border->show();
-		$plot->setThickness(4);
-		$group->add($plot);
-		$group->legend->add($plot, $language['msn'], LEGEND_LINE);
-	}
-	$plot = new LinePlot($yahoo);
-	
-	// Change line color
-	$plot->setColor(new Color(0, 0, 150));
-	// Change mark type
-	$plot->mark->setType(MARK_CIRCLE);
-	$plot->mark->border->show();
-	$plot->setThickness(4);
-	$group->add($plot);
-	$group->legend->add($plot, $language['yahoo'], LEGEND_LINE);
+
+
 	$group->legend->setBackgroundColor(new Color(255, 255, 255, 0));
 	$group->legend->setModel(LEGEND_MODEL_BOTTOM);
 	$group->legend->setPosition(NULL, 0.87);
