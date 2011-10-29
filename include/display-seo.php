@@ -14,15 +14,12 @@
 //----------------------------------------------------------------------
 // file: display-seo.php
 //----------------------------------------------------------------------
-//  Last update: 05/12/2010
+//  Last update: 29/10/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
 }
 //initialize array and variable
-$nbrtag = array();
-$tablinkdelicious = array();
-$tagdelicious = "";
 $tablinkexalead = array();
 $tabpageexalead = array();
 $tablinkgoogle = array();
@@ -65,59 +62,19 @@ $nbrresult = mysql_num_rows($requeteseo);
 if ($nbrresult >= 1) {
 	$i = 1;
 	while ($ligneseo = mysql_fetch_row($requeteseo)) {
-		$tablinkdelicious[] = $ligneseo[3];
 		$tablinkexalead[] = $ligneseo[5];
 		$tabpageexalead[] = $ligneseo[6];
 		$tablinkgoogle[] = $ligneseo[7];
 		$tabpagegoogle[] = $ligneseo[8];
-		$tabtag = @unserialize($ligneseo[4]);
-		if (is_array($tabtag)) {
-			foreach ($tabtag as $key => $value) {
-				$nbrtag[$key] = $tabtag[$key];
-			}
-			$checktagdelicious = 1;
-		} else {
-			$checktagdelicious = 0;
-		}
 	}
-	if (array_sum($tablinkdelicious) != 0 && $checktagdelicious == 1) {
-		arsort($nbrtag);
-		foreach ($nbrtag as $tag => $value) {
-			if ($crawltcharset == 1) {
-				if (!isutf8($tag)) {
-					$tag2 = mb_convert_encoding($tag, "UTF-8", "auto");
-				} else {
-					$tag2 = $tag;
-				}
-			} else {
-				$tag2 = mb_convert_encoding($tag, "ISO-8859-1", "auto");
-			}
-			if ($tag2 != "") {
-				$tagdelicious = $tagdelicious . $tag2 . "(" . $nbrtag[$tag] . "), ";
-				if (strlen($tagdelicious) > (55 * $i + (4 * ($i - 1)))) {
-					$tagdelicious = $tagdelicious . "<br>";
-					$i++;
-				}
-			}
-		}
-		$tagdelicious = rtrim($tagdelicious, "<br>");
-		$tagdelicious = rtrim($tagdelicious, " ");
-		$tagdelicious = rtrim($tagdelicious, ",");
-		if (empty($tagdelicious)) {
-			$tagdelicious = '-';
-		}
-	} else {
-		$tagdelicious = '-';
-	}
+
 	//preparation of values for display
 	if ($period == 0 || $period >= 1000) {
-		$linkdelicious = numbdisp($tablinkdelicious[0]);
 		$linkexalead = numbdisp($tablinkexalead[0]);
 		$pageexalead = numbdisp($tabpageexalead[0]);
 		$linkgoogle = numbdisp($tablinkgoogle[0]);
 		$pagegoogle = numbdisp($tabpagegoogle[0]);
 	} else {
-		$linkdelicious = numbdisp($tablinkdelicious[0]) . "-->" . numbdisp($tablinkdelicious[($nbrresult - 1) ]);
 		$linkexalead = numbdisp($tablinkexalead[0]) . " --> " . numbdisp($tablinkexalead[($nbrresult - 1) ]);
 		$pageexalead = numbdisp($tabpageexalead[0]) . " --> " . numbdisp($tabpageexalead[($nbrresult - 1) ]);
 		$linkgoogle = numbdisp($tablinkgoogle[0]) . " --> " . numbdisp($tablinkgoogle[($nbrresult - 1) ]);
@@ -178,37 +135,6 @@ if (($tabpageexalead[0] == $tabpageexalead[($nbrresult - 1) ]) && $tabpageexalea
 	echo "<td class='tableau50'>" . $pageexalead . "</td></tr>\n";
 }
 echo "</table><br>\n";
-echo "<table   cellpadding='0px' cellspacing='0' width='100%'>\n";
-echo "<tr onmouseover=\"javascript:montre();\">\n";
-echo "<th class='tableau10' colspan=\"3\">\n";
-echo "" . $language['social-bookmark'] . "\n";
-echo "</th></tr><tr>\n";
-echo "<th class='tableau1' width=\"24%\">\n";
-echo "&nbsp;\n";
-echo "</th>\n";
-echo "<th class='tableau1' width=\"20%\">\n";
-echo "" . $language['nbr_tot_bookmark'] . "\n";
-echo "</th>\n";
-echo "<th class='tableau2'width=\"56%\">\n";
-echo "" . $language['tag'] . "\n";
-echo "</th></tr>\n";
-echo "<tr><td class='tableau3g' >&nbsp;&nbsp;&nbsp;<a href=\"http://del.icio.us/help/api/\">" . $language['delicious'] . "</a>\n";
-if ($period == 0 && $linkdelicious == 0) {
-	echo "<a href=\"./php/searchenginespositionrefresh.php?retry=delicious&amp;navig=$navig&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/refresh.png\" width=\"16\" height=\"16\" border=\"0\" ></a></td>\n";
-} else {
-	echo "</td>\n";
-}
-if ($linkdelicious == 0) {
-	echo "<td class='tableau3' >-</td>\n";
-} else {
-	echo "<td class='tableau3'>" . $linkdelicious . "</td>\n";
-}
-if ($tagdelicious == ' ') {
-	echo "<td class='tableau5'>-</td></tr>\n";
-} else {
-	echo "<td class='tableau5'>" . $tagdelicious . "</td></tr>\n";
-}
-echo "</table><br>\n";
 echo "</div><br>\n";
 if ($period != 5) {
 	//graph
@@ -226,15 +152,6 @@ if ($period != 5) {
 	$typegraph = 'page';
 	include "include/mapgraph2.php";
 	echo "<img src=\"./graphs/seo-graph.php?typegraph=$typegraph&amp;crawltlang=$crawltlang&amp;period=$period&amp;graphname=$graphname\" usemap=\"#seopage\" border=\"0\" alt=\"graph\" >\n";
-	echo "&nbsp;</div><br>\n";
-	echo "<div class='imprimgraph'>\n";
-	echo "&nbsp;<br><br><br><br></div>\n";
-	//graph
-	echo "<div class='graphvisits'>\n";
-	//mapgraph
-	$typegraph = 'bookmark';
-	include "include/mapgraph2.php";
-	echo "<img src=\"./graphs/seo-graph.php?typegraph=$typegraph&amp;crawltlang=$crawltlang&amp;period=$period&amp;graphname=$graphname\" usemap=\"#bookmark\" border=\"0\" alt=\"graph\" >\n";
 	echo "&nbsp;</div><br>\n";
 	echo "<div class='imprimgraph'>\n";
 	echo "&nbsp;<br><br><br><br>\n";
