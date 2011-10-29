@@ -42,15 +42,17 @@ $crawltnbrresult4 = ($crawltnbrresult * 4);
 //initialize array
 $listsitecrawlt = array();
 $crawltsiteurl = array();
+$maxsite=0;
 if ($crawltnbrresult >= 1) {
 	while ($crawltligne = mysql_fetch_row($crawltrequete)) {
 		$listsitecrawlt[] = $crawltligne[0];
 		$crawltsiteurl[$crawltligne[0]] = $crawltligne[1];
+		$maxsite=$crawltligne[0];
 	}
 }
 //looking for position in search engines database using api
 //test loop position
-if ($crawltloop < $crawltnbrresult) {
+if ($crawltloop <= $maxsite) {
 	//google
 	$crawltidsite = $listsitecrawlt[$crawltloop];
 	$crawlturlsite = $crawltsiteurl[$crawltidsite];
