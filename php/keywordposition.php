@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.5
+//  CrawlTrack 3.3.1
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: keywordposition.php
 //----------------------------------------------------------------------
-//  Last update: 05/09/2010
+//  Last update: 29/10/2011
 //----------------------------------------------------------------------
 error_reporting(0);
 //initialize array
@@ -87,7 +87,7 @@ echo "<div align=\"center\">\n";
 echo "<hr>\n";
 echo "<iframe name=\"I1\" src=\"http://www.ask.com/web?q=$keywordurl \" marginwidth=\"1\" marginheight=\"1\" scrolling=\"auto\" border=\"1\" bordercolor=\"#003399\" frameborder=\"1px\" width=\"900px\" height=\"300px\"></iframe>\n";
 echo "<hr>\n";
-echo "<iframe name=\"I2\" src=\"http://www.google.com/search?q=$keywordurl\" marginwidth=\"1\" marginheight=\"1\" scrolling=\"auto\" border=\"1\" bordercolor=\"#003399\" frameborder=\"1px\" width=\"900px\" height=\"300px\"></iframe>\n";
+echo "<iframe name=\"I2\" src=\"google/google.php?q=$keywordurl\" marginwidth=\"1\" marginheight=\"1\" scrolling=\"auto\" border=\"1\" bordercolor=\"#003399\" frameborder=\"1px\" width=\"900px\" height=\"300px\"></iframe>\n";
 echo "<hr>\n";
 echo "<iframe name=\"I3\" src=\"http://search.live.com/results.aspx?q=$keywordurl\" marginwidth=\"1\" marginheight=\"1\" scrolling=\"auto\" border=\"1\" bordercolor=\"#003399\" frameborder=\"1px\" width=\"900px\" height=\"300px\"></iframe>\n";
 echo "<hr>\n";
