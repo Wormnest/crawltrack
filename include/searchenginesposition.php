@@ -53,7 +53,7 @@ if ($crawltnbrresult >= 1) {
 if ($crawltloop < $crawltnbrresult) {
 	//google
 	$crawltidsite = $listsitecrawlt[$crawltloop];
-	$crawlturlsite = $crawltsiteurl[$crawltsite];
+	$crawlturlsite = $crawltsiteurl[$crawltidsite];
 	if (empty($crawlturlsite)) {
 		//update the crawlt_config table
 		$crawltloopnext = $crawltloop + 1;
