@@ -47,6 +47,7 @@ foreach($json->responseData->results as $searchresult)
 		</div>';
 		}
 	}
+sleep(3);	
 $url = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&start=5&q=" . rawurlencode($keywordurl);	
 $handle = fopen($url, 'rb');
 $body = '';
@@ -70,6 +71,7 @@ foreach($json->responseData->results as $searchresult)
 		</div>';
 		}
 	}
+	
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
