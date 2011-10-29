@@ -1,0 +1,55 @@
+/*
+//----------------------------------------------------------------------
+//  CrawlTrack 3.3.1
+//----------------------------------------------------------------------
+// Crawler Tracker for website
+//----------------------------------------------------------------------
+// Author: Jean-Denis Brun
+//----------------------------------------------------------------------
+// Website: www.crawltrack.net
+//----------------------------------------------------------------------
+// That script is distributed under GNU GPL license
+//----------------------------------------------------------------------
+// file: stylegoogle.css
+//----------------------------------------------------------------------
+*/
+body
+	{
+	background-color: #fff;
+	color: #000;
+	font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
+	font-size: 14px;
+	}
+
+.browntitle{
+  color: #A52A2A;
+}
+
+.google
+	{
+	padding: 15px 0;
+	}
+
+.google h3, .google p
+	{
+	margin: 0;
+	}
+
+.google h3 a
+	{
+	color: #0000ff;
+	border-bottom: 1px solid #0000ff;
+	text-decoration: none;
+	font-weight: bold;
+	font-size: 14px;
+	}
+
+.google .content b
+	{
+	color: #000;
+	}
+.google .linkurl
+	{
+	color: #008000;
+	font-size: 14px;
+	}
