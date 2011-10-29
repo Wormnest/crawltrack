@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.0
+//  CrawlTrack 3.3.1
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -186,9 +186,6 @@ $requeteseo = db_query($sqlseo, $connexion);
 $nbrresult = mysql_num_rows($requeteseo);
 if ($nbrresult >= 1) {
 	while ($ligneseo = mysql_fetch_row($requeteseo)) {
-		$tablinkyahoo[] = $ligneseo[0];
-		$tabpageyahoo[] = $ligneseo[1];
-		$tabpagemsn[] = $ligneseo[2];
 		$tablinkdelicious[] = $ligneseo[3];
 		$tablinkexalead[] = $ligneseo[4];
 		$tabpageexalead[] = $ligneseo[5];
@@ -206,9 +203,6 @@ if ($nbrresult >= 1) {
 		$linkgoogle = numbdisp($tablinkgoogle[($nbrresult - 1) ]);
 		$pagegoogle = numbdisp($tabpagegoogle[($nbrresult - 1) ]);
 	} else {
-		$linkyahoo = numbdisp($tablinkyahoo[0]) . " --> " . numbdisp($tablinkyahoo[($nbrresult - 1) ]);
-		$pageyahoo = numbdisp($tabpageyahoo[0]) . " --> " . numbdisp($tabpageyahoo[($nbrresult - 1) ]);
-		$pagemsn = numbdisp($tabpagemsn[0]) . " --> " . numbdisp($tabpagemsn[($nbrresult - 1) ]);
 		$linkdelicious = numbdisp($tablinkdelicious[0]) . "-->" . numbdisp($tablinkdelicious[($nbrresult - 1) ]);
 		$linkexalead = numbdisp($tablinkexalead[0]) . " --> " . numbdisp($tablinkexalead[($nbrresult - 1) ]);
 		$pageexalead = numbdisp($tabpageexalead[0]) . " --> " . numbdisp($tabpageexalead[($nbrresult - 1) ]);
@@ -216,9 +210,6 @@ if ($nbrresult >= 1) {
 		$pagegoogle = numbdisp($tabpagegoogle[0]) . " --> " . numbdisp($tabpagegoogle[($nbrresult - 1) ]);
 	}
 } else {
-	$linkyahoo = 0;
-	$pageyahoo = 0;
-	$pagemsn = 0;
 	$linkdelicious = 0;
 	$valueindexationend = 0;
 	$valueindexationbeginning = 0;
@@ -638,34 +629,6 @@ if ((@$tabpageexalead[0] == @$tabpageexalead[($nbrresult - 1) ]) && @$tabpageexa
 	echo "<td class='tableau50'>-</td></tr>\n";
 } else {
 	echo "<td class='tableau50'>" . $pageexalead . "</td></tr>\n";
-}
-echo "<tr><td class='tableau3g' >&nbsp;&nbsp;" . $language['msn'] . "\n";
-if ($period == 0 && ($pagemsn == 0)) {
-	echo "<a href=\"./php/searchenginespositionrefresh.php?retry=msn&amp;navig=$navig&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/refresh.png\" width=\"16\" height=\"16\" border=\"0\" ></a></td>\n";
-} else {
-	echo "</td>\n";
-}
-echo "<td class='tableau3' >-</td>\n";
-if ((@$tabpagemsn[0] == @$tabpagemsn[($nbrresult - 1) ]) && @$tabpagemsn[0] == 0) {
-	echo "<td class='tableau5'>-</td></tr>\n";
-} else {
-	echo "<td class='tableau5'>" . $pagemsn . "</td></tr>\n";
-}
-echo "<tr><td class='tableau30g'>&nbsp;&nbsp;" . $language['yahoo'] . "\n";
-if ($period == 0 && ($linkyahoo == 0 || $pageyahoo == 0)) {
-	echo "<a href=\"./php/searchenginespositionrefresh.php?retry=yahoo&amp;navig=$navig&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/refresh.png\" width=\"16\" height=\"16\" border=\"0\" ></a></td>\n";
-} else {
-	echo "</td>\n";
-}
-if ((@$tablinkyahoo[0] == @$tablinkyahoo[($nbrresult - 1) ]) && @$tablinkyahoo[0] == 0) {
-	echo "<td class='tableau30' >-</td>\n";
-} else {
-	echo "<td class='tableau30'>" . $linkyahoo . "</td>\n";
-}
-if ((@$tabpageyahoo[0] == @$tabpageyahoo[($nbrresult - 1) ]) && @$tabpageyahoo[0] == 0) {
-	echo "<td class='tableau50'>-</td></tr>\n";
-} else {
-	echo "<td class='tableau50'>" . $pageyahoo . "</td></tr>\n";
 }
 echo "</table><br>\n";
 echo "<table   cellpadding='0px' cellspacing='0' width='100%'>\n";
