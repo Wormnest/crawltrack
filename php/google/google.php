@@ -17,9 +17,10 @@
 //  Last update: 29/10/2011
 //----------------------------------------------------------------------
 error_reporting(0);
-//initialize array
+include ("../../include/functions.php");
 //call back the page
 $keywordurl=$_GET['q'];
+$keyworddisplay = stripslashes(crawltcuturl($keywordurl, '55'));
 $crawltlang=$_GET['lang'];
 require_once('JSON.phps');
 $url = "http://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=" . rawurlencode($keywordurl);
@@ -102,9 +103,9 @@ foreach($json->responseData->results as $searchresult)
 </head>
 <body>
 <?php
-include ("../language/" . $crawltlang . ".php");
+include ("../../language/" . $crawltlang . ".php");
 echo "<h1>Google API</h1>";
-echo "<h1>" . $language['keyword'] . ":<span class=\"browntitle\"> " . $keyworddisplay . "</span></h1>\n";
+echo "<h2>" . $language['keyword'] . ":<span class=\"browntitle\"> " . $keyworddisplay . "</span></h2>\n";
 echo $formattedresults;
 ?>
 </body>
