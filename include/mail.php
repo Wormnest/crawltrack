@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.0
+//  CrawlTrack 3.3.1
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: mail.php
 //----------------------------------------------------------------------
-//  Last update 07/04/2011
+//  Last update 30/10/2011
 //----------------------------------------------------------------------
 //update the crawlt_config table
 $sqlcrawltupdatemail = "UPDATE crawlt_config SET datelastmail='" . crawlt_sql_quote($crawltdatetoday) . "'";
@@ -162,15 +162,8 @@ foreach ($listsitecrawlt as $site) {
 	$nbrsql = 0;
 	$period = 1000;
 	$navig = 0;
-	
-	$tablinkexalead = array();
-	$tabpageexalead = array();
-	$tabpagemsn = array();
-	$tablinkyahoo = array();
-	$tabpageyahoo = array();
 	$tablinkgoogle = array();
 	$tabpagegoogle = array();
-	$tablinkdelicious = array();
 	$values2 = array();
 	$googlebotvisit = array();
 	$msnbotvisit = array();
@@ -277,33 +270,13 @@ foreach ($listsitecrawlt as $site) {
 	
 	if ($nbrresult >= 1) {
 		while ($ligneseo = mysql_fetch_row($requeteseo)) {
-			$tablinkyahoo[] = $ligneseo[0];
-			$tabpageyahoo[] = $ligneseo[1];
-			$tabpagemsn[] = $ligneseo[2];
-			$tablinkdelicious[] = $ligneseo[3];
-			$tablinkexalead[] = $ligneseo[4];
-			$tabpageexalead[] = $ligneseo[5];
 			$tablinkgoogle[] = $ligneseo[6];
 			$tabpagegoogle[] = $ligneseo[7];
 		}
 		//preparation of values for display
-		$linkyahoo = crawltnumbdispmail($tablinkyahoo[($nbrresult - 1) ]);
-		$pageyahoo = crawltnumbdispmail($tabpageyahoo[($nbrresult - 1) ]);
-		$pagemsn = crawltnumbdispmail($tabpagemsn[($nbrresult - 1) ]);
-		$linkdelicious = crawltnumbdispmail($tablinkdelicious[($nbrresult - 1) ]);
-		$linkexalead = crawltnumbdispmail($tablinkexalead[($nbrresult - 1) ]);
-		$pageexalead = crawltnumbdispmail($tabpageexalead[($nbrresult - 1) ]);
 		$linkgoogle = crawltnumbdispmail($tablinkgoogle[($nbrresult - 1) ]);
 		$pagegoogle = crawltnumbdispmail($tabpagegoogle[($nbrresult - 1) ]);
 	} else {
-		$linkyahoo = 0;
-		$pageyahoo = 0;
-		$pagemsn = 0;
-		$linkdelicious = 0;
-		$valueindexationend = 0;
-		$valueindexationbeginning = 0;
-		$linkexalead = 0;
-		$pageexalead = 0;
 		$linkgoogle = 0;
 		$pagegoogle = 0;
 	}
@@ -481,21 +454,7 @@ foreach ($listsitecrawlt as $site) {
 		$crawltmessage.= "<td  style='text-align: center; border-top: 2px solid #003399; border-bottom: 2px solid #003399;border-right: 2px solid #003399; border-left: 2px solid #003399; background-color: #7EAAFF;'>&nbsp;&nbsp;<b>" . $language['nbr_tot_pages_index'] . "</b>&nbsp;&nbsp;</td></tr>\n";
 		$crawltmessage.= "<tr><td  style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $language['google'] . "</b>&nbsp;&nbsp;</td>\n";
 		$crawltmessage.= "<td  style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $linkgoogle . "</b>&nbsp;&nbsp;</td>\n";
-		$crawltmessage.= "<td  style='text-align: center;border-right: 2px solid #003399; border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $pagegoogle . "</b>&nbsp;&nbsp;</td></tr>\n";
-		$crawltmessage.= "<tr><td  style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $language['exalead'] . "</b>&nbsp;&nbsp;</td>\n";
-		$crawltmessage.= "<td  style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $linkexalead . "</b>&nbsp;&nbsp;</td>\n";
-		$crawltmessage.= "<td  style='text-align: center;border-right: 2px solid #003399; border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $pageexalead . "</b>&nbsp;&nbsp;</td></tr>\n";
-		$crawltmessage.= "<tr><td  style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $language['msn'] . "</b>&nbsp;&nbsp;</td>\n";
-		$crawltmessage.= "<td  style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>-</b>&nbsp;&nbsp;</td>\n";
-		$crawltmessage.= "<td  style='text-align: center;border-right: 2px solid #003399; border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $pagemsn . "</b>&nbsp;&nbsp;</td></tr>\n";
-		$crawltmessage.= "<tr><td  style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $language['yahoo'] . "</b>&nbsp;&nbsp;</td>\n";
-		$crawltmessage.= "<td  style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $linkyahoo . "</b>&nbsp;&nbsp;</td>\n";
-		$crawltmessage.= "<td  style='text-align: center;border-right: 2px solid #003399; border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $pageyahoo . "</b>&nbsp;&nbsp;</td></tr>\n";
-		$crawltmessage.= "<tr><td colspan='3' >&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>\n";
-		$crawltmessage.= "<tr><td style='text-align: center; border-top: 2px solid #003399; border-bottom: 2px solid #003399; border-left: 2px solid #003399; background-color: #7EAAFF;'>&nbsp;</td>\n";
-		$crawltmessage.= "<td colspan='2' style='text-align: center; border-top: 2px solid #003399; border-right: 2px solid #003399; border-bottom: 2px solid #003399; border-left: 2px solid #003399; background-color: #7EAAFF;'>&nbsp;&nbsp;<b>" . $language['nbr_tot_bookmark'] . "</b>&nbsp;&nbsp;</td></tr>\n";
-		$crawltmessage.= "<tr><td  style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $language['delicious'] . "</b>&nbsp;&nbsp;</td>\n";
-		$crawltmessage.= "<td  colspan='2' style='text-align: center;border-right: 2px solid #003399; border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $linkdelicious . "</b>&nbsp;&nbsp;</td></tr></table><br>\n";
+		$crawltmessage.= "<td  style='text-align: center;border-right: 2px solid #003399; border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $pagegoogle . "</b>&nbsp;&nbsp;</td></tr></table><br>\n";
 		$crawltmessage.= "</td><td style='text-align: center;border-top: 2px solid navy;'>\n";
 		$crawltmessage.= "<div style='font-size:16px; color:#A52A2A; text-align:center;' />\n";
 		$crawltmessage.= "<br><b>" . $language['hacking2'] . "</b><br/>\n";
@@ -576,16 +535,10 @@ foreach ($listsitecrawlt as $site) {
 		$crawltmessage.= $language['index'] . "\n";
 		$crawltmessage.= "--------------------------------------------------------------------------------------------------------------\n";
 		$crawltmessage.= $language['nbr_tot_link'] . "\n";
-		$crawltmessage.= $language['google'] . ": " . $linkgoogle . "\n";
-		$crawltmessage.= $language['exalead'] . ": " . $linkexalead . "\n";
-		$crawltmessage.= $language['yahoo'] . ": " . $linkyahoo . "\n\n";
+		$crawltmessage.= $language['google'] . ": " . $linkgoogle . "\n\n";
+
 		$crawltmessage.= $language['nbr_tot_pages_index'] . "\n";
-		$crawltmessage.= $language['google'] . ": " . $pagegoogle . "\n";
-		$crawltmessage.= $language['exalead'] . ": " . $pageexalead . "\n";
-		$crawltmessage.= $language['msn'] . ": " . $pagemsn . "\n";
-		$crawltmessage.= $language['yahoo'] . ": " . $pageyahoo . "\n\n";
-		$crawltmessage.= $language['nbr_tot_bookmark'] . "\n";
-		$crawltmessage.= $language['delicious'] . ": " . $linkdelicious . "\n\n";
+		$crawltmessage.= $language['google'] . ": " . $pagegoogle . "\n\n";
 		$crawltmessage.= "--------------------------------------------------------------------------------------------------------------\n";
 		$crawltmessage.= $language['hacking2'] . "\n";
 		$crawltmessage.= "--------------------------------------------------------------------------------------------------------------\n";
@@ -634,7 +587,7 @@ foreach ($listsitecrawlt as $site) {
 	} else {
 		$mail->IsHTML(false);
 	}
-	$mail->FromName = "CrawlTrack 3-3-0";
+	$mail->FromName = "CrawlTrack 3-3-1";
 	$mail->Subject = $language['mailsubject'] . "--" . $crawltsitename[$site];
 	$mail->Body = $crawltmessage;
 	$crawltemail = explode(',', $crawltdest);
