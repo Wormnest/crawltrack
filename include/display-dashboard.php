@@ -40,6 +40,7 @@ $tablinkgoogle = array();
 $tabpagegoogle = array();
 $values2 = array();
 $visitgoogle = 0;
+$visitgoogleimage = 0;
 $visitmsn = 0;
 $visityahoo = 0;
 $visitask= 0;
@@ -76,6 +77,9 @@ if ($totalvisitor > 0) {
 	if ($visitsendgoogle > 0) {
 		$values2[$language['google']] = $visitsendgoogle;
 	}
+	if ($visitsendgoogleimage > 0) {
+		$values2[$language['googleimage']] = $visitsendgoogleimage;
+	}	
 	if ($visitsendmsn > 0) {
 		$values2[$language['msn']] = $visitsendmsn;
 	}
