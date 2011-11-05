@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack 3.3.1
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-visitors.php
 //----------------------------------------------------------------------
-//  Last update: 02/12/2010
+//  Last update: 05/11/2011
 //----------------------------------------------------------------------
 //----Technicals parameters-------------------------------------------------------------------------------
 $maxtime = 20; //maximum total time in second allow for the script to search link
@@ -346,6 +346,9 @@ if ($totalvisitor > 0) {
 	if ($visitsendgoogle > 0) {
 		$values2['google'] = $visitsendgoogle;
 	}
+	if ($visitsendgoogleimage > 0) {
+		$values2['googleimage'] = $visitsendgoogleimage;
+	}	
 	if ($visitsendmsn > 0) {
 		$values2['msn'] = $visitsendmsn;
 	}
