@@ -438,6 +438,7 @@ $crawltmsnlist = array(
 "ie.search.msn.com",
 "www.bing.com",
 "cn.bing.com",
+"m.bing.com",
 );
 
 $crawltyahoolist = array(
