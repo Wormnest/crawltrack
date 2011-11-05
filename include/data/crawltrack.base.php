@@ -576,7 +576,7 @@ else
 									{
 									$crawltkeyword='(not provided)';
 									//test to see if it's Google Image
-									if(isset($crawlttabvar['imgurl'])
+									if(isset($crawlttabvar['imgurl']))
 										{
 										$crawltsearchengine=6;	
 										}
