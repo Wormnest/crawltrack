@@ -40,6 +40,7 @@ $crawltgooglelist = array(
 "www.google.bi",
 "www.google.bj",
 "www.google.bs",
+"www.google.by",
 "www.google.ca",
 "www.google.cat",
 "www.google.cc",
@@ -115,6 +116,7 @@ $crawltgooglelist = array(
 "www.google.sn",
 "www.google.so",
 "www.google.td",
+"www.google.tg",
 "www.google.tk",
 "www.google.tn",
 "www.google.to",
@@ -227,6 +229,7 @@ $crawltgooglelist = array(
 "images.google.bi",
 "images.google.bj",
 "images.google.bs",
+"images.google.by",
 "images.google.ca",
 "images.google.cat",
 "images.google.cc",
@@ -302,6 +305,7 @@ $crawltgooglelist = array(
 "images.google.sn",
 "images.google.so",
 "images.google.td",
+"images.google.tg",
 "images.google.tk",
 "images.google.tn",
 "images.google.to",
@@ -439,6 +443,7 @@ $crawltmsnlist = array(
 "www.bing.com",
 "cn.bing.com",
 "m.bing.com",
+"be.bing.com",
 );
 
 $crawltyahoolist = array(
