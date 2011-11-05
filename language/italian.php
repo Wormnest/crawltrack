@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack 3.3.1
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: italiano.php
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
+//  Last update: 05/11/2011
 //----------------------------------------------------------------------
 $language= array();
 //installation
@@ -570,6 +570,8 @@ $language['bulgarian']="Bulgaro";
 $language['italian']="Italiano";
 $language['two_year_data']="tutte le visite ai vecchi robots in 2 anni";
 $language['two_year_data_human']="tutti i vecchi visitatori da più di 2 anni";
+//3.3.1
+$language['googleimage']="Google-Images";
 //country code
 $country = array(
 

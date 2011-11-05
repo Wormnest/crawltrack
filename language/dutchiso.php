@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack 3.3.1
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: dutchiso.php
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
+//  Last update: 05/11/2011
 //----------------------------------------------------------------------
 $language= array();
 //installation
@@ -568,6 +568,8 @@ $language['bulgarian']="Bulgaarse";
 $language['italian']="Italiaanse";
 $language['two_year_data']="all the old robot visits over two years";
 $language['two_year_data_human']="all the old visitors from more than two years";
+//3.3.1
+$language['googleimage']="Google-Images";
 //country code
 $country = array(
 
