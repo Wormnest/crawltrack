@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.0
+//  CrawlTrack 3.3.1
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: crawltrack.base.php
 //----------------------------------------------------------------------
-//  Last update: 07/04/2011
+//  Last update: 05/11/2011
 //----------------------------------------------------------------------
 error_reporting(0);
 @set_time_limit(10);
@@ -574,7 +574,12 @@ else
 									$crawltkeyword = $crawlttabvar['as_occt'];
 									if($crawltkeyword=='')
 									{
-									$crawltsearchengine=0;
+									$crawltkeyword='(not provided)';
+									//test to see if it's Google Image
+									if(isset($crawlttabvar['imgurl'])
+										{
+										$crawltsearchengine=6;	
+										}
 									}
 								}
 							}
