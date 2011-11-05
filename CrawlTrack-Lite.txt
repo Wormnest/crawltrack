@@ -44,4 +44,4 @@ Comment transformer CrawlTrack en CrawlTrack Lite?
 
 ==> Votre CrawlTrack est maintenant un CrawlTrack Lite
 Vous recevrez quotidiennement un résumé des statistiques de votre site par email et la base de données sera purgée.
-Seules les données du nombre de jours sélectionné (par défaur celles du jour et de la veille) seront gardées dans la base de données.
+Seules les données du nombre de jours sélectionné (par défaut celles du jour et de la veille) seront gardées dans la base de données.
