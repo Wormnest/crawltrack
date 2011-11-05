@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: mail.php
 //----------------------------------------------------------------------
-//  Last update 30/10/2011
+//  Last update 05/11/2011
 //----------------------------------------------------------------------
 //update the crawlt_config table
 $sqlcrawltupdatemail = "UPDATE crawlt_config SET datelastmail='" . crawlt_sql_quote($crawltdatetoday) . "'";
@@ -190,6 +190,9 @@ foreach ($listsitecrawlt as $site) {
 		if ($visitsendgoogle > 0) {
 			$values2[$language['google']] = $visitsendgoogle;
 		}
+		if ($visitsendgoogleimage > 0) {
+			$values2[$language['googleimage']] = $visitsendgoogleimage;
+		}		
 		if ($visitsendmsn > 0) {
 			$values2[$language['msn']] = $visitsendmsn;
 		}
