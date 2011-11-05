@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.9
+//  CrawlTrack 3.3.1
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: visitors-claculation.php
 //----------------------------------------------------------------------
-//  Last update: 09/03/2011
+//  Last update: 05/11/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -99,6 +99,7 @@ if ($navig != 21) {
 			$axex[] = $daydate . "-" . $monthdate . "-" . $yeardate;
 			$askvisit[$daydate . "-" . $monthdate . "-" . $yeardate] = 0;
 			$googlevisit[$daydate . "-" . $monthdate . "-" . $yeardate] = 0;
+			$googleimagevisit[$daydate . "-" . $monthdate . "-" . $yeardate] = 0;			
 			$msnvisit[$daydate . "-" . $monthdate . "-" . $yeardate] = 0;
 			$yahoovisit[$daydate . "-" . $monthdate . "-" . $yeardate] = 0;
 			$exaleadvisit[$daydate . "-" . $monthdate . "-" . $yeardate] = 0;
@@ -131,6 +132,7 @@ if ($navig != 21) {
 			$axex[] = $yearmonth;
 			$askvisit[$yearmonth] = 0;
 			$googlevisit[$yearmonth] = 0;
+			$googleimagevisit[$yearmonth] = 0;			
 			$msnvisit[$yearmonth] = 0;
 			$yahoovisit[$yearmonth] = 0;
 			$exaleadvisit[$yearmonth] = 0;
@@ -150,6 +152,7 @@ if ($navig != 21) {
 			$axex[] = $daydate . "-" . $monthdate . "-" . $yeardate;
 			$askvisit[$daydate . "-" . $monthdate . "-" . $yeardate] = 0;
 			$googlevisit[$daydate . "-" . $monthdate . "-" . $yeardate] = 0;
+			$googleimagevisit[$daydate . "-" . $monthdate . "-" . $yeardate] = 0;			
 			$msnvisit[$daydate . "-" . $monthdate . "-" . $yeardate] = 0;
 			$yahoovisit[$daydate . "-" . $monthdate . "-" . $yeardate] = 0;
 			$exaleadvisit[$daydate . "-" . $monthdate . "-" . $yeardate] = 0;
@@ -191,7 +194,7 @@ if ($navig != 21) {
 			FROM crawlt_visits_human
 			WHERE `date` >='" . crawlt_sql_quote($daterequest3seo) . "'       
 			AND crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
-			AND  crawlt_id_crawler IN ('1','2','3','4','5')               
+			AND  crawlt_id_crawler IN ('1','2','3','4','5','6')               
 			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%m\/%Y'),crawlt_id_crawler";
 		$requete = db_query($sql, $connexion);
 		while ($ligne = mysql_fetch_row($requete)) {
@@ -210,6 +213,9 @@ if ($navig != 21) {
 			if ($ligne[2] == 5) {
 				$exaleadvisit[$ligne[0]] = $ligne[1];
 			}
+			if ($ligne[2] == 6) {
+				$googleimagevisit[$ligne[0]] = $ligne[1];
+			}			
 		}
 		
 		//query to have the referer visits
@@ -254,7 +260,7 @@ if ($navig != 21) {
 			AND  crawlt_id_referer='0')
 			OR (`date` >='" . crawlt_sql_quote($daterequest3seo) . "' 
 			AND crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
-			AND  crawlt_id_crawler IN ('1','2','3','4','5'))
+			AND  crawlt_id_crawler IN ('1','2','3','4','5','6'))
 			OR (`date` >='" . crawlt_sql_quote($daterequest3seo) . "' 
 			AND crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
 			AND  crawlt_id_crawler='0'
@@ -270,6 +276,7 @@ if ($navig != 21) {
 		//count total visits
 		$visitsendask = 0;
 		$visitsendgoogle = 0;
+		$visitsendgoogleimage = 0;
 		$visitsendmsn = 0;
 		$visitsendyahoo = 0;
 		$visitsendexalead = 0;
@@ -277,9 +284,10 @@ if ($navig != 21) {
 		$visitdirect = 0;
 		$nbrvisitor = 0;
 		foreach ($axex as $key) {
-			$totalvisit[$key] = $askvisit[$key] + $googlevisit[$key] + $msnvisit[$key] + $yahoovisit[$key] + $exaleadvisit[$key] + $referervisit[$key] + $directvisit[$key];
+			$totalvisit[$key] = $askvisit[$key] + $googlevisit[$key]+ $googleimagevisit[$key] + $msnvisit[$key] + $yahoovisit[$key] + $exaleadvisit[$key] + $referervisit[$key] + $directvisit[$key];
 			$visitsendask = $visitsendask + $askvisit[$key];
 			$visitsendgoogle = $visitsendgoogle + $googlevisit[$key];
+			$visitsendgoogleimage = $visitsendgoogleimage + $googleimagevisit[$key];			
 			$visitsendmsn = $visitsendmsn + $msnvisit[$key];
 			$visitsendyahoo = $visitsendyahoo + $yahoovisit[$key];
 			$visitsendexalead = $visitsendexalead + $exaleadvisit[$key];
@@ -294,7 +302,7 @@ if ($navig != 21) {
 			WHERE `date` >='" . crawlt_sql_quote($daterequest3seo) . "'
 			AND `date` <'" . crawlt_sql_quote($daterequest2) . "'        
 			AND crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
-			AND  crawlt_id_crawler IN ('1','2','3','4','5')          
+			AND  crawlt_id_crawler IN ('1','2','3','4','5','6')          
 			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%m\/%Y'),crawlt_id_crawler";
 		$requete = db_query($sql, $connexion);
 		while ($ligne = mysql_fetch_row($requete)) {
@@ -312,6 +320,9 @@ if ($navig != 21) {
 			}
 			if ($ligne[2] == 5) {
 				$exaleadvisit[$ligne[0]] = $ligne[1];
+			}
+			if ($ligne[2] == 6) {
+				$googleimagevisit[$ligne[0]] = $ligne[1];
 			}
 		}
 		mysql_free_result($requete);
@@ -361,7 +372,7 @@ if ($navig != 21) {
 			OR (`date` >='" . crawlt_sql_quote($daterequest3seo) . "'
 			AND `date` <'" . crawlt_sql_quote($daterequest2) . "'   
 			AND crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
-			AND  crawlt_id_crawler IN ('1','2','3','4','5'))
+			AND  crawlt_id_crawler IN ('1','2','3','4','5','6'))
 			OR (`date` >='" . crawlt_sql_quote($daterequest3seo) . "'
 			AND `date` <'" . crawlt_sql_quote($daterequest2) . "'   
 			AND crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
@@ -378,6 +389,7 @@ if ($navig != 21) {
 		//count total visits
 		$visitsendask = 0;
 		$visitsendgoogle = 0;
+		$visitsendgoogleimage = 0;		
 		$visitsendmsn = 0;
 		$visitsendyahoo = 0;
 		$visitsendexalead = 0;
@@ -385,9 +397,10 @@ if ($navig != 21) {
 		$visitdirect = 0;
 		$nbrvisitor = 0;
 		foreach ($axex as $key) {
-			$totalvisit[$key] = $askvisit[$key] + $googlevisit[$key] + $msnvisit[$key] + $yahoovisit[$key] + $exaleadvisit[$key] + $referervisit[$key] + $directvisit[$key];
+			$totalvisit[$key] = $askvisit[$key] + $googlevisit[$key] + $googleimagevisit[$key] + $msnvisit[$key] + $yahoovisit[$key] + $exaleadvisit[$key] + $referervisit[$key] + $directvisit[$key];
 			$visitsendask = $visitsendask + $askvisit[$key];
 			$visitsendgoogle = $visitsendgoogle + $googlevisit[$key];
+			$visitsendgoogleimage = $visitsendgoogleimage + $googleimagevisit[$key];			
 			$visitsendmsn = $visitsendmsn + $msnvisit[$key];
 			$visitsendyahoo = $visitsendyahoo + $yahoovisit[$key];
 			$visitsendexalead = $visitsendexalead + $exaleadvisit[$key];
@@ -400,7 +413,7 @@ if ($navig != 21) {
 			FROM crawlt_visits_human
 			WHERE `date` >='" . crawlt_sql_quote($daterequest3seo) . "'
 			AND crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
-			AND   crawlt_id_crawler IN ('1','2','3','4','5')        
+			AND   crawlt_id_crawler IN ('1','2','3','4','5','6')        
 			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%d-%m-%Y'),crawlt_id_crawler";
 		$requete = db_query($sql, $connexion);
 		
@@ -420,6 +433,9 @@ if ($navig != 21) {
 			if ($ligne[2] == 5) {
 				$exaleadvisit[$ligne[0]] = $ligne[1];
 			}
+			if ($ligne[2] == 6) {
+				$googleimagevisit[$ligne[0]] = $ligne[1];
+			}			
 		}
 		mysql_free_result($requete);
 		
@@ -465,7 +481,7 @@ if ($navig != 21) {
 			AND  crawlt_id_referer='0')
 			OR (`date` >='" . crawlt_sql_quote($daterequest3seo) . "'   
 			AND crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
-			AND  crawlt_id_crawler IN ('1','2','3','4','5'))
+			AND  crawlt_id_crawler IN ('1','2','3','4','5','6'))
 			OR (`date` >='" . crawlt_sql_quote($daterequest3seo) . "'   
 			AND crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
 			AND  crawlt_id_crawler='0'
@@ -481,6 +497,7 @@ if ($navig != 21) {
 		//count total visits
 		$visitsendask = 0;
 		$visitsendgoogle = 0;
+		$visitsendgoogleimage = 0;		
 		$visitsendmsn = 0;
 		$visitsendyahoo = 0;
 		$visitsendexalead = 0;
@@ -488,9 +505,10 @@ if ($navig != 21) {
 		$visitdirect = 0;
 		$nbrvisitor = 0;
 		foreach ($axex as $key) {
-			$totalvisit[$key] = $askvisit[$key] + $googlevisit[$key] + $msnvisit[$key] + $yahoovisit[$key] + $exaleadvisit[$key] + $referervisit[$key] + $directvisit[$key];
+			$totalvisit[$key] = $askvisit[$key] + $googlevisit[$key] + $googleimagevisit[$key] + $msnvisit[$key] + $yahoovisit[$key] + $exaleadvisit[$key] + $referervisit[$key] + $directvisit[$key];
 			$visitsendask = $visitsendask + $askvisit[$key];
 			$visitsendgoogle = $visitsendgoogle + $googlevisit[$key];
+			$visitsendgoogleimage = $visitsendgoogleimage + $googleimagevisit[$key];			
 			$visitsendmsn = $visitsendmsn + $msnvisit[$key];
 			$visitsendyahoo = $visitsendyahoo + $yahoovisit[$key];
 			$visitsendexalead = $visitsendexalead + $exaleadvisit[$key];
@@ -511,7 +529,7 @@ $sql = "SELECT crawlt_ip
 	AND  crawlt_id_referer='0')
 	OR ($datetolookfor    
 	AND crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
-	AND  crawlt_id_crawler IN ('1','2','3','4','5'))
+	AND  crawlt_id_crawler IN ('1','2','3','4','5','6'))
 	OR ($datetolookfor      
 	AND crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
 	AND  crawlt_id_crawler='0'
@@ -593,6 +611,7 @@ if (($period == 0 || $period >= 1000) && $navig != 21) {
 	$visitsendyahoo = $yahoovisit[$datetoused];
 	$visitsendmsn = $msnvisit[$datetoused];
 	$visitsendgoogle = $googlevisit[$datetoused];
+	$visitsendgoogleimage = $googleimagevisit[$datetoused];	
 	$visitsendexalead = $exaleadvisit[$datetoused];
 	$visitsendother = $referervisit[$datetoused];
 	$visitdirect = $directvisit[$datetoused];
@@ -602,13 +621,14 @@ if (($period == 0 || $period >= 1000) && $navig != 21) {
 	$visitsendyahoo = array_sum($yahoovisit);
 	$visitsendmsn = array_sum($msnvisit);
 	$visitsendgoogle = array_sum($googlevisit);
+	$visitsendgoogleimage = array_sum($googleimagevisit);	
 	$visitsendexalead = array_sum($exaleadvisit);
 	$visitsendother = array_sum($referervisit);
 	$visitdirect = array_sum($directvisit);
 	$nbrvisitor = array_sum($uniquevisitor);
 }
 if ($navig != 21) {
-	$totalvisitor = $visitsendask + $visitsendyahoo + $visitsendmsn + $visitsendgoogle + $visitsendexalead + $visitsendother + $visitdirect;
+	$totalvisitor = $visitsendask + $visitsendyahoo + $visitsendmsn + $visitsendgoogle + $visitsendgoogleimage + $visitsendexalead + $visitsendother + $visitdirect;
 	if ($totalvisitor == 0) {
 		$nbrpage = 0;
 	}
