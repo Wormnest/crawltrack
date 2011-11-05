@@ -110,6 +110,7 @@ if ($nbrresultgoogleimage >= 1) {
 		$visitkeywordgoogleimage[$ligne[0]] = $ligne[1];
 	}
 }
+
 //query to get google referer to details position in google per host
 $sqlgoogle2 = "SELECT  referer 
 FROM crawlt_visits_human
@@ -329,9 +330,10 @@ if ($nbrresult >= 1) {
 			}
 		} else {
 			$position5[$value] = "-";
+			}
 		}
 	}
-}
+
 //query to have the keyword for Yahoo
 $sqlYahoo = "SELECT  url_page, count(DISTINCT CONCAT(crawlt_ip, crawlt_browser)) 
 FROM crawlt_visits_human
@@ -475,6 +477,16 @@ if (count($countvisithost) >= 1) {
 	//counter for alternate color lane
 	$comptligne = 2;
 	foreach ($countvisithost as $key => $value) {
+		
+		if($crawler2 =='(not provided)')
+			{
+			$position[$key]='-';
+			$position3[$key]='-';
+			$position4[$key]='-';
+			$position5[$key]='-';
+			}
+		
+		
 		if ($comptligne % 2 == 0) {
 			echo "<tr><td class='tableau3g'>&nbsp;&nbsp;&nbsp;&nbsp;" . $key . "</td>\n";
 			echo "<td class='tableau3'>" . $value . "</td>\n";

@@ -76,6 +76,7 @@ $sqlgoogle2 = "SELECT  referer, keyword
 	ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
 	WHERE  $datetolookfor
 	AND crawlt_site_id_site='" . sql_quote($site) . "'
+	AND keyword !='(not provided)'
 	AND crawlt_id_crawler= '1'";
 $requetegoogle2 = db_query($sqlgoogle2, $connexion);
 $nbrresult = mysql_num_rows($requetegoogle2);
