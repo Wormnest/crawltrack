@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.0
+//  CrawlTrack 3.3.1
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: cleaning-crawler-entry.php
 //----------------------------------------------------------------------
-//  Last update: 07/05/2011
+//  Last update: 05/11/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -102,6 +102,7 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 		ON crawlt_visits_human.crawlt_keyword_id_keyword = crawlt_keyword.id_keyword
 		AND `date` >'" . crawlt_sql_quote($datecleaning) . "'
 		AND crawlt_id_crawler IN ('1,2,3,4')
+		AND keyword !='(not provided)'
 		LIMIT 0," . crawlt_sql_quote($maxlimit) . "";
 	$requetecleaning = db_query($sqlcleaning, $connexion);
 	$visitstotal = mysql_num_rows($requetecleaning);
