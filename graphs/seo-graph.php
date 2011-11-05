@@ -175,7 +175,7 @@ if ($typegraph == 'link') {
 		$exalead[] = $cutdata[6];
 		$unique2[] = $cutdata[7];
 		$googleimage[] = $cutdata[8];		
-		$testvalue[] = $cutdata[0] + $cutdata[1] + $cutdata[2] + $cutdata[3] + $cutdata[4] + $cutdata[5] + $cutdata[6];
+		$testvalue[] = $cutdata[0] + $cutdata[1] + $cutdata[2] + $cutdata[3] + $cutdata[4] + $cutdata[5] + $cutdata[6]+ $cutdata[8];
 	}
 	$isvalue = 0;
 	$nbvalue = count($testvalue);
