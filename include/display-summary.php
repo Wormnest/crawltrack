@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.3.1
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-summary.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 05/11/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -32,6 +32,7 @@ $tabnbrtotvisits = array();
 $tabnbrerrorattack = array();
 $values = array();
 $googlevisitsumary = array();
+$googleimagevisitsumary = array();
 $msnvisitsumary = array();
 $yahoovisitsumary = array();
 $askvisitsumary = array();
@@ -119,6 +120,7 @@ foreach ($listsiteid as $site) {
 	$tabnbrpage[$site] = $nbrpage;
 	foreach ($axex as $data) {
 		$googlevisitsumary[$data] = $googlevisit[$data] + @$googlevisitsumary[$data];
+		$googleimagevisitsumary[$data] = $googleimagevisit[$data] + @$googleimagevisitsumary[$data];		
 		$msnvisitsumary[$data] = $msnvisit[$data] + @$msnvisitsumary[$data];
 		$yahoovisitsumary[$data] = $yahoovisit[$data] + @$yahoovisitsumary[$data];
 		$askvisitsumary[$data] = $askvisit[$data] + @$askvisitsumary[$data];
