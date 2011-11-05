@@ -116,7 +116,7 @@ if ($nbrresult >= 1) {
 	}
 }
 //request to have the keyword for Google-Image
-$sqlgoogle = "SELECT keyword, count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))
+$sqlgoogleimage = "SELECT keyword, count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))
 	FROM crawlt_visits_human 
 	INNER JOIN crawlt_keyword
 	ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword
@@ -322,12 +322,12 @@ if (count($visitkeyword) >= 1) {
 				echo " <img src=\"./images/information.png\" width=\"16\" height=\"16\" border=\"0\" ></a>\n";
 				echo "</td> \n";
 				echo "<td class='tableau3' width=\"11%\">" . $positionkeyword . "</td>\n";
-				echo "<td class='tableau3' width=\"9%\">" . numbdisp($visitask) . "</td>\n";
-				echo "<td class='tableau3' width=\"9%\">" . numbdisp($visitexalead) . "</td>\n";
-				echo "<td class='tableau3' width=\"9%\">" . numbdisp($visitgoogle) . "</td>\n";
-				echo "<td class='tableau3' width=\"9%\">" . numbdisp($visitgoogleimage) . "</td>\n";				
-				echo "<td class='tableau3' width=\"9%\">" . numbdisp($visitmsn) . "</td>\n";
-				echo "<td class='tableau5' width=\"9%\">" . numbdisp($visityahoo) . "</td></tr>\n";
+				echo "<td class='tableau3' width=\"8%\">" . numbdisp($visitask) . "</td>\n";
+				echo "<td class='tableau3' width=\"8%\">" . numbdisp($visitexalead) . "</td>\n";
+				echo "<td class='tableau3' width=\"8%\">" . numbdisp($visitgoogle) . "</td>\n";
+				echo "<td class='tableau3' width=\"14%\">" . numbdisp($visitgoogleimage) . "</td>\n";				
+				echo "<td class='tableau3' width=\"8%\">" . numbdisp($visitmsn) . "</td>\n";
+				echo "<td class='tableau5' width=\"8%\">" . numbdisp($visityahoo) . "</td></tr>\n";
 			} else {
 				echo "<tr><td class='tableau30'";
 				if ($keywordcut == 1) {
@@ -339,12 +339,12 @@ if (count($visitkeyword) >= 1) {
 				echo " <img src=\"./images/information.png\" width=\"16\" height=\"16\" border=\"0\" ></a>\n";
 				echo "</td> \n";
 				echo "<td class='tableau30' width=\"11%\">" . $positionkeyword . "</td>\n";
-				echo "<td class='tableau30' width=\"9%\">" . numbdisp($visitask) . "</td>\n";
-				echo "<td class='tableau30' width=\"9%\">" . numbdisp($visitexalead) . "</td>\n";
-				echo "<td class='tableau30' width=\"9%\">" . numbdisp($visitgoogle) . "</td>\n";
-				echo "<td class='tableau30' width=\"9%\">" . numbdisp($visitgoogle) . "</td>\n";				
-				echo "<td class='tableau30' width=\"9%\">" . numbdisp($visitmsn) . "</td>\n";
-				echo "<td class='tableau50' width=\"9%\">" . numbdisp($visityahoo) . "</td></tr>\n";
+				echo "<td class='tableau30' width=\"8%\">" . numbdisp($visitask) . "</td>\n";
+				echo "<td class='tableau30' width=\"8%\">" . numbdisp($visitexalead) . "</td>\n";
+				echo "<td class='tableau30' width=\"8%\">" . numbdisp($visitgoogle) . "</td>\n";
+				echo "<td class='tableau30' width=\"14%\">" . numbdisp($visitgoogleimage) . "</td>\n";				
+				echo "<td class='tableau30' width=\"8%\">" . numbdisp($visitmsn) . "</td>\n";
+				echo "<td class='tableau50' width=\"8%\">" . numbdisp($visityahoo) . "</td></tr>\n";
 			}
 			if ($keywordcut == 1) {
 				echo "<div id=\"smenu" . ($comptligne + 9) . "\"  style=\"display:none; font-size:14px; font-weight:bold; color:#ff0000; font-family:Verdana,Geneva, Arial, Helvetica, Sans-Serif; text-align:left; border:2px solid navy; position:absolute; top:" . (270 + (($comptligne - 5) * 25)) . "px; left:20px; background:#fff;\">\n";
