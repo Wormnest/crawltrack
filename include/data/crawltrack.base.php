@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: crawltrack.base.php
 //----------------------------------------------------------------------
-//  Last update: 05/11/2011
+//  Last update: 06/11/2011
 //----------------------------------------------------------------------
 error_reporting(0);
 @set_time_limit(10);
@@ -620,9 +620,13 @@ else
 				parse_str($crawltreferertreatment['query'],$crawlttabvar);
 				$crawltkeyword = $crawlttabvar['q'];
 				if($crawltkeyword=='')
-				{
-					$crawltsearchengine=0;
-				}
+					{
+					$crawltkeyword = $crawlttabvar['aid'];
+					if($crawltkeyword=='')
+						{
+						$crawltsearchengine=0;
+						}
+					}
 			}
 			//test baidu (replace exalead since crawltrack 3.2.0)
 			elseif(in_array("$crawltreferertreatment[host]",$crawltbaidulist))
