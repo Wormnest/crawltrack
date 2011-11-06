@@ -476,6 +476,7 @@ $crawltyahoolist = array(
 "search.yahoo.com",
 "search.cn.yahoo.com",
 "kr.dist.search.yahoo.com",
+"m.yahoo.com",
 );
 
 $crawltasklist = array(
