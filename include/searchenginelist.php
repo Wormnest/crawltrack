@@ -736,6 +736,7 @@ $crawltexaleadlist = array(
 
 $crawltbaidulist = array(
 "www.baidu.com",
+"www.baidu.jp",
 );
 
 $crawltbrowserlist = array(
