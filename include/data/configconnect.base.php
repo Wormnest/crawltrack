@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,11 +14,11 @@
 //----------------------------------------------------------------------
 // file: configconnect.base.php
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
+//  Last update: 10/11/2011
 //----------------------------------------------------------------------
-$crawltuser="USER";
-$crawltpassword="PASSWORD";
-$crawltdb="DATABASE";
-$crawlthost="HOST";
-$secret_key="SECRETSENTENCE";
+$crawltuser='USER';
+$crawltpassword='PASSWORD';
+$crawltdb='DATABASE';
+$crawlthost='HOST';
+$secret_key='SECRETSENTENCE';
 ?>
