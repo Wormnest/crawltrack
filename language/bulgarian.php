@@ -568,6 +568,8 @@ $language['two_year_data']="всички стари  посещения  роб�
 $language['two_year_data_human']="всички стари  посетители от повече от две години";
 //3.3.1
 $language['googleimage']="Google-Images";
+//3.3.2
+$language['yandex']="Яндекс";
 //country code
 $country = array(
 

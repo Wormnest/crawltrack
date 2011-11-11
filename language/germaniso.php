@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.1
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -16,7 +16,7 @@
 //----------------------------------------------------------------------
 // file: germaniso.php
 //----------------------------------------------------------------------
-//  Last update: 05/11/2011
+//  Last update: 11/11/2011
 //----------------------------------------------------------------------
 $language= array();
 //installation
@@ -570,6 +570,8 @@ $language['two_year_data']="alle alten Roboter Besuche aelter als zwei Jahr";
 $language['two_year_data_human']="alle alten, menschlichen Besuche aelter als zwei Jahr";
 //3.3.1
 $language['googleimage']="Google-Images";
+//3.3.2
+$language['yandex']="Yandex";
 //country code
 $country = array(
 "ad" => "Andorra",

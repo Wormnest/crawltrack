@@ -1,6 +1,6 @@
 ﻿<?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.1
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker // Bot takip sayacı
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // Translator : Korhan MULCAR 
 //----------------------------------------------------------------------
-//  Last update: 05/11/2011
+//  Last update: 11/11/2011
 //----------------------------------------------------------------------
 $language= array();
 //installation
@@ -569,6 +569,8 @@ $language['two_year_data']="İki yıl  içinde  bütün  eski  robot  ziyaretler
 $language['two_year_data_human']="iki yıldan fazla tüm  eski  ziyaretçi";
 //3.3.1
 $language['googleimage']="Google-Images";
+//3.3.2
+$language['yandex']="Yandex";
 //country code
 $country = array(
     "ad" => "Andorra",
