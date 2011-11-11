@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.1
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-visitors.php
 //----------------------------------------------------------------------
-//  Last update: 05/11/2011
+//  Last update: 11/11/2011
 //----------------------------------------------------------------------
 //----Technicals parameters-------------------------------------------------------------------------------
 $maxtime = 20; //maximum total time in second allow for the script to search link
@@ -92,7 +92,7 @@ if ($nbrresult >= 1) {
 	if ($period == 0 || $period >= 1000 || $period == 1 || ($period >= 300 && $period < 400)) {
 		// we search for referer details only for 1 day or 1 week period
 		while ($ligne = mysql_fetch_row($requete)) {
-			$parseurl = parse_url($ligne[0]);
+			$parseurl = parse_url(htmlspecialchars($ligne[0]));
 			if (isset($parseurl['host'])) {
 				@$refererlist[$parseurl['host']]++;
 				${'detailreferer' . $parseurl['host']}[] = urldecode($ligne[0]);
@@ -129,7 +129,7 @@ if ($nbrresult >= 1) {
 		}
 	} else {
 		while ($ligne = mysql_fetch_row($requete)) {
-			@$parseurl = parse_url($ligne[0]);
+			@$parseurl = parse_url(htmlspecialchars($ligne[0]));
 			if (isset($parseurl['host'])) {
 				@$refererlist[$parseurl['host']]++;
 			}
@@ -517,7 +517,7 @@ if ($totalvisitor > 0) {
 				${'detailreferer' . $key} = array_unique(${'detailreferer' . $key});
 				foreach (${'detailreferer' . $key} as $value2) {
 					$value2 = str_replace("&", "&amp;", $value2);
-					$value2 = str_replace("\"", "'", $value2);
+					$value2 = str_replace("\"", "'", $value2);				
 					echo "<a href=\"" . $value2 . "\" rel='nofollow'>\n";
 					echo "<img src=\"./images/information.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $value2 . "\" alt=\"" . $value2 . "\" >\n";
 					echo "</a>\n";
