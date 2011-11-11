@@ -43,7 +43,7 @@ if ($navig == 23) {
 		$referer1[] = $referervisit[$data];
 		$direct1[] = $directvisit[$data];
 		$unique1[] = $uniquevisitor[$data];
-		$datatransfert2[$axexlabel[$data]] = $googlevisit[$data] . "-" . $msnvisit[$data] . "-" . $yahoovisit[$data] . "-" . $askvisit[$data] . "-" . $referervisit[$data] . "-" . $directvisit[$data] . "-" . $exaleadvisit[$data] . "-" . $uniquevisitor[$data]."-".$googleimagevisit[$data]."-".$yandexvisitsumary[$data];
+		$datatransfert2[$axexlabel[$data]] = $googlevisit[$data] . "-" . $msnvisit[$data] . "-" . $yahoovisit[$data] . "-" . $askvisit[$data] . "-" . $referervisit[$data] . "-" . $directvisit[$data] . "-" . $exaleadvisit[$data] . "-" . $uniquevisitor[$data]."-".$googleimagevisit[$data]."-".$yandexvisit[$data];
 	}
 }
 //prepare data to be transferred to graph file
