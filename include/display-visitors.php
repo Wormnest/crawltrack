@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-visitors.php
 //----------------------------------------------------------------------
-//  Last update: 11/11/2011
+//  Last update: 12/11/2011
 //----------------------------------------------------------------------
 //----Technicals parameters-------------------------------------------------------------------------------
 $maxtime = 20; //maximum total time in second allow for the script to search link
@@ -361,6 +361,9 @@ if ($totalvisitor > 0) {
 	if ($visitsendexalead > 0) {
 		$values2['baidu'] = $visitsendexalead;
 	}
+	if ($visitsendyandex > 0) {
+		$values2['yandex'] = $visitsendyandex;
+	}	
 	if ($visitsendother > 0) {
 		$values2['website3'] = $visitsendother;
 	}

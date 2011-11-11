@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.1
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-dashboard.php
 //----------------------------------------------------------------------
-//  Last update: 29/10/2011
+//  Last update: 12/11/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -45,6 +45,7 @@ $visitmsn = 0;
 $visityahoo = 0;
 $visitask= 0;
 $visitexalead = 0;
+$visityandex = 0;
 $visitbaidu = 0;
 $UVlast7days = array();
 $UVlast30days = array();
@@ -92,6 +93,9 @@ if ($totalvisitor > 0) {
 	if ($visitsendexalead > 0) {
 		$values2[$language['baidu']] = $visitsendexalead;
 	}
+	if ($visitsendyandex > 0) {
+		$values2[$language['yandex']] = $visitsendyandex;
+	}	
 	if ($visitsendother > 0) {
 		$values2[$language['website']] = $visitsendother;
 	}
@@ -413,7 +417,7 @@ AND  crawlt_id_referer='0')
 OR (date >='" . crawlt_sql_quote($daterequestUV2) . "' 
 AND date <'" . crawlt_sql_quote($datelocal2) . "' 
 AND crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
-AND  crawlt_id_crawler IN ('1','2','3','4','5'))
+AND  crawlt_id_crawler IN ('1','2','3','4','5','6','7'))
 OR (date >='" . crawlt_sql_quote($daterequestUV2) . "' 
 AND date <'" . crawlt_sql_quote($datelocal2) . "'  
 AND crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
