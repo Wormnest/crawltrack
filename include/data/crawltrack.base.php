@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.1
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: crawltrack.base.php
 //----------------------------------------------------------------------
-//  Last update: 06/11/2011
+//  Last update: 11/11/2011
 //----------------------------------------------------------------------
 error_reporting(0);
 @set_time_limit(10);
@@ -643,7 +643,18 @@ else
 					}
 				}
 			}
-			//case visit send by one of the 5 searchengine
+			//test yandex
+			elseif(in_array("$crawltreferertreatment[host]",$crawltyandexlist))
+			{
+				$crawltsearchengine=7;
+				parse_str($crawltreferertreatment['query'],$crawlttabvar);
+				$crawltkeyword = $crawlttabvar['text'];
+				if($crawltkeyword=='')
+				{
+					$crawltsearchengine=0;
+				}
+			}			
+			//case visit send by one of the 7 searchengine
 			if($crawltsearchengine !=0)
 			{
 				//check if the referer already exist, if not add it to the table
