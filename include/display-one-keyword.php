@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.1
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-one-keyword.php
 //----------------------------------------------------------------------
-//  Last update: 05/11/2011
+//  Last update: 11/11/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -33,8 +33,63 @@ $positionstart = array();
 $position = array();
 $countvisithost = array();
 $crawlencode = urlencode($crawler);
+$nbrresultgoogle=0;
+$nbrresultMSN=0;
+$nbrresultYahoo=0;
+$nbrresultgoogleimage=0;
+$nbrresultask=0;
+$nbrresultexalead=0;
+//collect post data
+if (isset($_POST['choosekeyword'])) {
+	$choosekeyword = (int)$_POST['choosekeyword'];
+} else {
+	$choosekeyword = 0;
+}
 
-$cachename = $navig . $period . $site . $order.$rowdisplay . $crawlencode . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang;
+if($choosekeyword==1)
+	{
+	if (isset($_POST['askkeyword'])) {
+		$askkeyword = (int)$_POST['askkeyword'];
+	} else {
+		$askkeyword = 0;
+	}
+	if (isset($_POST['baidukeyword'])) {
+		$baidukeyword = (int)$_POST['baidukeyword'];
+	} else {
+		$baidukeyword = 0;
+	}
+	if (isset($_POST['googlekeyword'])) {
+		$googlekeyword = (int)$_POST['googlekeyword'];
+	} else {
+		$googlekeyword = 0;
+	}
+	if (isset($_POST['googleimagekeyword'])) {
+		$googleimagekeyword = (int)$_POST['googleimagekeyword'];
+	} else {
+		$googleimagekeyword = 0;
+	}
+	if (isset($_POST['msnkeyword'])) {
+		$msnkeyword = (int)$_POST['msnkeyword'];
+	} else {
+		$msnkeyword = 0;
+	}
+	if (isset($_POST['yahookeyword'])) {
+		$yahookeyword = (int)$_POST['yahookeyword'];
+	} else {
+		$yahookeyword = 0;
+	}
+	}
+else
+	{
+	$askkeyword = 1;
+	$baidukeyword = 1;
+	$googlekeyword = 1;
+	$googleimagekeyword = 1;
+	$msnkeyword = 1;
+	$yahookeyword = 1;
+	}
+
+$cachename = $navig . $period . $site . $order.$rowdisplay . $crawlencode . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang. $askkeyword. $baidukeyword. $googlekeyword.$googleimagekeyword.$msnkeyword.$yahookeyword;
 
 //start the caching
 cache($cachename);
@@ -73,6 +128,8 @@ $daterequest7 = date("Y-m-d H:i:s", (strtotime($daterequest) - (95 * 86400)));
 $daterequest8 = date("Y-m-d H:i:s", (strtotime($daterequest) - (90 * 86400)));
 $datetolookfor4 = " date >'" . sql_quote($daterequest7) . "' AND  date <'" . sql_quote($daterequest8) . "'";
 //query to have the keyword for Google
+if($googlekeyword==1)
+{
 $sqlgoogle = "SELECT  url_page, count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))
 FROM crawlt_visits_human
 INNER JOIN crawlt_pages
@@ -91,7 +148,10 @@ if ($nbrresultgoogle >= 1) {
 		$visitkeywordgoogle[$ligne[0]] = $ligne[1];
 	}
 }
+}
 //query to have the keyword for Google-Image
+if($googleimagekeyword==1)
+{
 $sqlgoogleimage = "SELECT  url_page, count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))
 FROM crawlt_visits_human
 INNER JOIN crawlt_pages
@@ -110,7 +170,7 @@ if ($nbrresultgoogleimage >= 1) {
 		$visitkeywordgoogleimage[$ligne[0]] = $ligne[1];
 	}
 }
-
+}
 //query to get google referer to details position in google per host
 $sqlgoogle2 = "SELECT  referer 
 FROM crawlt_visits_human
@@ -335,6 +395,8 @@ if ($nbrresult >= 1) {
 	}
 
 //query to have the keyword for Yahoo
+if($yahookeyword==1)
+{
 $sqlYahoo = "SELECT  url_page, count(DISTINCT CONCAT(crawlt_ip, crawlt_browser)) 
 FROM crawlt_visits_human
 INNER JOIN crawlt_pages
@@ -353,7 +415,10 @@ if ($nbrresultYahoo >= 1) {
 		$visitkeywordYahoo[$ligne[0]] = $ligne[1];
 	}
 }
+}
 //query to have the keyword for MSN
+if($msnkeyword==1)
+{
 $sqlMSN = "SELECT  url_page, count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))
 FROM crawlt_visits_human
 INNER JOIN crawlt_pages
@@ -372,7 +437,10 @@ if ($nbrresultMSN >= 1) {
 		$visitkeywordMSN[$ligne[0]] = $ligne[1];
 	}
 }
+}
 //query to have the keyword for Ask
+if($askkeyword==1)
+{
 $sqlask = "SELECT  url_page, count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))
 FROM crawlt_visits_human
 INNER JOIN crawlt_pages
@@ -391,7 +459,10 @@ if ($nbrresultask >= 1) {
 		$visitkeywordask[$ligne[0]] = $ligne[1];
 	}
 }
-//query to have the keyword for Exalead
+}
+//request to have the keyword for Baidu
+if($baidukeyword==1)
+{
 $sqlexalead = "SELECT  url_page, count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))
 FROM crawlt_visits_human
 INNER JOIN crawlt_pages
@@ -409,6 +480,7 @@ if ($nbrresultexalead >= 1) {
 	while ($ligne = mysql_fetch_row($requeteexalead)) {
 		$visitkeywordexalead[$ligne[0]] = $ligne[1];
 	}
+}
 }
 //calculation of total number of entry per keyword
 $visitkeyword = array();
@@ -448,6 +520,9 @@ arsort($visitkeyword);
 //display
 echo "<div class=\"content2\"><br><br><br><br><hr>\n";
 echo "</div>\n";
+
+
+
 //to close the menu rollover
 echo "<div width='100%' height:'5px' onmouseover=\"javascript:montre();\">&nbsp;</div>\n";
 echo "<div class='tableaularge' align='center'>\n";
@@ -532,6 +607,68 @@ if (count($countvisithost) >= 1) {
 }
 if (count($visitkeyword) >= 1) {
 	echo "<h2>" . $language['entry-page'] . "</h2><br>";
+	
+	echo "<div width='70%' align='center'><form action=\"index.php\" method=\"POST\"  style=\" font-size:13px; font-weight:bold; color: #003399;
+		font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif; \">\n";
+	echo "<input type=\"hidden\" name ='navig' value=\"16\">\n";
+	echo "<input type=\"hidden\" name ='site' value=\"".$site."\">\n";
+	echo "<input type=\"hidden\" name ='period' value=\"".$period."\">\n";	
+	echo "<input type=\"hidden\" name ='graphpos' value=\"".$graphpos."\">\n";
+	echo "<input type=\"hidden\" name ='crawler' value=\"".$crawler."\">\n";
+	echo "<input type=\"hidden\" name ='choosekeyword' value=\"1\">\n";								
+	echo "<table>";
+	if($askkeyword==1)
+		{
+		echo "<tr><td>" . $language['ask'] . "</td><td><input type=\"checkbox\" name=\"askkeyword\" value=\"1\" checked></td>\n";
+		}
+	else
+		{
+		echo "<tr></tr><td>" . $language['ask'] . "</td><td><input type=\"checkbox\" name=\"askkeyword\" value=\"1\"></td>\n";
+		}
+	if($baidukeyword==1)
+		{
+		echo "<td>&nbsp;&nbsp;&nbsp;" . $language['baidu'] . "</td><td><input type=\"checkbox\" name=\"baidukeyword\" value=\"1\" checked></td>\n";
+		}
+	else
+		{
+		echo "<td>&nbsp;&nbsp;&nbsp;" . $language['baidu'] . "</td><td><input type=\"checkbox\" name=\"baidukeyword\" value=\"1\"></td>\n";
+		}
+	if($googlekeyword==1)
+		{
+		echo "<td>&nbsp;&nbsp;&nbsp;" . $language['google'] . "</td><td><input type=\"checkbox\" name=\"googlekeyword\" value=\"1\" checked></td>\n";
+		}
+	else
+		{
+		echo "<td>&nbsp;&nbsp;&nbsp;" . $language['google'] . "</td><td><input type=\"checkbox\" name=\"googlekeyword\" value=\"1\"></td>\n";
+		}
+	if($googleimagekeyword==1)
+		{
+		echo "<td>&nbsp;&nbsp;&nbsp;" . $language['googleimage'] . "</td><td><input type=\"checkbox\" name=\"googleimagekeyword\" value=\"1\" checked></td>\n";
+		}
+	else
+		{
+		echo "<td>&nbsp;&nbsp;&nbsp;" . $language['googleimage'] . "</td><td><input type=\"checkbox\" name=\"googleimagekeyword\" value=\"1\"></td>\n";
+		}
+	if($msnkeyword==1)
+		{
+		echo "<td>&nbsp;&nbsp;&nbsp;" . $language['msn'] . "</td><td><input type=\"checkbox\" name=\"msnkeyword\" value=\"1\" checked></td>\n";
+		}
+	else
+		{
+		echo "<td>&nbsp;&nbsp;&nbsp;" . $language['msn'] . "</td><td><input type=\"checkbox\" name=\"msnkeyword\" value=\"1\"></td>\n";
+		}
+	if($yahookeyword==1)
+		{
+		echo "<td>&nbsp;&nbsp;&nbsp;" . $language['yahoo'] . "</td><td><input type=\"checkbox\" name=\"yahookeyword\" value=\"1\" checked></td>\n";
+		}
+	else
+		{
+		echo "<td>&nbsp;&nbsp;&nbsp;" . $language['yahoo'] . "</td><td><input type=\"checkbox\" name=\"yahookeyword\" value=\"1\"></td>\n";
+		}
+		echo "<td>&nbsp;&nbsp;&nbsp;<input name='ok' type='submit'  value=' OK ' size='20' ></td></tr>\n";
+			
+	echo "</table></div><br>\n";		
+	
 	echo "<table   cellpadding='0px' cellspacing='0' width='100%'>\n";
 	echo "<tr><th class='tableau1' colspan=\"2\" rowspan=\"2\">\n";
 	echo "" . $language['entry-page'] . "\n";

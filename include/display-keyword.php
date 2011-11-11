@@ -31,7 +31,12 @@ $visitkeyworddisplay = array();
 $positioncd = array();
 $positionstart = array();
 $position = array();
-
+$nbrresultgoogle=0;
+$nbrresultMSN=0;
+$nbrresultYahoo=0;
+$nbrresultgoogleimage=0;
+$nbrresultask=0;
+$nbrresultexalead=0;
 //collect post data
 if (isset($_POST['choosekeyword'])) {
 	$choosekeyword = (int)$_POST['choosekeyword'];

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.1
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-entrypage.php
 //----------------------------------------------------------------------
-//  Last update: 05/11/2011
+//  Last update: 11/11/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -29,7 +29,57 @@ $visitkeywordask = array();
 $visitkeywordexalead = array();
 $visitkeyword = array();
 
-$cachename = $navig . $period . $site . $order.$rowdisplay . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang;
+//collect post data
+if (isset($_POST['choosekeyword'])) {
+	$choosekeyword = (int)$_POST['choosekeyword'];
+} else {
+	$choosekeyword = 0;
+}
+
+if($choosekeyword==1)
+	{
+	if (isset($_POST['askkeyword'])) {
+		$askkeyword = (int)$_POST['askkeyword'];
+	} else {
+		$askkeyword = 0;
+	}
+	if (isset($_POST['baidukeyword'])) {
+		$baidukeyword = (int)$_POST['baidukeyword'];
+	} else {
+		$baidukeyword = 0;
+	}
+	if (isset($_POST['googlekeyword'])) {
+		$googlekeyword = (int)$_POST['googlekeyword'];
+	} else {
+		$googlekeyword = 0;
+	}
+	if (isset($_POST['googleimagekeyword'])) {
+		$googleimagekeyword = (int)$_POST['googleimagekeyword'];
+	} else {
+		$googleimagekeyword = 0;
+	}
+	if (isset($_POST['msnkeyword'])) {
+		$msnkeyword = (int)$_POST['msnkeyword'];
+	} else {
+		$msnkeyword = 0;
+	}
+	if (isset($_POST['yahookeyword'])) {
+		$yahookeyword = (int)$_POST['yahookeyword'];
+	} else {
+		$yahookeyword = 0;
+	}
+	}
+else
+	{
+	$askkeyword = 1;
+	$baidukeyword = 1;
+	$googlekeyword = 1;
+	$googleimagekeyword = 1;
+	$msnkeyword = 1;
+	$yahookeyword = 1;
+	}
+
+$cachename = $navig . $period . $site . $order.$rowdisplay . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang. $askkeyword. $baidukeyword. $googlekeyword.$googleimagekeyword.$msnkeyword.$yahookeyword;
 
 //start the caching
 cache($cachename);
@@ -43,7 +93,7 @@ include ("include/timecache.php");
 //clean table from crawler entry
 include ("include/cleaning-crawler-entry.php");
 //limite to
-if ($displayall == 'no') {
+if ($displayall == 'no' && $choosekeyword==0) {
 	$limitquery = 'LIMIT ' . $rowdisplay;
 } else {
 	$limitquery = '';
@@ -80,23 +130,23 @@ INNER JOIN crawlt_pages
 ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 WHERE $datetolookfor
 AND crawlt_site_id_site='" . sql_quote($site) . "'
-AND  crawlt_id_crawler IN ('1','2','3','4','5')    
+AND  crawlt_id_crawler IN ('1','2','3','4','5','6')    
 GROUP BY url_page , crawlt_id_crawler";
 $requetegoogle = db_query($sqlgoogle, $connexion);
 $nbrresult = mysql_num_rows($requetegoogle);
 if ($nbrresult >= 1) {
 	while ($ligne = mysql_fetch_row($requetegoogle)) {
-		if ($ligne[2] == 1) {
+		if ($ligne[2] == 1 && $googlekeyword == 1) {
 			$visitkeywordgoogle[$ligne[0]] = $ligne[1];
-		} elseif ($ligne[2] == 2) {
+		} elseif ($ligne[2] == 2 && $yahookeyword == 1) {
 			$visitkeywordYahoo[$ligne[0]] = $ligne[1];
-		} elseif ($ligne[2] == 3) {
+		} elseif ($ligne[2] == 3 && $msnkeyword == 1) {
 			$visitkeywordMSN[$ligne[0]] = $ligne[1];
-		} elseif ($ligne[2] == 4) {
+		} elseif ($ligne[2] == 4 && $askkeyword == 1) {
 			$visitkeywordask[$ligne[0]] = $ligne[1];
-		} elseif ($ligne[2] == 5) {
+		} elseif ($ligne[2] == 5 && $baidukeyword == 1) {
 			$visitkeywordexalead[$ligne[0]] = $ligne[1];
-		} elseif ($ligne[2] == 6) {
+		} elseif ($ligne[2] == 6 && $googleimagekeyword == 1) {
 			$visitkeywordgoogleimage[$ligne[0]] = $ligne[1];
 		}
 	}
@@ -106,6 +156,67 @@ mysql_close($connexion);
 //display-----------------------------------------------------------------------------------------------------------
 echo "<div class=\"content2\"><br><hr>\n";
 echo "</div>\n";
+
+echo "<div width='70%' align='center'><form action=\"index.php\" method=\"POST\"  style=\" font-size:13px; font-weight:bold; color: #003399;
+	font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif; \">\n";
+echo "<input type=\"hidden\" name ='navig' value=\"13\">\n";
+echo "<input type=\"hidden\" name ='site' value=\"".$site."\">\n";
+echo "<input type=\"hidden\" name ='period' value=\"".$period."\">\n";	
+echo "<input type=\"hidden\" name ='graphpos' value=\"".$graphpos."\">\n";
+echo "<input type=\"hidden\" name ='choosekeyword' value=\"1\">\n";								
+echo "<table>";
+if($askkeyword==1)
+	{
+	echo "<tr><td>" . $language['ask'] . "</td><td><input type=\"checkbox\" name=\"askkeyword\" value=\"1\" checked></td>\n";
+	}
+else
+	{
+	echo "<tr></tr><td>" . $language['ask'] . "</td><td><input type=\"checkbox\" name=\"askkeyword\" value=\"1\"></td>\n";
+	}
+if($baidukeyword==1)
+	{
+	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['baidu'] . "</td><td><input type=\"checkbox\" name=\"baidukeyword\" value=\"1\" checked></td>\n";
+	}
+else
+	{
+	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['baidu'] . "</td><td><input type=\"checkbox\" name=\"baidukeyword\" value=\"1\"></td>\n";
+	}
+if($googlekeyword==1)
+	{
+	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['google'] . "</td><td><input type=\"checkbox\" name=\"googlekeyword\" value=\"1\" checked></td>\n";
+	}
+else
+	{
+	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['google'] . "</td><td><input type=\"checkbox\" name=\"googlekeyword\" value=\"1\"></td>\n";
+	}
+if($googleimagekeyword==1)
+	{
+	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['googleimage'] . "</td><td><input type=\"checkbox\" name=\"googleimagekeyword\" value=\"1\" checked></td>\n";
+	}
+else
+	{
+	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['googleimage'] . "</td><td><input type=\"checkbox\" name=\"googleimagekeyword\" value=\"1\"></td>\n";
+	}
+if($msnkeyword==1)
+	{
+	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['msn'] . "</td><td><input type=\"checkbox\" name=\"msnkeyword\" value=\"1\" checked></td>\n";
+	}
+else
+	{
+	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['msn'] . "</td><td><input type=\"checkbox\" name=\"msnkeyword\" value=\"1\"></td>\n";
+	}
+if($yahookeyword==1)
+	{
+	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['yahoo'] . "</td><td><input type=\"checkbox\" name=\"yahookeyword\" value=\"1\" checked></td>\n";
+	}
+else
+	{
+	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['yahoo'] . "</td><td><input type=\"checkbox\" name=\"yahookeyword\" value=\"1\"></td>\n";
+	}
+	echo "<td>&nbsp;&nbsp;&nbsp;<input name='ok' type='submit'  value=' OK ' size='20' ></td></tr>\n";
+		
+echo "</table></div>\n";
+
 //to close the menu rollover
 echo "<div width='100%' height:'5px' onmouseover=\"javascript:montre();\">&nbsp;</div>\n";
 echo "<div class='tableaularge' align='center'>\n";
@@ -144,33 +255,40 @@ if (count($visitkeyword) >= 1) {
 	foreach ($visitkeyword as $keyword => $value) {
 		$crawlencode = urlencode($keyword);
 		$keyworddisplay = stripslashes(crawltcutkeyword($keyword, 50));
+		$i=0;
 		if (isset($visitkeywordask[$keyword])) {
 			$visitask = $visitkeywordask[$keyword];
+			$i++;
 		} else {
 			$visitask = '-';
 		}
 		if (isset($visitkeywordgoogle[$keyword])) {
 			$visitgoogle = $visitkeywordgoogle[$keyword];
+			$i++;
 		} else {
 			$visitgoogle = '-';
 		}
 		if (isset($visitkeywordgoogleimage[$keyword])) {
 			$visitgoogleimage = $visitkeywordgoogleimage[$keyword];
+			$i++;
 		} else {
 			$visitgoogleimage = '-';
 		}		
 		if (isset($visitkeywordMSN[$keyword])) {
 			$visitmsn = $visitkeywordMSN[$keyword];
+			$i++;
 		} else {
 			$visitmsn = '-';
 		}
 		if (isset($visitkeywordYahoo[$keyword])) {
 			$visityahoo = $visitkeywordYahoo[$keyword];
+			$i++;
 		} else {
 			$visityahoo = '-';
 		}
 		if (isset($visitkeywordexalead[$keyword])) {
 			$visitexalead = $visitkeywordexalead[$keyword];
+			$i++;
 		} else {
 			$visitexalead = '-';
 		}
@@ -181,7 +299,7 @@ if (count($visitkeyword) >= 1) {
 			$urlpage = $urlsite[$site] . $keyword;
 		}
 		//to limit the display to the selected number
-		if ($comptdata < $rowdisplay) {
+		if ($comptdata < $rowdisplay && $i>0) {
 			if ($comptligne % 2 == 0) {
 				echo "<tr><td class='tableau3g'";
 				if ($keywordcut == 1) {
