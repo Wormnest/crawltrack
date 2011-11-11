@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.1
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file:mapgraph3.php
 //----------------------------------------------------------------------
-//  Last update: 05/11/2011
+//  Last update: 12/11/2011
 //----------------------------------------------------------------------
 //create table for graph
 if ($navig == 23) {
@@ -25,10 +25,11 @@ if ($navig == 23) {
 		$yahoo1[] = $yahoovisitsumary[$data];
 		$ask1[] = $askvisitsumary[$data];
 		$exalead1[] = $exaleadvisitsumary[$data];
+		$yandex1[] = $yandexvisitsumary[$data];		
 		$referer1[] = $referervisitsumary[$data];
 		$direct1[] = $directvisitsumary[$data];
 		$unique1[] = $uniquevisitorsumary[$data];
-		$datatransfert2[$axexlabel[$data]] = $googlevisitsumary[$data] . "-" . $msnvisitsumary[$data] . "-" . $yahoovisitsumary[$data] . "-" . $askvisitsumary[$data] . "-" . $referervisitsumary[$data] . "-" . $directvisitsumary[$data] . "-" . $exaleadvisitsumary[$data] . "-" . $uniquevisitorsumary[$data]."-".$googleimagevisitsumary[$data];
+		$datatransfert2[$axexlabel[$data]] = $googlevisitsumary[$data] . "-" . $msnvisitsumary[$data] . "-" . $yahoovisitsumary[$data] . "-" . $askvisitsumary[$data] . "-" . $referervisitsumary[$data] . "-" . $directvisitsumary[$data] . "-" . $exaleadvisitsumary[$data] . "-" . $uniquevisitorsumary[$data]."-".$googleimagevisitsumary[$data]."-".$yandexvisitsumary[$data];
 	}
 } else {
 	foreach ($axex as $data) {
@@ -38,10 +39,11 @@ if ($navig == 23) {
 		$yahoo1[] = $yahoovisit[$data];
 		$ask1[] = $askvisit[$data];
 		$exalead1[] = $exaleadvisit[$data];
+		$yandex1[] = $yandexvisit[$data];		
 		$referer1[] = $referervisit[$data];
 		$direct1[] = $directvisit[$data];
 		$unique1[] = $uniquevisitor[$data];
-		$datatransfert2[$axexlabel[$data]] = $googlevisit[$data] . "-" . $msnvisit[$data] . "-" . $yahoovisit[$data] . "-" . $askvisit[$data] . "-" . $referervisit[$data] . "-" . $directvisit[$data] . "-" . $exaleadvisit[$data] . "-" . $uniquevisitor[$data]."-".$googleimagevisit[$data];
+		$datatransfert2[$axexlabel[$data]] = $googlevisit[$data] . "-" . $msnvisit[$data] . "-" . $yahoovisit[$data] . "-" . $askvisit[$data] . "-" . $referervisit[$data] . "-" . $directvisit[$data] . "-" . $exaleadvisit[$data] . "-" . $uniquevisitor[$data]."-".$googleimagevisit[$data]."-".$yandexvisitsumary[$data];
 	}
 }
 //prepare data to be transferred to graph file
@@ -129,6 +131,7 @@ do {
 	echo "&nbsp;" . $language['googleimage'] . ":&nbsp;" . $googleimage1[$iday] . "\n";	
 	echo "&nbsp;" . $language['msn'] . ":&nbsp;" . $msn1[$iday] . "\n";
 	echo "&nbsp;" . $language['yahoo'] . ":&nbsp;" . $yahoo1[$iday] . "&nbsp;\n";
+	echo "&nbsp;" . $language['yandex'] . ":&nbsp;" . $yandex1[$iday] . "&nbsp;\n";	
 	echo "&nbsp;" . $language['website3'] . ":&nbsp;" . $referer1[$iday] . "&nbsp;\n";
 	echo "&nbsp;" . $language['direct'] . ":&nbsp;" . $direct1[$iday] . "&nbsp;\n";
 	echo "</div>\n";
