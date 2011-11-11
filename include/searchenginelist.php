@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.1
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -21,7 +21,7 @@
  * Authors : phpMyVisites team and community
 */
 //----------------------------------------------------------------------
-//  Last update: 06/11/2011
+//  Last update: 11/11/2011
 //----------------------------------------------------------------------
 $crawltcssaattack = array("http:", "ftp:", "https:", "http%3a", "https%3a", "ht%20tp:", "htt%20p:", "http%20:", "h%20ttp:", "/etc/passwd", "ShellAdresi.TXT", "[evil_root]?", "http%3A%2F%2F","%68%74%74%70%3a","%68%74%74%70%73%3a","%48%54%54%50%3a","%48%54%54%50%53%3a","%3C?");
 $crawltsqlaattack = array("%20select%20", "%20like%20", "%20or%20", "%20where%20","%20SELECT%20", "%20LIKE%20", "%20OR%20", "%20WHERE%20");
@@ -89,6 +89,7 @@ $crawltgooglelist = array(
 "www.google.lv",
 "www.google.me",
 "www.google.mg",
+"www.google.mk",
 "www.google.ml",
 "www.google.mn",
 "www.google.ms",
@@ -279,6 +280,7 @@ $crawltgooglelist = array(
 "images.google.lv",
 "images.google.me",
 "images.google.mg",
+"images.google.mk",
 "images.google.ml",
 "images.google.mn",
 "images.google.ms",
@@ -467,6 +469,7 @@ $crawltgooglelist = array(
 "m.google.lv",
 "m.google.me",
 "m.google.mg",
+"m.google.mk",
 "m.google.ml",
 "m.google.mn",
 "m.google.ms",
@@ -695,7 +698,7 @@ $crawltyahoolist = array(
 "kr.dist.search.yahoo.com",
 "m.yahoo.com",
 "siteexplorer.search.yahoo.com",
-
+"us.yhs.search.yahoo.com",
 "images.search.yahoo.com",
 );
 
@@ -727,6 +730,7 @@ $crawltasklist = array(
 "sg.ask.com",
 "tr.ask.com",
 "uk.ask.com",
+"int.ask.com",
 );
 //exalead list no more used in 3.2.0
 $crawltexaleadlist = array(
@@ -737,6 +741,10 @@ $crawltexaleadlist = array(
 $crawltbaidulist = array(
 "www.baidu.com",
 "www.baidu.jp",
+);
+
+$crawltyandexlist = array(
+"yandex.ru",
 );
 
 $crawltbrowserlist = array(
