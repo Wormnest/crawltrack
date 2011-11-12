@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: crawltrack.base.php
 //----------------------------------------------------------------------
-//  Last update: 11/11/2011
+//  Last update: 12/11/2011
 //----------------------------------------------------------------------
 error_reporting(0);
 @set_time_limit(10);
@@ -653,8 +653,23 @@ else
 				{
 					$crawltsearchengine=0;
 				}
-			}			
-			//case visit send by one of the 7 searchengine
+			}
+			//test Aol
+			elseif(in_array("$crawltreferertreatment[host]",$crawltaollist))
+			{
+				$crawltsearchengine=8;
+				parse_str($crawltreferertreatment['query'],$crawlttabvar);
+				$crawltkeyword = $crawlttabvar['q'];
+				if($crawltkeyword=='')
+				{
+					$crawltkeyword = $crawlttabvar['query'];
+					if($crawltkeyword=='')
+					{
+						$crawltsearchengine=0;
+					}
+				}
+			}						
+			//case visit send by one of the 8 searchengines
 			if($crawltsearchengine !=0)
 			{
 				//check if the referer already exist, if not add it to the table
