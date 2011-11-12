@@ -571,6 +571,8 @@ $language['googleimage']="Google-Images";
 //3.3.2
 $language['yandex']="Яндекс";
 $language['aol']="Aol";
+$language['no_visitors_stats']="Count only crawlers";
+$language['no_visitors_stats2']="Didn't count any visit";
 //country code
 $country = array(
 

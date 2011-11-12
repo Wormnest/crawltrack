@@ -590,6 +590,8 @@ $language['googleimage']="Google-Images";
 //3.3.2
 $language['yandex']="Yandex";
 $language['aol']="Aol";
+$language['no_visitors_stats']="Compter seulement les robots";
+$language['no_visitors_stats2']="Ne compter aucune visite";
 //country code
 $country = array(
 "ad" => "Andorre",
