@@ -47,6 +47,7 @@ $visitask= 0;
 $visitexalead = 0;
 $visityandex = 0;
 $visitbaidu = 0;
+$visitaol = 0;
 $UVlast7days = array();
 $UVlast30days = array();
 //cache name
@@ -95,7 +96,10 @@ if ($totalvisitor > 0) {
 	}
 	if ($visitsendyandex > 0) {
 		$values2[$language['yandex']] = $visitsendyandex;
-	}	
+	}
+	if ($visitsendaol > 0) {
+		$values2[$language['aol']] = $visitsendaol;
+	}		
 	if ($visitsendother > 0) {
 		$values2[$language['website']] = $visitsendother;
 	}
@@ -417,7 +421,7 @@ AND  crawlt_id_referer='0')
 OR (date >='" . crawlt_sql_quote($daterequestUV2) . "' 
 AND date <'" . crawlt_sql_quote($datelocal2) . "' 
 AND crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
-AND  crawlt_id_crawler IN ('1','2','3','4','5','6','7'))
+AND  crawlt_id_crawler IN ('1','2','3','4','5','6','7','8'))
 OR (date >='" . crawlt_sql_quote($daterequestUV2) . "' 
 AND date <'" . crawlt_sql_quote($datelocal2) . "'  
 AND crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
