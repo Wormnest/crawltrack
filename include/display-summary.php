@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.1
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-summary.php
 //----------------------------------------------------------------------
-//  Last update: 05/11/2011
+//  Last update: 12/11/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -37,6 +37,7 @@ $msnvisitsumary = array();
 $yahoovisitsumary = array();
 $askvisitsumary = array();
 $exaleadvisitsumary = array();
+$yandexvisitsumary = array();
 $referervisitsumary = array();
 $directvisitsumary = array();
 $uniquevisitorsumary = array();
@@ -125,6 +126,7 @@ foreach ($listsiteid as $site) {
 		$yahoovisitsumary[$data] = $yahoovisit[$data] + @$yahoovisitsumary[$data];
 		$askvisitsumary[$data] = $askvisit[$data] + @$askvisitsumary[$data];
 		$exaleadvisitsumary[$data] = $exaleadvisit[$data] + @$exaleadvisitsumary[$data];
+		$yandexvisitsumary[$data] = $yandexvisit[$data] + @$yandexvisitsumary[$data];		
 		$referervisitsumary[$data] = $referervisit[$data] + @$referervisitsumary[$data];
 		$directvisitsumary[$data] = $directvisit[$data] + @$directvisitsumary[$data];
 		$uniquevisitorsumary[$data] = $uniquevisitor[$data] + @$uniquevisitorsumary[$data];
@@ -240,7 +242,7 @@ AND  crawlt_id_crawler='0'
 AND  crawlt_id_referer='0')
 OR (date >='" . crawlt_sql_quote($daterequestUV2) . "' 
 AND date <'" . crawlt_sql_quote($datelocal2) . "' 
-AND  crawlt_id_crawler IN ('1','2','3','4','5'))
+AND  crawlt_id_crawler IN ('1','2','3','4','5','6','7'))
 OR (date >='" . crawlt_sql_quote($daterequestUV2) . "' 
 AND date <'" . crawlt_sql_quote($datelocal2) . "'  
 AND  crawlt_id_crawler='0'
