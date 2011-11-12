@@ -383,9 +383,9 @@ font-size: 18px;
   }  
  
 #evolution {
-position: absolute;
-top: 475px;
-left: 80px;
+position: relative;
+top: -20px;
+left: 60px;
   font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;
   font-size: 14px; 
    font-weight:bold;
