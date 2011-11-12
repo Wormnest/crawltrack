@@ -956,6 +956,7 @@ $crawltaollist = array(
 "search.aol.co.ma",
 "search.aol.co.zm",
 "search.aol.co.zw",
+"wap.aol.com",
 );
 
 $crawltbrowserlist = array(
