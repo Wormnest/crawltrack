@@ -25,11 +25,12 @@ if ($navig == 23) {
 		$yahoo1[] = $yahoovisitsumary[$data];
 		$ask1[] = $askvisitsumary[$data];
 		$exalead1[] = $exaleadvisitsumary[$data];
-		$yandex1[] = $yandexvisitsumary[$data];		
+		$yandex1[] = $yandexvisitsumary[$data];	
+		$aol1[] = $aolvisitsumary[$data];			
 		$referer1[] = $referervisitsumary[$data];
 		$direct1[] = $directvisitsumary[$data];
 		$unique1[] = $uniquevisitorsumary[$data];
-		$datatransfert2[$axexlabel[$data]] = $googlevisitsumary[$data] . "-" . $msnvisitsumary[$data] . "-" . $yahoovisitsumary[$data] . "-" . $askvisitsumary[$data] . "-" . $referervisitsumary[$data] . "-" . $directvisitsumary[$data] . "-" . $exaleadvisitsumary[$data] . "-" . $uniquevisitorsumary[$data]."-".$googleimagevisitsumary[$data]."-".$yandexvisitsumary[$data];
+		$datatransfert2[$axexlabel[$data]] = $googlevisitsumary[$data] . "-" . $msnvisitsumary[$data] . "-" . $yahoovisitsumary[$data] . "-" . $askvisitsumary[$data] . "-" . $referervisitsumary[$data] . "-" . $directvisitsumary[$data] . "-" . $exaleadvisitsumary[$data] . "-" . $uniquevisitorsumary[$data]."-".$googleimagevisitsumary[$data]."-".$yandexvisitsumary[$data]."-".$aolvisitsumary[$data];
 	}
 } else {
 	foreach ($axex as $data) {
@@ -39,11 +40,12 @@ if ($navig == 23) {
 		$yahoo1[] = $yahoovisit[$data];
 		$ask1[] = $askvisit[$data];
 		$exalead1[] = $exaleadvisit[$data];
-		$yandex1[] = $yandexvisit[$data];		
+		$yandex1[] = $yandexvisit[$data];	
+		$aol1[] = $aolvisit[$data];			
 		$referer1[] = $referervisit[$data];
 		$direct1[] = $directvisit[$data];
 		$unique1[] = $uniquevisitor[$data];
-		$datatransfert2[$axexlabel[$data]] = $googlevisit[$data] . "-" . $msnvisit[$data] . "-" . $yahoovisit[$data] . "-" . $askvisit[$data] . "-" . $referervisit[$data] . "-" . $directvisit[$data] . "-" . $exaleadvisit[$data] . "-" . $uniquevisitor[$data]."-".$googleimagevisit[$data]."-".$yandexvisit[$data];
+		$datatransfert2[$axexlabel[$data]] = $googlevisit[$data] . "-" . $msnvisit[$data] . "-" . $yahoovisit[$data] . "-" . $askvisit[$data] . "-" . $referervisit[$data] . "-" . $directvisit[$data] . "-" . $exaleadvisit[$data] . "-" . $uniquevisitor[$data]."-".$googleimagevisit[$data]."-".$yandexvisit[$data]."-".$aolvisit[$data];
 	}
 }
 //prepare data to be transferred to graph file
@@ -125,6 +127,7 @@ $iday = 0;
 do {
 	echo "<div id=\"smenu" . ($iday + 131) . "\"  style=\"display:none; padding-left:10px; font-size:11px; color:#003399; font-family:Verdana,Geneva, Arial, Helvetica, Sans-Serif; text-align:left; border:2px solid navy; position:absolute; top:30px; left:-30px; background:#eee; width:960px;\">\n";
 	echo "&nbsp;" . $language['nbr_tot_visit_seo'] . ":&nbsp;" . $axexlabel[$axex[$iday]] . "&nbsp;\n";
+	echo "&nbsp;" . $language['aol'] . ":&nbsp;" . $aol1[$iday] . "\n";	
 	echo "&nbsp;" . $language['ask'] . ":&nbsp;" . $ask1[$iday] . "\n";
 	echo "&nbsp;" . $language['baidu'] . ":&nbsp;" . $exalead1[$iday] . "\n";
 	echo "&nbsp;" . $language['google'] . ":&nbsp;" . $google1[$iday] . "\n";
