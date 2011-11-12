@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.1
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -16,7 +16,7 @@
 //----------------------------------------------------------------------
 // this graph is made with artichow    website: www.artichow.org
 //----------------------------------------------------------------------
-//  Last update: 05/11/2011
+//  Last update: 12/11/2011
 //----------------------------------------------------------------------
 error_reporting(0);
 //initialize array
@@ -89,6 +89,7 @@ $legend4 = $language['website3']."  ";
 $legend5 = $language['direct']."  ";
 $legend6 = $language['baidu']."  ";
 $legend7 = $language['googleimage']."  ";
+$legend8 = $language['yandex']."  ";
 foreach ($datatransfert as $key => $value) {
 	$axex[] = $key;
 }
@@ -174,8 +175,9 @@ if ($typegraph == 'link') {
 		$direct[] = $cutdata[5];
 		$exalead[] = $cutdata[6];
 		$unique2[] = $cutdata[7];
-		$googleimage[] = $cutdata[8];		
-		$testvalue[] = $cutdata[0] + $cutdata[1] + $cutdata[2] + $cutdata[3] + $cutdata[4] + $cutdata[5] + $cutdata[6]+ $cutdata[8];
+		$googleimage[] = $cutdata[8];
+		$yandex[] = $cutdata[9];		
+		$testvalue[] = $cutdata[0] + $cutdata[1] + $cutdata[2] + $cutdata[3] + $cutdata[4] + $cutdata[5] + $cutdata[6] + $cutdata[8] + $cutdata[9];
 	}
 	$isvalue = 0;
 	$nbvalue = count($testvalue);
@@ -311,7 +313,7 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	}
 } else {
 	//ask
-	$plot = new BarPlot($ask, 1, 8);
+	$plot = new BarPlot($ask, 1, 9);
 	$debut = new Color(255, 255, 0);
 	$fin = new Color(215, 200, 0);
 	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
@@ -327,7 +329,7 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$group->add($plot);
 	
 	//exalead
-	$plot = new BarPlot($exalead, 2, 8);
+	$plot = new BarPlot($exalead, 2, 9);
 	$debut = new Color(90, 30, 30);
 	$fin = new Color(150, 100, 100);
 	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
@@ -342,7 +344,7 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$group->legend->add($plot, $legend6, LEGEND_BACKGROUND);
 	$group->add($plot);
 	//google
-	$plot = new BarPlot($google, 3, 8);
+	$plot = new BarPlot($google, 3, 9);
 	$debut = new Color(0, 128, 0);
 	$fin = new Color(144, 238, 144);
 	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
@@ -357,7 +359,7 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$group->add($plot);
 
 	//googleimage
-	$plot = new BarPlot($googleimage, 4, 8);
+	$plot = new BarPlot($googleimage, 4, 9);
 	$debut = new Color(144, 238, 144);
 	$fin = new Color(238, 250, 238);
 	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
@@ -374,7 +376,7 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 
 	
 	//msn
-	$plot = new BarPlot($msn, 5, 8);
+	$plot = new BarPlot($msn, 5, 9);
 	$debut = new Color(255, 0, 0);
 	$fin = new Color(255, 215, 0);
 	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
@@ -389,7 +391,7 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$group->add($plot);
 	
 	//yahoo
-	$plot = new BarPlot($yahoo, 6, 8);
+	$plot = new BarPlot($yahoo, 6, 9);
 	$debut = new Color(0, 51, 153);
 	$fin = new Color(0, 191, 255);
 	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
@@ -403,8 +405,24 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$group->legend->add($plot, $legend3, LEGEND_BACKGROUND);
 	$group->add($plot);
 	
+	//yandex
+	$plot = new BarPlot($yandex, 7, 9);
+	$debut = new Color(0, 10, 10);
+	$fin = new Color(0, 51, 153);
+	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
+	$plot->setXAxisZero(TRUE);
+	$plot->setSpace(2, 2, 20, 0);
+	$plot->barShadow->setSize(2);
+	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
+	$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+	$plot->barShadow->smooth(TRUE);
+	//legend
+	$group->legend->add($plot, $legend8, LEGEND_BACKGROUND);
+	$group->add($plot);	
+	
+	
 	//referer
-	$plot = new BarPlot($referer, 7, 8);
+	$plot = new BarPlot($referer, 8, 9);
 	$debut = new Color(0, 0, 0);
 	$fin = new Color(255, 255, 255);
 	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
@@ -418,7 +436,7 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$group->legend->add($plot, $legend4, LEGEND_BACKGROUND);
 	$group->add($plot);
 	//direct
-	$plot = new BarPlot($direct, 8, 8);
+	$plot = new BarPlot($direct, 9, 9);
 	$debut = new Color(120, 0, 0);
 	$fin = new Color(255, 0, 0);
 	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
@@ -463,9 +481,9 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$group->legend->setPosition(NULL, 0.87);
 	if ($ttf == 'ok') {
 		if ($crawltlang == 'russian') {
-			$group->legend->setTextFont(new simsun(7));
+			$group->legend->setTextFont(new simsun(6));
 		} else {
-			$group->legend->setTextFont(new Tuffy(10));
+			$group->legend->setTextFont(new Tuffy(9));
 		}
 	} else {
 		$group->legend->setTextFont(new Font(2));
