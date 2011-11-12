@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.1
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: mail.php
 //----------------------------------------------------------------------
-//  Last update 05/11/2011
+//  Last update 12/11/2011
 //----------------------------------------------------------------------
 //update the crawlt_config table
 $sqlcrawltupdatemail = "UPDATE crawlt_config SET datelastmail='" . crawlt_sql_quote($crawltdatetoday) . "'";
@@ -205,6 +205,12 @@ foreach ($listsitecrawlt as $site) {
 		if ($visitsendexalead > 0) {
 			$values2[$language['baidu']] = $visitsendexalead;
 		}
+		if ($visitsendyandex > 0) {
+			$values2[$language['yandex']] = $visitsendyandex;
+		}
+		if ($visitsendaol > 0) {
+			$values2[$language['aol']] = $visitsendaol;
+		}				
 		if ($visitsendother > 0) {
 			$values2[$language['website3']] = $visitsendother;
 		}
@@ -590,7 +596,7 @@ foreach ($listsitecrawlt as $site) {
 	} else {
 		$mail->IsHTML(false);
 	}
-	$mail->FromName = "CrawlTrack 3-3-1";
+	$mail->FromName = "CrawlTrack 3-3-2";
 	$mail->Subject = $language['mailsubject'] . "--" . $crawltsitename[$site];
 	$mail->Body = $crawltmessage;
 	$crawltemail = explode(',', $crawltdest);
