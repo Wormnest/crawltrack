@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-entrypage.php
 //----------------------------------------------------------------------
-//  Last update: 11/11/2011
+//  Last update: 12/11/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -27,6 +27,7 @@ $visitkeywordYahoo = array();
 $visitkeywordMSN = array();
 $visitkeywordask = array();
 $visitkeywordexalead = array();
+$visitkeywordyandex = array();
 $visitkeyword = array();
 
 //collect post data
@@ -68,6 +69,11 @@ if($choosekeyword==1)
 	} else {
 		$yahookeyword = 0;
 	}
+	if (isset($_POST['yandexkeyword'])) {
+		$yandexkeyword = (int)$_POST['yandexkeyword'];
+	} else {
+		$yandexkeyword = 0;
+	}	
 	}
 else
 	{
@@ -77,9 +83,10 @@ else
 	$googleimagekeyword = 1;
 	$msnkeyword = 1;
 	$yahookeyword = 1;
+	$yandexkeyword = 1;	
 	}
 
-$cachename = $navig . $period . $site . $order.$rowdisplay . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang. $askkeyword. $baidukeyword. $googlekeyword.$googleimagekeyword.$msnkeyword.$yahookeyword;
+$cachename = $navig . $period . $site . $order.$rowdisplay . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang. $askkeyword. $baidukeyword. $googlekeyword.$googleimagekeyword.$msnkeyword.$yahookeyword.$yandexkeyword;
 
 //start the caching
 cache($cachename);
@@ -130,7 +137,7 @@ INNER JOIN crawlt_pages
 ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 WHERE $datetolookfor
 AND crawlt_site_id_site='" . sql_quote($site) . "'
-AND  crawlt_id_crawler IN ('1','2','3','4','5','6')    
+AND  crawlt_id_crawler IN ('1','2','3','4','5','6','7')    
 GROUP BY url_page , crawlt_id_crawler";
 $requetegoogle = db_query($sqlgoogle, $connexion);
 $nbrresult = mysql_num_rows($requetegoogle);
@@ -148,6 +155,8 @@ if ($nbrresult >= 1) {
 			$visitkeywordexalead[$ligne[0]] = $ligne[1];
 		} elseif ($ligne[2] == 6 && $googleimagekeyword == 1) {
 			$visitkeywordgoogleimage[$ligne[0]] = $ligne[1];
+		} elseif ($ligne[2] == 7 && $yandexkeyword == 1) {
+			$visitkeywordyandex[$ligne[0]] = $ligne[1];
 		}
 	}
 }
@@ -181,6 +190,14 @@ else
 	{
 	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['baidu'] . "</td><td><input type=\"checkbox\" name=\"baidukeyword\" value=\"1\"></td>\n";
 	}
+if($msnkeyword==1)
+	{
+	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['msn'] . "</td><td><input type=\"checkbox\" name=\"msnkeyword\" value=\"1\" checked></td>\n";
+	}
+else
+	{
+	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['msn'] . "</td><td><input type=\"checkbox\" name=\"msnkeyword\" value=\"1\"></td>\n";
+	}	
 if($googlekeyword==1)
 	{
 	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['google'] . "</td><td><input type=\"checkbox\" name=\"googlekeyword\" value=\"1\" checked></td>\n";
@@ -197,14 +214,6 @@ else
 	{
 	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['googleimage'] . "</td><td><input type=\"checkbox\" name=\"googleimagekeyword\" value=\"1\"></td>\n";
 	}
-if($msnkeyword==1)
-	{
-	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['msn'] . "</td><td><input type=\"checkbox\" name=\"msnkeyword\" value=\"1\" checked></td>\n";
-	}
-else
-	{
-	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['msn'] . "</td><td><input type=\"checkbox\" name=\"msnkeyword\" value=\"1\"></td>\n";
-	}
 if($yahookeyword==1)
 	{
 	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['yahoo'] . "</td><td><input type=\"checkbox\" name=\"yahookeyword\" value=\"1\" checked></td>\n";
@@ -213,6 +222,14 @@ else
 	{
 	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['yahoo'] . "</td><td><input type=\"checkbox\" name=\"yahookeyword\" value=\"1\"></td>\n";
 	}
+if($yandexkeyword==1)
+	{
+	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['yandex'] . "</td><td><input type=\"checkbox\" name=\"yandexkeyword\" value=\"1\" checked></td>\n";
+	}
+else
+	{
+	echo "<td>&nbsp;&nbsp;&nbsp;" . $language['yandex'] . "</td><td><input type=\"checkbox\" name=\"yandexkeyword\" value=\"1\"></td>\n";
+	}	
 	echo "<td>&nbsp;&nbsp;&nbsp;<input name='ok' type='submit'  value=' OK ' size='20' ></td></tr>\n";
 		
 echo "</table></div>\n";
@@ -225,7 +242,7 @@ if (count($visitkeyword) >= 1) {
 	echo "<tr><th class='tableau1' colspan=\"2\" rowspan=\"2\">\n";
 	echo "" . $language['entry-page'] . "\n";
 	echo "</th>\n";
-	echo "<th class='tableau2'colspan=\"6\">\n";
+	echo "<th class='tableau2'colspan=\"7\">\n";
 	echo "" . $language['nbr_tot_visit_seo'] . "\n";
 	echo "</th></tr>\n";
 	echo "<tr>\n";
@@ -236,17 +253,20 @@ if (count($visitkeyword) >= 1) {
 	echo "" . $language['baidu'] . "\n";
 	echo "</th>\n";
 	echo "<th class='tableau20'>\n";
+	echo "" . $language['msn'] . "\n";
+	echo "</th>\n";	
+	echo "<th class='tableau20'>\n";
 	echo "" . $language['google'] . "\n";
 	echo "</th>\n";
 	echo "<th class='tableau20'>\n";
 	echo "" . $language['googleimage'] . "\n";
 	echo "</th>\n";	
 	echo "<th class='tableau20'>\n";
-	echo "" . $language['msn'] . "\n";
-	echo "</th>\n";
-	echo "<th class='tableau200'>\n";
 	echo "" . $language['yahoo'] . "\n";
 	echo "</th>\n";
+	echo "<th class='tableau200'>\n";
+	echo "" . $language['yandex'] . "\n";
+	echo "</th>\n";	
 	echo "</tr>\n";
 	//counter for alternate color lane
 	$comptligne = 2;
@@ -292,6 +312,13 @@ if (count($visitkeyword) >= 1) {
 		} else {
 			$visitexalead = '-';
 		}
+		if (isset($visitkeywordyandex[$keyword])) {
+			$visityandex = $visitkeywordyandex[$keyword];
+			$i++;			
+		} else {
+			$visityandex = '-';
+		}	
+		
 		//to avoid problem if the url is enter in the database with http://
 		if (!preg_match('#^http://#i', $urlsite[$site])) {
 			$urlpage = "http://" . $urlsite[$site] . $keyword;
@@ -309,12 +336,13 @@ if (count($visitkeyword) >= 1) {
 				echo "<td class='tableau6' width=\"8%\">\n";
 				echo "<a href='" . $urlpage . "'><img src=\"./images/page.png\" width=\"16\" height=\"16\" border=\"0\" ></a>\n";
 				echo "</td> \n";
-				echo "<td class='tableau3' width=\"8%\">" . numbdisp($visitask) . "</td>\n";
-				echo "<td class='tableau3' width=\"8%\">" . numbdisp($visitexalead) . "</td>\n";
-				echo "<td class='tableau3' width=\"8%\">" . numbdisp($visitgoogle) . "</td>\n";
-				echo "<td class='tableau3' width=\"14%\">" . numbdisp($visitgoogleimage) . "</td>\n";				
-				echo "<td class='tableau3' width=\"8%\">" . numbdisp($visitmsn) . "</td>\n";
-				echo "<td class='tableau5' width=\"8%\">" . numbdisp($visityahoo) . "</td></tr>\n";
+				echo "<td class='tableau3' width=\"6%\">" . numbdisp($visitask) . "</td>\n";
+				echo "<td class='tableau3' width=\"7%\">" . numbdisp($visitexalead) . "</td>\n";
+				echo "<td class='tableau3' width=\"6%\">" . numbdisp($visitmsn) . "</td>\n";				
+				echo "<td class='tableau3' width=\"7%\">" . numbdisp($visitgoogle) . "</td>\n";
+				echo "<td class='tableau3' width=\"14%\">" . numbdisp($visitgoogleimage) . "</td>\n";			
+				echo "<td class='tableau3' width=\"7%\">" . numbdisp($visityahoo) . "</td>\n";
+				echo "<td class='tableau5' width=\"7%\">" . numbdisp($visityandex) . "</td></tr>\n";				
 			} else {
 				echo "<tr><td class='tableau30g'";
 				if ($keywordcut == 1) {
@@ -324,12 +352,13 @@ if (count($visitkeyword) >= 1) {
 				echo "<td class='tableau60' width=\"8%\">\n";
 				echo "<a href='" . $urlpage . "'><img src=\"./images/page.png\" width=\"16\" height=\"16\" border=\"0\" ></a>\n";
 				echo "</td> \n";
-				echo "<td class='tableau30' width=\"8%\">" . numbdisp($visitask) . "</td>\n";
-				echo "<td class='tableau30' width=\"8%\">" . numbdisp($visitexalead) . "</td>\n";
-				echo "<td class='tableau30' width=\"8%\">" . numbdisp($visitgoogle) . "</td>\n";
-				echo "<td class='tableau30' width=\"14%\">" . numbdisp($visitgoogleimage) . "</td>\n";				
-				echo "<td class='tableau30' width=\"8%\">" . numbdisp($visitmsn) . "</td>\n";
-				echo "<td class='tableau50' width=\"8%\">" . numbdisp($visityahoo) . "</td></tr>\n";
+				echo "<td class='tableau30' width=\"6%\">" . numbdisp($visitask) . "</td>\n";
+				echo "<td class='tableau30' width=\"7%\">" . numbdisp($visitexalead) . "</td>\n";
+				echo "<td class='tableau30' width=\"6%\">" . numbdisp($visitmsn) . "</td>\n";				
+				echo "<td class='tableau30' width=\"7%\">" . numbdisp($visitgoogle) . "</td>\n";
+				echo "<td class='tableau30' width=\"14%\">" . numbdisp($visitgoogleimage) . "</td>\n";			
+				echo "<td class='tableau30' width=\"7%\">" . numbdisp($visityahoo) . "</td>\n";
+				echo "<td class='tableau50' width=\"7%\">" . numbdisp($visityandex) . "</td></tr>\n";
 			}
 			if ($keywordcut == 1) {
 				echo "<div id=\"smenu" . ($comptligne + 9) . "\"  style=\"display:none; font-size:14px; font-weight:bold; color:#ff0000; font-family:Verdana,Geneva, Arial, Helvetica, Sans-Serif; text-align:left; border:2px solid navy; position:absolute; top:" . (240 + (($comptligne - 3) * 25)) . "px; left:20px; background:#fff;\">\n";

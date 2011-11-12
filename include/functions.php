@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.9
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: functions.php
 //----------------------------------------------------------------------
-//  Last update: 09/03/2011
+//  Last update: 12/11/2011
 //----------------------------------------------------------------------
 
 /*
@@ -384,14 +384,18 @@ function random($car) {
 //function to format the numbers with specified decimals for display
 function numbdisp($value, $decimals = 0) {
 	global $crawltlang;
-	// Use a default value if needed
-	if($decimals > 2 || $decimals < 0 || is_null($decimals))
-		$decimals = 0;
-	if ($crawltlang == 'french') {
-		$value = number_format($value,  $decimals, ",", " ");
-	} else {
-		$value = number_format($value,  $decimals, ".", ",");
-	}
+	//test if numeric
+	if(is_numeric($value))
+		{
+		// Use a default value if needed
+		if($decimals > 2 || $decimals < 0 || is_null($decimals))
+			$decimals = 0;
+		if ($crawltlang == 'french') {
+			$value = number_format($value,  $decimals, ",", " ");
+		} else {
+			$value = number_format($value,  $decimals, ".", ",");
+		}
+		}
 	return $value;
 }
 

@@ -123,7 +123,7 @@ do {
 echo "</map>\n";
 $iday = 0;
 do {
-	echo "<div id=\"smenu" . ($iday + 131) . "\"  style=\"display:none; padding-left:10px; font-size:12px; color:#003399; font-family:Verdana,Geneva, Arial, Helvetica, Sans-Serif; text-align:left; border:2px solid navy; position:absolute; top:30px; left:-30px; background:#eee; width:960px;\">\n";
+	echo "<div id=\"smenu" . ($iday + 131) . "\"  style=\"display:none; padding-left:10px; font-size:11px; color:#003399; font-family:Verdana,Geneva, Arial, Helvetica, Sans-Serif; text-align:left; border:2px solid navy; position:absolute; top:30px; left:-30px; background:#eee; width:960px;\">\n";
 	echo "&nbsp;" . $language['nbr_tot_visit_seo'] . ":&nbsp;" . $axexlabel[$axex[$iday]] . "&nbsp;\n";
 	echo "&nbsp;" . $language['ask'] . ":&nbsp;" . $ask1[$iday] . "\n";
 	echo "&nbsp;" . $language['baidu'] . ":&nbsp;" . $exalead1[$iday] . "\n";
