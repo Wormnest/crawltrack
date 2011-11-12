@@ -38,6 +38,7 @@ $yahoovisitsumary = array();
 $askvisitsumary = array();
 $exaleadvisitsumary = array();
 $yandexvisitsumary = array();
+$aolvisitsumary = array();
 $referervisitsumary = array();
 $directvisitsumary = array();
 $uniquevisitorsumary = array();
@@ -126,7 +127,8 @@ foreach ($listsiteid as $site) {
 		$yahoovisitsumary[$data] = $yahoovisit[$data] + @$yahoovisitsumary[$data];
 		$askvisitsumary[$data] = $askvisit[$data] + @$askvisitsumary[$data];
 		$exaleadvisitsumary[$data] = $exaleadvisit[$data] + @$exaleadvisitsumary[$data];
-		$yandexvisitsumary[$data] = $yandexvisit[$data] + @$yandexvisitsumary[$data];		
+		$yandexvisitsumary[$data] = $yandexvisit[$data] + @$yandexvisitsumary[$data];
+		$aolvisitsumary[$data] = $aolvisit[$data] + @$aolvisitsumary[$data];				
 		$referervisitsumary[$data] = $referervisit[$data] + @$referervisitsumary[$data];
 		$directvisitsumary[$data] = $directvisit[$data] + @$directvisitsumary[$data];
 		$uniquevisitorsumary[$data] = $uniquevisitor[$data] + @$uniquevisitorsumary[$data];
@@ -242,7 +244,7 @@ AND  crawlt_id_crawler='0'
 AND  crawlt_id_referer='0')
 OR (date >='" . crawlt_sql_quote($daterequestUV2) . "' 
 AND date <'" . crawlt_sql_quote($datelocal2) . "' 
-AND  crawlt_id_crawler IN ('1','2','3','4','5','6','7'))
+AND  crawlt_id_crawler IN ('1','2','3','4','5','6','7','8'))
 OR (date >='" . crawlt_sql_quote($daterequestUV2) . "' 
 AND date <'" . crawlt_sql_quote($datelocal2) . "'  
 AND  crawlt_id_crawler='0'

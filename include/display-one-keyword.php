@@ -27,6 +27,7 @@ $visitkeywordMSN = array();
 $visitkeywordask = array();
 $visitkeywordexalead = array();
 $visitkeywordyandex = array();
+$visitkeywordaol = array();
 $visitkeyword = array();
 $visitkeyworddisplay = array();
 $positioncd = array();
@@ -41,6 +42,7 @@ $nbrresultgoogleimage=0;
 $nbrresultask=0;
 $nbrresultexalead=0;
 $nbrresultyandex=0;
+$nbrresultaol=0;
 //collect post data
 if (isset($_POST['choosekeyword'])) {
 	$choosekeyword = (int)$_POST['choosekeyword'];
@@ -85,6 +87,11 @@ if($choosekeyword==1)
 	} else {
 		$yandexkeyword = 0;
 	}	
+	if (isset($_POST['aolkeyword'])) {
+		$aolkeyword = (int)$_POST['aolkeyword'];
+	} else {
+		$aolkeyword = 0;
+	}		
 	}
 else
 	{
@@ -95,9 +102,10 @@ else
 	$msnkeyword = 1;
 	$yahookeyword = 1;
 	$yandexkeyword = 1;	
+	$aolkeyword = 1;
 	}
 
-$cachename = $navig . $period . $site . $order.$rowdisplay . $crawlencode . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang. $askkeyword. $baidukeyword. $googlekeyword.$googleimagekeyword.$msnkeyword.$yahookeyword.$yandexkeyword;
+$cachename = $navig . $period . $site . $order.$rowdisplay . $crawlencode . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang. $askkeyword. $baidukeyword. $googlekeyword.$googleimagekeyword.$msnkeyword.$yahookeyword.$yandexkeyword.$aolkeyword;
 
 //start the caching
 cache($cachename);
@@ -512,6 +520,28 @@ if ($nbrresultyandex >= 1) {
 	}
 }
 }
+//request to have the keyword for Aol
+if($aolkeyword==1)
+{
+$sqlaol = "SELECT  url_page, count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))
+FROM crawlt_visits_human
+INNER JOIN crawlt_pages
+ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
+INNER JOIN crawlt_keyword
+ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword 
+WHERE  $datetolookfor 
+AND crawlt_site_id_site='" . sql_quote($site) . "'
+AND keyword='" . sql_quote($crawler2) . "'
+AND crawlt_id_crawler= '8'    
+GROUP BY url_page";
+$requeteaol = db_query($sqlaol, $connexion);
+$nbrresultaol = mysql_num_rows($requeteaol);
+if ($nbrresultaol >= 1) {
+	while ($ligne = mysql_fetch_row($requeteaol)) {
+		$visitkeywordaol[$ligne[0]] = $ligne[1];
+	}
+}
+}
 //calculation of total number of entry per keyword
 $visitkeyword = array();
 if ($nbrresultgoogle >= 1) {
@@ -546,6 +576,11 @@ if ($nbrresultexalead >= 1) {
 }
 if ($nbrresultyandex >= 1) {
 	foreach ($visitkeywordyandex as $key => $value) {
+		$visitkeyword[$key] = @$visitkeyword[$key] + $value;
+	}
+}
+if ($nbrresultaol >= 1) {
+	foreach ($visitkeywordaol as $key => $value) {
 		$visitkeyword[$key] = @$visitkeyword[$key] + $value;
 	}
 }
@@ -640,7 +675,7 @@ if (count($countvisithost) >= 1) {
 	}
 	echo "</table><br>\n";
 }
-if (count($visitkeyword) >= 1) {
+
 	echo "<h2>" . $language['entry-page'] . "</h2><br>";
 	
 	echo "<div width='70%' align='center'><form action=\"index.php\" method=\"POST\"  style=\" font-size:13px; font-weight:bold; color: #003399;
@@ -652,13 +687,21 @@ if (count($visitkeyword) >= 1) {
 	echo "<input type=\"hidden\" name ='crawler' value=\"".$crawler."\">\n";
 	echo "<input type=\"hidden\" name ='choosekeyword' value=\"1\">\n";								
 	echo "<table>";
-	if($askkeyword==1)
+	if($aolkeyword==1)
 		{
-		echo "<tr><td>" . $language['ask'] . "</td><td><input type=\"checkbox\" name=\"askkeyword\" value=\"1\" checked></td>\n";
+		echo "<tr><td>" . $language['aol'] . "</td><td><input type=\"checkbox\" name=\"aolkeyword\" value=\"1\" checked></td>\n";
 		}
 	else
 		{
-		echo "<tr></tr><td>" . $language['ask'] . "</td><td><input type=\"checkbox\" name=\"askkeyword\" value=\"1\"></td>\n";
+		echo "<tr><td>" . $language['aol'] . "</td><td><input type=\"checkbox\" name=\"aolkeyword\" value=\"1\"></td>\n";
+		}			
+	if($askkeyword==1)
+		{
+		echo "<td>&nbsp;&nbsp;&nbsp;" . $language['ask'] . "</td><td><input type=\"checkbox\" name=\"askkeyword\" value=\"1\" checked></td>\n";
+		}
+	else
+		{
+		echo "<td>&nbsp;&nbsp;&nbsp;" . $language['ask'] . "</td><td><input type=\"checkbox\" name=\"askkeyword\" value=\"1\"></td>\n";
 		}
 	if($baidukeyword==1)
 		{
@@ -711,15 +754,19 @@ if (count($visitkeyword) >= 1) {
 		echo "<td>&nbsp;&nbsp;&nbsp;<input name='ok' type='submit'  value=' OK ' size='20' ></td></tr>\n";
 			
 	echo "</table></div><br>\n";		
+if (count($visitkeyword) >= 1) {
 	
 	echo "<table   cellpadding='0px' cellspacing='0' width='100%'>\n";
 	echo "<tr><th class='tableau1' colspan=\"2\" rowspan=\"2\">\n";
 	echo "" . $language['entry-page'] . "\n";
 	echo "</th>\n";
-	echo "<th class='tableau2'colspan=\"7\">\n";
+	echo "<th class='tableau2'colspan=\"8\">\n";
 	echo "" . $language['nbr_tot_visit_seo'] . "\n";
 	echo "</th></tr>\n";
 	echo "<tr>\n";
+	echo "<th class='tableau20'>\n";
+	echo "" . $language['aol'] . "\n";
+	echo "</th>\n";	
 	echo "<th class='tableau20'>\n";
 	echo "" . $language['ask'] . "\n";
 	echo "</th>\n";
@@ -783,7 +830,12 @@ if (count($visitkeyword) >= 1) {
 			$visityandex = $visitkeywordyandex[$keyword];
 		} else {
 			$visityandex = '-';
-		}		
+		}
+		if (isset($visitkeywordaol[$keyword])) {
+			$visitaol = $visitkeywordaol[$keyword];
+		} else {
+			$visitaol = '-';
+		}				
 		//to avoid problem if the url is enter in the database with http://
 		if (!preg_match('#^http://#i', $urlsite[$site])) {
 			$urlpage = "http://" . $urlsite[$site] . $keyword;
@@ -799,6 +851,7 @@ if (count($visitkeyword) >= 1) {
 			echo "<td class='tableau6' width=\"8%\">\n";
 			echo "<a href='" . $urlpage . "'><img src=\"./images/page.png\" width=\"16\" height=\"16\" border=\"0\" ></a>\n";
 			echo "</td> \n";
+			echo "<td class='tableau3' width=\"6%\">" . numbdisp($visitaol) . "</td>\n";			
 			echo "<td class='tableau3' width=\"6%\">" . numbdisp($visitask) . "</td>\n";
 			echo "<td class='tableau3' width=\"7%\">" . numbdisp($visitexalead) . "</td>\n";
 			echo "<td class='tableau3' width=\"6%\">" . numbdisp($visitmsn) . "</td>\n";			
@@ -815,6 +868,7 @@ if (count($visitkeyword) >= 1) {
 			echo "<td class='tableau60' width=\"8%\">\n";
 			echo "<a href='" . $urlpage . "'><img src=\"./images/page.png\" width=\"16\" height=\"16\" border=\"0\" ></a>\n";
 			echo "</td> \n";
+			echo "<td class='tableau30' width=\"6%\">" . numbdisp($visitaol) . "</td>\n";			
 			echo "<td class='tableau30' width=\"6%\">" . numbdisp($visitask) . "</td>\n";
 			echo "<td class='tableau30' width=\"7%\">" . numbdisp($visitexalead) . "</td>\n";
 			echo "<td class='tableau30' width=\"6%\">" . numbdisp($visitmsn) . "</td>\n";			
@@ -847,7 +901,7 @@ if (count($visitkeyword) >= 1) {
 		echo "<a href=\"index.php?navig=$navig&period=$period&site=$site&crawler=$crawlencode&order=$order&displayall=yes&graphpos=$graphpos\">" . $language['show_all'] . "</a></span></h2>";
 	}
 	echo "<br><br><br><br><br>\n";
-} else {
+} else {	
 	echo "<h1>" . $language['no_visit'] . "</h1>\n";
 	echo "<br><br><br><br><br>\n";
 }
