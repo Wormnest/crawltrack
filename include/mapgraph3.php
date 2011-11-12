@@ -125,8 +125,8 @@ do {
 echo "</map>\n";
 $iday = 0;
 do {
-	echo "<div id=\"smenu" . ($iday + 131) . "\"  style=\"display:none; padding-left:10px; font-size:11px; color:#003399; font-family:Verdana,Geneva, Arial, Helvetica, Sans-Serif; text-align:left; border:2px solid navy; position:absolute; top:30px; left:-30px; background:#eee; width:960px;\">\n";
-	echo "&nbsp;" . $language['nbr_tot_visit_seo'] . ":&nbsp;" . $axexlabel[$axex[$iday]] . "&nbsp;\n";
+	echo "<div id=\"smenu" . ($iday + 131) . "\"  style=\"display:none; padding-left:5px; font-size:11px; color:#003399; font-family:Verdana,Geneva, Arial, Helvetica, Sans-Serif; text-align:left; border:2px solid navy; position:absolute; top:30px; left:-35px; background:#eee; width:970px;\">\n";
+	echo $language['nbr_tot_visit_seo'] . ":&nbsp;" . $axexlabel[$axex[$iday]] . "&nbsp;\n";
 	echo "&nbsp;" . $language['aol'] . ":&nbsp;" . $aol1[$iday] . "\n";	
 	echo "&nbsp;" . $language['ask'] . ":&nbsp;" . $ask1[$iday] . "\n";
 	echo "&nbsp;" . $language['baidu'] . ":&nbsp;" . $exalead1[$iday] . "\n";
@@ -136,7 +136,7 @@ do {
 	echo "&nbsp;" . $language['yahoo'] . ":&nbsp;" . $yahoo1[$iday] . "&nbsp;\n";
 	echo "&nbsp;" . $language['yandex'] . ":&nbsp;" . $yandex1[$iday] . "&nbsp;\n";	
 	echo "&nbsp;" . $language['website3'] . ":&nbsp;" . $referer1[$iday] . "&nbsp;\n";
-	echo "&nbsp;" . $language['direct'] . ":&nbsp;" . $direct1[$iday] . "&nbsp;\n";
+	echo "&nbsp;" . $language['direct'] . ":&nbsp;" . $direct1[$iday] . "\n";
 	echo "</div>\n";
 	$iday++;
 } while ($iday < $nbday);
