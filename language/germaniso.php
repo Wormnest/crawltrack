@@ -16,7 +16,7 @@
 //----------------------------------------------------------------------
 // file: germaniso.php
 //----------------------------------------------------------------------
-//  Last update: 11/11/2011
+//  Last update: 12/11/2011
 //----------------------------------------------------------------------
 $language= array();
 //installation
@@ -572,6 +572,7 @@ $language['two_year_data_human']="alle alten, menschlichen Besuche aelter als zw
 $language['googleimage']="Google-Images";
 //3.3.2
 $language['yandex']="Yandex";
+$language['aol']="Aol";
 //country code
 $country = array(
 "ad" => "Andorra",

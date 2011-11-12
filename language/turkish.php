@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // Translator : Korhan MULCAR 
 //----------------------------------------------------------------------
-//  Last update: 11/11/2011
+//  Last update: 12/11/2011
 //----------------------------------------------------------------------
 $language= array();
 //installation
@@ -571,6 +571,7 @@ $language['two_year_data_human']="iki yıldan fazla tüm  eski  ziyaretçi";
 $language['googleimage']="Google-Images";
 //3.3.2
 $language['yandex']="Yandex";
+$language['aol']="Aol";
 //country code
 $country = array(
     "ad" => "Andorra",

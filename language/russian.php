@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // translation on russian: Goodluck Dmitry(Cema) http://goodluck.org.ua
 //----------------------------------------------------------------------
-//  Last update: 11/11/2011
+//  Last update: 12/11/2011
 //----------------------------------------------------------------------
 $language= array();
 //installation
@@ -572,6 +572,7 @@ $language['two_year_data_human']="всех старых посетителей �
 $language['googleimage']="Google-Images";
 //3.3.2
 $language['yandex']="Яндекс";
+$language['aol']="Aol";
 //country code
 $country = array(
 
