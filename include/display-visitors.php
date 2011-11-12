@@ -363,7 +363,10 @@ if ($totalvisitor > 0) {
 	}
 	if ($visitsendyandex > 0) {
 		$values2['yandex'] = $visitsendyandex;
-	}	
+	}
+	if ($visitsendaol > 0) {
+		$values2['aol'] = $visitsendaol;
+	}		
 	if ($visitsendother > 0) {
 		$values2['website3'] = $visitsendother;
 	}
