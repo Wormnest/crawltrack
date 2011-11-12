@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: admin.php
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
+//  Last update: 12/11/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -58,6 +58,17 @@ if ($nbrresult >= 1) {
 		$urlsite[$ligne[0]] = $ligne[2];
 	}
 }
+//to check crawltrack.php file used (with or without visitor counting
+$checkcrawltrack = file_get_contents('crawltrack.php');
+if(preg_match("/No-visitor-CrawlTrack/i", $checkcrawltrack))
+{
+$novisitorcrawltrack=1;
+}
+else
+{
+$novisitorcrawltrack=0;
+}
+
 
 //include menu
 include ("include/menumain.php");
@@ -297,6 +308,60 @@ if ($_SESSION['rightadmin'] == 1) {
 					$sql = "UPDATE crawlt_config SET includeparameter='" . sql_quote($crawltincludeparameter) . "'";
 					$requete = db_query($sql, $connexion);
 				break;
+				case 104:				
+					//determine the path to the file
+					if (isset($_SERVER['SCRIPT_FILENAME']) && !empty($_SERVER['SCRIPT_FILENAME'])) {
+						$path = dirname($_SERVER['SCRIPT_FILENAME']);
+					} elseif (isset($_SERVER['DOCUMENT_ROOT']) && !empty($_SERVER['DOCUMENT_ROOT']) && isset($_SERVER['PHP_SELF']) && !empty($_SERVER['PHP_SELF'])) {
+						$path = dirname($_SERVER['DOCUMENT_ROOT'] . $_SERVER['PHP_SELF']);
+					} else {
+						$path = '..';
+					}
+					//url calculation
+					$dom = $_SERVER["HTTP_HOST"];
+					$file1 = $_SERVER["PHP_SELF"];
+					$size = strlen($file1);
+					$file1 = substr($file1, -$size, -9);
+					$url_crawlt = "http://" . $dom . $file1;
+
+					if($novisitorcrawltrack == 1 && $novisitor == 0)
+						{	
+							// Get the reference file and replace the needed values
+							$ref_file_content = file_get_contents(dirname(__FILE__) . '/data/crawltrack.base.php');
+							// Replace the values
+							$final_file_content = preg_replace('/FILE_PATH/', $path, $ref_file_content);
+							$final_file_content = preg_replace('/URL_CRAWLTRACK/', $url_crawlt, $final_file_content);
+							$crawltrack_filepath = $path . '/crawltrack.php';
+							$filedir = $path;
+							
+							//chmod the directory
+							@chmod($filedir, 0755);
+							if ($file2 = fopen($crawltrack_filepath, "w")) {
+								fwrite($file2, $final_file_content);
+								fclose($file2);
+							}
+						$novisitorcrawltrack=0;	
+						}
+					if($novisitorcrawltrack == 0 && $novisitor == 1)
+						{	
+							// Get the reference file and replace the needed values
+							$ref_file_content = file_get_contents(dirname(__FILE__) . '/data/crawltrack.base-novisitor.php');
+							// Replace the values
+							$final_file_content = preg_replace('/FILE_PATH/', $path, $ref_file_content);
+							$final_file_content = preg_replace('/URL_CRAWLTRACK/', $url_crawlt, $final_file_content);
+							$crawltrack_filepath = $path . '/crawltrack.php';
+							$filedir = $path;
+							
+							//chmod the directory
+							@chmod($filedir, 0755);
+							if ($file2 = fopen($crawltrack_filepath, "w")) {
+								fwrite($file2, $final_file_content);
+								fclose($file2);
+							}
+						$novisitorcrawltrack=1;	
+						}			
+				break;				
+				
 			} // end switch($validform) - 2nd level
 			mysql_close($connexion);
 			
@@ -353,7 +418,28 @@ if ($_SESSION['rightadmin'] == 1) {
 			}
 			echo "</table><div width=\"100%\" align=\"right\"><input name='ok' type='submit'  value=' OK ' size='20' >&nbsp;&nbsp;&nbsp;&nbsp;</div>\n";
 			echo "<br><div class=\"smalltext\">" . $language['stats_visitors_other_domain'] . "</div>";
-			echo "</form></div>&nbsp;\n";
+			echo "</form><hr>&nbsp;\n";
+			echo $language['no_visitors_stats2'];
+			echo "<br><br><form action=\"index.php\" method=\"POST\" z-index:0 style=\" font-size:13px; font-weight:bold; color: #003399;
+				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif; \">\n";
+			echo "<input type=\"hidden\" name ='navig' value=\"6\">\n";
+			echo "<input type=\"hidden\" name ='validform' value=\"104\">\n";
+			echo "<table>";
+
+				if ($novisitorcrawltrack== 1) {
+					echo "<tr><td>" . $language['no_visitors_stats'] . "</td><td><input type=\"checkbox\" name=\"novisitor\" value=\"1\" checked></td></tr>\n";
+				} else {
+					echo "<tr><td>" . $language['no_visitors_stats'] . "</td><td><input type=\"checkbox\" name=\"novisitor\" value=\"1\"></td></tr>\n";
+				}
+			
+			echo "</table><br><div width=\"100%\" align=\"right\"><input name='ok' type='submit'  value=' OK ' size='20' >&nbsp;&nbsp;&nbsp;&nbsp;</div>\n";
+			echo "</form></div>&nbsp;\n";			
+			
+			
+			
+			
+			
+			
 			echo "<br><h2>" . $language['display_parameters'] . "</h2>";
 			echo "<div style=\"border: 2px solid #003399 ; padding-left:5px; padding-top:5px; padding-bottom:15px; margin-left:71px; margin-right:71px;\" >\n";
 			echo "<form action=\"index.php\" method=\"POST\" z-index:0 style=\" font-size:13px; font-weight:bold; color: #003399;
