@@ -595,7 +595,7 @@ else
 				$crawltkeyword = $crawlttabvar['p'];
 				if($crawltkeyword=='')
 				{
-					$crawltsearchengine=0;
+					$crawltkeyword='(not provided)';
 				}
 			}
 			//test bing
@@ -609,7 +609,7 @@ else
 					$crawltkeyword = $crawlttabvar['MT'];
 					if($crawltkeyword=='')
 					{
-						$crawltsearchengine=0;
+						$crawltkeyword='(not provided)';
 					}
 				}
 			}
@@ -624,7 +624,7 @@ else
 					$crawltkeyword = $crawlttabvar['aid'];
 					if($crawltkeyword=='')
 						{
-						$crawltsearchengine=0;
+						$crawltkeyword='(not provided)';
 						}
 					}
 			}
@@ -639,7 +639,7 @@ else
 					$crawltkeyword = $crawlttabvar['word'];
 					if($crawltkeyword=='')
 					{
-						$crawltsearchengine=0;
+						$crawltkeyword='(not provided)';
 					}
 				}
 			}
@@ -651,7 +651,7 @@ else
 				$crawltkeyword = $crawlttabvar['text'];
 				if($crawltkeyword=='')
 				{
-					$crawltsearchengine=0;
+					$crawltkeyword='(not provided)';
 				}
 			}
 			//test Aol
@@ -665,7 +665,7 @@ else
 					$crawltkeyword = $crawlttabvar['query'];
 					if($crawltkeyword=='')
 					{
-						$crawltsearchengine=0;
+						$crawltkeyword='(not provided)';
 					}
 				}
 			}						
