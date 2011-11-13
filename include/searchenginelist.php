@@ -21,7 +21,7 @@
  * Authors : phpMyVisites team and community
 */
 //----------------------------------------------------------------------
-//  Last update: 12/11/2011
+//  Last update: 13/11/2011
 //----------------------------------------------------------------------
 $crawltcssaattack = array("http:", "ftp:", "https:", "http%3a", "https%3a", "ht%20tp:", "htt%20p:", "http%20:", "h%20ttp:", "/etc/passwd", "ShellAdresi.TXT", "[evil_root]?", "http%3A%2F%2F","%68%74%74%70%3a","%68%74%74%70%73%3a","%48%54%54%50%3a","%48%54%54%50%53%3a","%3C?");
 $crawltsqlaattack = array("%20select%20", "%20like%20", "%20or%20", "%20where%20","%20SELECT%20", "%20LIKE%20", "%20OR%20", "%20WHERE%20");
@@ -598,6 +598,7 @@ $crawltgooglelist = array(
 "m.google.co.zm",
 "m.google.co.zw",
 "m.google.com",
+"ipv6.google.com",
 );
 
 $crawltmsnlist = array(
@@ -733,6 +734,7 @@ $crawltasklist = array(
 "tr.ask.com",
 "uk.ask.com",
 "int.ask.com",
+"ru.ask.com",
 );
 //exalead list no more used in 3.2.0
 $crawltexaleadlist = array(
