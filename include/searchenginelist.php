@@ -847,6 +847,7 @@ $crawltaollist = array(
 "search.aol.pl",
 "search.aol.sk",
 "search.aol.ph",
+"search.aol.pl",
 "search.aol.pn",
 "search.aol.ps",
 "search.aol.pt",
