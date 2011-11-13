@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: post.php
 //----------------------------------------------------------------------
-//  Last update: 12/11/2011
+//  Last update: 13/11/2011
 //----------------------------------------------------------------------
 if (!isset($crawltlang)) {
 	if (isset($_POST['lang'])) {
@@ -29,22 +29,22 @@ if (isset($_POST['newlang'])) {
 	$crawltnewlang = 'english';
 }
 if (isset($_POST['idmysql'])) {
-	$idmysql = htmlspecialchars($_POST['idmysql']);
+	$idmysql = $_POST['idmysql'];
 } else {
 	$idmysql = '';
 }
 if (isset($_POST['passwordmysql'])) {
-	$passwordmysql = htmlspecialchars($_POST['passwordmysql']);
+	$passwordmysql = $_POST['passwordmysql'];
 } else {
 	$passwordmysql = '';
 }
 if (isset($_POST['hostmysql'])) {
-	$hostmysql = htmlspecialchars($_POST['hostmysql']);
+	$hostmysql = $_POST['hostmysql'];
 } else {
 	$hostmysql = 'localhost';
 }
 if (isset($_POST['basemysql'])) {
-	$basemysql = htmlspecialchars($_POST['basemysql']);
+	$basemysql = $_POST['basemysql'];
 } else {
 	$basemysql = '';
 }
@@ -170,12 +170,12 @@ if (isset($_POST['includeparameter'])) {
 	}
 }
 if (isset($_POST['login'])) {
-	$login = htmlspecialchars($_POST['login']);
+	$login = $_POST['login'];
 } else {
 	$login = '';
 }
 if (isset($_POST['password1'])) {
-	$password1 = htmlspecialchars($_POST['password1']);
+	$password1 = $_POST['password1'];
 } else {
 	$password1 = '';
 }
@@ -185,7 +185,7 @@ if (isset($_POST['password2'])) {
 	$password2 = '';
 }
 if (isset($_POST['password3'])) {
-	$password3 = htmlspecialchars($_POST['password3']);
+	$password3 = $_POST['password3'];
 } else {
 	$password3 = '';
 }
