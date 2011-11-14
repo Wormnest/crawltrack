@@ -703,6 +703,7 @@ $crawltyahoolist = array(
 "siteexplorer.search.yahoo.com",
 "us.yhs.search.yahoo.com",
 "images.search.yahoo.com",
+"maktoob.search.yahoo.com",
 );
 
 $crawltasklist = array(
