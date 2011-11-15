@@ -670,6 +670,7 @@ $crawltyahoolist = array(
 "search.yahoo.co.jp",
 "search.yahoo.fr",
 "ar.search.yahoo.com",
+"at.search.yahoo.com",
 "au.search.yahoo.com",
 "be.search.yahoo.com",
 "br.search.yahoo.com",
@@ -704,6 +705,7 @@ $crawltyahoolist = array(
 "us.yhs.search.yahoo.com",
 "images.search.yahoo.com",
 "maktoob.search.yahoo.com",
+"us.yhs4.search.yahoo.com",
 );
 
 $crawltasklist = array(
