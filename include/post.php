@@ -376,4 +376,10 @@ if (isset($_POST['novisitor'])) {
 } else {
 	$novisitor = 0;
 }
+if (isset($_GET['nocookie'])) {
+	$nocookie = (int)$_GET['nocookie'];
+} else {
+	$nocookie = 0;
+}
+
 ?>
