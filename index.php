@@ -254,6 +254,12 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 			} else {
 				echo "<h1>" . $language['restrited_access'] . "</h1>\n";
 			}
+			
+			if ($nocookie==1) {
+			echo "<div class=\"alert2\">".$language['no_cookie']."</div>\n";
+			}
+			
+			
 			echo "<h2>" . $language['enter_login'] . "</h2>\n";
 			echo "<div class=\"form\">\n";
 			echo "<form action=\"php/login.php\" method=\"POST\" name=\"login\" >\n";
