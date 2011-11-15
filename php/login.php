@@ -16,7 +16,7 @@
 //----------------------------------------------------------------------
 //  Last update: 14/02/2011
 //----------------------------------------------------------------------
-error_reporting(0);
+error_reporting(E_ALL);
 //database connection
 include ("../include/configconnect.php");
 include ("../include/post.php");
@@ -133,6 +133,7 @@ setcookie("session_token", $token, time()+$validity_time,'/');
 setcookie("session_informations", $informations, time()+$validity_time,'/');
 
 // we define session variables
+$_SESSION['cookie'] = 1;
 $_SESSION['userlogin'] = $userlogin;
 $_SESSION['rightsite'] = $rightsite;
 $_SESSION['rightadmin'] = $rightadmin;
@@ -141,10 +142,10 @@ if (!isset($_SESSION['clearcache'])) {
 	$_SESSION['clearcache'] = "0";
 }
 if ($crawltpublic == 1 && $logitself != 1) {
-	header("Location: ../index.php?navig=6&graphpos=$graphpos");
+	header("Location: ../index.php?navig=6&graphpos=$graphpos&nocookie=1");
 	exit;
 } else {
-	header("Location: ../index.php?navig=$navig&period=$period&site=$site&crawler=$crawlencode&graphpos=$graphpos&displayall=$displayall");
+	header("Location: ../index.php?navig=$navig&period=$period&site=$site&crawler=$crawlencode&graphpos=$graphpos&displayall=$displayall&nocookie=1");
 	exit;
 }
 
