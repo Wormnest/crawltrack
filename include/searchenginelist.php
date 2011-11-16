@@ -21,7 +21,7 @@
  * Authors : phpMyVisites team and community
 */
 //----------------------------------------------------------------------
-//  Last update: 13/11/2011
+//  Last update: 16/11/2011
 //----------------------------------------------------------------------
 $crawltcssaattack = array("http:", "ftp:", "https:", "http%3a", "https%3a", "ht%20tp:", "htt%20p:", "http%20:", "h%20ttp:", "/etc/passwd", "ShellAdresi.TXT", "[evil_root]?", "http%3A%2F%2F","%68%74%74%70%3a","%68%74%74%70%73%3a","%48%54%54%50%3a","%48%54%54%50%53%3a","%3C?");
 $crawltsqlaattack = array("%20select%20", "%20like%20", "%20or%20", "%20where%20","%20SELECT%20", "%20LIKE%20", "%20OR%20", "%20WHERE%20");
@@ -120,6 +120,7 @@ $crawltgooglelist = array(
 "www.google.td",
 "www.google.tg",
 "www.google.tk",
+"www.google.tl",
 "www.google.tm",
 "www.google.tn",
 "www.google.to",
@@ -150,6 +151,7 @@ $crawltgooglelist = array(
 "www.google.com.do",
 "www.google.com.fj",
 "www.google.com.gh",
+"www.google.com.gi",
 "www.google.com.gr",
 "www.google.com.gt",
 "www.google.com.hk",
@@ -312,6 +314,7 @@ $crawltgooglelist = array(
 "images.google.td",
 "images.google.tg",
 "images.google.tk",
+"images.google.tl",
 "images.google.tm",
 "images.google.tn",
 "images.google.to",
@@ -342,6 +345,7 @@ $crawltgooglelist = array(
 "images.google.com.do",
 "images.google.com.fj",
 "images.google.com.gh",
+"images.google.com.gi",
 "images.google.com.gr",
 "images.google.com.gt",
 "images.google.com.hk",
@@ -501,6 +505,7 @@ $crawltgooglelist = array(
 "m.google.td",
 "m.google.tg",
 "m.google.tk",
+"m.google.tl",
 "m.google.tm",
 "m.google.tn",
 "m.google.to",
@@ -531,6 +536,7 @@ $crawltgooglelist = array(
 "m.google.com.do",
 "m.google.com.fj",
 "m.google.com.gh",
+"m.google.com.gi",
 "m.google.com.gr",
 "m.google.com.gt",
 "m.google.com.hk",
