@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -16,7 +16,7 @@
 //----------------------------------------------------------------------
 // this graph is made with artichow    website: www.artichow.org
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
+//  Last update: 17/11/2011
 //----------------------------------------------------------------------
 error_reporting(0);
 //initialize array
@@ -99,7 +99,10 @@ if ($navig == 17 || $navig == 18 || $navig == 19) {
 	$legend3 = $language['crawler_name'];
 }
 foreach ($datatransfert as $key => $value) {
-	$axex[] = $key;
+	if($key<24)
+		{
+		$axex[] = $key;
+		}
 }
 
 //graph creation
@@ -107,6 +110,8 @@ foreach ($datatransfert as $key => $value) {
 if ($graphvisithours == 1) {
 	foreach ($axex as $data) {
 		$visit[] = $datatransfert[$data];
+		$data2=$data + 100;
+		$visitaverage[]=$datatransfert[$data2];
 	}
 } else {
 	foreach ($axex as $data) {
@@ -212,6 +217,21 @@ if ($navig == 2 || $navig == 17 || $navig == 18 || $navig == 19 || $navig == 21 
 }
 $group->legend->setBackgroundColor(new Color(255, 255, 255, 0));
 $group->legend->setPosition(0.995, 0.2);
+
+
+if ( ($navig == 23 || $navig == 20) && $graphvisithours == 1) {
+	//average line
+
+	$plot = new LinePlot($visitaverage, LINEPLOT_MIDDLE);
+	// Change line color
+	$plot->setColor(new Color(0, 0, 150));
+	// Change mark type
+
+	$plot->setThickness(3);
+	$group->add($plot);
+	$textlegend = rtrim($language['shortterm'],' :');
+	$group->legend->add($plot, $textlegend, LEGEND_LINE);
+}
 
 //X axis label
 if ($period == 0 || $period >= 1000) {
