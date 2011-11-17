@@ -12,7 +12,7 @@
 //----------------------------------------------------------------------
 // file: frenchiso.php
 //----------------------------------------------------------------------
-//  Last update: 12/11/2011
+//  Last update: 17/11/2011
 //----------------------------------------------------------------------
 $language= array();
 //installation
@@ -592,6 +592,7 @@ $language['yandex']="Yandex";
 $language['aol']="Aol";
 $language['no_visitors_stats']="Compter seulement les robots";
 $language['no_visitors_stats2']="Ne compter aucune visite";
+$language['no_cookie']="Vous devez paramêtrer votre navigateur pour accepter les cookies";
 //country code
 $country = array(
 "ad" => "Andorre",

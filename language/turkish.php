@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // Translator : Korhan MULCAR 
 //----------------------------------------------------------------------
-//  Last update: 12/11/2011
+//  Last update: 17/11/2011
 //----------------------------------------------------------------------
 $language= array();
 //installation
@@ -573,7 +573,8 @@ $language['googleimage']="Google-Images";
 $language['yandex']="Yandex";
 $language['aol']="Aol";
 $language['no_visitors_stats']="Count only crawlers";
-$language['no_visitors_stats2']="Didn't count any visit";
+$language['no_visitors_stats2']="Don't count any visit";
+$language['no_cookie']="You have to set up your browser to accept cookies";
 //country code
 $country = array(
     "ad" => "Andorra",
