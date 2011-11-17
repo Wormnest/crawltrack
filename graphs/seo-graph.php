@@ -326,7 +326,7 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	if($nbrday <10)
+	if($nbrday <13)
 		{		
 		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
 		}
@@ -351,7 +351,7 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	if($nbrday <10)
+	if($nbrday <13)
 		{		
 		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
 		}
@@ -375,7 +375,7 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	if($nbrday <10)
+	if($nbrday <13)
 		{		
 		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
 		}
@@ -399,7 +399,7 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	if($nbrday <10)
+	if($nbrday <13)
 		{		
 		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
 		}
@@ -423,7 +423,7 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);	
-	if($nbrday <10)
+	if($nbrday <13)
 		{		
 		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
 		}
@@ -446,7 +446,7 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	if($nbrday <10)
+	if($nbrday <13)
 		{		
 		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
 		}
@@ -470,7 +470,7 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	if($nbrday <10)
+	if($nbrday <13)
 		{		
 		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
 		}
@@ -493,7 +493,7 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	if($nbrday <10)
+	if($nbrday <13)
 		{		
 		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
 		}
@@ -517,7 +517,7 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	if($nbrday <10)
+	if($nbrday <13)
 		{		
 		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
 		}
@@ -539,7 +539,7 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	if($nbrday <10)
+	if($nbrday <13)
 		{		
 		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
 		}
