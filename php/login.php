@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,9 +14,9 @@
 //----------------------------------------------------------------------
 // file: login.php
 //----------------------------------------------------------------------
-//  Last update: 14/02/2011
+//  Last update: 17/11/2011
 //----------------------------------------------------------------------
-error_reporting(E_ALL);
+error_reporting(0);
 //database connection
 include ("../include/configconnect.php");
 include ("../include/post.php");
@@ -125,7 +125,7 @@ if ($validuser == 1) {
 
 //create token
 //Thanks to François Lasselin (http://blog.nalis.fr/index.php?post/2009/09/28/Securisation-stateless-PHP-avec-un-jeton-de-session-%28token%29-protection-CSRF-en-PHP)
-$validity_time = 600;
+$validity_time = 1800;
 $token_clair=$secret_key.$_SERVER['HTTP_HOST'].$_SERVER['HTTP_USER_AGENT'];
 $informations=time()."-".$user;
 $token = hash('sha256', $token_clair.$informations);
