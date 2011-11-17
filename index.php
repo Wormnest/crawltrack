@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.1
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: index.php
 //----------------------------------------------------------------------
-//  Last update: 05/11/2011
+//  Last update: 17/11/2011
 //----------------------------------------------------------------------
 
 // make sure PHP version  >= 4.3.2 is used (and even this version is waaaay too old, 29-May-2003)
@@ -291,7 +291,7 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 	} else {
 		//check token
 		//Thanks to François Lasselin (http://blog.nalis.fr/index.php?post/2009/09/28/Securisation-stateless-PHP-avec-un-jeton-de-session-%28token%29-protection-CSRF-en-PHP)
-		$validity_time = 600;
+		$validity_time = 1800;
 		$token_clair= $secret_key.$_SERVER['HTTP_HOST'].$_SERVER['HTTP_USER_AGENT'];
 		$token = hash('sha256', $token_clair.$_COOKIE["session_informations"]);
 		if(strcmp($_COOKIE["session_token"], $token)==0)
