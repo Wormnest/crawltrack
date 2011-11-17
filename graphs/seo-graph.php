@@ -16,7 +16,7 @@
 //----------------------------------------------------------------------
 // this graph is made with artichow    website: www.artichow.org
 //----------------------------------------------------------------------
-//  Last update: 12/11/2011
+//  Last update: 17/11/2011
 //----------------------------------------------------------------------
 error_reporting(0);
 //initialize array
@@ -166,6 +166,7 @@ if ($typegraph == 'link') {
 	}
 } elseif ($typegraph == 'entry' || $typegraph == 'email') {
 	$titlegraph = '';
+	$nbrday=0;
 	foreach ($axex as $data) {
 		$cutdata = explode("-", $datatransfert[$data]);
 		$google[] = $cutdata[0];
@@ -180,6 +181,7 @@ if ($typegraph == 'link') {
 		$yandex[] = $cutdata[9];
 		$aol[] = $cutdata[10];				
 		$testvalue[] = $cutdata[0] + $cutdata[1] + $cutdata[2] + $cutdata[3] + $cutdata[4] + $cutdata[5] + $cutdata[6] + $cutdata[8] + $cutdata[9] + $cutdata[10];
+		$nbrday++;
 	}
 	$isvalue = 0;
 	$nbvalue = count($testvalue);
@@ -324,7 +326,15 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+	if($nbrday <10)
+		{		
+		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		}
+	else
+		{
+		$plot->barBorder->setColor(new Color(180, 0, 70, 10));
+		$plot->barShadow->setColor(new Color(255, 20, 127, 10));
+		}	
 	$plot->barShadow->smooth(TRUE);
 	
 	//legend
@@ -341,7 +351,15 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+	if($nbrday <10)
+		{		
+		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		}
+	else
+		{
+		$plot->barBorder->setColor(new Color(215, 200, 0, 10));
+		$plot->barShadow->setColor(new Color(255, 255, 0, 10));
+		}
 	$plot->barShadow->smooth(TRUE);
 	
 	//legend
@@ -357,7 +375,15 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+	if($nbrday <10)
+		{		
+		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		}
+	else
+		{
+		$plot->barBorder->setColor(new Color(150, 100, 100, 10));
+		$plot->barShadow->setColor(new Color(90, 30, 30, 10));
+		}
 	$plot->barShadow->smooth(TRUE);
 	
 	//legend
@@ -373,7 +399,15 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+	if($nbrday <10)
+		{		
+		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		}
+	else
+		{
+		$plot->barBorder->setColor(new Color(255, 215, 0, 10));
+		$plot->barShadow->setColor(new Color(255, 0, 0, 10));
+		}
 	$plot->barShadow->smooth(TRUE);
 	//legend
 	$group->legend->add($plot, $legend2, LEGEND_BACKGROUND);
@@ -388,8 +422,16 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setXAxisZero(TRUE);
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
-	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);	
+	if($nbrday <10)
+		{		
+		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		}
+	else
+		{
+		$plot->barBorder->setColor(new Color(144, 238, 144, 10));
+		$plot->barShadow->setColor(new Color(0, 128, 0, 10));
+		}	
 	$plot->barShadow->smooth(TRUE);
 	//legend
 	$group->legend->add($plot, $legend1, LEGEND_BACKGROUND);
@@ -404,7 +446,15 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+	if($nbrday <10)
+		{		
+		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		}
+	else
+		{
+		$plot->barBorder->setColor(new Color(238, 250, 238, 10));
+		$plot->barShadow->setColor(new Color(144, 238, 144, 10));
+		}
 	$plot->barShadow->smooth(TRUE);
 	//legend
 	$group->legend->add($plot, $legend7, LEGEND_BACKGROUND);
@@ -420,7 +470,15 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+	if($nbrday <10)
+		{		
+		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		}
+	else
+		{
+		$plot->barBorder->setColor(new Color(0, 191, 255, 10));
+		$plot->barShadow->setColor(new Color(0, 51, 153, 10));
+		}
 	$plot->barShadow->smooth(TRUE);
 	//legend
 	$group->legend->add($plot, $legend3, LEGEND_BACKGROUND);
@@ -435,7 +493,15 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+	if($nbrday <10)
+		{		
+		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		}
+	else
+		{
+		$plot->barBorder->setColor(new Color(0, 51, 153, 10));
+		$plot->barShadow->setColor(new Color(0, 10, 10, 10));
+		}
 	$plot->barShadow->smooth(TRUE);
 	//legend
 	$group->legend->add($plot, $legend8, LEGEND_BACKGROUND);
@@ -451,7 +517,15 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+	if($nbrday <10)
+		{		
+		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		}
+	else
+		{
+		$plot->barBorder->setColor(new Color(255, 255, 255, 10));
+		$plot->barShadow->setColor(new Color(0, 0, 0, 10));
+		}
 	$plot->barShadow->smooth(TRUE);
 	//legend
 	$group->legend->add($plot, $legend4, LEGEND_BACKGROUND);
@@ -465,7 +539,15 @@ if ($typegraph == 'link' || $typegraph == 'page') {
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
 	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
-	$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+	if($nbrday <10)
+		{		
+		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		}
+	else
+		{
+		$plot->barBorder->setColor(new Color(255, 0, 0, 10));
+		$plot->barShadow->setColor(new Color(120, 0, 0, 10));
+		}
 	$plot->barShadow->smooth(TRUE);
 	//legend
 	$group->legend->add($plot, $legend5, LEGEND_BACKGROUND);
