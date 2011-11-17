@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-summary.php
 //----------------------------------------------------------------------
-//  Last update: 12/11/2011
+//  Last update: 17/11/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -290,7 +290,8 @@ if (count($UVlast7days) > 6) {
 }
 //visits per hour graph calculation========================================================================
 if ($period == 0 || $period >= 1000) {
-	$nbvisitsgraph = array("0" => "0", "1" => "0", "2" => "0", "3" => "0", "4" => "0", "5" => "0", "6" => "0", "7" => "0", "8" => "0", "9" => "0", "10" => "0", "11" => "0", "12" => "0", "13" => "0", "14" => "0", "15" => "0", "16" => "0", "17" => "0", "18" => "0", "19" => "0", "20" => "0", "21" => "0", "22" => "0", "23" => "0");
+	$nbvisitsgraph = array("0" => "0", "1" => "0", "2" => "0", "3" => "0", "4" => "0", "5" => "0", "6" => "0", "7" => "0", "8" => "0", "9" => "0", "10" => "0", "11" => "0", "12" => "0", "13" => "0", "14" => "0", "15" => "0", "16" => "0", "17" => "0", "18" => "0", "19" => "0", "20" => "0", "21" => "0", "22" => "0", "23" => "0","100" => "0", "101" => "0", "102" => "0", "103" => "0", "104" => "0", "105" => "0", "106" => "0", "107" => "0", "108" => "0", "109" => "0", "110" => "0", "111" => "0", "112" => "0", "113" => "0", "114" => "0", "115" => "0", "116" => "0", "117" => "0", "118" => "0", "119" => "0", "120" => "0", "121" => "0", "122" => "0", "123" => "0");
+	//actual period
 	if ($period == 0) {
 		//query to count the number of  visits
 		$sqlstats = "SELECT  HOUR(date), COUNT(id_visit) FROM crawlt_visits_human
@@ -314,6 +315,27 @@ if ($period == 0 || $period >= 1000) {
 		}
 		$nbvisitsgraph[$hour] = $ligne[1];
 	}
+	//average 7 previous days
+	$daterequest3 = date("Y-m-d H:i:s", (strtotime($daterequest)) - 604800);
+		//query to count the number of  visits
+		$sqlstats = "SELECT  HOUR(date), COUNT(id_visit), COUNT(DISTINCT DATE(date)) FROM crawlt_visits_human
+		WHERE  date >'" . sql_quote($daterequest3) . "' 
+    		AND  date <'" . sql_quote($daterequest) . "' 
+		GROUP BY HOUR(date)";
+		
+	$requetestats = db_query($sqlstats, $connexion);
+	while ($ligne = mysql_fetch_row($requetestats)) {
+		$hour = $ligne[0] - $times;
+		if ($hour < 0) {
+			$hour = 24 + $hour;
+		}
+		if ($hour >= 24) {
+			$hour = $hour - 24;
+		}
+		$hour= $hour + 100;
+		$nbvisitsgraph[$hour] = round($ligne[1]/$ligne[2]);
+	}		
+	
 	//prepare data to be transferred to graph file
 	$datatransferttograph = addslashes(urlencode(serialize($nbvisitsgraph)));
 	//insert the values in the graph table
