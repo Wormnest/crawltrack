@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file:mapgraph2.php
 //----------------------------------------------------------------------
-//  Last update: 05/15/2010
+//  Last update: 17/11/2011
 //----------------------------------------------------------------------
 //initialize array
 $axexlabel = array();
@@ -360,8 +360,8 @@ if ($typegraph == 'link') {
 		echo "<div id=\"smenu" . ($iday + 9) . "\"  style=\"display:none; font-size:13px; color:#003399; font-family:Verdana,Geneva, Arial, Helvetica, Sans-Serif; text-align:left; border:2px solid navy; position:absolute; top:8px; left:300px; background:#eee;\">\n";
 		echo "&nbsp;" . $language['nbr_tot_link'] . ":&nbsp;" . $axexlabel[$axex[$iday]] . "&nbsp;\n";
 		echo "&nbsp;" . $language['google'] . ":&nbsp;" . $google[$iday] . "&nbsp;\n";
-		echo "&nbsp;" . $language['exalead'] . ":&nbsp;" . $exalead[$iday] . "&nbsp;\n";
-		echo "&nbsp;" . $language['yahoo'] . ":&nbsp;" . $yahoo[$iday] . "&nbsp;\n";
+		//echo "&nbsp;" . $language['exalead'] . ":&nbsp;" . $exalead[$iday] . "&nbsp;\n";
+		//echo "&nbsp;" . $language['yahoo'] . ":&nbsp;" . $yahoo[$iday] . "&nbsp;\n";
 		echo "</div>\n";
 		$iday++;
 	} while ($iday < $nbday);
@@ -384,10 +384,10 @@ if ($typegraph == 'link') {
 	do {
 		echo "<div id=\"smenu" . ($iday + 70) . "\"  style=\"display:none; font-size:13px; color:#003399; font-family:Verdana,Geneva, Arial, Helvetica, Sans-Serif; text-align:left; border:2px solid navy; position:absolute; top:8px; left:300px; background:#eee;\">\n";
 		echo "&nbsp;" . $language['nbr_tot_pages_index'] . ":&nbsp;" . $axexlabel[$axex[$iday]] . "&nbsp;\n";
-		echo "&nbsp;" . $language['google'] . ":&nbsp;" . $google2[$iday] . "\n";
-		echo "&nbsp;" . $language['exalead'] . ":&nbsp;" . $exalead2[$iday] . "\n";
-		echo "&nbsp;" . $language['msn'] . ":&nbsp;" . $msn2[$iday] . "\n";
-		echo "&nbsp;" . $language['yahoo'] . ":&nbsp;" . $yahoo2[$iday] . "&nbsp;\n";
+		echo "&nbsp;" . $language['google'] . ":&nbsp;" . $google2[$iday] . "&nbsp;\n";
+		//echo "&nbsp;" . $language['exalead'] . ":&nbsp;" . $exalead2[$iday] . "\n";
+		//echo "&nbsp;" . $language['msn'] . ":&nbsp;" . $msn2[$iday] . "\n";
+		//echo "&nbsp;" . $language['yahoo'] . ":&nbsp;" . $yahoo2[$iday] . "&nbsp;\n";
 		echo "</div>\n";
 		$iday++;
 	} while ($iday < $nbday);
