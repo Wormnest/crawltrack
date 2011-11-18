@@ -16,7 +16,7 @@
 //----------------------------------------------------------------------
 // this graph is made with artichow    website: www.artichow.org
 //----------------------------------------------------------------------
-//  Last update: 17/11/2011
+//  Last update: 18/11/2011
 //----------------------------------------------------------------------
 error_reporting(0);
 //initialize array
@@ -136,9 +136,9 @@ $group = new PlotGroup();
 $group->setBackgroundColor(new Color(173, 216, 230, 60));
 $group->setSpace(2, 2, 0.1, 0);
 if ($period == 2 || $period == 3 || ($period >= 100 && $period < 300)) {
-	$group->setPadding(50, 85, 30, 60);
+	$group->setPadding(50, 20, 30, 100);
 } else {
-	$group->setPadding(50, 85, 30, 20);
+	$group->setPadding(50, 20, 30, 60);
 }
 
 //visits
@@ -216,9 +216,10 @@ if ($navig == 2 || $navig == 17 || $navig == 18 || $navig == 19 || $navig == 21 
 	$group->add($plot);
 }
 $group->legend->setBackgroundColor(new Color(255, 255, 255, 0));
-$group->legend->setPosition(0.995, 0.2);
 
 
+$group->legend->setModel(LEGEND_MODEL_BOTTOM);
+$group->legend->setPosition(NULL, 0.87);
 if ( ($navig == 23 || $navig == 20) && $graphvisithours == 1) {
 	//average line
 
