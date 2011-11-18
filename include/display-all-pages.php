@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-all-pages.php
 //----------------------------------------------------------------------
-//  Last update: 13/02/2011
+//  Last update: 19/11/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -63,7 +63,7 @@ WHERE $datetolookfor
 AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'    
 GROUP BY crawlt_pages_id_page
 ORDER BY nbrvisits DESC
-LIMIT 0, 200
+LIMIT 0, 100
 ";
 $requetestats = db_query($sqlstats, $connexion);
 $nbrresult = mysql_num_rows($requetestats);
