@@ -21,7 +21,7 @@
  * Authors : phpMyVisites team and community
 */
 //----------------------------------------------------------------------
-//  Last update: 18/11/2011
+//  Last update: 19/11/2011
 //----------------------------------------------------------------------
 $crawltcssaattack = array("http:", "ftp:", "https:", "http%3a", "https%3a", "ht%20tp:", "htt%20p:", "http%20:", "h%20ttp:", "/etc/passwd", "ShellAdresi.TXT", "[evil_root]?", "http%3A%2F%2F","%68%74%74%70%3a","%68%74%74%70%73%3a","%48%54%54%50%3a","%48%54%54%50%53%3a","%3C?");
 $crawltsqlaattack = array("%20select%20", "%20like%20", "%20or%20", "%20where%20","%20SELECT%20", "%20LIKE%20", "%20OR%20", "%20WHERE%20");
@@ -69,6 +69,7 @@ $crawltgooglelist = array(
 "www.google.gm",
 "www.google.gp",
 "www.google.gr",
+"www.google.gy",
 "www.google.hn",
 "www.google.hr",
 "www.google.ht",
@@ -263,6 +264,7 @@ $crawltgooglelist = array(
 "images.google.gm",
 "images.google.gp",
 "images.google.gr",
+"images.google.gy",
 "images.google.hn",
 "images.google.hr",
 "images.google.ht",
@@ -455,6 +457,7 @@ $crawltgooglelist = array(
 "m.google.gm",
 "m.google.gp",
 "m.google.gr",
+"m.google.gy",
 "m.google.hn",
 "m.google.hr",
 "m.google.ht",
