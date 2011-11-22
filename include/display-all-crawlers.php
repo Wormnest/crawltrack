@@ -79,10 +79,7 @@ if ($nbrresult >= 1) {
 		if ($ligne[0] != 65500 && $ligne[0] != 65501) {
 			if($ligne[0] == 'MSN Bot' || $ligne[0] == 'Bingbot') {
 				$ligne[0]='MSN Bot - Bingbot';
-			}
-			if($ligne[0] == 'Ask Jeeves/Teoma' || $ligne[0] == 'Teoma') {
-				$ligne[0]='Ask Jeeves/Teoma';
-			}			
+			}		
 			$nbrcrawlerpage[$ligne[0]] = @$nbrcrawlerpage[$ligne[0]] + $ligne[1];
 			$nbvisits[$ligne[0]] = @$nbvisits[$ligne[0]] + $ligne[2];
 			if ($ligne[3] > @$lastdatedisplay[$ligne[0]]) {

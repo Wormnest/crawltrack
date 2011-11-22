@@ -41,9 +41,10 @@ $tabpagegoogle = array();
 $values2 = array();
 $visitgoogle = 0;
 $visitgoogleimage = 0;
+$visitgoogleadsense = 0;
 $visitmsn = 0;
 $visityahoo = 0;
-$visitask= 0;
+$visityandex= 0;
 $visitexalead = 0;
 $visityandex = 0;
 $visitbaidu = 0;
@@ -120,7 +121,7 @@ if ($period == 3 || ($period >= 200 && $period < 300) || $period >= 1000 || ($pe
     ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
     WHERE DATE(crawlt_visits.date) ='" . sql_quote($daterequestseo) . "'
     AND crawlt_site_id_site='" . sql_quote($site) . "'
-    AND crawler_name IN ('GoogleBot','MSN Bot','Slurp Inktomi (Yahoo)','Ask Jeeves/Teoma','Exabot','Baiduspider','Bingbot','Teoma') 
+    AND crawler_name IN ('GoogleBot','MSN Bot','Slurp Inktomi (Yahoo)','YandexBot','Exabot','Baiduspider','Bingbot','Google-Adsense','Google-Image') 
     GROUP BY  crawler_name";
 	$requete = db_query($sql, $connexion);
 	while ($ligne = mysql_fetch_row($requete)) {
@@ -130,13 +131,18 @@ if ($period == 3 || ($period >= 200 && $period < 300) || $period >= 1000 || ($pe
 			$visitmsn = $ligne[1]+$visitmsn;
 		} elseif ($ligne[0] == 'Slurp Inktomi (Yahoo)') {
 			$visityahoo = $ligne[1];
-		} elseif ($ligne[0] == 'Ask Jeeves/Teoma' || $ligne[0] == 'Teoma') {
-			$visitask = $ligne[1];
+		} elseif ($ligne[0] == 'YandexBot') {
+			$visityandex = $ligne[1];
 		} elseif ($ligne[0] == 'Exabot') {
 			$visitexalead = $ligne[1];
 		} elseif ($ligne[0] == 'Baiduspider') {
 			$visitbaidu = $ligne[1];
+		} elseif ($ligne[0] == 'Google-Image') {
+			$visitgoogleimage = $ligne[1];
+		} elseif ($ligne[0] == 'Google-Adsense') {
+			$visitgoogleadsense = $ligne[1];
 		}
+		
 	}
 } 
  else {
@@ -147,7 +153,7 @@ if ($period == 3 || ($period >= 200 && $period < 300) || $period >= 1000 || ($pe
     ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
     WHERE DATE(crawlt_visits.date) >='" . sql_quote($daterequestseo) . "'
     AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'
-    AND crawler_name IN ('GoogleBot','MSN Bot','Slurp Inktomi (Yahoo)','Ask Jeeves/Teoma','Exabot','Baiduspider','Bingbot','Teoma')
+    AND crawler_name IN ('GoogleBot','MSN Bot','Slurp Inktomi (Yahoo)','YandexBot','Exabot','Baiduspider','Bingbot','Google-Adsense','Google-Image')
     GROUP BY crawler_name";
 	$requete = db_query($sql, $connexion);
 	while ($ligne = mysql_fetch_row($requete)) {
@@ -157,12 +163,16 @@ if ($period == 3 || ($period >= 200 && $period < 300) || $period >= 1000 || ($pe
 			$visitmsn = $ligne[1]+$visitmsn;
 		} elseif ($ligne[0] == 'Slurp Inktomi (Yahoo)') {
 			$visityahoo = $ligne[1];
-		} elseif ($ligne[0] == 'Ask Jeeves/Teoma'  || $ligne[0] == 'Teoma') {
-			$visitask = $ligne[1];
+		} elseif ($ligne[0] == 'YandexBot') {
+			$visityandex = $ligne[1];
 		} elseif ($ligne[0] == 'Exabot') {
 			$visitexalead = $ligne[1];
 		} elseif ($ligne[0] == 'Baiduspider') {
 			$visitbaidu = $ligne[1];
+		} elseif ($ligne[0] == 'Google-Image') {
+			$visitgoogleimage = $ligne[1];
+		} elseif ($ligne[0] == 'Google-Adsense') {
+			$visitgoogleadsense = $ligne[1];
 		}
 	}
 }
@@ -548,18 +558,20 @@ echo "</th>\n";
 echo "<th class='tableau2' >\n";
 echo "" . $language['nbr_tot_visits'] . "\n";
 echo "</th></tr>\n";
-echo "<tr><td class='tableau3'>Ask Jeeves/Teoma</td>\n";
-echo "<td class='tableau5'>" . numbdisp($visitask) . "</td></tr>\n";
-echo "<tr><td class='tableau30'>Baiduspider</td>\n";
-echo "<td class='tableau50'>" . numbdisp($visitbaidu) . "</td></tr>\n";
-echo "<tr><td class='tableau3'>Exabot</td>\n";
-echo "<td class='tableau5'>" . numbdisp($visitexalead) . "</td></tr>\n";
+echo "<tr><td class='tableau3'>Baiduspider</td>\n";
+echo "<td class='tableau5'>" . numbdisp($visitbaidu) . "</td></tr>\n";
 echo "<tr><td class='tableau30'>GoogleBot</td>\n";
 echo "<td class='tableau50'>" . numbdisp($visitgoogle) . "</td></tr>\n";
+echo "<tr><td class='tableau3'>Google-Image</td>\n";
+echo "<td class='tableau5'>" . numbdisp($visitgoogleimage) . "</td></tr>\n";
+echo "<tr><td class='tableau30'>Google-Adsense</td>\n";
+echo "<td class='tableau50'>" . numbdisp($visitgoogleadsense) . "</td></tr>\n";
 echo "<tr><td class='tableau3'>MSN Bot - Bingbot</td>\n";
 echo "<td class='tableau5'>" . numbdisp($visitmsn) . "</td></tr>\n";
 echo "<tr><td class='tableau30'>Slurp Inktomi (Yahoo)</td>\n";
 echo "<td class='tableau50'>" . numbdisp($visityahoo) . "</td></tr>\n";
+echo "<tr><td class='tableau3'>YandexBot</td>\n";
+echo "<td class='tableau5'>" . numbdisp($visityandex) . "</td></tr>\n";
 echo "</table></div><br>\n";
 echo "</td></tr><tr>\n";
 echo "<td id='dashboard7'>\n";
