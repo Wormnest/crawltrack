@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: header.php
 //----------------------------------------------------------------------
-//  Last update: 02/12/2010
+//  Last update: 22/11/2011
 //----------------------------------------------------------------------
 if ($crawltcharset == 1) {
 	header('Content-Type: text/html; charset=utf-8');
@@ -95,5 +95,19 @@ if ($crawltcharset == 1) {
 <body>
 <div class="main">
 <div class="header" onmouseover="javascript:montre();">
-CrawlTrack <span class="headertext"><?php echo $language['webmaster_dashboard'] ?></span>
+<?php
+if( $language['go_install']=="Installer")
+	{
+?>		
+	<a href="http://www.crawltrack.net/fr/">CrawlTrack</a>
+<?php	
+	}
+else
+	{
+?>		
+	<a href="http://www.crawltrack.net">CrawlTrack</a>
+<?php				
+	}
+?>
+ <span class="headertext"><?php echo $language['webmaster_dashboard'] ?></span>
 </div>
