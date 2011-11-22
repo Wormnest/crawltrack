@@ -40,6 +40,7 @@ $tablinkgoogle = array();
 $tabpagegoogle = array();
 $values2 = array();
 $visitgoogle = 0;
+$visitgooglebot = 0;
 $visitgoogleimage = 0;
 $visitgoogleadsense = 0;
 $visitmsn = 0;
@@ -126,7 +127,7 @@ if ($period == 3 || ($period >= 200 && $period < 300) || $period >= 1000 || ($pe
 	$requete = db_query($sql, $connexion);
 	while ($ligne = mysql_fetch_row($requete)) {
 		if ($ligne[0] == 'GoogleBot') {
-			$visitgoogle = $ligne[1];
+			$visitgooglebot = $ligne[1];
 		} elseif ($ligne[0] == 'MSN Bot' || $ligne[0] == 'Bingbot') {
 			$visitmsn = $ligne[1]+$visitmsn;
 		} elseif ($ligne[0] == 'Slurp Inktomi (Yahoo)') {
@@ -144,6 +145,7 @@ if ($period == 3 || ($period >= 200 && $period < 300) || $period >= 1000 || ($pe
 		}
 		
 	}
+	$visitgoogle = $visitgoogleadsense + $visitgoogleimage + $visitgooglebot;
 } 
  else {
 	//query to have the number of Crawler visits
@@ -158,7 +160,7 @@ if ($period == 3 || ($period >= 200 && $period < 300) || $period >= 1000 || ($pe
 	$requete = db_query($sql, $connexion);
 	while ($ligne = mysql_fetch_row($requete)) {
 		if ($ligne[0] == 'GoogleBot') {
-			$visitgoogle = $ligne[1];
+			$visitgooglebot = $ligne[1];
 		} elseif ($ligne[0] == 'MSN Bot' || $ligne[0] == 'Bingbot') {
 			$visitmsn = $ligne[1]+$visitmsn;
 		} elseif ($ligne[0] == 'Slurp Inktomi (Yahoo)') {
@@ -175,6 +177,7 @@ if ($period == 3 || ($period >= 200 && $period < 300) || $period >= 1000 || ($pe
 			$visitgoogleadsense = $ligne[1];
 		}
 	}
+$visitgoogle = $visitgoogleadsense + $visitgoogleimage + $visitgooglebot;	
 }
 //query to count the total number of  pages viewed ,total number of visits and total number of crawler
 $sqlstats2 = "SELECT COUNT(DISTINCT crawlt_pages_id_page), COUNT(DISTINCT crawler_name), COUNT(id_visit) 
@@ -558,19 +561,15 @@ echo "</th>\n";
 echo "<th class='tableau2' >\n";
 echo "" . $language['nbr_tot_visits'] . "\n";
 echo "</th></tr>\n";
-echo "<tr><td class='tableau3'>Baiduspider</td>\n";
+echo "<tr><td class='tableau3'>" . $language['baidu'] . "</td>\n";
 echo "<td class='tableau5'>" . numbdisp($visitbaidu) . "</td></tr>\n";
-echo "<tr><td class='tableau30'>GoogleBot</td>\n";
+echo "<tr><td class='tableau30'>" . $language['google'] . "</td>\n";
 echo "<td class='tableau50'>" . numbdisp($visitgoogle) . "</td></tr>\n";
-echo "<tr><td class='tableau3'>Google-Image</td>\n";
-echo "<td class='tableau5'>" . numbdisp($visitgoogleimage) . "</td></tr>\n";
-echo "<tr><td class='tableau30'>Google-Adsense</td>\n";
-echo "<td class='tableau50'>" . numbdisp($visitgoogleadsense) . "</td></tr>\n";
-echo "<tr><td class='tableau3'>MSN Bot - Bingbot</td>\n";
+echo "<tr><td class='tableau3'>" . $language['msn'] . "</td>\n";
 echo "<td class='tableau5'>" . numbdisp($visitmsn) . "</td></tr>\n";
-echo "<tr><td class='tableau30'>Slurp Inktomi (Yahoo)</td>\n";
+echo "<tr><td class='tableau30'>" . $language['yahoo'] . "</td>\n";
 echo "<td class='tableau50'>" . numbdisp($visityahoo) . "</td></tr>\n";
-echo "<tr><td class='tableau3'>YandexBot</td>\n";
+echo "<tr><td class='tableau3'>" . $language['yandex'] . "</td>\n";
 echo "<td class='tableau5'>" . numbdisp($visityandex) . "</td></tr>\n";
 echo "</table></div><br>\n";
 echo "</td></tr><tr>\n";
