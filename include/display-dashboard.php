@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-dashboard.php
 //----------------------------------------------------------------------
-//  Last update: 12/11/2011
+//  Last update: 22/11/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -120,7 +120,7 @@ if ($period == 3 || ($period >= 200 && $period < 300) || $period >= 1000 || ($pe
     ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
     WHERE DATE(crawlt_visits.date) ='" . sql_quote($daterequestseo) . "'
     AND crawlt_site_id_site='" . sql_quote($site) . "'
-    AND crawler_name IN ('GoogleBot','MSN Bot','Slurp Inktomi (Yahoo)','Ask Jeeves/Teoma','Exabot','Baiduspider','Bingbot') 
+    AND crawler_name IN ('GoogleBot','MSN Bot','Slurp Inktomi (Yahoo)','Ask Jeeves/Teoma','Exabot','Baiduspider','Bingbot','Teoma') 
     GROUP BY  crawler_name";
 	$requete = db_query($sql, $connexion);
 	while ($ligne = mysql_fetch_row($requete)) {
@@ -130,7 +130,7 @@ if ($period == 3 || ($period >= 200 && $period < 300) || $period >= 1000 || ($pe
 			$visitmsn = $ligne[1]+$visitmsn;
 		} elseif ($ligne[0] == 'Slurp Inktomi (Yahoo)') {
 			$visityahoo = $ligne[1];
-		} elseif ($ligne[0] == 'Ask Jeeves/Teoma') {
+		} elseif ($ligne[0] == 'Ask Jeeves/Teoma' || $ligne[0] == 'Teoma') {
 			$visitask = $ligne[1];
 		} elseif ($ligne[0] == 'Exabot') {
 			$visitexalead = $ligne[1];
@@ -147,7 +147,7 @@ if ($period == 3 || ($period >= 200 && $period < 300) || $period >= 1000 || ($pe
     ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
     WHERE DATE(crawlt_visits.date) >='" . sql_quote($daterequestseo) . "'
     AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'
-    AND crawler_name IN ('GoogleBot','MSN Bot','Slurp Inktomi (Yahoo)','Ask Jeeves/Teoma','Exabot','Baiduspider','Bingbot')
+    AND crawler_name IN ('GoogleBot','MSN Bot','Slurp Inktomi (Yahoo)','Ask Jeeves/Teoma','Exabot','Baiduspider','Bingbot','Teoma')
     GROUP BY crawler_name";
 	$requete = db_query($sql, $connexion);
 	while ($ligne = mysql_fetch_row($requete)) {
@@ -157,7 +157,7 @@ if ($period == 3 || ($period >= 200 && $period < 300) || $period >= 1000 || ($pe
 			$visitmsn = $ligne[1]+$visitmsn;
 		} elseif ($ligne[0] == 'Slurp Inktomi (Yahoo)') {
 			$visityahoo = $ligne[1];
-		} elseif ($ligne[0] == 'Ask Jeeves/Teoma') {
+		} elseif ($ligne[0] == 'Ask Jeeves/Teoma'  || $ligne[0] == 'Teoma') {
 			$visitask = $ligne[1];
 		} elseif ($ligne[0] == 'Exabot') {
 			$visitexalead = $ligne[1];
