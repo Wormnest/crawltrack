@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.1
+//  CrawlTrack 3.3.2
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: cleaning-crawler-entry.php
 //----------------------------------------------------------------------
-//  Last update: 05/11/2011
+//  Last update: 25/11/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -63,7 +63,7 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 		LIMIT 0," . crawlt_sql_quote($maxlimit) . "";
 	$requetecleaning = db_query($sqlcleaning, $connexion);
 	$visitstotal = mysql_num_rows($requetecleaning);
-	if ($visitstotal >= 1) {
+	if ($visitstotal >= 50) {
 		while ($ligne = mysql_fetch_row($requetecleaning)) {
 			$listsiteidforcleaning[$ligne[1]] = $ligne[1];
 			${$ligne[1] . 'listip'}[$ligne[2]] = $ligne[2];
@@ -106,7 +106,7 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 		LIMIT 0," . crawlt_sql_quote($maxlimit) . "";
 	$requetecleaning = db_query($sqlcleaning, $connexion);
 	$visitstotal = mysql_num_rows($requetecleaning);
-	if ($visitstotal >= 1) {
+	if ($visitstotal >= 50) {
 		while ($ligne = mysql_fetch_row($requetecleaning)) {
 			$testunique[] = $ligne[1] . urlencode($ligne[2]) . $ligne[3] . $ligne[5];
 			$table[] = $ligne[0];
@@ -149,7 +149,7 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 		LIMIT 0," . crawlt_sql_quote($maxlimit) . "";
 	$requetecleaning = db_query($sqlcleaning, $connexion);
 	$visitstotal = mysql_num_rows($requetecleaning);
-	if ($visitstotal >= 1) {
+	if ($visitstotal >= 50) {
 		while ($ligne = mysql_fetch_row($requetecleaning)) {
 			$testunique[] = $ligne[1] . $ligne[2] . $ligne[5] . $ligne[6] . $ligne[7];
 			$table[] = $ligne[0];
@@ -186,7 +186,7 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 	$requete = db_query($sql, $connexion);
 	$resultnumber = mysql_num_rows($requete);
 	
-	if ($resultnumber >= 1) {
+	if ($resultnumber >= 50) {
 		while ($ligne = mysql_fetch_row($requete)) {
 			${'iprange' . $ligne[0]}[$ligne[1]] = $ligne[1];
 			$listiprange[$ligne[0]] = $ligne[0];
@@ -199,7 +199,7 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 	}
 	mysql_free_result($requete);
 	//---------------------------------------------------------------------------------------------------
-	//query to detect IP with more than 3 pages viewed with less than 2 second per page or with more than 200 pages viewed (good change to have an unknow crawler detected as a visitor)
+	//query to detect IP with more than 5 pages viewed with less than 2 second per page or with more than 200 pages viewed (good change to have an unknow crawler detected as a visitor)
 	$sql = "SELECT  crawlt_ip, COUNT(DISTINCT id_visit), MAX(`date`), MIN(`date`)  
 		FROM crawlt_visits_human 
 		WHERE $datetolookfor
@@ -210,13 +210,13 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 	while ($ligne = mysql_fetch_row($requete)) {
 		$timeperpage[$ligne[0]] = (strtotime($ligne[2]) - strtotime($ligne[3])) / $ligne[1];
 		$nbvisits[$ligne[0]] = $ligne[1];
-		if (($timeperpage[$ligne[0]] < 2 && $nbvisits[$ligne[0]] > 3) || $nbvisits[$ligne[0]] > 200) {
+		if (($timeperpage[$ligne[0]] < 2 && $nbvisits[$ligne[0]] > 5) || $nbvisits[$ligne[0]] > 200) {
 			$listbadip[$ligne[0]] = $ligne[0];
 		}
 	}
 	mysql_free_result($requete);
 	//---------------------------------------------------------------------------------------------------
-	//query to detect IP coming after a search engine query with more than 2 pages viewed with each time a new keyword  (good change to have an unknow crawler detected as a visitor)
+	//query to detect IP coming after a search engine query with more than 5 pages viewed with each time a new keyword  (good change to have an unknow crawler detected as a visitor)
 	$sql = "SELECT  crawlt_ip, COUNT(DISTINCT crawlt_keyword_id_keyword)  
 		FROM crawlt_visits_human 
 		WHERE $datetolookfor
@@ -226,7 +226,7 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 		LIMIT 0," . crawlt_sql_quote($maxlimit) . "";
 	$requete = db_query($sql, $connexion);
 	while ($ligne = mysql_fetch_row($requete)) {
-		if ($ligne[1] > 2) {
+		if ($ligne[1] > 5) {
 			$listbadip[$ligne[0]] = $ligne[0];
 		}
 	}
