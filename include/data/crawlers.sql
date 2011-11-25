@@ -1381,4 +1381,17 @@ INSERT INTO `crawlt_crawler` (`id_crawler`, `crawler_user_agent`, `crawler_name`
 (1380,'FyberSpider/1.3 (http://www.fybersearch.com/fyberspider.php)','FyberSpider','http://www.fybersearch.com/fyberspider.php','FyberSearch'),
 (1381,'wikiwix-bot-3.0','Wikiwix-bot','http://www.wikiwix.com','Wikiwix'),
 (1382,'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)','Bingbot','http://www.bing.com/bingbot.htm)','Bing'),
-(1383,'ScoutJet','ScoutJet','http://www.scoutjet.com/','ScoutJet')
+(1383,'ScoutJet','ScoutJet','http://www.scoutjet.com/','ScoutJet'),
+(1384,'Mozilla/5.0 (compatible; Baiduspider/2.0; +http://www.baidu.com/search/spider.html)','Baiduspider','http://www.baidu.com/search/spider.htm','Baidu.com'),
+(1385,'BaiduImagespider+(+http://www.baidu.jp/search/s308.html)','Baiduspider','http://www.baidu.com/search/spider.htm','Baidu.com'),
+(1386,'BaiDuSpider','Baiduspider','http://www.baidu.com/search/spider.htm','Baidu.com'),
+(1387,'Baiduspider+(+http://help.baidu.jp/system/05.html)','Baiduspider','http://www.baidu.com/search/spider.htm','Baidu.com'),
+(1388,'Baiduspider+(+http://www.baidu.com/search/spider.htm)','Baiduspider','http://www.baidu.com/search/spider.htm','Baidu.com'),
+(1389,'Mozilla/2.0 (compatible; Ask Jeeves)','Ask Jeeves/Teoma','http://about.ask.com/en/docs/about/webmasters.shtml','Ask Jeeves'),
+(1390,'Mozilla/2.0 (compatible; Ask Jeeves/Teoma; http://about.ask.com/en/docs/about/webmasters.shtml)','Ask Jeeves/Teoma','http://about.ask.com/en/docs/about/webmasters.shtml','Ask Jeeves'),
+(1391,'Mozilla/2.0 (compatible; Ask Jeeves/Teoma; http://sp.ask.com/docs/about/tech_crawling.html)','Ask Jeeves/Teoma','http://about.ask.com/en/docs/about/webmasters.shtml','Ask Jeeves'),
+(1392,'Mozilla/4.0 [en] (Ask Jeeves Corporate Spider)','Ask Jeeves/Teoma','http://about.ask.com/en/docs/about/webmasters.shtml','Ask Jeeves'),
+(1393,'Mozilla/5.0 (compatible; Ask Jeeves/Teoma; http://about.ask.com/en/docs/about/webmasters.shtml)','Ask Jeeves/Teoma','http://about.ask.com/en/docs/about/webmasters.shtml','Ask Jeeves'),
+(1394,'Mozilla/5.0 (compatible; YandexBot/3.0; +http://yandex.com/bots)','YandexBot','http://www.yandex.ru/','Yandex')
+
+  
