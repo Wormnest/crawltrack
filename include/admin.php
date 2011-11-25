@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: admin.php
 //----------------------------------------------------------------------
-//  Last update: 12/11/2011
+//  Last update: 25/11/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -461,13 +461,6 @@ if ($_SESSION['rightadmin'] == 1) {
 			} else {
 				echo "<option value=\"0\" style=\" font-size:13px; font-weight:bold; color: #003399;
 				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $language['orderbydate'] . "</option>\n";
-			}
-			if ($order == 1 || $order == 4) {
-				echo "<option value=\"1\" selected style=\" font-size:13px; font-weight:bold; color: #003399;
-				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $language['orderbypagesview'] . "</option>\n";
-			} else {
-				echo "<option value=\"1\" style=\" font-size:13px; font-weight:bold; color: #003399;
-				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $language['orderbypagesview'] . "</option>\n";
 			}
 			if ($order == 2) {
 				echo "<option value=\"2\" selected style=\" font-size:13px; font-weight:bold; color: #003399;
