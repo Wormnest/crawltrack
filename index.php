@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: index.php
 //----------------------------------------------------------------------
-//  Last update: 17/11/2011
+//  Last update: 25/11/2011
 //----------------------------------------------------------------------
 
 // make sure PHP version  >= 4.3.2 is used (and even this version is waaaay too old, 29-May-2003)
@@ -131,7 +131,7 @@ if (file_exists("language/" . $crawltlang . ".php") && in_array($crawltlang, $li
 	exit('<h1>No language files available !!!!</h1>');
 }
 //version id
-$versionid = '331';
+$versionid = '332';
 // do not modify
 define('IN_CRAWLT', TRUE);
 // session start 'crawlt'
