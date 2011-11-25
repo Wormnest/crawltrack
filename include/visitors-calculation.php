@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: visitors-claculation.php
 //----------------------------------------------------------------------
-//  Last update: 12/11/2011
+//  Last update: 25/11/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -32,9 +32,12 @@ $lengthurl = strlen($hostsite);
 if (preg_match('#^http://www.#i', $hostsite)) {
 	$hostsite2 = str_replace("http://www.", "http://", $hostsite);
 	$lengthurl2 = ($lengthurl - 4);
+	$hostsite3 = str_replace("http:", "https:", $hostsite);
+	$lengthurl3 = ($lengthurl + 1);	
 	$notinternalreferercondition = "
     AND Substring(referer From 1 For " . $lengthurl . ") != '" . crawlt_sql_quote($hostsite) . "'
-    AND Substring(referer From 1 For " . $lengthurl2 . ") != '" . crawlt_sql_quote($hostsite2) . "'";
+    AND Substring(referer From 1 For " . $lengthurl2 . ") != '" . crawlt_sql_quote($hostsite2) . "'
+    AND Substring(referer From 1 For " . $lengthurl3 . ") != '" . crawlt_sql_quote($hostsite3) . "'";   
 } else {
 	$notinternalreferercondition = "
     AND Substring(referer From 1 For " . $lengthurl . ") != '" . crawlt_sql_quote($hostsite) . "'";
