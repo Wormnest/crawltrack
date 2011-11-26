@@ -734,6 +734,7 @@ $crawltasklist = array(
 "dk.ask.com",
 "fr.ask.com",
 "es.ask.com",
+"eu.ask.com",
 "hk.ask.com",
 "id.ask.com",
 "in.ask.com",
