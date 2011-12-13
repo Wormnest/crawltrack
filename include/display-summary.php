@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack 3.3.3
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: display-summary.php
 //----------------------------------------------------------------------
-//  Last update: 17/11/2011
+//  Last update: 13/12/2011
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
@@ -395,19 +395,19 @@ $comptligne = 2;
 foreach ($listsite as $site => $value) {
 	if ($comptligne % 2 == 0) {
 		echo "<tr><td class='tableau3g'>&nbsp;&nbsp;<a href='index.php?navig=0&amp;period=" . $period . "&amp;site=" . $site . "&amp;crawler=" . $crawlencode . "&amp;graphpos=" . $graphpos . "' rel='nofollow'>" . $value . "</a></td>\n";
-		echo "<td class='tableau3'>" . numbdisp($tabtotalvisitor[$site]) . "</td>\n";
+		echo "<td class='tableau3'><a href='index.php?navig=20&amp;period=" . $period . "&amp;site=" . $site . "&amp;crawler=" . $crawlencode . "&amp;graphpos=" . $graphpos . "' rel='nofollow'>" . numbdisp($tabtotalvisitor[$site]) . "</a></td>\n";
 		echo "<td class='tableau3'>" . numbdisp($tabnbrvisitor[$site]) . "</td>\n";
 		echo "<td class='tableau3'>" . numbdisp($tabnbrpage[$site]) . "</td>\n";
-		echo "<td class='tableau3'>" . numbdisp($tabnbrtotvisits[$site]) . "</td>\n";
+		echo "<td class='tableau3'><a href='index.php?navig=1&amp;period=" . $period . "&amp;site=" . $site . "&amp;crawler=" . $crawlencode . "&amp;graphpos=" . $graphpos . "' rel='nofollow'>" . numbdisp($tabnbrtotvisits[$site]) . "</a></td>\n";
 		echo "<td class='tableau3'>" . numbdisp($tabnbrtotcrawlers[$site]) . "</td>\n";
 		echo "<td class='tableau3'>" . numbdisp($tabnbrtotpages[$site]) . "</td>\n";
 		echo "<td class='tableau5'>" . numbdisp($tabnbrhacking[$site]) . "</td></tr>\n";
 	} else {
 		echo "<tr><td class='tableau30g'>&nbsp;&nbsp;<a href='index.php?navig=0&amp;period=" . $period . "&amp;site=" . $site . "&amp;crawler=" . $crawlencode . "&amp;graphpos=" . $graphpos . "' rel='nofollow'>" . $value . "</a></td>\n";
-		echo "<td class='tableau30'>" . numbdisp($tabtotalvisitor[$site]) . "</td>\n";
+		echo "<td class='tableau30'><a href='index.php?navig=20&amp;period=" . $period . "&amp;site=" . $site . "&amp;crawler=" . $crawlencode . "&amp;graphpos=" . $graphpos . "' rel='nofollow'>" . numbdisp($tabtotalvisitor[$site]) . "</a></td>\n";
 		echo "<td class='tableau30'>" . numbdisp($tabnbrvisitor[$site]) . "</td>\n";
 		echo "<td class='tableau30'>" . numbdisp($tabnbrpage[$site]) . "</td>\n";
-		echo "<td class='tableau30'>" . numbdisp($tabnbrtotvisits[$site]) . "</td>\n";
+		echo "<td class='tableau30'><a href='index.php?navig=1&amp;period=" . $period . "&amp;site=" . $site . "&amp;crawler=" . $crawlencode . "&amp;graphpos=" . $graphpos . "' rel='nofollow'>" . numbdisp($tabnbrtotvisits[$site]) . "</a></td>\n";
 		echo "<td class='tableau30'>" . numbdisp($tabnbrtotcrawlers[$site]) . "</td>\n";
 		echo "<td class='tableau30'>" . numbdisp($tabnbrtotpages[$site]) . "</td>\n";
 		echo "<td class='tableau50'>" . numbdisp($tabnbrhacking[$site]) . "</td></tr>\n";
