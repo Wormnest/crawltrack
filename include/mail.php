@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack 3.3.3
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: mail.php
 //----------------------------------------------------------------------
-//  Last update 12/11/2011
+//  Last update 02/01/2012
 //----------------------------------------------------------------------
 //update the crawlt_config table
 $sqlcrawltupdatemail = "UPDATE crawlt_config SET datelastmail='" . crawlt_sql_quote($crawltdatetoday) . "'";
@@ -113,17 +113,7 @@ $crawltts2 = explode('-', $crawltdatetoday3);
 $crawltyeartoday = $crawltts2[0];
 $crawltmonthtoday = $crawltts2[1];
 $crawltdaytoday = $crawltts2[2];
-if ($crawltdaytoday == 1) {
-	if ($crawltmonthtoday != 1) {
-		$crawltmonthtoday = $crawltmonthtoday - 1;
-		if (($crawltmonthtoday) < 10) {
-			$crawltmonthtoday = "0" . $crawltmonthtoday;
-		}
-	} else {
-		$crawltmonthtoday = 12;
-		$crawltyeartoday = $crawltyeartoday - 1;
-	}
-}
+
 
 //date for the mysql query
 //request date calculation
