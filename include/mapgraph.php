@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack 3.3.3
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: mapgraph.php
 //----------------------------------------------------------------------
-//  Last update: 05/12/2010
+//  Last update: 08/01/2012
 //----------------------------------------------------------------------
 //initialize array
 $axexlabel=array();
@@ -475,45 +475,45 @@ if ($period == 0 || $period >= 1000) {
 mysql_free_result($requetestats);
 //map graph
 if ($period == 0 || $period >= 1000) {
-	$widthzone = 22;
-	$x2 = 88;
+	$widthzone = 25;
+	$x2 = 91;
 	$y = 30;
 	$y2 = 280;
 } elseif ($period == 1 || ($period >= 300 && $period < 400)) {
-	$widthzone = 75.4;
-	$x2 = 141.4;
+	$widthzone = 86.5;
+	$x2 = 152.5;
 	$y = 30;
 	$y2 = 280;
 } elseif ($period == 2 || ($period >= 100 && $period < 200)) {
 	if ($nbday == 28) {
-		$widthzone = 18.9;
-		$x2 = 84.9;
+		$widthzone = 21.6;
+		$x2 = 87.6;
 		$y = 30;
 		$y2 = 240;
 	} elseif ($nbday == 29) {
-		$widthzone = 18.2;
-		$x2 = 84.2;
+		$widthzone = 20.8;
+		$x2 = 86.8;
 		$y = 30;
 		$y2 = 240;
 	} elseif ($nbday == 30) {
-		$widthzone = 17.6;
-		$x2 = 83;
+		$widthzone = 20.15;
+		$x2 = 86.15;
 		$y = 30;
 		$y2 = 240;
 	} else {
-		$widthzone = 17;
-		$x2 = 83;
+		$widthzone = 19.5;
+		$x2 = 85.5;
 		$y = 30;
 		$y2 = 240;
 	}
 } elseif ($period == 3 || ($period >= 200 && $period < 300)) {
-	$widthzone = 44;
-	$x2 = 110;
+	$widthzone = 50;
+	$x2 = 116;
 	$y = 30;
 	$y2 = 280;
 } elseif ($period == 4) {
-	$widthzone = 66;
-	$x2 = 132;
+	$widthzone = 75;
+	$x2 = 141;
 	$y = 30;
 	$y2 = 280;
 }
