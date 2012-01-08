@@ -156,11 +156,22 @@ foreach ($listsitecrawlt as $site) {
 	$tabpagegoogle = array();
 	$values2 = array();
 	$googlebotvisit = array();
+	$googleadsensevisit = array();
+	$googleimagevisit = array();	
 	$msnbotvisit = array();
 	$yahoobotvisit = array();
 	$askbotvisit = array();
-	$exabotvisit = array();
-	$baiduspidervisit = array();
+	$yandexbotvisit = array();
+	$baiduspidervisit = array();	
+	$visitgoogle = 0;	
+	$visitgooglebot = 0;
+	$visitmsn = 0;
+	$visityahoo = 0;
+	$visityandex= 0;
+	$visitexalead = 0;
+	$visityandex = 0;
+	$visitbaidu = 0;
+	$visitaol = 0;
 	$times = $crawlttime;
 	
 	//to avoid problem if the url is enter in the database with http://
@@ -220,32 +231,34 @@ foreach ($listsitecrawlt as $site) {
 		ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
 		WHERE  $datetolookfor
 		AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
-		AND crawler_name IN ('GoogleBot','MSN Bot','Slurp Inktomi (Yahoo)','Ask Jeeves/Teoma','Exabot','Baiduspider')      
+		AND crawler_name IN ('GoogleBot','MSN Bot','Slurp Inktomi (Yahoo)','YandexBot','Exabot','Baiduspider','Bingbot','Google-Adsense','Google-Image')      
 		GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($times*3600), '%d-%m-%Y'), crawler_name";
 	$requete = mysql_query($sql, $crawltconnexion);
 	while ($ligne = mysql_fetch_row($requete)) {
 		if ($ligne[1] == 'GoogleBot') {
 			$googlebotvisit[$ligne[0]] = $ligne[2];
 		} elseif ($ligne[1] == 'MSN Bot' || $ligne[1] == 'Bingbot') {
-			$msnbotvisit[$ligne[0]] = $ligne[2];
+			$msnbotvisit[$ligne[0]] = $ligne[2] + @$msnbotvisit[$ligne[0]] ;
 		} elseif ($ligne[1] == 'Slurp Inktomi (Yahoo)') {
 			$yahoobotvisit[$ligne[0]] = $ligne[2];
-		} elseif ($ligne[1] == 'Ask Jeeves/Teoma') {
-			$askbotvisit[$ligne[0]] = $ligne[2];
-		} elseif ($ligne[1] == 'Exabot') {
-			$exabotvisit[$ligne[0]] = $ligne[2];
+		} elseif ($ligne[1] == 'YandexBot') {
+			$yandexbotvisit[$ligne[0]] = $ligne[2];
 		} elseif ($ligne[1] == 'Baiduspider') {
 			$baiduspidervisit[$ligne[0]] = $ligne[2];
+		} elseif ($ligne[1] == 'Google-Image') {
+			$googleimagevisit[$ligne[0]] = $ligne[2];
+		} elseif ($ligne[1] == 'Google-Adsense') {
+			$googleadsensevisit[$ligne[0]] = $ligne[2];
 		}
 	}
-	
+
 	$datetoused = date("d-m-Y", (strtotime($datebeginlocal)));
-	$visitask = $askbotvisit[$datetoused];
+	
 	$visityahoo = $yahoobotvisit[$datetoused];
 	$visitmsn = $msnbotvisit[$datetoused];
-	$visitgoogle = $googlebotvisit[$datetoused];
-	$visitexalead = $exabotvisit[$datetoused];
+	$visityandex = $yandexbotvisit[$datetoused];
 	$visitbaidu = $baiduspidervisit[$datetoused];
+	$visitgoogle = $googlebotvisit[$datetoused] + $googleimagevisit[$datetoused] + $googleadsensevisit[$datetoused];
 	//query to count the total number of  pages viewed ,total number of visits and total number of crawler
 	$sqlstats2 = "SELECT COUNT(DISTINCT crawlt_pages_id_page), COUNT(DISTINCT crawler_name), COUNT(id_visit) 
 		FROM crawlt_visits
@@ -431,18 +444,16 @@ foreach ($listsitecrawlt as $site) {
 		$crawltmessage.= "<tr><td colspan='3' >&nbsp;&nbsp;&nbsp;&nbsp;</td></tr>\n";
 		$crawltmessage.= "<tr><td colspan='2' style='text-align: center; border-top: 2px solid #003399; border-bottom: 2px solid #003399; border-left: 2px solid #003399; background-color: #7EAAFF;'>&nbsp;&nbsp;<b>" . $language['main_crawlers'] . "</b>&nbsp;&nbsp;</td>\n";
 		$crawltmessage.= "<td  style='text-align: center; border-top: 2px solid #003399;border-left: 2px solid #003399; border-right: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #7EAAFF;'>&nbsp;&nbsp;<b>" . $language['nbr_tot_visits'] . "</b>&nbsp;&nbsp;</td></tr>\n";
-		$crawltmessage.= "<tr><td  colspan='2' style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>Ask Jeeves/Teoma</b>&nbsp;&nbsp;</td>\n";
-		$crawltmessage.= "<td  style='text-align: center;border-right: 2px solid #003399; border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . crawltnumbdispmail($visitask) . "</b>&nbsp;&nbsp;</td></tr>\n";
-		$crawltmessage.= "<tr><td  colspan='2' style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>Baiduspider</b>&nbsp;&nbsp;</td>\n";
+		$crawltmessage.= "<tr><td  colspan='2' style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $language['baidu'] . "</b>&nbsp;&nbsp;</td>\n";
 		$crawltmessage.= "<td  style='text-align: center;border-right: 2px solid #003399; border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . crawltnumbdispmail($visitbaidu) . "</b>&nbsp;&nbsp;</td></tr>\n";
-		$crawltmessage.= "<tr><td  colspan='2' style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>Exabot</b>&nbsp;&nbsp;</td>\n";
-		$crawltmessage.= "<td  style='text-align: center;border-right: 2px solid #003399; border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . crawltnumbdispmail($visitexalead) . "</b>&nbsp;&nbsp;</td></tr>\n";
-		$crawltmessage.= "<tr><td  colspan='2' style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>GoogleBot</b>&nbsp;&nbsp;</td>\n";
-		$crawltmessage.= "<td  style='text-align: center;border-right: 2px solid #003399; border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . crawltnumbdispmail($visitgoogle) . "</b>&nbsp;&nbsp;</td></tr>\n";
-		$crawltmessage.= "<tr><td  colspan='2' style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>MSN Bot - Bingbot</b>&nbsp;&nbsp;</td>\n";
+		$crawltmessage.= "<tr><td  colspan='2' style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $language['msn'] . "</b>&nbsp;&nbsp;</td>\n";
 		$crawltmessage.= "<td  style='text-align: center;border-right: 2px solid #003399; border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . crawltnumbdispmail($visitmsn) . "</b>&nbsp;&nbsp;</td></tr>\n";
-		$crawltmessage.= "<tr><td  colspan='2' style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>Slurp Inktomi (Yahoo)</b>&nbsp;&nbsp;</td>\n";
-		$crawltmessage.= "<td  style='text-align: center;border-right: 2px solid #003399; border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . crawltnumbdispmail($visityahoo) . "</b>&nbsp;&nbsp;</td></tr></table><br>\n";
+		$crawltmessage.= "<tr><td  colspan='2' style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $language['google'] . "</b>&nbsp;&nbsp;</td>\n";
+		$crawltmessage.= "<td  style='text-align: center;border-right: 2px solid #003399; border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . crawltnumbdispmail($visitgoogle) . "</b>&nbsp;&nbsp;</td></tr>\n";
+		$crawltmessage.= "<tr><td  colspan='2' style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $language['yahoo'] . "</b>&nbsp;&nbsp;</td>\n";
+		$crawltmessage.= "<td  style='text-align: center;border-right: 2px solid #003399; border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . crawltnumbdispmail($visityahoo) . "</b>&nbsp;&nbsp;</td></tr>\n";
+		$crawltmessage.= "<tr><td  colspan='2' style='text-align: center;border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . $language['yandex'] . "</b>&nbsp;&nbsp;</td>\n";
+		$crawltmessage.= "<td  style='text-align: center;border-right: 2px solid #003399; border-left: 2px solid #003399; border-bottom: 2px solid #003399; background-color: #FFF;'>&nbsp;&nbsp;<b>" . crawltnumbdispmail($visityandex) . "</b>&nbsp;&nbsp;</td></tr></table><br>\n";
 		$crawltmessage.= "</td></tr><tr><td style='text-align: center;border-right: 2px solid navy; border-top: 2px solid navy;'>\n";
 		$crawltmessage.= "<div style='font-size:16px; color:#A52A2A; text-align:center;' />\n";
 		$crawltmessage.= "<br><b>" . $language['index'] . "</b><br/>\n";
@@ -524,12 +535,11 @@ foreach ($listsitecrawlt as $site) {
 		$crawltmessage.= $language['nbr_tot_visits'] . ": " . crawltnumbdispmail($nbrtotvisits) . "\n";
 		$crawltmessage.= $language['nbr_tot_pages'] . ": " . crawltnumbdispmail($nbrtotpages) . "\n\n";
 		$crawltmessage.= $language['main_crawlers'] . ": \n";
-		$crawltmessage.= "Ask Jeeves/Teoma: " . crawltnumbdispmail($visitask) . "\n";
-		$crawltmessage.= "Baiduspider: " . crawltnumbdispmail($visitbaidu) . "\n";
-		$crawltmessage.= "Exabot: " . crawltnumbdispmail($visitexalead) . "\n";
-		$crawltmessage.= "Googlebot: " . crawltnumbdispmail($visitgoogle) . "\n";
-		$crawltmessage.= "MSN Bot - Bingbot: " . crawltnumbdispmail($visitmsn) . "\n";
-		$crawltmessage.= "Slurp Inktomi (Yahoo): " . crawltnumbdispmail($visityahoo) . "\n\n";
+		$crawltmessage.= $language['baidu'] . ": " . crawltnumbdispmail($visitbaidu) . "\n";
+		$crawltmessage.= $language['msn'] . ": " . crawltnumbdispmail($visitmsn) . "\n";
+		$crawltmessage.= $language['google'] . ": " . crawltnumbdispmail($visitgoogle) . "\n";
+		$crawltmessage.= $language['yahoo'] . ": " . crawltnumbdispmail($visityahoo) . "\n";
+		$crawltmessage.= $language['yandex'] . ": " . crawltnumbdispmail($visityandex) . "\n\n";
 		$crawltmessage.= "--------------------------------------------------------------------------------------------------------------\n";
 		$crawltmessage.= $language['index'] . "\n";
 		$crawltmessage.= "--------------------------------------------------------------------------------------------------------------\n";
