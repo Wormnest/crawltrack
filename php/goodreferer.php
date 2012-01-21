@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.5
+//  CrawlTrack 3.3.3
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -14,7 +14,7 @@
 //----------------------------------------------------------------------
 // file: goodreferer.php
 //----------------------------------------------------------------------
-//  Last update: 05/09/2010
+//  Last update: 21/01/2012
 //----------------------------------------------------------------------
 error_reporting(0);
 //initialize array and variable
@@ -71,7 +71,7 @@ $connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("My
 $selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
 
 if (isset($_SESSION['rightspamreferer']) && $_SESSION['rightspamreferer'] == 1) {
-	//insert bad referer in the bad referer table
+	//insert good referer in the good referer table
 	$sql = "INSERT INTO crawlt_goodreferer (id_site,referer) VALUES ('" . sql_quote($site) . "','" . sql_quote($referer) . "')";
 	$requete = mysql_query($sql, $connexion);
 }
@@ -81,8 +81,8 @@ $sqlcache = "TRUNCATE TABLE crawlt_cache";
 $requetecache = mysql_query($sqlcache, $connexion);
 
 //clear graph table
-$sqlcache = "TRUNCATE TABLE crawlt_graph";
-$requetecache = mysql_query($sqlcache, $connexion);
+//$sqlcache = "TRUNCATE TABLE crawlt_graph";
+//$requetecache = mysql_query($sqlcache, $connexion);
 
 //mysql connexion close
 mysql_close($connexion);
