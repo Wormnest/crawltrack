@@ -1,3 +1,5 @@
 syntax: glob
 crawltrack.php
 include/configconnect.php
+cache/*.txt
+cachecloseperiod/*.gz
