@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.1
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,36 +8,48 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: keywordposition.php
 //----------------------------------------------------------------------
-//  Last update: 29/10/2011
-//----------------------------------------------------------------------
-error_reporting(0);
+
+// Set debugging to non zero to turn it on.
+// DON'T FORGET TO TURN IT OFF AFTER YOU FINISH DEBUGGING OR WHEN COMMITTING CHANGES!
+$DEBUG = 0;
+
+if ($DEBUG == 0) {
+	// Normal: don't show any errors, warnings, notices.
+	error_reporting(0);
+} else {
+	// DURING DEBUGGING ONLY
+	error_reporting(E_ALL);
+}
+
 //initialize array
 $listlangcrawlt = array();
 
 //connection to database
 include ("../include/configconnect.php");
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("../include/jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //Get lang
 $sqlcrawltconfig = "SELECT  lang, typecharset FROM crawlt_config";
-$requetecrawltconfig = mysql_query($sqlcrawltconfig, $connexion) or die("MySQL query error");
-$nbrresultcrawlt = mysql_num_rows($requetecrawltconfig);
+$requetecrawltconfig = $connexion->query($sqlcrawltconfig) or die("MySQL query error");
+$nbrresultcrawlt = $requetecrawltconfig->num_rows;
 if ($nbrresultcrawlt >= 1) {
-	$lignecrawlt = mysql_fetch_row($requetecrawltconfig);
+	$lignecrawlt = $requetecrawltconfig->fetch_row();
 	$crawltlang = $lignecrawlt[0];
 	$crawltcharset = $lignecrawlt[1];
 }
 if ($crawltcharset != 1) {
 	$crawltlang = $crawltlang . "iso";
 }
-mysql_close($connexion);
+mysqli_close($connexion);
 //get the listlang files
 include ("../include/listlang.php");
 //get the functions files

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.5
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,15 +8,27 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: refresh.php
 //----------------------------------------------------------------------
-//  Last update: 05/09/2010
-//----------------------------------------------------------------------
-error_reporting(0);
+
+// Set debugging to non zero to turn it on.
+// DON'T FORGET TO TURN IT OFF AFTER YOU FINISH DEBUGGING OR WHEN COMMITTING CHANGES!
+$DEBUG = 0;
+
+if ($DEBUG == 0) {
+	// Normal: don't show any errors, warnings, notices.
+	error_reporting(0);
+} else {
+	// DURING DEBUGGING ONLY
+	error_reporting(E_ALL);
+}
+
 // session start 'crawlt'
 session_name('crawlt');
 session_start();
@@ -60,19 +72,19 @@ if (isset($_GET['checklink'])) {
 // include
 include ("../include/configconnect.php");
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("../include/jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //clear cache table
 $sqlcache = "TRUNCATE TABLE crawlt_cache";
-$requetecache = mysql_query($sqlcache, $connexion) or die("MySQL query error");
+$requetecache = $connexion->query($sqlcache) or die("MySQL query error");
 
 //clear graph table
 $sqlcache = "TRUNCATE TABLE crawlt_graph";
-$requetecache = mysql_query($sqlcache, $connexion);
+$requetecache = $connexion->query($sqlcache);
 
 //mysql connexion close
-mysql_close($connexion);
+mysqli_close($connexion);
 
 //clear the cache folder
 $dir = dir('../cache/');

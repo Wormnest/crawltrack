@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.3
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,15 +8,27 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: goodreferer.php
 //----------------------------------------------------------------------
-//  Last update: 21/01/2012
-//----------------------------------------------------------------------
-error_reporting(0);
+
+// Set debugging to non zero to turn it on.
+// DON'T FORGET TO TURN IT OFF AFTER YOU FINISH DEBUGGING OR WHEN COMMITTING CHANGES!
+$DEBUG = 0;
+
+if ($DEBUG == 0) {
+	// Normal: don't show any errors, warnings, notices.
+	error_reporting(0);
+} else {
+	// DURING DEBUGGING ONLY
+	error_reporting(E_ALL);
+}
+
 //initialize array and variable
 $listip = array();
 //access control
@@ -67,25 +79,25 @@ include ("../include/configconnect.php");
 include ("../include/functions.php");
 
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("../include/jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 if (isset($_SESSION['rightspamreferer']) && $_SESSION['rightspamreferer'] == 1) {
 	//insert good referer in the good referer table
-	$sql = "INSERT INTO crawlt_goodreferer (id_site,referer) VALUES ('" . sql_quote($site) . "','" . sql_quote($referer) . "')";
-	$requete = mysql_query($sql, $connexion);
+	$sql = "INSERT INTO crawlt_goodreferer (id_site,referer) VALUES ('" . crawlt_sql_quote($connexion, $site) . "','" . crawlt_sql_quote($connexion, $referer) . "')";
+	$requete = $connexion->query($sql);
 }
 
 //clear cache table
 $sqlcache = "TRUNCATE TABLE crawlt_cache";
-$requetecache = mysql_query($sqlcache, $connexion);
+$requetecache = $connexion->query($sqlcache);
 
 //clear graph table
 //$sqlcache = "TRUNCATE TABLE crawlt_graph";
 //$requetecache = mysql_query($sqlcache, $connexion);
 
 //mysql connexion close
-mysql_close($connexion);
+mysqli_close($connexion);
 
 //clear the cache folder
 $dir = dir('../cache/');
@@ -104,3 +116,4 @@ $crawlencode = urlencode($crawler);
 $urlrefresh = "../index.php?navig=$navig&period=$period&site=$site&crawler=$crawlencode&graphpos=$graphpos&checklink=1#top";
 header("Location: $urlrefresh");
 exit;
+?>

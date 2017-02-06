@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.5
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,15 +8,27 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: countdownload.php
 //----------------------------------------------------------------------
-//  Last update: 05/09/2010
-//----------------------------------------------------------------------
-error_reporting(0);
+
+// Set debugging to non zero to turn it on.
+// DON'T FORGET TO TURN IT OFF AFTER YOU FINISH DEBUGGING OR WHEN COMMITTING CHANGES!
+$DEBUG = 0;
+
+if ($DEBUG == 0) {
+	// Normal: don't show any errors, warnings, notices.
+	error_reporting(0);
+} else {
+	// DURING DEBUGGING ONLY
+	error_reporting(E_ALL);
+}
+
 //get url to donwload
 if (isset($_GET['url'])) {
 	//all this to treat the case where the download link have more than 1 variable
@@ -34,16 +46,16 @@ if (isset($_GET['url'])) {
 include ("../include/configconnect.php");
 
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword);
-$selection = mysql_select_db($crawltdb);
+require_once("../include/jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //get config values
 $sqlconfig = "SELECT * FROM crawlt_config";
-$requeteconfig = mysql_query($sqlconfig, $connexion);
-$nbrresult = mysql_num_rows($requeteconfig);
+$requeteconfig = $connexion->query($sqlconfig);
+$nbrresult = $requeteconfig->num_rows;
 
 if ($nbrresult >= 1) {
-	$ligne = mysql_fetch_assoc($requeteconfig);
+	$ligne = $requeteconfig->fetch_assoc();
 	$times = $ligne['timeshift'];
 	$firstdayweek = $ligne['firstdayweek'];
 	$noconnect = 0;
@@ -72,14 +84,13 @@ while ($crawltcptip <= $crawltlgthip) {
 $crawltlistip = implode("','", $crawlttableip);
 
 // check if the user agent or the ip exist in the crawler table
-$result = mysql_query("SELECT crawler_user_agent, crawler_ip,id_crawler FROM crawlt_crawler
-	WHERE INSTR('" . sql_quote($crawltagent) . "',crawler_user_agent) > 0
-	OR crawler_ip IN ('$crawltlistip') ", $connexion);
-$num_rows = mysql_num_rows($result);
+$result = $connexion->query("SELECT crawler_user_agent, crawler_ip,id_crawler FROM crawlt_crawler
+	WHERE INSTR('" . crawlt_sql_quote($connexion, $crawltagent) . "',crawler_user_agent) > 0
+	OR crawler_ip IN ('$crawltlistip') ");
+$num_rows = $result->num_rows;
 
 if ($num_rows > 0) {
 	$count_download = false; //the visitor is a crawler, we will not count the download
-	
 } else {
 	$count_download = true;
 }
@@ -101,14 +112,14 @@ if (preg_match('#^www\.#i', $downloadhost)) {
 	$downloadhostwww = substr($downloadhost, 4);
 }
 
-//query to see is the host is one of the site audited by CrawlTrack
-$result = mysql_query("SELECT id_site FROM crawlt_site
-	WHERE url='" . sql_quote($downloadhost) . "' OR url='" . sql_quote($downloadhosthttp) . "' OR url='" . sql_quote($downloadhostslash) . "' OR url='" . sql_quote($downloadhostwww) . "'", $connexion);
-$num_rows = mysql_num_rows($result);
+//query to see is the host is one of the sites audited by CrawlTrack
+$result = $connexion->query("SELECT id_site FROM crawlt_site
+	WHERE url='" . crawlt_sql_quote($connexion, $downloadhost) . "' OR url='" . crawlt_sql_quote($connexion, $downloadhosthttp) . "' OR url='" . crawlt_sql_quote($connexion, $downloadhostslash) . "' OR url='" . crawlt_sql_quote($connexion, $downloadhostwww) . "'");
+$num_rows = $result->num_rows;
 
 if ($num_rows > 0) {
 	//the host is known by CrawlTrack
-	while ($ligne = mysql_fetch_row($result)) {
+	while ($ligne = $result->fetch_row()) {
 		$idsite = $ligne[0];
 	}
 } elseif ($noconnect == 0) {
@@ -118,32 +129,32 @@ if ($num_rows > 0) {
 //if it's ok for download (not a crawler and host known by CrawlTrack)-------------------------------------
 if ($count_download) {
 	//check if the link to download exist in the crawlt_download table for that date and that site
-	$result = mysql_query("SELECT id FROM crawlt_download
-		WHERE link='" . sql_quote($downloadurl) . "'
-		AND `date`='" . sql_quote($todaylocal) . "'
-		AND idsite='" . sql_quote($idsite) . "'", $connexion);
-	$num_rows = mysql_num_rows($result);
+	$result = $connexion->query("SELECT id FROM crawlt_download
+		WHERE link='" . crawlt_sql_quote($connexion, $downloadurl) . "'
+		AND `date`='" . crawlt_sql_quote($connexion, $todaylocal) . "'
+		AND idsite='" . crawlt_sql_quote($connexion, $idsite) . "'");
+	$num_rows = $result->num_rows;
 	if ($num_rows > 0) {
 		//the link already exist in the table
-		while ($ligne = mysql_fetch_row($result)) {
+		while ($ligne = $result->fetch_row()) {
 			$idlink = $ligne[0];
 		}
 		//add 1 in the download count
 		$sqlupdate = "UPDATE crawlt_download SET count=count+1
-			WHERE id='" . sql_quote($idlink) . "'
-			AND `date`='" . sql_quote($todaylocal) . "'
-			AND idsite='" . sql_quote($idsite) . "'";
-		$requeteupdate = mysql_query($sqlupdate, $connexion);
+			WHERE id='" . crawlt_sql_quote($connexion, $idlink) . "'
+			AND `date`='" . crawlt_sql_quote($connexion, $todaylocal) . "'
+			AND idsite='" . crawlt_sql_quote($connexion, $idsite) . "'";
+		$requeteupdate = $connexion->query($sqlupdate);
 	} else {
 		//the link didn't exist in the table, create it
-		$sql = "INSERT INTO crawlt_download (link, count,date, idsite) VALUES ('" . sql_quote($downloadurl) . "','1','" . sql_quote($todaylocal) . "','" . sql_quote($idsite) . "')";
-		$requete = mysql_query($sql, $connexion);
+		$sql = "INSERT INTO crawlt_download (link, count,date, idsite) VALUES ('" . crawlt_sql_quote($connexion, $downloadurl) . "','1','" . crawlt_sql_quote($connexion, $todaylocal) . "','" . crawlt_sql_quote($connexion, $idsite) . "')";
+		$requete = $connexion->query($sql);
 	}
-	mysql_close($connexion);
+	mysqli_close($connexion);
 	header("Location: $downloadurl");
 	exit;
 } else {
-	mysql_close($connexion);
+	mysqli_close($connexion);
 	//the visitor is a crawler, we didn't count anything andd just redirect to the download file
 	header("Location: $downloadurl");
 	exit;
