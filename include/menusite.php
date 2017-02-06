@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.9
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,14 +8,15 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: menusite.php
 //----------------------------------------------------------------------
-//  Last update: 09/03/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
 }
@@ -29,10 +30,10 @@ if ($_SESSION['rightsite'] == 0) {
 	//mysql query
 	$sqlsite = "SELECT * FROM crawlt_site";
 	$requetesite = db_query($sqlsite, $connexion);
-	$nbrresult = mysql_num_rows($requetesite);
+	$nbrresult = $requetesite->num_rows;
 	
 	if ($nbrresult >= 1) {
-		while ($ligne = mysql_fetch_object($requetesite)) {
+		while ($ligne = $requetesite->fetch_object()) {
 			$sitename = $ligne->name;
 			$siteurl = $ligne->url;
 			$siteid = $ligne->id_site;
@@ -58,12 +59,12 @@ if ($_SESSION['rightsite'] == 0) {
 			if (!isset($_SESSION[$sitename2])) {
 				//query to have the total number of page for the site
 				$sqlstats = "SELECT COUNT(DISTINCT crawlt_pages_id_page) as numrow FROM crawlt_visits
-					WHERE  crawlt_site_id_site='" . sql_quote($site) . "'
+					WHERE  crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
 					AND crawlt_crawler_id_crawler !='0'
 					AND crawlt_crawler_id_crawler !='65500'
 					AND crawlt_crawler_id_crawler !='65501'
 					";
-				$nbrpagestotal = mysql_result(db_query($sqlstats),0,"numrow");
+				$nbrpagestotal = db_result(db_query($sqlstats, $connexion),0,"numrow");
 				$_SESSION[$sitename2] = $nbrpagestotal;
 			} else {
 				$nbrpagestotal = $_SESSION[$sitename2];
@@ -109,12 +110,12 @@ if ($_SESSION['rightsite'] == 0) {
 	//mysql query
 	$site = $_SESSION['rightsite'];
 	$sqlsite = "SELECT * FROM crawlt_site
-		WHERE id_site='" . sql_quote($site) . "'";
+		WHERE id_site='" . crawlt_sql_quote($connexion, $site) . "'";
 	$requetesite = db_query($sqlsite, $connexion);
-	$nbrresult = mysql_num_rows($requetesite);
+	$nbrresult = $requetesite->num_rows;
 	
 	if ($nbrresult >= 1) {
-		while ($ligne = mysql_fetch_object($requetesite)) {
+		while ($ligne = $requetesite->fetch_object()) {
 			$sitename = $ligne->name;
 			$siteurl = $ligne->url;
 			$siteid = $ligne->id_site;
@@ -130,13 +131,13 @@ if ($_SESSION['rightsite'] == 0) {
 		if (!isset($_SESSION[$sitename])) {
 			//query to have the total number of page for the site
 			$sqlstats = "SELECT DISTINCT crawlt_pages_id_page FROM crawlt_visits
-				WHERE  crawlt_site_id_site='" . sql_quote($site) . "'
+				WHERE  crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
 				AND crawlt_crawler_id_crawler !='0'
 				AND crawlt_crawler_id_crawler !='65500'
 				AND crawlt_crawler_id_crawler !='65501'
 				";
 			$requetestats = db_query($sqlstats, $connexion);
-			$nbrpagestotal = mysql_num_rows($requetestats);
+			$nbrpagestotal = $requetestats->num_rows;
 			$_SESSION[$sitename] = $nbrpagestotal;
 		} else {
 			$nbrpagestotal = $_SESSION[$sitename];

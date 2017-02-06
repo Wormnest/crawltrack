@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,29 +8,44 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: login.php
 //----------------------------------------------------------------------
-//  Last update: 17/11/2011
-//----------------------------------------------------------------------
-error_reporting(0);
+
+// TODO: Replace md5 with safer routine for password hashing!!!
+
+// Set debugging to non zero to turn it on.
+// DON'T FORGET TO TURN IT OFF AFTER YOU FINISH DEBUGGING OR WHEN COMMITTING CHANGES!
+$DEBUG = 0;
+
+if ($DEBUG == 0) {
+	// Normal: don't show any errors, warnings, notices.
+	error_reporting(0);
+} else {
+	// DURING DEBUGGING ONLY
+	error_reporting(E_ALL);
+}
+
 //database connection
 include ("../include/configconnect.php");
+require_once("../include/jgbdb.php");
+// Make POST variables safe
 include ("../include/post.php");
 $crawlencode = urlencode($crawler);
 //get the functions files
 $times = 0;
 include ("../include/functions.php");
+
 if (isset($crawlthost)) //version >= 150
 {
-	$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-	$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 } else {
-	$connexion = mysql_connect($host, $user, $password) or die("MySQL connection to database problem");
-	$selection = mysql_select_db($db) or die("MySQL database selection problem");
+	$connexion = db_connect($host, $tuser, $password, $db);
 }
 
 //clear the cache folder at the first entry on crawltrack to avoid to have it oversized
@@ -42,6 +57,7 @@ while (false !== $entry = $dir->read()) {
 	}
 	unlink("../cache/$entry");
 }
+
 //clear the cachecloseperiod folder if there is more than 200 files in it to avoid to have it oversized
 $list = glob("../cachecloseperiod/*.gz"); 
 if(count($list)>200) {
@@ -54,13 +70,14 @@ if(count($list)>200) {
 		unlink("../cachecloseperiod/$entry");
 	}		
 }
+
 //clear cache table
 $sqlcache = "TRUNCATE TABLE crawlt_cache";
-$requetecache = mysql_query($sqlcache, $connexion);
+$requetecache = $connexion->query($sqlcache);
 
 //clear graph table
 $sqlcache = "TRUNCATE TABLE crawlt_graph";
-$requetecache = mysql_query($sqlcache, $connexion);
+$requetecache = $connexion->query($sqlcache);
 
 //get values
 if (isset($_POST['userlogin'])) {
@@ -85,18 +102,20 @@ if (isset($_POST['graphpos'])) {
 
 //mysql query
 $sqllogin = "SELECT * FROM crawlt_login";
-$requetelogin = mysql_query($sqllogin, $connexion) or die("MySQL query error");
+$requetelogin = $connexion->query($sqllogin) or die("MySQL query error");
 if (isset($crawlthost)) //version >= 150
 {
 	$sqllogin2 = "SELECT public FROM crawlt_config";
-	$requetelogin2 = mysql_query($sqllogin2, $connexion) or die("MySQL query error");
+	$requetelogin2 = $connexion->query($sqllogin2) or die("MySQL query error");
 }
 
 //mysql connexion close
-mysql_close($connexion);
+mysqli_close($connexion);
+
 $validuser = 0;
 $userpass2 = md5($userpass);
-while ($ligne = mysql_fetch_object($requetelogin)) {
+
+while ($ligne = $requetelogin->fetch_object()) {
 	$user = $ligne->crawlt_user;
 	$passw = $ligne->crawlt_password;
 	$admin = $ligne->admin;
@@ -109,7 +128,7 @@ while ($ligne = mysql_fetch_object($requetelogin)) {
 }
 if (isset($crawlthost)) //version >= 150
 {
-	while ($ligne2 = mysql_fetch_object($requetelogin2)) {
+	while ($ligne2 = $requetelogin2->fetch_object()) {
 		$crawltpublic = $ligne2->public;
 	}
 } else {

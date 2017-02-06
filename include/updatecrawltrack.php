@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,21 +8,23 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: updatecrawltrack.php
 //----------------------------------------------------------------------
-//  Last update: 25/11/2011
-//----------------------------------------------------------------------
+
 //this file is needed to update from a previous release
+
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
 }
 //connexion to database
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or exit("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or exit("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 $process_ok = true;
 
 //----------------------------------------------------------------------------------------------------
@@ -134,7 +136,7 @@ if ($version < 332) {
 }
 
 //----------------------------------------------------------------------------------------------------
-//set the correct chmod level to all folder
+//set the correct chmod level for all folders
 //determine the path to the file
 if (isset($_SERVER['SCRIPT_FILENAME']) && !empty($_SERVER['SCRIPT_FILENAME'])) {
 	$path = dirname($_SERVER['SCRIPT_FILENAME']);
@@ -157,12 +159,12 @@ if (isset($_SERVER['SCRIPT_FILENAME']) && !empty($_SERVER['SCRIPT_FILENAME'])) {
 
 //empty the cache table
 $sqlcache = "TRUNCATE TABLE crawlt_cache";
-$requetecache = mysql_query($sqlcache, $connexion) or exit("MySQL query error");
+$requetecache = $connexion->query($sqlcache) or exit("MySQL query error");
 
 // Just check if the main errors mesages array are empty
 if (empty($tables_actions_error_messages) && empty($fields_actions_error_messages) && $process_ok) {
 	$sqlupdateversion = "UPDATE crawlt_config SET version='332'";
-	$requeteupdateversion = mysql_query($sqlupdateversion, $connexion);
+	$requeteupdateversion = $connexion->query($sqlupdateversion);
 	$a = substr($versionid, 0, 1);
 	$b = substr($versionid, 1, 1);
 	$c = substr($versionid, 2, 1);
@@ -241,5 +243,5 @@ if (empty($tables_actions_error_messages) && empty($fields_actions_error_message
     <br><br><br>
 <?php
 }
-mysql_close($connexion);
+mysqli_close($connexion);
 ?>
