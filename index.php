@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,28 +8,42 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: index.php
 //----------------------------------------------------------------------
-//  Last update: 25/11/2011
-//----------------------------------------------------------------------
 
-// make sure PHP version  >= 4.3.2 is used (and even this version is waaaay too old, 29-May-2003)
-if (version_compare(PHP_VERSION, '4.3.2', '<')) exit("Sorry, CrawlTrack needs at least PHP version 4.3.2 to run ! You are running version " . PHP_VERSION . " \n");
+// make sure PHP version  >= 5.0.0 is used (and even this version is way too old)
+if (version_compare(PHP_VERSION, '5.0.0', '<')) exit("Sorry, CrawlTrack needs at least PHP version 5.0.0 to run ! You are running version " . PHP_VERSION . " \n");
 
-error_reporting(0);
+// Set debugging to non zero to turn it on.
+// DON'T FORGET TO TURN IT OFF AFTER YOU FINISH DEBUGGING OR WHEN COMMITTING CHANGES!
+$DEBUG = 0;
+
+if ($DEBUG == 0) {
+	// Normal: don't show any errors, warnings, notices.
+	error_reporting(0);
+} else {
+	// DURING DEBUGGING ONLY
+	error_reporting(E_ALL);
+}
+
+
 //initialize array & data
 $listlangcrawlt = array();
 $numbquery = 0;
+
 //function to count the number of mysql query
-function db_query($sql) {
+function db_query($sql, $connexion) {
 	global $numbquery;
 	$numbquery++;
-	return mysql_query($sql);
+	return $connexion->query($sql);
 }
+
 //function to measure the time used for the calculation
 function getTime() {
 	static $timer = false, $start;
@@ -44,10 +58,12 @@ function getTime() {
 	}
 }
 getTime();
-//if already install get all the config datas
+
+//if already installed get all the config datas
 if (file_exists('include/configconnect.php')) {
 	//connection file include
 	require_once ("include/configconnect.php");
+	require_once("include/jgbdb.php");
 	if (!isset($crawlthost)) //case old version (before 150)
 	{
 		$crawlthost = $host;
@@ -56,16 +72,13 @@ if (file_exists('include/configconnect.php')) {
 		$crawltdb = $db;
 		$crawltlang = $lang;
 		$crawltpublic = 0;
-		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 	} else {
-		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 		$sqlconfig = "SELECT * FROM crawlt_config";
-		$requeteconfig = db_query($sqlconfig, $connexion);
-		$nbrresult = mysql_num_rows($requeteconfig);
-		if ($nbrresult >= 1) {
-			$ligne = mysql_fetch_assoc($requeteconfig);
+		$nbrresult = db_query($sqlconfig, $connexion);
+		if ($nbrresult->num_rows >= 1) {
+			$ligne = mysqli_fetch_assoc($nbrresult);
 			$times = $ligne['timeshift'];
 			$crawltpublic = $ligne['public'];
 			$crawltmail = $ligne['mail'];
@@ -106,9 +119,12 @@ if (file_exists('include/configconnect.php')) {
 	}
 	$charset = 1;
 } else {
+	// New installation
 	$charset = 0;
 	$crawltcharset = 1;
 }
+
+// Make all POST values safe.
 include ("include/post.php");
 if ($charset == 1) {
 	if ($crawltcharset != 1) {
@@ -119,27 +135,34 @@ if ($charset == 1) {
 if (!isset($times)) {
 	$times = 0;
 }
+
 require_once ("include/listlang.php");
 require_once ("include/functions.php");
+
 if ($charset == 1) {
-	mysql_close($connexion);
-	}
+	mysqli_close($connexion);
+}
+
 //language file include
 if (file_exists("language/" . $crawltlang . ".php") && in_array($crawltlang, $listlangcrawlt)) {
 	require_once ("language/" . $crawltlang . ".php");
 } else {
-	exit('<h1>No language files available !!!!</h1>');
+	exit('<h1>Language file " . $crawltlang . " missing!</h1>');
 }
+
 //version id
 $versionid = '332';
+
 // do not modify
 define('IN_CRAWLT', TRUE);
+
 // session start 'crawlt'
 if (!isset($_SESSION['flag'])) {
 	session_name('crawlt');
 	session_start();
 	$_SESSION['flag'] = true;
 }
+
 //if already install
 if (file_exists('include/configconnect.php') && $navig != 15) {
 	if ($navig == 0) {
@@ -343,7 +366,7 @@ if ($navig == 0 || $navig == 1 || $navig == 2 || $navig == 3 || $navig == 4 || $
 	//close the cache function
 	close();
 } else {
-	echo "<div class='smalltextgrey'>" . $numbquery . " mysql query           " . getTime() . " s</div>";
+	echo "<div class='smalltextgrey'>" . $numbquery . " mysql queries           " . getTime() . " s</div>";
 	echo "</body>\n";
 	echo "</html>\n";
 }

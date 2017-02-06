@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.7
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
 // That script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: createtable.php
 //----------------------------------------------------------------------
-//  Last update: 29/09/2010
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_INSTALL')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
 }
+
 //determine the path to the file
 if (isset($_SERVER['SCRIPT_FILENAME']) && !empty($_SERVER['SCRIPT_FILENAME'])) {
 	$path = dirname($_SERVER['SCRIPT_FILENAME']);
@@ -119,33 +121,33 @@ else {
 		
 		// tables creation
 		include ("./include/configconnect.php");
-		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword);
+		$connexion = mysqli_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 		
 		// check if connection is ok
 		if (!$connexion) {
-			//suppress the files
-			@chmod($path, 0755);
-			@chmod($path . '/include', 0755);
-			unlink($config_filepath);
-			unlink($crawltrack_filepath);
-			echo "<p>" . $language['step2_install_no_ok'] . "</p>";
-			echo "<div class=\"form\">\n";
-			echo "<form action=\"index.php\" method=\"POST\" >\n";
-			echo "<input type=\"hidden\" name ='validform' value='2'>\n";
-			echo "<input type=\"hidden\" name ='navig' value='15'>\n";
-			echo "<input type=\"hidden\" name ='lang' value='$crawltlang'>\n";
-			echo "<input type=\"hidden\" name ='idmysql' value='$idmysql'>\n";
-			echo "<input type=\"hidden\" name ='passwordmysql' value='$passwordmysql'>\n";
-			echo "<input type=\"hidden\" name ='hostmysql' value='$hostmysql'>\n";
-			echo "<input type=\"hidden\" name ='basemysql' value='$basemysql'>\n";
-			echo "<input name='ok' type='submit'  value=' " . $language['back_to_form'] . " ' size='20'>\n";
-			echo "</form>\n";
-			echo "</div>\n";
-		} else {
-			//check is base selection is ok
-			$selection = mysql_select_db($crawltdb);
-			
-			if (!$selection) {
+			// 1049 = Unknown database
+			if (!(mysqli_connect_errno() == 1049)) {
+				// Unknown problem with the connection to the database.
+				//suppress the files
+				@chmod($path, 0755);
+				@chmod($path . '/include', 0755);
+				unlink($config_filepath);
+				unlink($crawltrack_filepath);
+				echo "<p>" . $language['step2_install_no_ok'] . "</p>";
+				echo "<div class=\"form\">\n";
+				echo "<form action=\"index.php\" method=\"POST\" >\n";
+				echo "<input type=\"hidden\" name ='validform' value='2'>\n";
+				echo "<input type=\"hidden\" name ='navig' value='15'>\n";
+				echo "<input type=\"hidden\" name ='lang' value='$crawltlang'>\n";
+				echo "<input type=\"hidden\" name ='idmysql' value='$idmysql'>\n";
+				echo "<input type=\"hidden\" name ='passwordmysql' value='$passwordmysql'>\n";
+				echo "<input type=\"hidden\" name ='hostmysql' value='$hostmysql'>\n";
+				echo "<input type=\"hidden\" name ='basemysql' value='$basemysql'>\n";
+				echo "<input name='ok' type='submit'  value=' " . $language['back_to_form'] . " ' size='20'>\n";
+				echo "</form>\n";
+				echo "</div>\n";
+			} else {
+				// Unknown database
 				//suppress the files
 				@chmod($path, 0755);
 				@chmod($path . '/include', 0755);
@@ -164,43 +166,44 @@ else {
 				echo "<input name='ok' type='submit'  value=' " . $language['back_to_form'] . " ' size='20'>\n";
 				echo "</form>\n";
 				echo "</div>\n";
+			}
+		} else {
+			// We managed to connect to the database.
+			// Call the maintenance script which will do the job
+			$maintenance_mode = 'install';
+			$tables_to_touch = 'all';
+			include('maintenance.php');
+			mysqli_close($connexion);
+			if (empty($tables_actions_error_messages)) {
+				//case table creation ok
+				echo "<p>" . $language['step1_install_ok2'] . "</p>\n";
+				echo "<div class=\"form\">\n";
+				echo "<form action=\"index.php\" method=\"POST\" >\n";
+				echo "<input type=\"hidden\" name ='navig' value='15'>\n";
+				echo "<input type=\"hidden\" name ='validform' value='4'>\n";
+				echo "<input type=\"hidden\" name ='lang' value='$crawltlang'>\n";
+				echo "<input name='ok' type='submit'  value=' " . $language['step4_install'] . " ' size='60'>\n";
+				echo "</form>\n";
+				echo "<br></div>\n";
 			} else {
-				// Call the maintenance script which will do the job
-				$maintenance_mode = 'install';
-				$tables_to_touch = 'all';
-				include 'maintenance.php';
-				mysql_close($connexion);
-				if (empty($tables_actions_error_messages)) {
-					//case table creation ok
-					echo "<p>" . $language['step1_install_ok2'] . "</p>\n";
-					echo "<div class=\"form\">\n";
-					echo "<form action=\"index.php\" method=\"POST\" >\n";
-					echo "<input type=\"hidden\" name ='navig' value='15'>\n";
-					echo "<input type=\"hidden\" name ='validform' value='4'>\n";
-					echo "<input type=\"hidden\" name ='lang' value='$crawltlang'>\n";
-					echo "<input name='ok' type='submit'  value=' " . $language['step4_install'] . " ' size='60'>\n";
-					echo "</form>\n";
-					echo "<br></div>\n";
-				} else {
-					//case table creation no ok
-					echo "<p>" . $language['step1_install_no_ok3'] . "</p>\n";
-					echo "<div class=\"form\">\n";
-					echo "<form action=\"index.php\" method=\"POST\" >\n";
-					echo "<input type=\"hidden\" name ='validform' value='3'>\n";
-					echo "<input type=\"hidden\" name ='navig' value='15'>\n";
-					echo "<input type=\"hidden\" name ='lang' value='$crawltlang'>\n";
-					echo "<input type=\"hidden\" name ='idmysql' value='$idmysql'>\n";
-					echo "<input type=\"hidden\" name ='passwordmysql' value='$passwordmysql'>\n";
-					echo "<input type=\"hidden\" name ='hostmysql' value='$hostmysql'>\n";
-					echo "<input type=\"hidden\" name ='basemysql' value='$basemysql'>\n";
-					echo "<input name='ok' type='submit'  value=' " . $language['retry'] . " ' size='60'>\n";
-					echo "</form>\n";
-					echo "<br></div>\n";
-				}
+				//case table creation no ok
+				echo "<p>" . $language['step1_install_no_ok3'] . "</p>\n";
+				echo "<div class=\"form\">\n";
+				echo "<form action=\"index.php\" method=\"POST\" >\n";
+				echo "<input type=\"hidden\" name ='validform' value='3'>\n";
+				echo "<input type=\"hidden\" name ='navig' value='15'>\n";
+				echo "<input type=\"hidden\" name ='lang' value='$crawltlang'>\n";
+				echo "<input type=\"hidden\" name ='idmysql' value='$idmysql'>\n";
+				echo "<input type=\"hidden\" name ='passwordmysql' value='$passwordmysql'>\n";
+				echo "<input type=\"hidden\" name ='hostmysql' value='$hostmysql'>\n";
+				echo "<input type=\"hidden\" name ='basemysql' value='$basemysql'>\n";
+				echo "<input name='ok' type='submit'  value=' " . $language['retry'] . " ' size='60'>\n";
+				echo "</form>\n";
+				echo "<br></div>\n";
 			}
 		}
 	} else {
-		//case file no ok
+		// crawltrack.php and/or configconnect.php do not exist
 		echo "<p>" . $language['step1_install_no_ok2'] . "</p>";
 		echo "<div class=\"form\">\n";
 		echo "<form action=\"index.php\" method=\"POST\" >\n";

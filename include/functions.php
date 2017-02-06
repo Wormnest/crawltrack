@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,13 +8,13 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
 // That script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: functions.php
-//----------------------------------------------------------------------
-//  Last update: 12/11/2011
 //----------------------------------------------------------------------
 
 /*
@@ -33,7 +33,7 @@ if (!class_exists('nanoSha2'))
         var     $platform;
 
         // Php 4 - 6 compatable constructor
-        function nanoSha2($toUpper = false) {
+		public function __construct($toUpper = false) {
             // Determine if the caller wants upper case or not.
             $this->toUpper = is_bool($toUpper)
                            ? $toUpper
@@ -43,6 +43,9 @@ if (!class_exists('nanoSha2'))
             $tmpInt = (int)4294967295;
             $this->platform = ($tmpInt > 0) ? 64 : 32;
         }
+		/*function nanoSha2($toUpper = false) {
+			self::__construct($toUpper);
+		}*/
 
         // Do the SHA-256 Padding routine (make input a multiple of 512 bits)
         function char_pad($str)
@@ -472,13 +475,15 @@ function cache($cachename) {
 			echo "</html>\n";
 			exit();
 		}
-	$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword);
-	$selection = mysql_select_db($crawltdb);
+	$connexion = mysqli_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb) or die("MySQL connection to database problem");
+	if (mysqli_connect_errno()) {
+		die(mysqli_connect_error());
+	}
 	$sqlcache = "SELECT time FROM crawlt_cache WHERE cachename='$cachename'";
-	$requetecache = mysql_query($sqlcache, $connexion);
-	$nbrresult = mysql_num_rows($requetecache);
+	$requetecache = $connexion->query($sqlcache);
+	$nbrresult = $requetecache->num_rows;
 	if ($nbrresult >= 1) {
-		$ligne = mysql_fetch_row($requetecache);
+		$ligne = $requetecache->fetch_row();
 		$time = $ligne[0];
 	} else {
 		$time = 0;
@@ -496,16 +501,16 @@ function cache($cachename) {
 		if ($time == 0) {
 			$timecache = time();
 			$sqlcache2 = "INSERT INTO crawlt_cache (cachename, time) VALUES ('$cachename','$timecache')";
-			$requetecache2 = mysql_query($sqlcache2, $connexion);
+			$requetecache2 = $connexion->query($sqlcache2);
 		} else {
 			$timecache = time();
 			$sqlcache3 = "UPDATE crawlt_cache SET time='$timecache' where cachename='$cachename'";
-			$requetecache3 = mysql_query($sqlcache3, $connexion);
+			$requetecache3 = $connexion->query($sqlcache3);
 		}
 		$caching = 'true';
 		ob_start();
 	}
-mysql_close($connexion);
+mysqli_close($connexion);
 }
 
 function close() {
@@ -523,20 +528,37 @@ function close() {
 			fwrite($fp, $data);
 		}
 		fclose($fp);
-		echo "<div class='smalltextgrey'>" . $numbquery . " mysql query             " . getTime() . " s</div>";
+		echo "<div class='smalltextgrey'>" . $numbquery . " mysql queries             " . getTime() . " s</div>";
 		echo "</body>\n";
 		echo "</html>\n";
 	}
 }
 
+/** JB: This seems to be exactly the same as crawlt_sql_quote, commented out, use the other function!
 //function to escape query string
-function sql_quote($value) {
+function sql_quote($connexion, $value) {
 	if (get_magic_quotes_gpc()) {
 		$value = stripslashes($value);
 	}
 	//check if this function exists
-	if (function_exists("mysql_real_escape_string")) {
-		$value = mysql_real_escape_string($value);
+	if (function_exists("mysqli_real_escape_string")) {
+		$value = $connexion->real_escape_string($value);
+	}
+	//for PHP version < 4.3.0 use addslashes
+	else {
+		$value = addslashes($value);
+	}
+	return $value;
+}*/
+
+//function to escape query string
+function crawlt_sql_quote($connexion, $value) {
+	if (get_magic_quotes_gpc()) {
+		$value = stripslashes($value);
+	}
+	//check if this function exists
+	if (function_exists("mysqli_real_escape_string")) {
+		$value = $connexion->real_escape_string($value);
 	}
 	//for PHP version < 4.3.0 use addslashes
 	else {
@@ -545,23 +567,7 @@ function sql_quote($value) {
 	return $value;
 }
 
-//function to escape query string
-function crawlt_sql_quote($value) {
-	if (get_magic_quotes_gpc()) {
-		$value = stripslashes($value);
-	}
-	//check if this function exists
-	if (function_exists("mysql_real_escape_string")) {
-		$value = mysql_real_escape_string($value);
-	}
-	//for PHP version < 4.3.0 use addslashes
-	else {
-		$value = addslashes($value);
-	}
-	return $value;
-}
-
-//function to know if the string is encode in utf8
+//function to know if the string is encoded in utf8
 function isutf8($string) {
 	return (utf8_encode(utf8_decode($string)) == $string);
 }
@@ -1104,11 +1110,11 @@ if ($period == 0) {
 } elseif ($period == 5) {
 	//case since installation
 	$sql = "SELECT  MIN(date) AS min_date FROM crawlt_visits
-    WHERE crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'";
+    WHERE crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'";
 	$requete = db_query($sql, $connexion);
-	$nbrresult = mysql_num_rows($requete);
+	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
-		$ligne = mysql_fetch_row($requete);
+		$ligne = $requete->fetch_row();
 		$reftimestart = $ligne[0];
 	} else {
 		$reftimestart = $reftime;

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,19 +8,20 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
 // That script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: maintenance.php
 //----------------------------------------------------------------------
-//  Last update: 25/11/2011
-//----------------------------------------------------------------------
+
 // This file will manage all maintenance actions, database level (initial creation and updates)
 
 // Tables information array, stores all tables informations and needed queries
 // Special case : the insert queries can be replaced by a filename, which will be used instead.
-// A fucntion can also be specified with the key 'execute_after', it'll be executed when an update is needed
+// A function can also be specified with the key 'execute_after', it'll be executed when an update is needed
 
 // Error messages array, should be empty at the end
 $tables_actions_error_messages = array();
@@ -178,7 +179,7 @@ if(!isset($tables_to_check) || empty($tables_to_check))
 				PRIMARY KEY  (id_config)
 				)",
 			'insert_query' => "INSERT INTO crawlt_config (id_config, timeshift, public, mail, datelastmail, addressmail, lang, version, firstdayweek, rowdisplay, orderdisplay, typemail, typecharset, blockattack, sessionid, includeparameter) 
-			VALUES ('1','0','0','0','0','','".sql_quote($crawltlang)."','332','Monday','30','0','1','1','0','0','0')"
+			VALUES ('1','0','0','0','0','','".crawlt_sql_quote($connexion, $crawltlang)."','332','Monday','30','0','1','1','0','0','0')"
 		),
 		array(
 			'table_name' => 'crawlt_update_attack',
@@ -380,26 +381,26 @@ if(!isset($tables_to_check) || empty($tables_to_check))
 	);
 }
 
-function update_crawlt_update()
+function update_crawlt_update($connexion)
 {
-	$result = mysql_query("UPDATE crawlt_update SET update_id='97' WHERE idcrawlt_update='1'");
-	if($result)
+	$result = $connexion->query("UPDATE crawlt_update SET update_id='97' WHERE idcrawlt_update='1'");
+	if ($result)
 	{
-		if(mysql_affected_rows() == 0)
+		if ($connexion->affected_rows == 0)
 		{
-			mysql_query("INSERT INTO crawlt_update VALUES (1,'97')") ;
+			$connexion->query("INSERT INTO crawlt_update VALUES (1,'97')");
 		}
 	}
 }
 
-function update_crawlt_update_attack()
+function update_crawlt_update_attack($connexion)
 {
-	$result = mysql_query("UPDATE crawlt_update_attack SET update_id='8' WHERE idcrawlt_update='1'");
-	if($result)
+	$result = $connexion->query("UPDATE crawlt_update_attack SET update_id='8' WHERE idcrawlt_update='1'");
+	if ($result)
 	{
-		if(mysql_affected_rows() == 0)
+		if ($connexion->affected_rows == 0)
 		{
-			mysql_query("INSERT INTO crawlt_update_attack VALUES (1,'8')") ;
+			$connexion->query("INSERT INTO crawlt_update_attack VALUES (1,'8')");
 		}
 	}
 }
@@ -698,10 +699,10 @@ $indexes_to_check = array(
 
 // Get the tables list
 $tables_list_sql = "SHOW TABLES ";
-$tables = mysql_query($tables_list_sql, $connexion) or exit("MySQL query error"); 
+$tables = $connexion->query($tables_list_sql);
 
 $tables_names = array();
-while (list($tablename)=mysql_fetch_array($tables)) 
+while (list($tablename)=$tables->fetch_array()) 
 {
 	$tables_names[] = strtolower($tablename);
 }
@@ -720,29 +721,29 @@ if($maintenance_mode == 'install') {
 				if($table_to_check['table_name'] == 'crawlt_update')
 					$existing_crawlt_update_table = false;
 				// The table isn't in the existing tables list, create it
-				$result_create = mysql_query($table_to_check['create_delete_query'], $connexion);
+				$result_create = $connexion->query($table_to_check['create_delete_query']);
 				if (!$result_create) {
 					// Query failed, add the error message
-					$tables_actions_error_messages[] = mysql_error();
+					$tables_actions_error_messages[] = mysqli_error();
 				}
 				// Add data in the table if needed
 				if (!empty($table_to_check['insert_query'])) {
 					// Check if the insert query is a filename or a standard query
 					if (strpos($table_to_check['insert_query'], 'INSERT') !== false) {
-						$result_insert = mysql_query($table_to_check['insert_query'], $connexion);
+						$result_insert = $connexion->query($table_to_check['insert_query']);
 					} else {
 						// use the SQL file in data directory
-						$result_insert = mysql_query(file_get_contents(dirname(__FILE__) . '/data/' . $table_to_check['insert_query']), $connexion);
+						$result_insert = $connexion->query(file_get_contents(dirname(__FILE__) . '/data/' . $table_to_check['insert_query']));
 					}
 					if (!$result_insert) {
 						// Query failed, add the error message
-						$tables_actions_error_messages[] = mysql_error();
+						$tables_actions_error_messages[] = mysqli_error();
 					}
 				}
 			}
 		}
 		if (isset($table_to_check['execute_after']) && !empty($table_to_check['execute_after'])) {
-			call_user_func($table_to_check['execute_after']);
+			call_user_func($table_to_check['execute_after'], $connexion);
 		}
 	}
 } else {
@@ -761,30 +762,30 @@ if($maintenance_mode == 'install') {
 					if($table_to_check['table_name'] == 'crawlt_update')
 						$existing_crawlt_update_table = false;
 					// The table isn't in the existing tables list, create it
-					$result_create = mysql_query($table_to_check['create_delete_query'], $connexion);
+					$result_create = $connexion->query($table_to_check['create_delete_query']);
 					if (!$result_create) {
 						// Query failed, add the error message
-						$tables_actions_error_messages[] = mysql_error();
+						$tables_actions_error_messages[] = mysqli_error();
 					}
 					// Add data in the table if needed
 					if(!empty($table_to_check['insert_query'])) {
-						$result_insert = mysql_query($table_to_check['insert_query'], $connexion);
+						$result_insert = $connexion->query($table_to_check['insert_query']);
 						if (!$result_insert) {
 							// Query failed, add the error message
-							$tables_actions_error_messages[] = mysql_error();
+							$tables_actions_error_messages[] = mysqli_error();
 						}
 					}
 				}
 			} else {
 				// Action is to delete (drop) the table
-				$result_delete = mysql_query($table_to_check['create_delete_query'], $connexion);
+				$result_delete = $connexion->query($table_to_check['create_delete_query']);
 				if (!$result_delete) {
 					// Query failed, add the error message
-					$tables_actions_error_messages[] = mysql_error();
+					$tables_actions_error_messages[] = mysqli_error();
 				}
 			}
 			if(isset($table_to_check['execute_after']) && !empty($table_to_check['execute_after'])) {
-				call_user_func($table_to_check['execute_after']);
+				call_user_func($table_to_check['execute_after'], $connexion);
 			}
 		}
 	}
@@ -793,9 +794,9 @@ if($maintenance_mode == 'install') {
 	foreach ($fields_to_check as $table_name => $fields) {
 		if ($tables_to_touch == 'all' || (is_array($tables_to_touch) && in_array($table_name, $tables_to_touch))) {
 			// Either all the tables are to be modified or the current table is in the restricted tables array
-			$table_info_res = mysql_query("SHOW COLUMNS FROM " . $table_name . "");
+			$table_info_res = $connexion->query("SHOW COLUMNS FROM " . $table_name . "");
 			$table_field_names = array();
-			while ($table_info = mysql_fetch_assoc($table_info_res)) {
+			while ($table_info = $table_info_res->fetch_assoc()) {
 				$table_field_names[] = $table_info['Field'];
 			}
 			foreach ($fields as $a_field) {
@@ -804,10 +805,10 @@ if($maintenance_mode == 'install') {
 					if($table_name == 'crawlt_site' && $a_field['field_name'] == 'url')
 						$existing_crawlt_site_url_field = false;
 					// The field isn't in the existing tables list, create it
-					$result_update = mysql_query($a_field['add_query'], $connexion);
+					$result_update = $connexion->query($a_field['add_query']);
 					if (!$result_update) {
 						// Query failed, add the error message
-						$fields_actions_error_messages[] = mysql_error();
+						$fields_actions_error_messages[] = mysqli_error();
 					}
 				}
 			}
@@ -818,18 +819,18 @@ if($maintenance_mode == 'install') {
 	foreach ($indexes_to_check as $table_name => $indexes) {
 		if ($tables_to_touch == 'all' || (is_array($tables_to_touch) && in_array($table_name, $tables_to_touch))) {
 			// Either all the tables are to be modified or the current table is in the restricted tables array
-			$table_info_res = mysql_query("SHOW INDEX FROM " . $table_name . "");
+			$table_info_res = $connexion->query("SHOW INDEX FROM " . $table_name . "");
 			$table_field_names = array();
-			while ($table_info = mysql_fetch_assoc($table_info_res)) {
+			while ($table_info = $table_info_res->fetch_assoc()) {
 				$table_index_names[] = $table_info['Column_name'];
 			}
 			foreach ($indexes as $an_index) {
 				if (!in_array($an_index['index_name'], $table_index_names)) {
 					// The field isn't in the existing tables list, create it
-					$result_update = mysql_query($an_index['add_query'], $connexion);
+					$result_update = $connexion->query($an_index['add_query']);
 					if (!$result_update) {
 						// Query failed, add the error message
-						$index_actions_error_messages[] = mysql_error();
+						$index_actions_error_messages[] = mysqli_error();
 					}
 				}
 			}
