@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: display-hacking.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 if ($period >= 1000) {
 	$cachename = "permanent-" . $navig . "-" . $site . "-".$crawltlang . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
 } elseif ($period >= 100 && $period < 200) //previous month
@@ -30,58 +32,63 @@ if ($period >= 1000) {
 } else {
 	$cachename = $navig . $period . $site . $firstdayweek . $localday . $graphpos . $crawltlang;
 }
+
 //start the caching
 cache($cachename);
+
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 //include menu
 include ("include/menumain.php");
 include ("include/menusite.php");
 include ("include/timecache.php");
+
 //mysql query-----------------------------------------------------------------------------------------------
 //date for the mysql query
 if ($period >= 10) {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "' 
-    AND  date <'" . sql_quote($daterequest2) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
+    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "'";
 } else {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "'";
 }
 $sqlstats = "SELECT  date 
 FROM crawlt_visits
 WHERE  crawlt_crawler_id_crawler='65500'
 AND $datetolookfor       
-AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'
+AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
 ORDER BY date";
 $requetestats = db_query($sqlstats, $connexion);
-$nbrresult = mysql_num_rows($requetestats);
+$nbrresult = $requetestats->num_rows;
 $sqlstats2 = "SELECT  date 
 FROM crawlt_visits
 WHERE crawlt_crawler_id_crawler='65501'
 AND $datetolookfor       
-AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'
+AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
 ORDER BY date";
 $requetestats2 = db_query($sqlstats2, $connexion);
-$nbrresult2 = mysql_num_rows($requetestats2);
+$nbrresult2 = $requetestats2->num_rows;
+
 //attack which has given an error 404
 if ($period >= 10) {
 	$sql = "SELECT attacktype, count 
     FROM crawlt_error
-    WHERE  idsite='" . sql_quote($site) . "'
-    AND  date >='" . sql_quote($daterequestseo) . "' 
-    AND  date <'" . sql_quote($daterequest2seo) . "'
+    WHERE  idsite='" . crawlt_sql_quote($connexion, $site) . "'
+    AND  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "' 
+    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2seo) . "'
     GROUP BY attacktype";
 } else {
 	$sql = "SELECT attacktype, count 
     FROM crawlt_error
-    WHERE  idsite='" . sql_quote($site) . "'
-    AND  date >='" . sql_quote($daterequestseo) . "'
+    WHERE  idsite='" . crawlt_sql_quote($connexion, $site) . "'
+    AND  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'
     GROUP BY attacktype";
 }
 $requete = db_query($sql, $connexion);
-$num_rows = mysql_num_rows($requete);
+$num_rows = $requete->num_rows;
 if ($num_rows > 0) {
-	while ($ligne = mysql_fetch_row($requete)) {
+	while ($ligne = $requete->fetch_row()) {
 		if ($ligne[0] == '65500') {
 			$nbrresult = $nbrresult + $ligne[1];
 		} elseif ($ligne[0] == '65501') {
@@ -90,7 +97,8 @@ if ($num_rows > 0) {
 	}
 }
 //mysql connexion close
-mysql_close($connexion);
+mysqli_close($connexion);
+
 $testip = 0;
 if ($nbrresult >= 1 || $nbrresult2 >= 1) {
 	//display---------------------------------------------------------------------------------------------------------

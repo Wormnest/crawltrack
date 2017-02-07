@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: display-one-keyword.php
 //----------------------------------------------------------------------
-//  Last update: 12/11/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array
 $visitkeywordgoogle = array();
 $visitkeywordgoogleimage = array();
@@ -43,6 +45,7 @@ $nbrresultask=0;
 $nbrresultexalead=0;
 $nbrresultyandex=0;
 $nbrresultaol=0;
+
 //collect post data
 if (isset($_POST['choosekeyword'])) {
 	$choosekeyword = (int)$_POST['choosekeyword'];
@@ -109,15 +112,19 @@ $cachename = $navig . $period . $site . $order.$rowdisplay . $crawlencode . $dis
 
 //start the caching
 cache($cachename);
+
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 //include menu
 include ("include/menumain.php");
 include ("include/menusite.php");
 include ("include/timecache.php");
+
 //clean table from crawler entry
 include ("include/cleaning-crawler-entry.php");
+
 //limite to
 if ($displayall == 'no') {
 	$limitquery = 'LIMIT ' . $rowdisplay;
@@ -126,23 +133,24 @@ if ($displayall == 'no') {
 }
 //date for the mysql query
 if ($period >= 10) {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "' 
-	AND  date <'" . sql_quote($daterequest2) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
+	AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "'";
 } else {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "'";
 }
 //date for mysql query for keyword position one month ago (5 days sample)
 $daterequest3 = date("Y-m-d H:i:s", (strtotime($daterequest) - (35 * 86400)));
 $daterequest4 = date("Y-m-d H:i:s", (strtotime($daterequest) - (30 * 86400)));
-$datetolookfor2 = " date >'" . sql_quote($daterequest3) . "' AND  date <'" . sql_quote($daterequest4) . "'";
+$datetolookfor2 = " date >'" . crawlt_sql_quote($connexion, $daterequest3) . "' AND  date <'" . crawlt_sql_quote($connexion, $daterequest4) . "'";
 //date for mysql query for keyword position two monthes ago (5 days sample)
 $daterequest5 = date("Y-m-d H:i:s", (strtotime($daterequest) - (65 * 86400)));
 $daterequest6 = date("Y-m-d H:i:s", (strtotime($daterequest) - (60 * 86400)));
-$datetolookfor3 = " date >'" . sql_quote($daterequest5) . "' AND  date <'" . sql_quote($daterequest6) . "'";
+$datetolookfor3 = " date >'" . crawlt_sql_quote($connexion, $daterequest5) . "' AND  date <'" . crawlt_sql_quote($connexion, $daterequest6) . "'";
 //date for mysql query for keyword position three monthes ago (5 days sample)
 $daterequest7 = date("Y-m-d H:i:s", (strtotime($daterequest) - (95 * 86400)));
 $daterequest8 = date("Y-m-d H:i:s", (strtotime($daterequest) - (90 * 86400)));
-$datetolookfor4 = " date >'" . sql_quote($daterequest7) . "' AND  date <'" . sql_quote($daterequest8) . "'";
+$datetolookfor4 = " date >'" . crawlt_sql_quote($connexion, $daterequest7) . "' AND  date <'" . crawlt_sql_quote($connexion, $daterequest8) . "'";
+
 //query to have the keyword for Google
 if($googlekeyword==1)
 {
@@ -153,18 +161,19 @@ ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 INNER JOIN crawlt_keyword
 ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword
 WHERE  $datetolookfor
-AND crawlt_site_id_site='" . sql_quote($site) . "'
-AND keyword='" . sql_quote($crawler2) . "' 
+AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND keyword='" . crawlt_sql_quote($connexion, $crawler2) . "' 
 AND crawlt_id_crawler= '1'    
 GROUP BY url_page";
 $requetegoogle = db_query($sqlgoogle, $connexion);
-$nbrresultgoogle = mysql_num_rows($requetegoogle);
+$nbrresultgoogle = $requetegoogle->num_rows;
 if ($nbrresultgoogle >= 1) {
-	while ($ligne = mysql_fetch_row($requetegoogle)) {
+	while ($ligne = $requetegoogle->fetch_row()) {
 		$visitkeywordgoogle[$ligne[0]] = $ligne[1];
 	}
 }
 }
+
 //query to have the keyword for Google-Image
 if($googleimagekeyword==1)
 {
@@ -175,18 +184,19 @@ ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 INNER JOIN crawlt_keyword
 ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword
 WHERE  $datetolookfor
-AND crawlt_site_id_site='" . sql_quote($site) . "'
-AND keyword='" . sql_quote($crawler2) . "' 
+AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND keyword='" . crawlt_sql_quote($connexion, $crawler2) . "' 
 AND crawlt_id_crawler= '6'    
 GROUP BY url_page";
 $requetegoogleimage = db_query($sqlgoogleimage, $connexion);
-$nbrresultgoogleimage = mysql_num_rows($requetegoogleimage);
+$nbrresultgoogleimage = $requetegoogleimage->num_rows;
 if ($nbrresultgoogleimage >= 1) {
-	while ($ligne = mysql_fetch_row($requetegoogleimage)) {
+	while ($ligne = $requetegoogleimage->fetch_row()) {
 		$visitkeywordgoogleimage[$ligne[0]] = $ligne[1];
 	}
 }
 }
+
 //query to get google referer to details position in google per host
 $sqlgoogle2 = "SELECT  referer 
 FROM crawlt_visits_human
@@ -195,18 +205,23 @@ ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword
 LEFT OUTER JOIN crawlt_referer
 ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
 WHERE  $datetolookfor
-AND crawlt_site_id_site='" . sql_quote($site) . "'
-AND keyword ='" . sql_quote($crawler2) . "' 
+AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND keyword ='" . crawlt_sql_quote($connexion, $crawler2) . "' 
 AND crawlt_id_crawler= '1'";
 $requetegoogle2 = db_query($sqlgoogle2, $connexion);
-$nbrresult = mysql_num_rows($requetegoogle2);
+$nbrresult = $requetegoogle2->num_rows;
 if ($nbrresult >= 1) {
-	while ($ligne = mysql_fetch_row($requetegoogle2)) {
+	while ($ligne = $requetegoogle2->fetch_row()) {
 		$listreferergoogle[] = $ligne[0];
 	}
 	foreach ($listreferergoogle as $value) {
 		$referertreatment = parse_url($value);
-		parse_str($referertreatment['query'], $tabvar);
+		if (isset($referertreatment['query'])) {
+			parse_str($referertreatment['query'], $tabvar);
+		} else {
+			$tabvar = array(); // Initialize to empty array
+		}
+
 		$listhost[$referertreatment['host']] = $referertreatment['host'];
 		$countvisithost[$referertreatment['host']] = @$countvisithost[$referertreatment['host']] + 1;
 		if (isset($tabvar['cd'])) {
@@ -244,6 +259,7 @@ if ($nbrresult >= 1) {
 	}
 	arsort($countvisithost);
 }
+
 //query to get google referer to details position in google per host one month ago
 $sqlgoogle3 = "SELECT  referer 
 FROM crawlt_visits_human
@@ -252,18 +268,23 @@ ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword
 LEFT OUTER JOIN crawlt_referer
 ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
 WHERE  $datetolookfor2
-AND crawlt_site_id_site='" . sql_quote($site) . "'
-AND keyword ='" . sql_quote($crawler2) . "' 
+AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND keyword ='" . crawlt_sql_quote($connexion, $crawler2) . "' 
 AND crawlt_id_crawler= '1'";
 $requetegoogle3 = db_query($sqlgoogle3, $connexion);
-$nbrresult = mysql_num_rows($requetegoogle3);
+$nbrresult = $requetegoogle3->num_rows;
 if ($nbrresult >= 1) {
-	while ($ligne = mysql_fetch_row($requetegoogle3)) {
+	while ($ligne = $requetegoogle3->fetch_row()) {
 		$listreferergoogle3[] = $ligne[0];
 	}
 	foreach ($listreferergoogle3 as $value) {
 		$referertreatment = parse_url($value);
-		parse_str($referertreatment['query'], $tabvar);
+		if (isset($referertreatment['query'])) {
+			parse_str($referertreatment['query'], $tabvar);
+		} else {
+			$tabvar = array(); // Initialize to empty array
+		}
+
 		$listhost3[$referertreatment['host']] = $referertreatment['host'];
 		if (isset($tabvar['cd'])) {
 			if (isset($positioncd3[$referertreatment['host']])) {
@@ -299,6 +320,7 @@ if ($nbrresult >= 1) {
 		}
 	}
 }
+
 //query to get google referer to details position in google per host two monthes ago
 $sqlgoogle4 = "SELECT  referer 
 FROM crawlt_visits_human
@@ -307,18 +329,23 @@ ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword
 LEFT OUTER JOIN crawlt_referer
 ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
 WHERE  $datetolookfor3
-AND crawlt_site_id_site='" . sql_quote($site) . "'
-AND keyword ='" . sql_quote($crawler2) . "' 
+AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND keyword ='" . crawlt_sql_quote($connexion, $crawler2) . "' 
 AND crawlt_id_crawler= '1'";
 $requetegoogle4 = db_query($sqlgoogle4, $connexion);
-$nbrresult = mysql_num_rows($requetegoogle4);
+$nbrresult = $requetegoogle4->num_rows;
 if ($nbrresult >= 1) {
-	while ($ligne = mysql_fetch_row($requetegoogle4)) {
+	while ($ligne = $requetegoogle4->fetch_row()) {
 		$listreferergoogle4[] = $ligne[0];
 	}
 	foreach ($listreferergoogle4 as $value) {
 		$referertreatment = parse_url($value);
-		parse_str($referertreatment['query'], $tabvar);
+		if (isset($referertreatment['query'])) {
+			parse_str($referertreatment['query'], $tabvar);
+		} else {
+			$tabvar = array(); // Initialize to empty array
+		}
+
 		$listhost4[$referertreatment['host']] = $referertreatment['host'];
 		if (isset($tabvar['cd'])) {
 			if (isset($positioncd4[$referertreatment['host']])) {
@@ -354,6 +381,7 @@ if ($nbrresult >= 1) {
 		}
 	}
 }
+
 //query to get google referer to details position in google per host three monthes ago
 $sqlgoogle5 = "SELECT  referer 
 FROM crawlt_visits_human
@@ -362,18 +390,23 @@ ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword
 LEFT OUTER JOIN crawlt_referer
 ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
 WHERE  $datetolookfor4
-AND crawlt_site_id_site='" . sql_quote($site) . "'
-AND keyword ='" . sql_quote($crawler2) . "' 
+AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND keyword ='" . crawlt_sql_quote($connexion, $crawler2) . "' 
 AND crawlt_id_crawler= '1'";
 $requetegoogle5 = db_query($sqlgoogle5, $connexion);
-$nbrresult = mysql_num_rows($requetegoogle5);
+$nbrresult = $requetegoogle5->num_rows;
 if ($nbrresult >= 1) {
-	while ($ligne = mysql_fetch_row($requetegoogle5)) {
+	while ($ligne = $requetegoogle5->fetch_row()) {
 		$listreferergoogle5[] = $ligne[0];
 	}
 	foreach ($listreferergoogle5 as $value) {
 		$referertreatment = parse_url($value);
-		parse_str($referertreatment['query'], $tabvar);
+		if (isset($referertreatment['query'])) {
+			parse_str($referertreatment['query'], $tabvar);
+		} else {
+			$tabvar = array(); // Initialize to empty array
+		}
+
 		$listhost5[$referertreatment['host']] = $referertreatment['host'];
 		if (isset($tabvar['cd'])) {
 			if (isset($positioncd5[$referertreatment['host']])) {
@@ -420,14 +453,14 @@ ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 INNER JOIN crawlt_keyword
 ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword 
 WHERE  $datetolookfor
-AND crawlt_site_id_site='" . sql_quote($site) . "'
-AND keyword='" . sql_quote($crawler2) . "'
+AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND keyword='" . crawlt_sql_quote($connexion, $crawler2) . "'
 AND crawlt_id_crawler= '2'    
 GROUP BY url_page";
 $requeteYahoo = db_query($sqlYahoo, $connexion);
-$nbrresultYahoo = mysql_num_rows($requeteYahoo);
+$nbrresultYahoo = $requeteYahoo->num_rows;
 if ($nbrresultYahoo >= 1) {
-	while ($ligne = mysql_fetch_row($requeteYahoo)) {
+	while ($ligne = $requeteYahoo->fetch_row()) {
 		$visitkeywordYahoo[$ligne[0]] = $ligne[1];
 	}
 }
@@ -442,18 +475,19 @@ ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 INNER JOIN crawlt_keyword
 ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword 
 WHERE  $datetolookfor 
-AND crawlt_site_id_site='" . sql_quote($site) . "'
-AND keyword='" . sql_quote($crawler2) . "'
+AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND keyword='" . crawlt_sql_quote($connexion, $crawler2) . "'
 AND crawlt_id_crawler= '3'    
 GROUP BY url_page";
 $requeteMSN = db_query($sqlMSN, $connexion);
-$nbrresultMSN = mysql_num_rows($requeteMSN);
+$nbrresultMSN = $requeteMSN->num_rows;
 if ($nbrresultMSN >= 1) {
-	while ($ligne = mysql_fetch_row($requeteMSN)) {
+	while ($ligne = $requeteMSN->fetch_row()) {
 		$visitkeywordMSN[$ligne[0]] = $ligne[1];
 	}
 }
 }
+
 //query to have the keyword for Ask
 if($askkeyword==1)
 {
@@ -464,18 +498,19 @@ ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 INNER JOIN crawlt_keyword
 ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword 
 WHERE  $datetolookfor 
-AND crawlt_site_id_site='" . sql_quote($site) . "'
-AND keyword='" . sql_quote($crawler2) . "'
+AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND keyword='" . crawlt_sql_quote($connexion, $crawler2) . "'
 AND crawlt_id_crawler= '4'    
 GROUP BY url_page";
 $requeteask = db_query($sqlask, $connexion);
-$nbrresultask = mysql_num_rows($requeteask);
+$nbrresultask = $requeteask->num_rows;
 if ($nbrresultask >= 1) {
-	while ($ligne = mysql_fetch_row($requeteask)) {
+	while ($ligne = $requeteask->fetch_row()) {
 		$visitkeywordask[$ligne[0]] = $ligne[1];
 	}
 }
 }
+
 //request to have the keyword for Baidu
 if($baidukeyword==1)
 {
@@ -486,18 +521,19 @@ ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 INNER JOIN crawlt_keyword
 ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword 
 WHERE  $datetolookfor 
-AND crawlt_site_id_site='" . sql_quote($site) . "'
-AND keyword='" . sql_quote($crawler2) . "'
+AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND keyword='" . crawlt_sql_quote($connexion, $crawler2) . "'
 AND crawlt_id_crawler= '5'    
 GROUP BY url_page";
 $requeteexalead = db_query($sqlexalead, $connexion);
-$nbrresultexalead = mysql_num_rows($requeteexalead);
+$nbrresultexalead = $requeteexalead->num_rows;
 if ($nbrresultexalead >= 1) {
-	while ($ligne = mysql_fetch_row($requeteexalead)) {
+	while ($ligne = $requeteexalead->fetch_row()) {
 		$visitkeywordexalead[$ligne[0]] = $ligne[1];
 	}
 }
 }
+
 //request to have the keyword for Yandex
 if($yandexkeyword==1)
 {
@@ -508,18 +544,19 @@ ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 INNER JOIN crawlt_keyword
 ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword 
 WHERE  $datetolookfor 
-AND crawlt_site_id_site='" . sql_quote($site) . "'
-AND keyword='" . sql_quote($crawler2) . "'
+AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND keyword='" . crawlt_sql_quote($connexion, $crawler2) . "'
 AND crawlt_id_crawler= '7'    
 GROUP BY url_page";
 $requeteyandex = db_query($sqlyandex, $connexion);
-$nbrresultyandex = mysql_num_rows($requeteyandex);
+$nbrresultyandex = $requeteyandex->num_rows;
 if ($nbrresultyandex >= 1) {
-	while ($ligne = mysql_fetch_row($requeteyandex)) {
+	while ($ligne = $requeteyandex->fetch_row()) {
 		$visitkeywordyandex[$ligne[0]] = $ligne[1];
 	}
 }
 }
+
 //request to have the keyword for Aol
 if($aolkeyword==1)
 {
@@ -530,18 +567,22 @@ ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 INNER JOIN crawlt_keyword
 ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword 
 WHERE  $datetolookfor 
-AND crawlt_site_id_site='" . sql_quote($site) . "'
-AND keyword='" . sql_quote($crawler2) . "'
+AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND keyword='" . crawlt_sql_quote($connexion, $crawler2) . "'
 AND crawlt_id_crawler= '8'    
 GROUP BY url_page";
 $requeteaol = db_query($sqlaol, $connexion);
-$nbrresultaol = mysql_num_rows($requeteaol);
+$nbrresultaol = $requeteaol->num_rows;
 if ($nbrresultaol >= 1) {
-	while ($ligne = mysql_fetch_row($requeteaol)) {
+	while ($ligne = $requeteaol->fetch_row()) {
 		$visitkeywordaol[$ligne[0]] = $ligne[1];
 	}
 }
 }
+
+//mysql connexion close
+mysqli_close($connexion);
+
 //calculation of total number of entry per keyword
 $visitkeyword = array();
 if ($nbrresultgoogle >= 1) {
@@ -584,14 +625,11 @@ if ($nbrresultaol >= 1) {
 		$visitkeyword[$key] = @$visitkeyword[$key] + $value;
 	}
 }
-//mysql connexion close
-mysql_close($connexion);
 arsort($visitkeyword);
+
 //display
 echo "<div class=\"content2\"><br><br><br><br><hr>\n";
 echo "</div>\n";
-
-
 
 //to close the menu rollover
 echo "<div width='100%' height:'5px' onmouseover=\"javascript:montre();\">&nbsp;</div>\n";

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: display-entrypage.php
 //----------------------------------------------------------------------
-//  Last update: 12/11/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array
 $visitkeyworddisplay = array();
 $visitkeywordgoogle = array();
@@ -97,15 +99,19 @@ $cachename = $navig . $period . $site . $order.$rowdisplay . $displayall . $firs
 
 //start the caching
 cache($cachename);
+
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 //include menu
 include ("include/menumain.php");
 include ("include/menusite.php");
 include ("include/timecache.php");
+
 //clean table from crawler entry
 include ("include/cleaning-crawler-entry.php");
+
 //limite to
 if ($displayall == 'no' && $choosekeyword==0) {
 	$limitquery = 'LIMIT ' . $rowdisplay;
@@ -114,42 +120,44 @@ if ($displayall == 'no' && $choosekeyword==0) {
 }
 //date for the mysql query
 if ($period >= 10) {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "' 
-    AND  date <'" . sql_quote($daterequest2) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
+    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "'";
 } else {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "'";
 }
-//query to have the number of entry per page
+
+//query to have the number of entries per page
 $sql = "SELECT  url_page, count(DISTINCT CONCAT(crawlt_ip, crawlt_browser)) AS nbrvisits 
 FROM crawlt_visits_human 
 INNER JOIN crawlt_pages    
 ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 WHERE $datetolookfor
-AND crawlt_site_id_site='" . sql_quote($site) . "' 
+AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "' 
 AND  crawlt_id_crawler!='0'  
 GROUP BY url_page
 ORDER BY nbrvisits DESC 
 $limitquery";
 $requete = db_query($sql, $connexion);
-$nbrresult = mysql_num_rows($requete);
+$nbrresult = $requete->num_rows;
 if ($nbrresult >= 1) {
-	while ($ligne = mysql_fetch_row($requete)) {
+	while ($ligne = $requete->fetch_row()) {
 		$visitkeyword[$ligne[0]] = $ligne[1];
 	}
 }
+
 //query to have the keyword for the main bots
 $sqlgoogle = "SELECT  url_page, count(DISTINCT CONCAT(crawlt_ip, crawlt_browser)), crawlt_id_crawler
 FROM crawlt_visits_human
 INNER JOIN crawlt_pages    
 ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 WHERE $datetolookfor
-AND crawlt_site_id_site='" . sql_quote($site) . "'
+AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
 AND  crawlt_id_crawler IN ('1','2','3','4','5','6','7','8')    
 GROUP BY url_page , crawlt_id_crawler";
 $requetegoogle = db_query($sqlgoogle, $connexion);
-$nbrresult = mysql_num_rows($requetegoogle);
+$nbrresult = $requetegoogle->num_rows;
 if ($nbrresult >= 1) {
-	while ($ligne = mysql_fetch_row($requetegoogle)) {
+	while ($ligne = $requetegoogle->fetch_row()) {
 		if ($ligne[2] == 1 && $googlekeyword == 1) {
 			$visitkeywordgoogle[$ligne[0]] = $ligne[1];
 		} elseif ($ligne[2] == 2 && $yahookeyword == 1) {
@@ -170,7 +178,8 @@ if ($nbrresult >= 1) {
 	}
 }
 //mysql connexion close
-mysql_close($connexion);
+mysqli_close($connexion);
+
 //display-----------------------------------------------------------------------------------------------------------
 echo "<div class=\"content2\"><br><hr>\n";
 echo "</div>\n";
@@ -179,9 +188,9 @@ echo "<div width='70%' align='center'><form action=\"index.php\" method=\"POST\"
 	font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif; \">\n";
 echo "<input type=\"hidden\" name ='navig' value=\"13\">\n";
 echo "<input type=\"hidden\" name ='site' value=\"".$site."\">\n";
-echo "<input type=\"hidden\" name ='period' value=\"".$period."\">\n";	
+echo "<input type=\"hidden\" name ='period' value=\"".$period."\">\n";
 echo "<input type=\"hidden\" name ='graphpos' value=\"".$graphpos."\">\n";
-echo "<input type=\"hidden\" name ='choosekeyword' value=\"1\">\n";								
+echo "<input type=\"hidden\" name ='choosekeyword' value=\"1\">\n";
 echo "<table>";
 if($aolkeyword==1)
 	{
@@ -334,16 +343,16 @@ if (count($visitkeyword) >= 1) {
 		}
 		if (isset($visitkeywordyandex[$keyword])) {
 			$visityandex = $visitkeywordyandex[$keyword];
-			$i++;			
+			$i++;
 		} else {
 			$visityandex = '-';
 		}	
 		if (isset($visitkeywordaol[$keyword])) {
 			$visitaol = $visitkeywordaol[$keyword];
-			$i++;			
+			$i++;
 		} else {
 			$visitaol = '-';
-		}		
+		}
 		
 		//to avoid problem if the url is enter in the database with http://
 		if (!preg_match('#^http://#i', $urlsite[$site])) {

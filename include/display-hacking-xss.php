@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: display-hacking-xss.php
 //----------------------------------------------------------------------
-//  Last update: 02/12/2010
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array
 $limitquery = 5000; //maximum number of attack used to calculated attack details
 $listip = array();
@@ -36,6 +38,7 @@ $ipproxy = array();
 $totallistattack = array();
 $listscript = array();
 $nbrvisits2 = array();
+
 if ($period >= 1000) {
 	$cachename = "permanent-" . $navig . "-" . $site . "-".$crawltlang . "-".$displayall . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
 } elseif ($period >= 100 && $period < 200) //previous month
@@ -47,24 +50,29 @@ if ($period >= 1000) {
 } else {
 	$cachename = $navig . $period . $site . $firstdayweek . $localday . $graphpos . $crawltlang . $displayall;
 }
+
 //start the caching
 cache($cachename);
+
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 //include menu
 include ("include/menumain.php");
 include ("include/menusite.php");
 include ("include/timecache.php");
+
 //include searchenginelist.php file to get $crawltcssaattack array
 include ("include/searchenginelist.php");
+
 //mysql query-----------------------------------------------------------------------------------------------
 //date for the mysql query
 if ($period >= 10) {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "' 
-    AND  date <'" . sql_quote($daterequest2) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
+    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "'";
 } else {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "'";
 }
 //date format
 if ($period == 0 || $period >= 1000) {
@@ -78,36 +86,37 @@ INNER JOIN crawlt_pages_attack
 ON crawlt_visits.crawlt_pages_id_page=crawlt_pages_attack.id_page 
 WHERE crawlt_crawler_id_crawler='65500'
 AND $datetolookfor       
-AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'
+AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
 ORDER BY date
 LIMIT $limitquery
 ";
 $requetestats = db_query($sqlstats, $connexion);
-$nbrresult = mysql_num_rows($requetestats);
+$nbrresult = $requetestats->num_rows;
+
 //query to get the error 404 attacks
 if ($period >= 10) {
 	$sql = "SELECT count FROM crawlt_error
-    WHERE  idsite='" . sql_quote($site) . "'
-    AND  date >='" . sql_quote($daterequestseo) . "' 
-    AND  date <'" . sql_quote($daterequest2seo) . "'
+    WHERE  idsite='" . crawlt_sql_quote($connexion, $site) . "'
+    AND  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "' 
+    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2seo) . "'
     AND attacktype='65500'";
 } else {
 	$sql = "SELECT  count FROM crawlt_error
-    WHERE  idsite='" . sql_quote($site) . "'
-    AND  date >='" . sql_quote($daterequestseo) . "'
+    WHERE  idsite='" . crawlt_sql_quote($connexion, $site) . "'
+    AND  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'
     AND attacktype='65500'";
 }
 $requete = db_query($sql, $connexion);
-$num_rows = mysql_num_rows($requete);
+$num_rows = $requete->num_rows;
 if ($num_rows > 0) {
-	$ligne = mysql_fetch_row($requete);
+	$ligne = $requete->fetch_row();
 	$nbrattack404 = $ligne[0];
 }
 $testip = 0;
 if (($nbrresult + $nbrattack404) >= 1) {
 	//treatment of 1st query result
 	if ($nbrresult >= 1) {
-		while ($ligne = mysql_fetch_row($requetestats)) {
+		while ($ligne = $requetestats->fetch_row()) {
 			if (!empty($ligne[1])) {
 				$listip[$ligne[1]] = $ligne[1];
 				@$nbrvisits[$ligne[1]]++;
@@ -146,9 +155,9 @@ if (($nbrresult + $nbrattack404) >= 1) {
 	//query to get the attack=> script infos
 	$sql = "SELECT attack, script FROM crawlt_attack WHERE type='css'";
 	$requete = db_query($sql, $connexion);
-	$nbrresult3 = mysql_num_rows($requete);
+	$nbrresult3 = $requete->num_rows;
 	if ($nbrresult3 >= 1) {
-		while ($ligne = mysql_fetch_row($requete)) {
+		while ($ligne = $requete->fetch_row()) {
 			${'attack' . $ligne[0]}[$ligne[1]] = $ligne[1];
 		}
 	}
@@ -281,18 +290,19 @@ if (($nbrresult + $nbrattack404) >= 1) {
 		$sqlstats = "SELECT COUNT(DISTINCT id_visit),COUNT(DISTINCT crawlt_ip_used) FROM crawlt_visits
       WHERE  ( crawlt_crawler_id_crawler='65501'  
       AND $datetolookfor       
-      AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "')
+      AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "')
       OR ( crawlt_crawler_id_crawler='65500'  
       AND $datetolookfor 
-      AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "')";
+      AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "')";
 		$requetestats = db_query($sqlstats, $connexion);
-		$ligne = mysql_fetch_row($requetestats);
+		$ligne = $requetestats->fetch_row();
 		$nbrattack = $ligne[0];
 		$nbrip2 = $ligne[1];
 	}
 	$nbrattack = $nbrattack + $nbrattack404;
 	//mysql connexion close
-	mysql_close($connexion);
+	mysqli_close($connexion);
+
 	//display---------------------------------------------------------------------------------------------------------
 	echo "<div class=\"content2\"><br><hr>\n";
 	echo "</div>\n";
