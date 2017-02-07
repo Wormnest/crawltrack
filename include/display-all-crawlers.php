@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -10,15 +10,17 @@
 //----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: display-all-crawlers.php
 //----------------------------------------------------------------------
-//  Last update: 22/11/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array
 $nbrcrawlerpage = array();
 $nbvisits = array();
@@ -44,10 +46,10 @@ if ($period >= 1000) //previous days
 
 //start the caching
 cache($cachename);
-//database connection
 
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+//database connection
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //include menu
 include ("include/menumain.php");
@@ -56,10 +58,10 @@ include ("include/timecache.php");
 
 //date for the mysql query
 if ($period >= 10) {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "' 
-    AND  date <'" . sql_quote($daterequest2) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
+    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "'";
 } else {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "'";
 }
 
 //query to count the number of page per crawler and to list the crawler and to count the number of visits per crawler and to have the date of last visit for each crawler
@@ -69,13 +71,13 @@ $sqlstats = "SELECT crawler_name, COUNT(DISTINCT crawlt_pages_id_page),  COUNT(i
 	INNER JOIN crawlt_crawler
 	ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
 	WHERE $datetolookfor    
-	AND crawlt_site_id_site='" . sql_quote($site) . "' 
+	AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "' 
 	GROUP BY crawler_name";
 $requetestats = db_query($sqlstats, $connexion);
-$nbrresult = mysql_num_rows($requetestats);
+$nbrresult = $requetestats->num_rows;
 if ($nbrresult >= 1) {
 	$onlyarchive = 0;
-	while ($ligne = mysql_fetch_row($requetestats)) {
+	while ($ligne = $requetestats->fetch_row()) {
 		if ($ligne[0] != 65500 && $ligne[0] != 65501) {
 			if($ligne[0] == 'MSN Bot' || $ligne[0] == 'Bingbot') {
 				$ligne[0]='MSN Bot - Bingbot';
@@ -91,7 +93,7 @@ if ($nbrresult >= 1) {
 			$listcrawler[$ligne[0]] = $ligne[0];
 		}
 	}
-	mysql_free_result($requetestats);
+	mysqli_free_result($requetestats);
 	
 	//query to count the total number of  pages viewed ,total number of visits and total number of crawler
 	$sqlstats2 = "SELECT COUNT(DISTINCT crawlt_pages_id_page), COUNT(DISTINCT crawler_name), COUNT(id_visit) 
@@ -99,10 +101,10 @@ if ($nbrresult >= 1) {
 		INNER JOIN crawlt_crawler
 		ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
 		AND $datetolookfor         
-		AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'";
+		AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'";
 	$requetestats2 = db_query($sqlstats2, $connexion);
-	$ligne2 = mysql_fetch_row($requetestats2);
-	mysql_free_result($requetestats2);
+	$ligne2 = $requetestats2->fetch_row();
+	mysqli_free_result($requetestats2);
 	
 	$nbrtotpages = $ligne2[0];
 	$nbrtotcrawlers = $ligne2[1];
@@ -130,17 +132,18 @@ if ($nbrresult >= 1) {
 	
 	//check if this graph already exists in the table
 	$sql = "SELECT name  FROM crawlt_graph
-		WHERE name= '" . sql_quote($piegraphname) . "'";
+		WHERE name= '" . crawlt_sql_quote($connexion, $piegraphname) . "'";
 	$requete = db_query($sql, $connexion);
-	$nbrresult = mysql_num_rows($requete);
+	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
-		$sql2 = "UPDATE crawlt_graph SET graph_values='" . sql_quote($datatransferttograph) . "'
-				WHERE name= '" . sql_quote($piegraphname) . "'";
+		$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($connexion, $datatransferttograph) . "'
+				WHERE name= '" . crawlt_sql_quote($connexion, $piegraphname) . "'";
 	} else {
-		$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . sql_quote($piegraphname) . "','" . sql_quote($datatransferttograph) . "')";
+		$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($connexion, $piegraphname) . "','" . crawlt_sql_quote($connexion, $datatransferttograph) . "')";
 	}
 	$requete2 = db_query($sql2, $connexion);
-	mysql_close($connexion);
+	mysqli_close($connexion);
+
 	//display----------------------------------------------------------------------------------------------------
 	echo "<div class=\"content2\"><br><hr>\n";
 	echo "</div>\n";
@@ -173,7 +176,7 @@ if ($nbrresult >= 1) {
 		//graph
 		echo "<div class='graphvisits' >\n";
 		//mapgraph
-		include "include/mapgraph.php";
+		include("include/mapgraph.php");
 		echo "<img src=\"./graphs/visit-graph.php?crawltlang=$crawltlang&amp;period=$period&amp;navig=$navig&amp;graphname=$graphname\" USEMAP=\"#visit\" alt=\"graph\"  style=\"border:0; width:700px; height:300px\">\n";
 		echo "</div>\n";
 		echo "<div class='imprimgraph'>\n";
