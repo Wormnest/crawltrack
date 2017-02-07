@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -10,22 +10,34 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: origine-graph.php
 //----------------------------------------------------------------------
 // this graph is made with artichow    website: www.artichow.org
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
-//----------------------------------------------------------------------
-error_reporting(0);
+
+// Set debugging to non zero to turn it on.
+// DON'T FORGET TO TURN IT OFF AFTER YOU FINISH DEBUGGING OR WHEN COMMITTING CHANGES!
+$DEBUG = 0;
+
+if ($DEBUG == 0) {
+	// Normal: don't show any errors, warnings, notices.
+	error_reporting(0);
+} else {
+	// DURING DEBUGGING ONLY
+	error_reporting(E_ALL);
+}
+
 //get graph infos
 $graphname = $_GET['graphname'];
 
 //database connection
 include ("../include/configconnect.php");
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("../include/jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //get the functions files
 $times = 0; //give value just to avoid error in functions.php
@@ -42,18 +54,18 @@ if (file_exists("../cachecloseperiod/$graphname.gz")) {
 	$datatransfert = unserialize(urldecode(stripslashes($data)));
 } else {
 	$sql = "SELECT   graph_values FROM crawlt_graph
-		WHERE  name='" . sql_quote($graphname) . "'";
-	$requete = mysql_query($sql, $connexion) or die("MySQL query error");
-	$nbrresult = mysql_num_rows($requete);
+		WHERE  name='" . crawlt_sql_quote($connexion, $graphname) . "'";
+	$requete = db_mysql_query($sql, $connexion);
+	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
-		$ligne = mysql_fetch_assoc($requete);
+		$ligne = $requete->fetch_assoc();
 		$data = $ligne['graph_values'];
 	} else {
 		exit('<h1>No Graph values available !!!!</h1>');
 	}
 	$datatransfert = unserialize(urldecode(stripslashes($data)));
 }
-mysql_close($connexion);
+mysqli_close($connexion);
 $totvalues = array_sum($datatransfert);
 
 //get the listlang files
@@ -98,43 +110,50 @@ if (@$fontttf['FreeType Linkage'] == 'with freetype') {
 } else {
 	$ttf = 'no-ok';
 }
+
 require_once ("artichow/Pie.class.php");
-$graph = new Graph(450, 200);
+require_once ("artichow/Graph.class.php");
+
+$graph = new awGraph(450, 200);
 if (function_exists('imageantialias')) {
 	$graph->setAntiAliasing(TRUE);
 }
 $graph->border->hide(TRUE);
 $graph->shadow->setSize(5);
 $graph->shadow->smooth(TRUE);
-$graph->shadow->setPosition('SHADOW_LEFT_BOTTOM');
-$graph->shadow->setColor(new DarkBlue);
-$plot = new Pie($values);
+//$graph->shadow->setPosition(awShadow::LEFT_BOTTOM); -- we don't want a border for pies
+$graph->shadow->hide(TRUE);
+$graph->shadow->setColor(new awDarkBlue);
+$plot = new awPie($values);
 $plot->setCenter(0.4, 0.5);
 $plot->setSize(0.6, 0.8);
 $plot->set3D(15);
 $plot->setLabelPosition(10);
-$plot->label->setColor(new DarkBlue);
+$plot->label->setColor(new awDarkBlue);
+
 if ($ttf == 'ok') {
-	$plot->label->setFont(new Tuffy(10));
+	$plot->label->setFont(new awTuffy(10));
 } else {
-	$plot->label->setFont(new Font(2));
+	$plot->label->setFont(new awFont(2));
 }
-$plot->setBorderColor(new DarkBlue);
+$plot->setBorderColor(new awDarkBlue);
 $plot->setLegend($legend);
 $plot->legend->setPosition(1.5);
 $plot->legend->shadow->setSize(0);
-$plot->legend->setBackgroundColor(new White);
+$plot->legend->setBackgroundColor(new awWhite);
 $plot->legend->border->hide(TRUE);
-$plot->legend->setTextColor(new DarkBlue);
+$plot->legend->setTextColor(new awDarkBlue);
+
 if ($ttf == 'ok') {
 	if ($crawltlang == 'russian') {
-		$plot->legend->setTextFont(new simsun(10));
+		$plot->legend->setTextFont(new awsimsun(10));
 	} else {
-		$plot->legend->setTextFont(new Tuffy(10));
+		$plot->legend->setTextFont(new awTuffy(10));
 	}
 } else {
-	$plot->legend->setTextFont(new Font(2));
+	$plot->legend->setTextFont(new awFont(2));
 }
+
 $graph->add($plot);
 $graph->draw();
 ?>

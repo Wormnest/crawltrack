@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,29 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file:seo-graph.php
 //----------------------------------------------------------------------
 // this graph is made with artichow    website: www.artichow.org
 //----------------------------------------------------------------------
-//  Last update: 17/11/2011
-//----------------------------------------------------------------------
-error_reporting(0);
+
+// Set debugging to non zero to turn it on.
+// DON'T FORGET TO TURN IT OFF AFTER YOU FINISH DEBUGGING OR WHEN COMMITTING CHANGES!
+$DEBUG = 0;
+
+if ($DEBUG == 0) {
+	// Normal: don't show any errors, warnings, notices.
+	error_reporting(0);
+} else {
+	// DURING DEBUGGING ONLY
+	error_reporting(E_ALL);
+}
+
 //initialize array
 $listlangcrawlt = array();
 //get graph info
@@ -28,8 +40,8 @@ $graphname = $_GET['graphname'];
 
 //database connection
 include ("../include/configconnect.php");
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("../include/jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //get the listlang files
 include ("../include/listlang.php");
@@ -47,18 +59,19 @@ if (file_exists("../cachecloseperiod/$graphname.gz")) {
 	$datatransfert = unserialize(urldecode(stripslashes($data)));
 } else {
 	$sql = "SELECT   graph_values FROM crawlt_graph
-  WHERE  name='" . sql_quote($graphname) . "'";
-	$requete = mysql_query($sql, $connexion) or die("MySQL query error");
-	$nbrresult = mysql_num_rows($requete);
+  WHERE  name='" . crawlt_sql_quote($connexion, $graphname) . "'";
+	$requete = db_mysql_query($sql, $connexion);
+	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
-		$ligne = mysql_fetch_assoc($requete);
+		$ligne = $requete->fetch_assoc();
 		$data = $ligne['graph_values'];
 	} else {
 		exit('<h1>No Graph values availabe !!!!</h1>');
 	}
 	$datatransfert = unserialize(urldecode(stripslashes($data)));
 }
-mysql_close($connexion);
+mysqli_close($connexion);
+
 $graphnameexplode = explode('-', $graphname);
 if ($graphnameexplode[1] == 'permanent') {
 	$fp = fopen("../cachecloseperiod/$graphname.gz", 'w');
@@ -240,356 +253,363 @@ if (@$fontttf['FreeType Linkage'] == 'with freetype') {
 } else {
 	$ttf = 'no-ok';
 }
+
 require_once ("artichow/BarPlot.class.php");
-$graph = new Graph(900, 300);
+require_once ("artichow/LinePlot.class.php");
+require_once ("artichow/Graph.class.php");
+require_once ("artichow/inc/Gradient.class.php");
+
+// TODO: Support for simsun! For that we need to check:
+// 1. Is simsun font available (if not then fall back to Tuffy)
+// 2. Declare a simsun Font class
+
+$graph = new awGraph(900, 300);
 $graph->title->set($titlegraph);
 if ($ttf == 'ok') {
 	if ($crawltlang == 'russian') {
-		$graph->title->setFont(new simsun(8));
+		$graph->title->setFont(new awsimsun(8));
 	} else {
-		$graph->title->setFont(new Tuffy(12));
+		$graph->title->setFont(new awTuffy(12));
 	}
 } else {
-	$graph->title->setFont(new Font(3));
+	$graph->title->setFont(new awFont(3));
 }
-$graph->title->setColor(new DarkBlue);
-$group = new PlotGroup();
-$group->setBackgroundColor(new Color(173, 216, 230, 60));
+$graph->title->setColor(new awDarkBlue);
+$group = new awPlotGroup();
+$group->setBackgroundColor(new awColor(173, 216, 230, 60));
 $group->setSpace(2, 2, 0.1, 0);
 $group->setPadding(50, 20, 30, 90);
+
 if ($typegraph == 'link' || $typegraph == 'page') {
-	require_once ("artichow/LinePlot.class.php");
-	if (function_exists('imageantialias')) {
-		$graph->setAntiAliasing(TRUE);
-	}
-	$plot = new LinePlot($google);
+	$graph->setAntiAliasing(TRUE);
+	$plot = new awLinePlot($google);
 	
 	// Change line color
-	$plot->setColor(new Color(50, 50, 50));
+	$plot->setColor(new awColor(50, 50, 50));
 	// Change mark type
-	$plot->mark->setType(MARK_CIRCLE);
+	$plot->mark->setType(awMark::CIRCLE);
 	$plot->mark->border->show();
 	$plot->setThickness(4);
 	$group->add($plot);
-	$group->legend->add($plot, $language['google'], LEGEND_LINE);
+	$group->legend->add($plot, $language['google'], awLegend::LINE);
 
 
-	$group->legend->setBackgroundColor(new Color(255, 255, 255, 0));
-	$group->legend->setModel(LEGEND_MODEL_BOTTOM);
+	$group->legend->setBackgroundColor(new awColor(255, 255, 255, 0));
+	$group->legend->setModel(awLegend::MODEL_BOTTOM);
 	$group->legend->setPosition(NULL, 0.87);
 	if ($ttf == 'ok') {
 		if ($crawltlang == 'russian') {
-			$group->legend->setTextFont(new simsun(8));
+			$group->legend->setTextFont(new awsimsun(8));
 		} else {
-			$group->legend->setTextFont(new Tuffy(10));
+			$group->legend->setTextFont(new awTuffy(10));
 		}
 	} else {
-		$group->legend->setTextFont(new Font(2));
+		$group->legend->setTextFont(new awFont(2));
 	}
 } elseif ($typegraph == 'bookmark') {
-	require_once ("artichow/LinePlot.class.php");
-	if (function_exists('imageantialias')) {
-		$graph->setAntiAliasing(TRUE);
-	}
-	$plot = new LinePlot($delicious);
+	$graph->setAntiAliasing(TRUE);
+	$plot = new awLinePlot($delicious);
 	
 	// Change line color
-	$plot->setColor(new Color(0, 128, 0));
+	$plot->setColor(new awColor(0, 128, 0));
 	// Change mark type
-	$plot->mark->setType(MARK_SQUARE);
+	$plot->mark->setType(awMark::SQUARE);
 	$plot->mark->border->show();
 	$plot->setThickness(4);
 	$group->add($plot);
-	$group->legend->add($plot, $language['delicious'], LEGEND_LINE);
-	$plot = new LinePlot($google);
+	$group->legend->add($plot, $language['delicious'], awLegend::LINE);
+	$plot = new awLinePlot($google);
 	$group->add($plot);
-	$group->legend->setBackgroundColor(new Color(255, 255, 255, 0));
-	$group->legend->setModel(LEGEND_MODEL_BOTTOM);
+	$group->legend->setBackgroundColor(new awColor(255, 255, 255, 0));
+	$group->legend->setModel(awLegend::MODEL_BOTTOM);
 	$group->legend->setPosition(NULL, 0.87);
 	if ($ttf == 'ok') {
 		if ($crawltlang == 'russian') {
-			$group->legend->setTextFont(new simsun(8));
+			$group->legend->setTextFont(new awsimsun(8));
 		} else {
-			$group->legend->setTextFont(new Tuffy(10));
+			$group->legend->setTextFont(new awTuffy(10));
 		}
 	} else {
-		$group->legend->setTextFont(new Font(2));
+		$group->legend->setTextFont(new awFont(2));
 	}
 } else {
 	
 	//aol
-	$plot = new BarPlot($aol, 1, 10);
-	$debut = new Color(255, 20, 127);
-	$fin = new Color(180, 0, 70);
-	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
+	$plot = new awBarPlot($aol, 1, 10);
+	$debut = new awColor(255, 20, 127);
+	$fin = new awColor(180, 0, 70);
+	$plot->setBarGradient(new awLinearGradient($debut, $fin, 90));
 	$plot->setXAxisZero(TRUE);
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
-	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
+	$plot->barShadow->setPosition(awShadow::RIGHT_TOP);
 	if($nbrday <13)
 		{		
-		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		$plot->barShadow->setColor(new awColor(180, 180, 180, 10));
 		}
 	else
 		{
-		$plot->barBorder->setColor(new Color(180, 0, 70, 10));
-		$plot->barShadow->setColor(new Color(255, 20, 127, 10));
+		$plot->barBorder->setColor(new awColor(180, 0, 70, 10));
+		$plot->barShadow->setColor(new awColor(255, 20, 127, 10));
 		}	
 	$plot->barShadow->smooth(TRUE);
 	
 	//legend
-	$group->legend->add($plot, $legend9, LEGEND_BACKGROUND);
+	$group->legend->add($plot, $legend9, awLegend::BACKGROUND);
 	$group->add($plot);	
 	
 	
 	//ask
-	$plot = new BarPlot($ask, 2, 10);
-	$debut = new Color(255, 255, 0);
-	$fin = new Color(215, 200, 0);
-	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
+	$plot = new awBarPlot($ask, 2, 10);
+	$debut = new awColor(255, 255, 0);
+	$fin = new awColor(215, 200, 0);
+	$plot->setBarGradient(new awLinearGradient($debut, $fin, 90));
 	$plot->setXAxisZero(TRUE);
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
-	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
+	$plot->barShadow->setPosition(awShadow::RIGHT_TOP);
 	if($nbrday <13)
 		{		
-		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		$plot->barShadow->setColor(new awColor(180, 180, 180, 10));
 		}
 	else
 		{
-		$plot->barBorder->setColor(new Color(215, 200, 0, 10));
-		$plot->barShadow->setColor(new Color(255, 255, 0, 10));
+		$plot->barBorder->setColor(new awColor(215, 200, 0, 10));
+		$plot->barShadow->setColor(new awColor(255, 255, 0, 10));
 		}
 	$plot->barShadow->smooth(TRUE);
 	
 	//legend
-	$group->legend->add($plot, $legend0, LEGEND_BACKGROUND);
+	$group->legend->add($plot, $legend0, awLegend::BACKGROUND);
 	$group->add($plot);
 	
 	//exalead
-	$plot = new BarPlot($exalead, 3, 10);
-	$debut = new Color(90, 30, 30);
-	$fin = new Color(150, 100, 100);
-	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
+	$plot = new awBarPlot($exalead, 3, 10);
+	$debut = new awColor(90, 30, 30);
+	$fin = new awColor(150, 100, 100);
+	$plot->setBarGradient(new awLinearGradient($debut, $fin, 90));
 	$plot->setXAxisZero(TRUE);
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
-	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
+	$plot->barShadow->setPosition(awShadow::RIGHT_TOP);
 	if($nbrday <13)
 		{		
-		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		$plot->barShadow->setColor(new awColor(180, 180, 180, 10));
 		}
 	else
 		{
-		$plot->barBorder->setColor(new Color(150, 100, 100, 10));
-		$plot->barShadow->setColor(new Color(90, 30, 30, 10));
+		$plot->barBorder->setColor(new awColor(150, 100, 100, 10));
+		$plot->barShadow->setColor(new awColor(90, 30, 30, 10));
 		}
 	$plot->barShadow->smooth(TRUE);
 	
 	//legend
-	$group->legend->add($plot, $legend6, LEGEND_BACKGROUND);
+	$group->legend->add($plot, $legend6, awLegend::BACKGROUND);
 	$group->add($plot);
 
 	//msn
-	$plot = new BarPlot($msn, 4, 10);
-	$debut = new Color(255, 0, 0);
-	$fin = new Color(255, 215, 0);
-	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
+	$plot = new awBarPlot($msn, 4, 10);
+	$debut = new awColor(255, 0, 0);
+	$fin = new awColor(255, 215, 0);
+	$plot->setBarGradient(new awLinearGradient($debut, $fin, 90));
 	$plot->setXAxisZero(TRUE);
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
-	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
+	$plot->barShadow->setPosition(awShadow::RIGHT_TOP);
 	if($nbrday <13)
 		{		
-		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		$plot->barShadow->setColor(new awColor(180, 180, 180, 10));
 		}
 	else
 		{
-		$plot->barBorder->setColor(new Color(255, 215, 0, 10));
-		$plot->barShadow->setColor(new Color(255, 0, 0, 10));
+		$plot->barBorder->setColor(new awColor(255, 215, 0, 10));
+		$plot->barShadow->setColor(new awColor(255, 0, 0, 10));
 		}
 	$plot->barShadow->smooth(TRUE);
 	//legend
-	$group->legend->add($plot, $legend2, LEGEND_BACKGROUND);
+	$group->legend->add($plot, $legend2, awLegend::BACKGROUND);
 	$group->add($plot);	
 	
 	
 	//google
-	$plot = new BarPlot($google, 5, 10);
-	$debut = new Color(0, 128, 0);
-	$fin = new Color(144, 238, 144);
-	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
+	$plot = new awBarPlot($google, 5, 10);
+	$debut = new awColor(0, 128, 0);
+	$fin = new awColor(144, 238, 144);
+	$plot->setBarGradient(new awLinearGradient($debut, $fin, 90));
 	$plot->setXAxisZero(TRUE);
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
-	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);	
+	$plot->barShadow->setPosition(awShadow::RIGHT_TOP);
 	if($nbrday <13)
 		{		
-		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		$plot->barShadow->setColor(new awColor(180, 180, 180, 10));
 		}
 	else
 		{
-		$plot->barBorder->setColor(new Color(144, 238, 144, 10));
-		$plot->barShadow->setColor(new Color(0, 128, 0, 10));
+		$plot->barBorder->setColor(new awColor(144, 238, 144, 10));
+		$plot->barShadow->setColor(new awColor(0, 128, 0, 10));
 		}	
 	$plot->barShadow->smooth(TRUE);
 	//legend
-	$group->legend->add($plot, $legend1, LEGEND_BACKGROUND);
+	$group->legend->add($plot, $legend1, awLegend::BACKGROUND);
 	$group->add($plot);
 
 	//googleimage
-	$plot = new BarPlot($googleimage, 6, 10);
-	$debut = new Color(144, 238, 144);
-	$fin = new Color(238, 250, 238);
-	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
+	$plot = new awBarPlot($googleimage, 6, 10);
+	$debut = new awColor(144, 238, 144);
+	$fin = new awColor(238, 250, 238);
+	$plot->setBarGradient(new awLinearGradient($debut, $fin, 90));
 	$plot->setXAxisZero(TRUE);
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
-	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
+	$plot->barShadow->setPosition(awShadow::RIGHT_TOP);
 	if($nbrday <13)
 		{		
-		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		$plot->barShadow->setColor(new awColor(180, 180, 180, 10));
 		}
 	else
 		{
-		$plot->barBorder->setColor(new Color(238, 250, 238, 10));
-		$plot->barShadow->setColor(new Color(144, 238, 144, 10));
+		$plot->barBorder->setColor(new awColor(238, 250, 238, 10));
+		$plot->barShadow->setColor(new awColor(144, 238, 144, 10));
 		}
 	$plot->barShadow->smooth(TRUE);
 	//legend
-	$group->legend->add($plot, $legend7, LEGEND_BACKGROUND);
+	$group->legend->add($plot, $legend7, awLegend::BACKGROUND);
 	$group->add($plot);
 
 	
 	//yahoo
-	$plot = new BarPlot($yahoo, 7, 10);
-	$debut = new Color(0, 51, 153);
-	$fin = new Color(0, 191, 255);
-	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
+	$plot = new awBarPlot($yahoo, 7, 10);
+	$debut = new awColor(0, 51, 153);
+	$fin = new awColor(0, 191, 255);
+	$plot->setBarGradient(new awLinearGradient($debut, $fin, 90));
 	$plot->setXAxisZero(TRUE);
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
-	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
+	$plot->barShadow->setPosition(awShadow::RIGHT_TOP);
 	if($nbrday <13)
 		{		
-		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		$plot->barShadow->setColor(new awColor(180, 180, 180, 10));
 		}
 	else
 		{
-		$plot->barBorder->setColor(new Color(0, 191, 255, 10));
-		$plot->barShadow->setColor(new Color(0, 51, 153, 10));
+		$plot->barBorder->setColor(new awColor(0, 191, 255, 10));
+		$plot->barShadow->setColor(new awColor(0, 51, 153, 10));
 		}
 	$plot->barShadow->smooth(TRUE);
 	//legend
-	$group->legend->add($plot, $legend3, LEGEND_BACKGROUND);
+	$group->legend->add($plot, $legend3, awLegend::BACKGROUND);
 	$group->add($plot);
 	
 	//yandex
-	$plot = new BarPlot($yandex, 8, 10);
-	$debut = new Color(0, 10, 10);
-	$fin = new Color(0, 51, 153);
-	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
+	$plot = new awBarPlot($yandex, 8, 10);
+	$debut = new awColor(0, 10, 10);
+	$fin = new awColor(0, 51, 153);
+	$plot->setBarGradient(new awLinearGradient($debut, $fin, 90));
 	$plot->setXAxisZero(TRUE);
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
-	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
+	$plot->barShadow->setPosition(awShadow::RIGHT_TOP);
 	if($nbrday <13)
 		{		
-		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		$plot->barShadow->setColor(new awColor(180, 180, 180, 10));
 		}
 	else
 		{
-		$plot->barBorder->setColor(new Color(0, 51, 153, 10));
-		$plot->barShadow->setColor(new Color(0, 10, 10, 10));
+		$plot->barBorder->setColor(new awColor(0, 51, 153, 10));
+		$plot->barShadow->setColor(new awColor(0, 10, 10, 10));
 		}
 	$plot->barShadow->smooth(TRUE);
 	//legend
-	$group->legend->add($plot, $legend8, LEGEND_BACKGROUND);
+	$group->legend->add($plot, $legend8, awLegend::BACKGROUND);
 	$group->add($plot);	
 	
 	
 	//referer
-	$plot = new BarPlot($referer, 9, 10);
-	$debut = new Color(0, 0, 0);
-	$fin = new Color(255, 255, 255);
-	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
+	$plot = new awBarPlot($referer, 9, 10);
+	$debut = new awColor(0, 0, 0);
+	$fin = new awColor(255, 255, 255);
+	$plot->setBarGradient(new awLinearGradient($debut, $fin, 90));
 	$plot->setXAxisZero(TRUE);
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
-	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
+	$plot->barShadow->setPosition(awShadow::RIGHT_TOP);
 	if($nbrday <13)
 		{		
-		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		$plot->barShadow->setColor(new awColor(180, 180, 180, 10));
 		}
 	else
 		{
-		$plot->barBorder->setColor(new Color(255, 255, 255, 10));
-		$plot->barShadow->setColor(new Color(0, 0, 0, 10));
+		$plot->barBorder->setColor(new awColor(255, 255, 255, 10));
+		$plot->barShadow->setColor(new awColor(0, 0, 0, 10));
 		}
 	$plot->barShadow->smooth(TRUE);
 	//legend
-	$group->legend->add($plot, $legend4, LEGEND_BACKGROUND);
+	$group->legend->add($plot, $legend4, awLegend::BACKGROUND);
 	$group->add($plot);
+
 	//direct
-	$plot = new BarPlot($direct, 10, 10);
-	$debut = new Color(120, 0, 0);
-	$fin = new Color(255, 0, 0);
-	$plot->setBarGradient(new LinearGradient($debut, $fin, 90));
+	$plot = new awBarPlot($direct, 10, 10);
+	$debut = new awColor(120, 0, 0);
+	$fin = new awColor(255, 0, 0);
+	$plot->setBarGradient(new awLinearGradient($debut, $fin, 90));
 	$plot->setXAxisZero(TRUE);
 	$plot->setSpace(2, 2, 20, 0);
 	$plot->barShadow->setSize(2);
-	$plot->barShadow->setPosition(SHADOW_RIGHT_TOP);
+	$plot->barShadow->setPosition(awShadow::RIGHT_TOP);
 	if($nbrday <13)
 		{		
-		$plot->barShadow->setColor(new Color(180, 180, 180, 10));
+		$plot->barShadow->setColor(new awColor(180, 180, 180, 10));
 		}
 	else
 		{
-		$plot->barBorder->setColor(new Color(255, 0, 0, 10));
-		$plot->barShadow->setColor(new Color(120, 0, 0, 10));
+		$plot->barBorder->setColor(new awColor(255, 0, 0, 10));
+		$plot->barShadow->setColor(new awColor(120, 0, 0, 10));
 		}
 	$plot->barShadow->smooth(TRUE);
 	//legend
-	$group->legend->add($plot, $legend5, LEGEND_BACKGROUND);
+	$group->legend->add($plot, $legend5, awLegend::BACKGROUND);
 	$group->add($plot);
+
 	//total
-	require_once ("artichow/LinePlot.class.php");
-	$plot = new LinePlot($total, LINEPLOT_MIDDLE);
+	$plot = new awLinePlot($total, awLinePlot::MIDDLE);
 	// Change line color
-	$plot->setColor(new Color(0, 0, 150));
+	$plot->setColor(new awColor(0, 0, 150));
 	// Change mark type
-	$plot->mark->setType(MARK_SQUARE);
-	$plot->mark->setFill(new DarkBlue);
+	$plot->mark->setType(awMark::SQUARE);
+	$plot->mark->setFill(new awDarkBlue);
 	$plot->mark->border->show();
 	$plot->setThickness(3);
 	$plot->label->set($total);
 	$plot->label->move(0, -15);
 	$group->add($plot);
-	$group->legend->add($plot, $language['visits'], LEGEND_LINE);
+	$group->legend->add($plot, $language['visits'], awLegend::LINE);
+
 	//unique visitors
-	$plot = new LinePlot($unique, LINEPLOT_MIDDLE);
+	$plot = new awLinePlot($unique, awLinePlot::MIDDLE);
 	// Change line color
-	$plot->setColor(new Color(150, 0, 0));
+	$plot->setColor(new awColor(150, 0, 0));
 	// Change mark type
-	$plot->mark->setType(MARK_SQUARE);
-	$plot->mark->setFill(new Red);
+	$plot->mark->setType(awMark::SQUARE);
+	$plot->mark->setFill(new awRed);
 	$plot->mark->border->show();
 	$plot->setThickness(3);
 	$plot->label->set($unique);
 	$plot->label->move(0, 15);
 	$group->add($plot);
-	$group->legend->add($plot, $language['unique_visitors'], LEGEND_LINE);
-	$group->legend->setBackgroundColor(new Color(255, 255, 255, 0));
-	$group->legend->setModel(LEGEND_MODEL_BOTTOM);
+	$group->legend->add($plot, $language['unique_visitors'], awLegend::LINE);
+	$group->legend->setBackgroundColor(new awColor(255, 255, 255, 0));
+	$group->legend->setModel(awLegend::MODEL_BOTTOM);
 	$group->legend->setPosition(NULL, 0.87);
+
 	if ($ttf == 'ok') {
 		if ($crawltlang == 'russian') {
-			$group->legend->setTextFont(new simsun(6));
+			$group->legend->setTextFont(new awsimsun(6));
 		} else {
-			$group->legend->setTextFont(new Tuffy(9));
+			$group->legend->setTextFont(new awTuffy(9));
 		}
 	} else {
-		$group->legend->setTextFont(new Font(2));
+		$group->legend->setTextFont(new awFont(2));
 	}
 }
 
@@ -599,17 +619,15 @@ if ($period == 2 || ($period >= 100 && $period < 200)) {
 	$group->axis->bottom->label->setAngle(45);
 }
 if ($ttf == 'ok') {
-	$group->axis->left->label->setFont(new Tuffy(8));
-	$group->axis->bottom->label->setFont(new Tuffy(8));
-} else {
-	$group->axis->left->label->setFont(new Font(2));
-	$group->axis->bottom->label->setFont(new Font(2));
-}
-if ($ttf == 'ok') {
+	$group->axis->left->label->setFont(new awTuffy(8));
+	$group->axis->bottom->label->setFont(new awTuffy(8));
 	$group->axis->bottom->label->move(-10, 0);
 } else {
+	$group->axis->left->label->setFont(new awFont(2));
+	$group->axis->bottom->label->setFont(new awFont(2));
 	$group->axis->bottom->label->move(20, 0);
 }
+
 $graph->add($group);
 $graph->draw();
 ?>

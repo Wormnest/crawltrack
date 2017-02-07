@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -10,15 +10,27 @@
 //----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
+//----------------------------------------------------------------------
+// Updating: Jacob Boerema
 //----------------------------------------------------------------------
 // file: page-graph.php
 //----------------------------------------------------------------------
 // this graph is made with artichow    website: www.artichow.org
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
-//----------------------------------------------------------------------
-error_reporting(0);
+
+// Set debugging to non zero to turn it on.
+// DON'T FORGET TO TURN IT OFF AFTER YOU FINISH DEBUGGING OR WHEN COMMITTING CHANGES!
+$DEBUG = 0;
+
+if ($DEBUG == 0) {
+	// Normal: don't show any errors, warnings, notices.
+	error_reporting(0);
+} else {
+	// DURING DEBUGGING ONLY
+	error_reporting(E_ALL);
+}
+
 //initialize array
 $listlangcrawlt = array();
 //get graph values
@@ -76,42 +88,46 @@ if (@$fontttf['FreeType Linkage'] == 'with freetype') {
 }
 
 require_once ("artichow/Pie.class.php");
-$graph = new Graph(500, 200);
-if (function_exists('imageantialias')) {
-	$graph->setAntiAliasing(TRUE);
-}
+require_once ("artichow/Graph.class.php");
+
+$graph = new awGraph(500, 200);
+$graph->setAntiAliasing(TRUE);
 $graph->border->hide(TRUE);
 $graph->shadow->setSize(5);
 $graph->shadow->smooth(TRUE);
-$graph->shadow->setPosition('SHADOW_LEFT_BOTTOM');
-$graph->shadow->setColor(new DarkBlue);
-$plot = new Pie($values);
+//$graph->shadow->setPosition(awShadow::LEFT_BOTTOM); -- we don't want a border for pies
+$graph->shadow->hide(TRUE);
+$graph->shadow->setColor(new awDarkBlue);
+$plot = new awPie($values);
 $plot->setCenter(0.35, 0.5);
 $plot->setSize(0.6, 0.8);
 $plot->set3D(15);
 $plot->setLabelPosition(10);
-$plot->label->setColor(new DarkBlue);
+$plot->label->setColor(new awDarkBlue);
+
 if ($ttf == 'ok') {
-	$plot->label->setFont(new Tuffy(9));
+	$plot->label->setFont(new awTuffy(9));
 } else {
-	$plot->label->setFont(new Font(2));
+	$plot->label->setFont(new awFont(2));
 }
-$plot->setBorderColor(new DarkBlue);
+$plot->setBorderColor(new awDarkBlue);
 $plot->setLegend($legend);
 $plot->legend->setPosition(1.6, 1.03);
 $plot->legend->shadow->setSize(0);
-$plot->legend->setBackgroundColor(new White);
+$plot->legend->setBackgroundColor(new awWhite);
 $plot->legend->border->hide(TRUE);
-$plot->legend->setTextColor(new DarkBlue);
+$plot->legend->setTextColor(new awDarkBlue);
+
 if ($ttf == 'ok') {
 	if ($crawltlang == 'russian') {
-		$plot->legend->setTextFont(new simsun(7));
+		$plot->legend->setTextFont(new awsimsun(7));
 	} else {
-		$plot->legend->setTextFont(new Tuffy(9));
+		$plot->legend->setTextFont(new awTuffy(9));
 	}
 } else {
-	$plot->legend->setTextFont(new Font(2));
+	$plot->legend->setTextFont(new awFont(2));
 }
+
 $graph->add($plot);
 $graph->draw();
 ?>
