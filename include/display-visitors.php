@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,20 +8,23 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: display-visitors.php
 //----------------------------------------------------------------------
-//  Last update: 17/11/2011
-//----------------------------------------------------------------------
+
 //----Technicals parameters-------------------------------------------------------------------------------
-$maxtime = 20; //maximum total time in second allow for the script to search link
+$maxtime = 20; //maximum total time in seconds allowed for the script to search a link
 //--------------------------------------------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
 }
+
 //initialize array and variable
 $listip = array();
 $nbrcountry = array();
@@ -33,14 +36,18 @@ $timestart = time();
 $nbrnooksite = 0;
 $nbrunknownsite = 0;
 $refererlist = array();
+$nbrvisitorbrowser = array();
+$crawltbrowserlist3 = array();
 
 $cachename = $navig . $period . $site . $order . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang;
 
 //start the caching
 cache($cachename);
+
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 //include menu
 include ("include/menumain.php");
 include ("include/menusite.php");
@@ -49,15 +56,16 @@ include ("include/timecache.php");
 include ("include/cleaning-crawler-entry.php");
 //include visitors calculation file
 include ("include/visitors-calculation.php");
+
 //query to get the good referer site list
 if (isset($_SESSION['rightspamreferer']) && $_SESSION['rightspamreferer'] == 1) {
 	$sql = "SELECT referer 
   FROM crawlt_goodreferer 
-  WHERE id_site='" . sql_quote($site) . "'";
+  WHERE id_site='" . crawlt_sql_quote($connexion, $site) . "'";
 	$requete = db_query($sql, $connexion);
-	$nbrresult = mysql_num_rows($requete);
+	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
-		while ($ligne = mysql_fetch_row($requete)) {
+		while ($ligne = $requete->fetch_row()) {
 			$linkstatut[$ligne[0]] = 'ok';
 		}
 	}
@@ -68,9 +76,9 @@ if ($period >= 10) {
     FROM crawlt_visits_human
     INNER JOIN crawlt_referer    
     ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
-    WHERE  date >'" . sql_quote($daterequest) . "' 
-    AND  date <'" . sql_quote($daterequest2) . "' 
-    AND crawlt_site_id_site='" . sql_quote($site) . "'
+    WHERE  date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
+    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "' 
+    AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
     AND crawlt_id_crawler= '0' 
     $notinternalreferercondition
     AND referer !=''
@@ -80,18 +88,18 @@ if ($period >= 10) {
     FROM crawlt_visits_human
     INNER JOIN crawlt_referer    
     ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
-    WHERE  date >'" . sql_quote($daterequest) . "' 
-    AND crawlt_site_id_site='" . sql_quote($site) . "' 
+    WHERE  date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
+    AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "' 
     AND crawlt_id_crawler= '0'     
     $notinternalreferercondition
     AND referer !=''";
 }
 $requete = db_query($sql, $connexion);
-$nbrresult = mysql_num_rows($requete);
+$nbrresult = $requete->num_rows;
 if ($nbrresult >= 1) {
 	if ($period == 0 || $period >= 1000 || $period == 1 || ($period >= 300 && $period < 400)) {
 		// we search for referer details only for 1 day or 1 week period
-		while ($ligne = mysql_fetch_row($requete)) {
+		while ($ligne = $requete->fetch_row()) {
 			$parseurl = parse_url(htmlspecialchars($ligne[0]));
 			if (isset($parseurl['host'])) {
 				@$refererlist[$parseurl['host']]++;
@@ -128,7 +136,7 @@ if ($nbrresult >= 1) {
 			}
 		}
 	} else {
-		while ($ligne = mysql_fetch_row($requete)) {
+		while ($ligne = $requete->fetch_row()) {
 			@$parseurl = parse_url(htmlspecialchars($ligne[0]));
 			if (isset($parseurl['host'])) {
 				@$refererlist[$parseurl['host']]++;
@@ -230,14 +238,14 @@ $datatransferttograph = addslashes(urlencode(serialize($values)));
 $piegraphname2 = "origin2-" . $cachename;
 //check if this graph already exists in the table
 $sql = "SELECT name  FROM crawlt_graph
-          WHERE name= '" . sql_quote($piegraphname2) . "'";
+          WHERE name= '" . crawlt_sql_quote($connexion, $piegraphname2) . "'";
 $requete = db_query($sql, $connexion);
-$nbrresult = mysql_num_rows($requete);
+$nbrresult = $requete->num_rows;
 if ($nbrresult >= 1) {
-	$sql2 = "UPDATE crawlt_graph SET graph_values='" . sql_quote($datatransferttograph) . "'
-            WHERE name= '" . sql_quote($piegraphname2) . "'";
+	$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($connexion, $datatransferttograph) . "'
+            WHERE name= '" . crawlt_sql_quote($connexion, $piegraphname2) . "'";
 } else {
-	$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . sql_quote($piegraphname2) . "','" . sql_quote($datatransferttograph) . "')";
+	$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($connexion, $piegraphname2) . "','" . crawlt_sql_quote($connexion, $datatransferttograph) . "')";
 }
 $requete2 = db_query($sql2, $connexion);
 //browser calculation===================================================================================
@@ -259,16 +267,17 @@ $datatransferttograph = addslashes(urlencode(serialize($crawltbrowserlist3)));
 $piegraphname3 = "browser-" . $cachename;
 //check if this graph already exists in the table
 $sql = "SELECT name  FROM crawlt_graph
-          WHERE name= '" . sql_quote($piegraphname3) . "'";
+          WHERE name= '" . crawlt_sql_quote($connexion, $piegraphname3) . "'";
 $requete = db_query($sql, $connexion);
-$nbrresult = mysql_num_rows($requete);
+$nbrresult = $requete->num_rows;
 if ($nbrresult >= 1) {
-	$sql2 = "UPDATE crawlt_graph SET graph_values='" . sql_quote($datatransferttograph) . "'
-            WHERE name= '" . sql_quote($piegraphname3) . "'";
+	$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($connexion, $datatransferttograph) . "'
+            WHERE name= '" . crawlt_sql_quote($connexion, $piegraphname3) . "'";
 } else {
-	$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . sql_quote($piegraphname3) . "','" . sql_quote($datatransferttograph) . "')";
+	$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($connexion, $piegraphname3) . "','" . crawlt_sql_quote($connexion, $datatransferttograph) . "')";
 }
 $requete2 = db_query($sql2, $connexion);
+
 //visits per hour graph calculation========================================================================
 if ($period == 0 || $period >= 1000) {
 	$nbvisitsgraph = array("0" => "0", "1" => "0", "2" => "0", "3" => "0", "4" => "0", "5" => "0", "6" => "0", "7" => "0", "8" => "0", "9" => "0", "10" => "0", "11" => "0", "12" => "0", "13" => "0", "14" => "0", "15" => "0", "16" => "0", "17" => "0", "18" => "0", "19" => "0", "20" => "0", "21" => "0", "22" => "0", "23" => "0","100" => "0", "101" => "0", "102" => "0", "103" => "0", "104" => "0", "105" => "0", "106" => "0", "107" => "0", "108" => "0", "109" => "0", "110" => "0", "111" => "0", "112" => "0", "113" => "0", "114" => "0", "115" => "0", "116" => "0", "117" => "0", "118" => "0", "119" => "0", "120" => "0", "121" => "0", "122" => "0", "123" => "0");
@@ -276,19 +285,19 @@ if ($period == 0 || $period >= 1000) {
 if ($period == 0) {
 		//query to count the number of  visits
 		$sqlstats = "SELECT  HOUR(date), COUNT(id_visit) FROM crawlt_visits_human
-		WHERE  date >'" . sql_quote($daterequest) . "' 
-		AND crawlt_site_id_site='" . sql_quote($site) . "'
+		WHERE  date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
+		AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
 		GROUP BY HOUR(date)";
 	} elseif ($period >= 1000) {
 		//query to count the number of  visits
 		$sqlstats = "SELECT  HOUR(date), COUNT(id_visit) FROM crawlt_visits_human
-		WHERE  date >'" . sql_quote($daterequest) . "' 
-    		AND  date <'" . sql_quote($daterequest2) . "' 
-		AND crawlt_site_id_site='" . sql_quote($site) . "' 
+		WHERE  date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
+    		AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "' 
+		AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "' 
 		GROUP BY HOUR(date)";
 	}
 	$requetestats = db_query($sqlstats, $connexion);
-	while ($ligne = mysql_fetch_row($requetestats)) {
+	while ($ligne = $requetestats->fetch_row()) {
 		$hour = $ligne[0] - $times;
 		if ($hour < 0) {
 			$hour = 24 + $hour;
@@ -302,13 +311,13 @@ if ($period == 0) {
 	$daterequest3 = date("Y-m-d H:i:s", (strtotime($daterequest)) - 604800);
 		//query to count the number of  visits
 		$sqlstats = "SELECT  HOUR(date), COUNT(id_visit), COUNT(DISTINCT DATE(date)) FROM crawlt_visits_human
-		WHERE  date >'" . sql_quote($daterequest3) . "' 
-    		AND  date <'" . sql_quote($daterequest) . "' 
-    		AND crawlt_site_id_site='" . sql_quote($site) . "'
+		WHERE  date >'" . crawlt_sql_quote($connexion, $daterequest3) . "' 
+    		AND  date <'" . crawlt_sql_quote($connexion, $daterequest) . "' 
+    		AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
 		GROUP BY HOUR(date)";
 		
 	$requetestats = db_query($sqlstats, $connexion);
-	while ($ligne = mysql_fetch_row($requetestats)) {
+	while ($ligne = $requetestats->fetch_row()) {
 		$hour = $ligne[0] - $times;
 		if ($hour < 0) {
 			$hour = 24 + $hour;
@@ -318,14 +327,7 @@ if ($period == 0) {
 		}
 		$hour= $hour + 100;
 		$nbvisitsgraph[$hour] = round($ligne[1]/$ligne[2]);
-	}	
-	
-	
-	
-	
-	
-	
-	
+	}
 	
 	//prepare data to be transferred to graph file
 	$datatransferttograph = addslashes(urlencode(serialize($nbvisitsgraph)));
@@ -333,14 +335,14 @@ if ($period == 0) {
 	$graphname2 = "visitshours-" . $cachename;
 	//check if this graph already exists in the table
 	$sql = "SELECT name  FROM crawlt_graph
-		WHERE name= '" . sql_quote($graphname2) . "'";
+		WHERE name= '" . crawlt_sql_quote($connexion, $graphname2) . "'";
 	$requete = db_query($sql, $connexion);
-	$nbrresult = mysql_num_rows($requete);
+	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
-		$sql2 = "UPDATE crawlt_graph SET graph_values='" . sql_quote($datatransferttograph) . "'
-			WHERE name= '" . sql_quote($graphname2) . "'";
+		$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($connexion, $datatransferttograph) . "'
+			WHERE name= '" . crawlt_sql_quote($connexion, $graphname2) . "'";
 	} else {
-		$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . sql_quote($graphname2) . "','" . sql_quote($datatransferttograph) . "')";
+		$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($connexion, $graphname2) . "','" . crawlt_sql_quote($connexion, $datatransferttograph) . "')";
 	}
 	$requete2 = db_query($sql2, $connexion);
 }
@@ -410,17 +412,18 @@ if ($totalvisitor > 0) {
 	$piegraphname = "searchengine-" . $cachename;
 	//check if this graph already exists in the table
 	$sql = "SELECT name  FROM crawlt_graph
-                  WHERE name= '" . sql_quote($piegraphname) . "'";
+                  WHERE name= '" . crawlt_sql_quote($connexion, $piegraphname) . "'";
 	$requete = db_query($sql, $connexion);
-	$nbrresult = mysql_num_rows($requete);
+	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
-		$sql2 = "UPDATE crawlt_graph SET graph_values='" . sql_quote($datatransferttograph) . "'
-                    WHERE name= '" . sql_quote($piegraphname) . "'";
+		$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($connexion, $datatransferttograph) . "'
+                    WHERE name= '" . crawlt_sql_quote($connexion, $piegraphname) . "'";
 	} else {
-		$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . sql_quote($piegraphname) . "','" . sql_quote($datatransferttograph) . "')";
+		$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($connexion, $piegraphname) . "','" . crawlt_sql_quote($connexion, $datatransferttograph) . "')";
 	}
 	$requete2 = db_query($sql2, $connexion);
-	mysql_close($connexion);
+	mysqli_close($connexion);
+
 	echo "<div class='tableaularge' align='center' onmouseout=\"javascript:montre();\">\n";
 	if ($period != 5) {
 		//graph

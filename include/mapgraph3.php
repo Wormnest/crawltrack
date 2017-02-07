@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,14 +8,15 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file:mapgraph3.php
 //----------------------------------------------------------------------
-//  Last update: 12/11/2011
-//----------------------------------------------------------------------
+
 //create table for graph
 if ($navig == 23) {
 	foreach ($axex as $data) {
@@ -54,19 +55,20 @@ $datatransferttograph = addslashes(urlencode(serialize($datatransfert2)));
 //insert the values in the graph table
 $graphname = $typegraph . "-" . $cachename;
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 //check if this graph already exists in the table
 $sql = "SELECT name  FROM crawlt_graph
-            WHERE name= '" . sql_quote($graphname) . "'";
+            WHERE name= '" . crawlt_sql_quote($connexion, $graphname) . "'";
 $requete = db_query($sql, $connexion);
-$nbrresult = mysql_num_rows($requete);
+$nbrresult = $requete->num_rows;
 
 if ($nbrresult >= 1) {
-	$sql2 = "UPDATE crawlt_graph SET graph_values='" . sql_quote($datatransferttograph) . "'
-              WHERE name= '" . sql_quote($graphname) . "'";
+	$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($connexion, $datatransferttograph) . "'
+              WHERE name= '" . crawlt_sql_quote($connexion, $graphname) . "'";
 } else {
-	$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . sql_quote($graphname) . "','" . sql_quote($datatransferttograph) . "')";
+	$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($connexion, $graphname) . "','" . crawlt_sql_quote($connexion, $datatransferttograph) . "')";
 }
 $requete2 = db_query($sql2, $connexion);
 
