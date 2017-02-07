@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: display-errors.php
 //----------------------------------------------------------------------
-//  Last update: 13/02/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array
 $nbrerrorattack = 0;
 $nbrerrorcrawler = 0;
@@ -32,6 +34,7 @@ $nbrexternvisits = array();
 $nbrinternvisits = array();
 $comptligne = 0;
 $crawlencode = urlencode($crawler);
+
 if ($period >= 1000) //previous days
 {
 	$cachename = "permanent-" . $navig . "-" . $site . "-" . $crawlencode."-" . $order . "-".$crawltlang . "-".$displayall . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
@@ -44,40 +47,44 @@ if ($period >= 1000) //previous days
 } else {
 	$cachename = $navig . $period . $site . $order . $crawlencode . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang;
 }
+
 //start the caching
 cache($cachename);
+
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 //include menu
 include ("include/menumain.php");
 include ("include/menusite.php");
 include ("include/timecache.php");
+
 //error 404 calculation------------------------------------------------------------------------------------------------
 //date for the mysql query
 if ($period >= 10) {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "' 
-    AND  date <'" . sql_quote($daterequest2) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
+    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "'";
 } else {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "'";
 }
 //query to get attack which give an error 404
 if ($period >= 10) {
 	$sql = "SELECT count 
     FROM crawlt_error
-    WHERE  idsite='" . sql_quote($site) . "'
-    AND  date >='" . sql_quote($daterequestseo) . "' 
-    AND  date <'" . sql_quote($daterequest2seo) . "'";
+    WHERE  idsite='" . crawlt_sql_quote($connexion, $site) . "'
+    AND  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "' 
+    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2seo) . "'";
 } else {
 	$sql = "SELECT count 
     FROM crawlt_error
-    WHERE  idsite='" . sql_quote($site) . "'
-    AND  date >='" . sql_quote($daterequestseo) . "'";
+    WHERE  idsite='" . crawlt_sql_quote($connexion, $site) . "'
+    AND  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'";
 }
 $requete = db_query($sql, $connexion);
-$num_rows = mysql_num_rows($requete);
+$num_rows = $requete->num_rows;
 if ($num_rows > 0) {
-	while ($ligne = mysql_fetch_row($requete)) {
+	while ($ligne = $requete->fetch_row()) {
 		$nbrerrorattack = $nbrerrorattack + $ligne[0];
 	}
 }
@@ -89,12 +96,12 @@ ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
 INNER JOIN crawlt_pages
 ON crawlt_visits.crawlt_pages_id_page=crawlt_pages.id_page
 WHERE $datetolookfor       
-AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'
+AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
 AND crawlt_error='1'";
 $requete = db_query($sql, $connexion);
-$num_rows = mysql_num_rows($requete);
+$num_rows = $requete->num_rows;
 if ($num_rows > 0) {
-	while ($ligne = mysql_fetch_row($requete)) {
+	while ($ligne = $requete->fetch_row()) {
 		$nbrerrorcrawler++;
 		$crawlerlist[$ligne[1]] = $ligne[1];
 		${'crawler' . $ligne[1]}[$ligne[0]] = $ligne[0];
@@ -102,24 +109,26 @@ if ($num_rows > 0) {
 	}
 }
 asort($crawlerlist);
+
 //query to get error from visitor direct
 $sql = "SELECT url_page 
 FROM crawlt_visits_human
 INNER JOIN crawlt_pages
 ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 WHERE $datetolookfor       
-AND crawlt_visits_human.crawlt_site_id_site='" . sql_quote($site) . "'
+AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
 AND crawlt_error='1'
 AND crawlt_id_referer=''";
 $requete = db_query($sql, $connexion);
-$num_rows = mysql_num_rows($requete);
+$num_rows = $requete->num_rows;
 if ($num_rows > 0) {
-	while ($ligne = mysql_fetch_row($requete)) {
+	while ($ligne = $requete->fetch_row()) {
 		$nbrerrordirect++;
 		@$nbrdirectvisits[$ligne[0]]++;
 	}
 }
 arsort($nbrdirectvisits);
+
 $lengthurl = strlen($hostsite);
 $sql = "SELECT referer, url_page  
 FROM crawlt_visits_human
@@ -128,19 +137,20 @@ ON  crawlt_referer.id_referer = crawlt_visits_human.crawlt_id_referer
 INNER JOIN crawlt_pages
 ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 WHERE $datetolookfor       
-AND crawlt_visits_human.crawlt_site_id_site='" . sql_quote($site) . "'
-AND Substring(referer From 1 For " . $lengthurl . ") != '" . sql_quote($hostsite) . "'
+AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND Substring(referer From 1 For " . $lengthurl . ") != '" . crawlt_sql_quote($connexion, $hostsite) . "'
 AND crawlt_error='1'";
 $requete = db_query($sql, $connexion);
-$num_rows = mysql_num_rows($requete);
+$num_rows = $requete->num_rows;
 if ($num_rows > 0) {
-	while ($ligne = mysql_fetch_row($requete)) {
+	while ($ligne = $requete->fetch_row()) {
 		$nbrerrorextern++;
 		@$nbrexternvisits[$ligne[1]]++;
 		${'extern' . $ligne[1]}[$ligne[0]] = $ligne[0];
 	}
 }
 arsort($nbrexternvisits);
+
 //query to get error from visitors internal link
 $sql = "SELECT referer, url_page  
 FROM crawlt_visits_human
@@ -149,21 +159,23 @@ ON  crawlt_referer.id_referer = crawlt_visits_human.crawlt_id_referer
 INNER JOIN crawlt_pages
 ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 WHERE $datetolookfor       
-AND crawlt_visits_human.crawlt_site_id_site='" . sql_quote($site) . "'
-AND Substring(referer From 1 For " . $lengthurl . ") = '" . sql_quote($hostsite) . "'
+AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND Substring(referer From 1 For " . $lengthurl . ") = '" . crawlt_sql_quote($connexion, $hostsite) . "'
 AND crawlt_error='1'";
 $requete = db_query($sql, $connexion);
-$num_rows = mysql_num_rows($requete);
+$num_rows = $requete->num_rows;
 if ($num_rows > 0) {
-	while ($ligne = mysql_fetch_row($requete)) {
+	while ($ligne = $requete->fetch_row()) {
 		$nbrerrorintern++;
 		@$nbrinternvisits[$ligne[1]]++;
 		${'intern' . $ligne[1]}[$ligne[0]] = $ligne[0];
 	}
 }
 //mysql connexion close
-mysql_close($connexion);
+mysqli_close($connexion);
+
 arsort($nbrinternvisits);
+
 //display-----------------------------------------------------------------------------------------------------
 echo "<div class=\"content2\"><br><hr>\n";
 echo "</div>\n";

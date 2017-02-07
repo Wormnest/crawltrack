@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.0
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: display-pages-visitors.php
 //----------------------------------------------------------------------
-//  Last update: 07/04/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array
 $nbrcrawlerpage = array();
 $nbvisits2 = array();
@@ -31,23 +33,28 @@ $cachename = $navig . $period . $site . $order.$rowdisplay . $crawlencode . $dis
 
 //start the caching
 cache($cachename);
+
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 //include menu
 include ("include/menumain.php");
 include ("include/menusite.php");
 include ("include/timecache.php");
+
 //clean table from crawler entry
 include ("include/cleaning-crawler-entry.php");
+
 //include visitors calculation file
 include ("include/visitors-calculation.php");
+
 //date for the mysql query
 if ($period >= 10) {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "' 
-    AND  date <'" . sql_quote($daterequest2) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
+    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "'";
 } else {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "'";
 }
 //query  to list the page viewed and to count the number of visits per page and to have the date of last visit for each pages
 if ($nottoomuchip == 1) {
@@ -57,7 +64,7 @@ if ($nottoomuchip == 1) {
   INNER JOIN crawlt_pages
   ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page  
   WHERE $datetolookfor    
-  AND crawlt_visits_human.crawlt_site_id_site='" . sql_quote($site) . "' 
+  AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "' 
   AND crawlt_ip IN ('$crawltlistip')
   AND  crawlt_visits_human.crawlt_error =0  
   GROUP BY crawlt_id_page";
@@ -68,15 +75,15 @@ if ($nottoomuchip == 1) {
   INNER JOIN crawlt_pages
   ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
   WHERE $datetolookfor    
-  AND crawlt_visits_human.crawlt_site_id_site='" . sql_quote($site) . "' 
+  AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "' 
   AND  crawlt_visits_human.crawlt_error =0   
   GROUP BY crawlt_id_page";
 }
 $requetestats = db_query($sqlstats, $connexion);
-$nbrresult = mysql_num_rows($requetestats);
+$nbrresult = $requetestats->num_rows;
 if ($nbrresult >= 1) {
 	$onlyarchive = 0;
-	while ($ligne = mysql_fetch_row($requetestats)) {
+	while ($ligne = $requetestats->fetch_row()) {
 		$nbvisits2[$ligne[0]] = $ligne[1];
 		$lastdatedisplay[$ligne[0]] = $ligne[2];
 		$firstdatedisplay[$ligne[0]] = $ligne[3];
@@ -87,15 +94,16 @@ if ($nbrresult >= 1) {
 	$sql = "SELECT  crawlt_id_page, crawlt_ip
   FROM crawlt_visits_human
   WHERE $datetolookfor    
-  AND crawlt_site_id_site='" . sql_quote($site) . "'";
+  AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'";
 	$requete = db_query($sql, $connexion);
-	while ($ligne = mysql_fetch_row($requete)) {
+	while ($ligne = $requete->fetch_row()) {
 		if (in_array($ligne[1], $listiponevisit)) {
 			$nbonevisits[$ligne[0]] = @$nbonevisits[$ligne[0]] + 1;
 		}
 	}
-//mysql connexion close
-mysql_close($connexion);
+	//mysql connexion close
+	mysqli_close($connexion);
+
 	//display----------------------------------------------------------------------------------------------------
 	echo "<div class=\"content2\"><br><hr>\n";
 	echo "</div>\n";
