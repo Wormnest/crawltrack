@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,14 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file:mapgraph2.php
 //----------------------------------------------------------------------
-//  Last update: 17/11/2011
-//----------------------------------------------------------------------
+
+if (!defined('IN_CRAWLT')) {
+	exit('<h1>No direct access</h1>');
+}
+
 //initialize array
 $axexlabel = array();
 $axex = array();
@@ -176,21 +181,23 @@ do {
 	}
 	$nbday2++;
 } while ($nbday2 < $nbday);
+
 //mysql query
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 //request to count the number of link, index page and bookmark
 if ($period == 3) //case one year
 {
 	//request to count the number of link, index page and bookmarks
 	$sqlseograph = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($times*3600), '%Y%m') , MAX(linkyahoo),MAX(pageyahoo),  MAX(pagemsn),  MAX(nbrdelicious), MAX(linkexalead),MAX(pageexalead) , MAX(linkgoogle),MAX(pagegoogle)
 		FROM crawlt_seo_position
-		WHERE `date` >='" . sql_quote($daterequestseo) . "'
-		AND id_site='" . sql_quote($site) . "' 
+		WHERE `date` >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'
+		AND id_site='" . crawlt_sql_quote($connexion, $site) . "' 
 		GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($times*3600), '%Y%m')";
 	$requeteseograph = db_query($sqlseograph, $connexion);
-	while ($ligne = mysql_fetch_row($requeteseograph)) {
+	while ($ligne = $requeteseograph->fetch_row()) {
 		$year = substr($ligne[0], 0, 4);
 		$month = substr($ligne[0], 4, 2);
 		$yearmonth = $month . "/" . $year;
@@ -203,17 +210,17 @@ if ($period == 3) //case one year
 		$googlelink[$yearmonth] = $ligne[7];
 		$googlepage[$yearmonth] = $ligne[8];
 	}
-	mysql_free_result($requeteseograph);
+	mysqli_free_result($requeteseograph);
 } elseif ($period >= 200 && $period < 300) //case one year back and forward
 {
 	$sqlseograph = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($times*3600), '%Y%m') , MAX(linkyahoo),MAX(pageyahoo),MAX(pagemsn),  MAX(nbrdelicious), MAX(linkexalead),MAX(pageexalead)  , MAX(linkgoogle),MAX(pagegoogle)
 		FROM crawlt_seo_position
-		WHERE `date` >='" . sql_quote($daterequestseo) . "'
-		AND `date` <'" . sql_quote($daterequest2) . "'    
-		AND id_site='" . sql_quote($site) . "' 
+		WHERE `date` >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'
+		AND `date` <'" . crawlt_sql_quote($connexion, $daterequest2) . "'    
+		AND id_site='" . crawlt_sql_quote($connexion, $site) . "' 
 		GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($times*3600), '%Y%m')";
 	$requeteseograph = db_query($sqlseograph, $connexion);
-	while ($ligne = mysql_fetch_row($requeteseograph)) {
+	while ($ligne = $requeteseograph->fetch_row()) {
 		$year = substr($ligne[0], 0, 4);
 		$month = substr($ligne[0], 4, 2);
 		$yearmonth = $month . "/" . $year;
@@ -226,22 +233,22 @@ if ($period == 3) //case one year
 		$googlelink[$yearmonth] = $ligne[7];
 		$googlepage[$yearmonth] = $ligne[8];
 	}
-	mysql_free_result($requeteseograph);
+	mysqli_free_result($requeteseograph);
 } else {
 	if ($period >= 10) {
 		$sqlseograph = "SELECT  FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($times*3600), '%d-%m-%Y'), linkyahoo, pageyahoo,  pagemsn,nbrdelicious, linkexalead, pageexalead ,linkgoogle, pagegoogle
 			FROM crawlt_seo_position
-			WHERE `date` >='" . sql_quote($daterequestseo) . "'
-			AND `date` <='" . sql_quote($daterequest2) . "'
-			AND id_site='" . sql_quote($site) . "'";
+			WHERE `date` >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'
+			AND `date` <='" . crawlt_sql_quote($connexion, $daterequest2) . "'
+			AND id_site='" . crawlt_sql_quote($connexion, $site) . "'";
 	} else {
 		$sqlseograph = "SELECT  FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($times*3600), '%d-%m-%Y'), linkyahoo, pageyahoo, pagemsn, nbrdelicious, linkexalead, pageexalead , linkgoogle, pagegoogle
 			FROM crawlt_seo_position
-			WHERE `date` >='" . sql_quote($daterequestseo) . "'
-			AND id_site='" . sql_quote($site) . "'";
+			WHERE `date` >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'
+			AND id_site='" . crawlt_sql_quote($connexion, $site) . "'";
 	}
 	$requeteseograph = db_query($sqlseograph, $connexion);
-	while ($ligne = mysql_fetch_row($requeteseograph)) {
+	while ($ligne = $requeteseograph->fetch_row()) {
 		$yahoolink[$ligne[0]] = $ligne[1];
 		$yahoopage[$ligne[0]] = $ligne[2];
 		$msnpage[$ligne[0]] = $ligne[3];
@@ -252,7 +259,7 @@ if ($period == 3) //case one year
 		$googlepage[$ligne[0]] = $ligne[8];
 	}
 }
-mysql_free_result($requeteseograph);
+mysqli_free_result($requeteseograph);
 
 //create table for graph
 if ($typegraph == 'link') {
@@ -291,14 +298,14 @@ $graphname = $typegraph . "-" . $cachename;
 
 //check if this graph already exists in the table
 $sql = "SELECT name  FROM crawlt_graph
-            WHERE name= '" . sql_quote($graphname) . "'";
+            WHERE name= '" . crawlt_sql_quote($connexion, $graphname) . "'";
 $requete = db_query($sql, $connexion);
-$nbrresult = mysql_num_rows($requete);
+$nbrresult = $requete->num_rows;
 if ($nbrresult >= 1) {
-	$sql2 = "UPDATE crawlt_graph SET graph_values='" . sql_quote($datatransferttograph) . "'
-              WHERE name= '" . sql_quote($graphname) . "'";
+	$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($connexion, $datatransferttograph) . "'
+              WHERE name= '" . crawlt_sql_quote($connexion, $graphname) . "'";
 } else {
-	$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . sql_quote($graphname) . "','" . sql_quote($datatransferttograph) . "')";
+	$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($connexion, $graphname) . "','" . crawlt_sql_quote($connexion, $datatransferttograph) . "')";
 }
 $requete2 = db_query($sql2, $connexion);
 

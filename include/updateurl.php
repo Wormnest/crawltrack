@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,32 +8,35 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: updateurl.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array
 $namesite = array();
 $urlsite = array();
 $listidsite = array();
+
 echo "<div class=\"content\">\n";
 if ($validsite == 0) {
 	//database connection
-	$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-	$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+	require_once("jgbdb.php");
+	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 	
 	$sqlsite = "SELECT * FROM crawlt_site";
 	$requetesite = db_query($sqlsite, $connexion);
-	$nbrresult = mysql_num_rows($requetesite);
+	$nbrresult = $requetesite->num_rows;
 	if ($nbrresult >= 1) {
-		while ($ligne = mysql_fetch_object($requetesite)) {
+		while ($ligne = $requetesite->fetch_object()) {
 			$sitename = $ligne->name;
 			$siteurl = $ligne->url;
 			$siteid = $ligne->id_site;
@@ -42,7 +45,8 @@ if ($validsite == 0) {
 			$listidsite[] = $siteid;
 		}
 	}
-	mysql_close($connexion);
+	mysqli_close($connexion);
+
 	echo "<p>" . $language['set_up_url'] . "</p>\n";
 	echo "<form action=\"index.php\" method=\"POST\" >\n";
 	echo "<input type=\"hidden\" name ='navig' value=\"10\">\n";
@@ -90,12 +94,12 @@ if ($validsite == 0) {
 			$siteurl = '';
 		}
 		//database connection
-		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+		require_once("jgbdb.php");
+		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 		
 		$sqlupdatesite = "UPDATE crawlt_site SET url='" . sql_quote($siteurl) . "' WHERE name='" . sql_quote($sitename) . "'";
 		$requeteupdatesite = db_query($sqlupdatesite, $connexion);
-		mysql_close($connexion);
+		mysqli_close($connexion);
 	}
 	?>
 	<p><?php echo $language['update']; ?></p>

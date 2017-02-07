@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: display-crawlers-info.php
 //----------------------------------------------------------------------
-//  Last update: 02/12/2010
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array
 $listcrawler = array();
 $listip = array();
@@ -30,6 +32,7 @@ $name = array();
 $nbrcountry2 = array();
 $name2 = array();
 $values = array();
+
 if ($period >= 1000) {
 	$cachename = "permanent-" . $navig . "-" . $site . "-".$crawltlang . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
 } elseif ($period >= 100 && $period < 200) //previous month
@@ -41,37 +44,41 @@ if ($period >= 1000) {
 } else {
 	$cachename = $navig . $period . $site . $firstdayweek . $localday . $graphpos . $crawltlang;
 }
+
 //start the caching
 cache($cachename);
+
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 //include menu
 include ("include/menumain.php");
 include ("include/menusite.php");
 include ("include/timecache.php");
+
 //mysql query
 if ($period >= 10) {
 	$sqlstats = "SELECT crawler_name, crawlt_ip_used, date, crawler_info
     FROM crawlt_visits
     INNER JOIN crawlt_crawler
     ON  crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
-    WHERE crawlt_visits.date >'" . sql_quote($daterequest) . "'
-    AND  date <'" . sql_quote($daterequest2) . "'     
-    AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'";
+    WHERE crawlt_visits.date >'" . crawlt_sql_quote($connexion, $daterequest) . "'
+    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "'     
+    AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'";
 } else {
 	$sqlstats = "SELECT crawler_name, crawlt_ip_used, date, crawler_info
     FROM crawlt_visits
     INNER JOIN crawlt_crawler
     ON  crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
-    WHERE crawlt_visits.date >'" . sql_quote($daterequest) . "' 
-    AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'";
+    WHERE crawlt_visits.date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
+    AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'";
 }
 $requetestats = db_query($sqlstats, $connexion);
-$nbrresult1 = mysql_num_rows($requetestats);
+$nbrresult1 = $requetestats->num_rows;
 $testip = false;
 if ($nbrresult1 >= 1) {
-	while ($ligne = mysql_fetch_row($requetestats)) {
+	while ($ligne = $requetestats->fetch_row()) {
 		if (!empty($ligne[1])) {
 			$testip = true;
 			if ($ligne[0] == 'MSN Bot' || $ligne[0] == 'Bingbot') {
@@ -85,7 +92,7 @@ if ($nbrresult1 >= 1) {
 			$usercrawler[$ligne[0]] = $ligne[3];
 		}
 	}
-	mysql_free_result($requetestats);
+	mysqli_free_result($requetestats);
 	if ($testip) {
 		//query to get the country code
 		if (function_exists('geoip_country_code_by_name')) {
@@ -164,18 +171,19 @@ if ($nbrresult1 >= 1) {
 		$graphname = "origin-" . $cachename;
 		//check if this graph already exists in the table
 		$sql = "SELECT name  FROM crawlt_graph
-                WHERE name= '" . sql_quote($graphname) . "'";
+                WHERE name= '" . crawlt_sql_quote($connexion, $graphname) . "'";
 		$requete = db_query($sql, $connexion);
-		$nbrresult = mysql_num_rows($requete);
+		$nbrresult = $requete->num_rows;
 		if ($nbrresult >= 1) {
-			$sql2 = "UPDATE crawlt_graph SET graph_values='" . sql_quote($datatransferttograph) . "'
-                  WHERE name= '" . sql_quote($graphname) . "'";
+			$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($connexion, $datatransferttograph) . "'
+                  WHERE name= '" . crawlt_sql_quote($connexion, $graphname) . "'";
 		} else {
-			$sql2 = "INSERT INTO crawlt_graph (name, graph_values) VALUES ( '" . sql_quote($graphname) . "','" . sql_quote($datatransferttograph) . "')";
+			$sql2 = "INSERT INTO crawlt_graph (name, graph_values) VALUES ( '" . crawlt_sql_quote($connexion, $graphname) . "','" . crawlt_sql_quote($connexion, $datatransferttograph) . "')";
 		}
 		$requete2 = db_query($sql2, $connexion);
 		//mysql connexion close
-		mysql_close($connexion);
+		mysqli_close($connexion);
+
 		//display---------------------------------------------------------------------------------------------------------
 		echo "<div class=\"content2\"><br><hr>\n";
 		echo "</div>\n";

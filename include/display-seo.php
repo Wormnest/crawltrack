@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.1
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,20 +8,23 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: display-seo.php
 //----------------------------------------------------------------------
-//  Last update: 29/10/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array and variable
 $tablinkgoogle = array();
 $tabpagegoogle = array();
+
 if ($period >= 1000) {
 	$cachename = "permanent-" . $navig . "-" . $site . "-".$crawltlang . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
 } elseif ($period >= 100 && $period < 200) //previous month
@@ -33,33 +36,37 @@ if ($period >= 1000) {
 } else {
 	$cachename = $navig . $period . $site . $firstdayweek . $localday . $graphpos . $crawltlang;
 }
+
 //start the caching
 cache($cachename);
+
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 //include menu
 include ("include/menumain.php");
 include ("include/menusite.php");
 include ("include/timecache.php");
+
 //request to get the msn and yahoo positions data and the number of Delicious bookmarks and  Delicious keywords
 if ($period >= 10) {
 	$sqlseo = "SELECT   linkyahoo, pageyahoo, pagemsn, nbrdelicious,tagdelicious, linkexalead, pageexalead, linkgoogle, pagegoogle FROM crawlt_seo_position
-    WHERE  id_site='" . sql_quote($site) . "'
-    AND  date >='" . sql_quote($daterequestseo) . "' 
-    AND  date <'" . sql_quote($daterequest2seo) . "'        
+    WHERE  id_site='" . crawlt_sql_quote($connexion, $site) . "'
+    AND  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "' 
+    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2seo) . "'        
     ORDER BY date";
 } else {
 	$sqlseo = "SELECT  linkyahoo, pageyahoo, pagemsn, nbrdelicious,tagdelicious, linkexalead, pageexalead, linkgoogle, pagegoogle FROM crawlt_seo_position
-    WHERE  id_site='" . sql_quote($site) . "' 
-    AND  date >='" . sql_quote($daterequestseo) . "'        
+    WHERE  id_site='" . crawlt_sql_quote($connexion, $site) . "' 
+    AND  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'        
     ORDER BY date";
 }
 $requeteseo = db_query($sqlseo, $connexion);
-$nbrresult = mysql_num_rows($requeteseo);
+$nbrresult = $requeteseo->num_rows;
 if ($nbrresult >= 1) {
 	$i = 1;
-	while ($ligneseo = mysql_fetch_row($requeteseo)) {
+	while ($ligneseo = $requeteseo->fetch_row()) {
 		$tablinkgoogle[] = $ligneseo[7];
 		$tabpagegoogle[] = $ligneseo[8];
 	}
@@ -74,7 +81,8 @@ if ($nbrresult >= 1) {
 	}
 }
 //mysql connexion close
-mysql_close($connexion);
+mysqli_close($connexion);
+
 //display
 echo "<div class=\"content2\"><br><hr>\n";
 echo "</div>\n";
@@ -95,30 +103,31 @@ echo "<th class='tableau2' width=\"40%\">\n";
 echo "" . $language['nbr_tot_pages_index'] . "\n";
 echo "</th></tr>\n";
 echo "<tr><td class='tableau3g'>&nbsp;&nbsp;&nbsp;<a href=\"http://www.google.com\">" . $language['google'] . "</a>\n";
-if ($period == 0 && ($linkgoogle == 0 || $pagegoogle == 0)) {
+
+if (($nbrresult == 0) || ($period == 0 && ($linkgoogle == 0 || $pagegoogle == 0))) {
 	echo "<a href=\"./php/searchenginespositionrefresh.php?retry=google&amp;navig=$navig&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/refresh.png\" width=\"16\" height=\"16\" border=\"0\" ></a></td>\n";
 } else {
 	echo "</td>\n";
 }
-if (($tablinkgoogle[0] == $tablinkgoogle[($nbrresult - 1) ]) && $tablinkgoogle[0] == 0) {
+if (($nbrresult == 0) || (($tablinkgoogle[0] == $tablinkgoogle[($nbrresult - 1) ]) && $tablinkgoogle[0] == 0)) {
 	echo "<td class='tableau3' >-</td>\n";
 } else {
 	echo "<td class='tableau3'>" . $linkgoogle . "</td>\n";
 }
-if (($tabpagegoogle[0] == $tabpagegoogle[($nbrresult - 1) ]) && $tabpagegoogle[0] == 0) {
+if (($nbrresult == 0) || (($tabpagegoogle[0] == $tabpagegoogle[($nbrresult - 1) ]) && $tabpagegoogle[0] == 0)) {
 	echo "<td class='tableau5'>-</td></tr>\n";
 } else {
 	echo "<td class='tableau5'>" . $pagegoogle . "</td></tr>\n";
 }
-
 echo "</table><br>\n";
 echo "</div><br>\n";
+
 if ($period != 5) {
 	//graph
 	echo "<div class='graphvisits'>\n";
 	//mapgraph
 	$typegraph = 'link';
-	include "include/mapgraph2.php";
+	include("include/mapgraph2.php");
 	echo "<img src=\"./graphs/seo-graph.php?typegraph=$typegraph&amp;crawltlang=$crawltlang&amp;period=$period&amp;graphname=$graphname\" usemap=\"#seolink\" border=\"0\" alt=\"graph\" >\n";
 	echo "&nbsp;</div><br>\n";
 	echo "<div class='imprimgraph'>\n";
@@ -127,7 +136,7 @@ if ($period != 5) {
 	echo "<div class='graphvisits'>\n";
 	//mapgraph
 	$typegraph = 'page';
-	include "include/mapgraph2.php";
+	include("include/mapgraph2.php");
 	echo "<img src=\"./graphs/seo-graph.php?typegraph=$typegraph&amp;crawltlang=$crawltlang&amp;period=$period&amp;graphname=$graphname\" usemap=\"#seopage\" border=\"0\" alt=\"graph\" >\n";
 	echo "&nbsp;</div><br>\n";
 	echo "<div class='imprimgraph'>\n";

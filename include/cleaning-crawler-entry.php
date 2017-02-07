@@ -18,7 +18,7 @@
 //----------------------------------------------------------------------
 
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
 
 //maximum number of elements for query to avoid time out error; can be adapted according server
