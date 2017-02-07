@@ -8,6 +8,15 @@
  *
  */
 
+if (is_file(dirname(__FILE__) . "/Artichow.cfg.php")) { // For PHP 4+5 version
+    require_once dirname(__FILE__) . "/Artichow.cfg.php";
+}
+
+require_once(ARTICHOW . "/Component.class.php");
+require_once(ARTICHOW . "/inc/Grid.class.php");
+require_once(ARTICHOW . "/inc/Axis.class.php");
+require_once(ARTICHOW . "/inc/Tick.class.php");
+
 /**
  * Graph using X and Y axis
  *

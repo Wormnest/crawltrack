@@ -8,6 +8,8 @@
  *
  */
 
+require_once(ARTICHOW . "/inc/Tools.class.php");
+
 /**
  * Some legends
  *

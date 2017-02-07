@@ -8,6 +8,9 @@
  *
  */
 
+// Using "../Driver.class.php doesn't work here!
+require_once(ARTICHOW . "/inc/Driver.class.php");
+
 /**
  * Draw your objects
  *

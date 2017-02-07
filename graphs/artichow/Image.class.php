@@ -8,12 +8,18 @@
  *
  */
 
-
 if (is_file(dirname(__FILE__) . "/Artichow.cfg.php")) { // For PHP 4+5 version
     require_once dirname(__FILE__) . "/Artichow.cfg.php";
 }
 
-require_once ARTICHOW . "/common.php";
+require_once (ARTICHOW . "/common.php");
+
+require_once(ARTICHOW . "/inc/Color.class.php");
+require_once(ARTICHOW . "/inc/Shadow.class.php");
+require_once(ARTICHOW . "/inc/Border.class.php");
+require_once(ARTICHOW . "/inc/Math.class.php");
+require_once(ARTICHOW . "/inc/Text.class.php");
+
 
 /**
  * An image for a graph

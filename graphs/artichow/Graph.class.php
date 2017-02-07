@@ -8,6 +8,14 @@
  *
  */
 
+if (is_file(dirname(__FILE__) . "/Artichow.cfg.php")) { // For PHP 4+5 version
+    require_once dirname(__FILE__) . "/Artichow.cfg.php";
+}
+
+require_once(ARTICHOW . "/Image.class.php");
+require_once(ARTICHOW . "/inc/Label.class.php");
+require_once(ARTICHOW . "/inc/Font.class.php");
+
 /**
  * A graph 
  *
