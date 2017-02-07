@@ -534,6 +534,22 @@ function close() {
 	}
 }
 
+// Empty the given cache folder but leave index.htm alone.
+// Note $cachefolder is expected to end in a '/'
+function empty_cache($cachefolder) {
+	$dir = dir($cachefolder);
+	while (false !== $entry = $dir->read()) {
+		// Skip pointers
+		if ($entry == '.' || $entry == '..' || $entry == 'index.htm') {
+			continue;
+		}
+		// Delete the cache file
+		unlink($cachefolder . $entry);
+	}
+	// Clean up
+	$dir->close();
+}
+
 /** JB: This seems to be exactly the same as crawlt_sql_quote, commented out, use the other function!
 //function to escape query string
 function sql_quote($connexion, $value) {

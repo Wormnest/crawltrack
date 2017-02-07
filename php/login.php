@@ -49,14 +49,7 @@ if (isset($crawlthost)) //version >= 150
 }
 
 //clear the cache folder at the first entry on crawltrack to avoid to have it oversized
-$dir = dir('../cache/');
-while (false !== $entry = $dir->read()) {
-	// Skip pointers
-	if ($entry == '.' || $entry == '..') {
-		continue;
-	}
-	unlink("../cache/$entry");
-}
+empty_cache('../cache/');
 
 //clear the cachecloseperiod folder if there is more than 200 files in it to avoid to have it oversized
 $list = glob("../cachecloseperiod/*.gz"); 
@@ -64,11 +57,13 @@ if(count($list)>200) {
 	$dir = dir('../cachecloseperiod/');
 	while (false !== $entry = $dir->read()) {
 		// Skip pointers
-		if ($entry == '.' || $entry == '..') {
+		if ($entry == '.' || $entry == '..' || $entry == 'index.htm') {
 			continue;
 		}
 		unlink("../cachecloseperiod/$entry");
-	}		
+	}
+	// Clean up
+	$dir->close();
 }
 
 //clear cache table

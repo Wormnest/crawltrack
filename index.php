@@ -223,14 +223,7 @@ if (file_exists('include/configconnect.php') && $navig != 15) {
 			//case free access to the stats
 			if (!isset($_SESSION['rightsite'])) {
 				//clear the cache folder at the first entry on crawltrack to avoid to have it oversized
-				$dir = dir('cache/');
-				while (false !== $entry = $dir->read()) {
-					// Skip pointers
-					if ($entry == '.' || $entry == '..') {
-						continue;
-					}
-					unlink("cache/$entry");
-				}				
+				empty_cache('cache/');
 			}
 			// session start 'crawlt'
 			if (!isset($_SESSION)) {

@@ -100,17 +100,9 @@ $requetecache = $connexion->query($sqlcache);
 mysqli_close($connexion);
 
 //clear the cache folder
-$dir = dir('../cache/');
-while (false !== $entry = $dir->read()) {
-	// Skip pointers
-	if ($entry == '.' || $entry == '..') {
-		continue;
-	}
-	unlink("../cache/$entry");
-}
+require_once("../include/functions.php");
+empty_cache('../cache/');
 
-// Clean up
-$dir->close();
 //call back the page
 $crawlencode = urlencode($crawler);
 $urlrefresh = "../index.php?navig=$navig&period=$period&site=$site&crawler=$crawlencode&graphpos=$graphpos&checklink=1#top";

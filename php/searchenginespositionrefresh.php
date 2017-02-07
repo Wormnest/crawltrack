@@ -552,16 +552,7 @@ $requetegraph = $connexion->query($sqlgraph);
 mysqli_close($connexion);
 
 //clear the cache folder
-$dir = dir('../cache/');
-while (false !== $entry = $dir->read()) {
-	// Skip pointers
-	if ($entry == '.' || $entry == '..') {
-		continue;
-	}
-	unlink("../cache/$entry");
-}
-// Clean up
-$dir->close();
+empty_cache('../cache/');
 
 //call back the page
 $urlrefresh = "../index.php?navig=$navig&period=$period&site=$site&graphpos=$graphpos";

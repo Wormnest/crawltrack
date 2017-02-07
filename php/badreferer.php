@@ -102,16 +102,8 @@ $requetecache = $connexion->query($sqlcache);
 mysqli_close($connexion);
 
 //clear the cache folder
-$dir = dir('../cache/');
-while (false !== $entry = $dir->read()) {
-	// Skip pointers
-	if ($entry == '.' || $entry == '..') {
-		continue;
-	}
-	unlink("../cache/$entry");
-}
-// Clean up
-$dir->close();
+require_once("../include/functions.php");
+empty_cache('../cache/');
 
 //clear the cleaning session value
 $_SESSION['last-cleaning'] = 0;
