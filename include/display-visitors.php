@@ -22,7 +22,7 @@ $maxtime = 20; //maximum total time in seconds allowed for the script to search 
 //--------------------------------------------------------------------------------------------------------
 
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
 
 //initialize array and variable

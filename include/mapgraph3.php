@@ -17,6 +17,10 @@
 // file:mapgraph3.php
 //----------------------------------------------------------------------
 
+if (!defined('IN_CRAWLT')) {
+	exit('<h1>No direct access</h1>');
+}
+
 //create table for graph
 if ($navig == 23) {
 	foreach ($axex as $data) {
