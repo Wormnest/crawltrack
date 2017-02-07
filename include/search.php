@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,27 +8,30 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: search.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array
 $list = array();
 
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //include menu
 include ("include/menumain.php");
 include ("include/menusite.php");
+
 echo "<div class=\"content\">\n";
 
 //test if form valid
@@ -248,14 +251,14 @@ if ($validform == 0) {
 				ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
 				INNER JOIN crawlt_pages  
 				ON crawlt_visits.crawlt_pages_id_page=crawlt_pages.id_page 
-				WHERE crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'
+				WHERE crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
 				ORDER BY crawlt_visits.date ASC";
 		}
 		$requetestats = db_query($sqlstats, $connexion);
-		$nbrresult = mysql_num_rows($requetestats);
+		$nbrresult = $requetestats->num_rows;
 		if ($nbrresult >= 1) {
 			if ($search == 1) {
-				while ($line = mysql_fetch_row($requetestats)) {
+				while ($line = $requetestats->fetch_row()) {
 					$crawlername = $line[0];
 					if (preg_match('#' . $crawler . '#i', $crawlername)) {
 						$list[] = $crawlername;
@@ -321,7 +324,7 @@ if ($validform == 0) {
 					echo "<br><br><h2>" . $language['no_answer'] . "</h2>\n";
 				}
 			} elseif ($search == 2) {
-				while ($line = mysql_fetch_row($requetestats)) {
+				while ($line = $requetestats->fetch_row()) {
 					$pagename = $line[3];
 					if (preg_match('#' . $crawler . '#i', $pagename)) {
 						$list[] = $pagename;
@@ -389,7 +392,7 @@ if ($validform == 0) {
 					echo "<br><br><h2>" . $language['no_answer'] . "</h2>\n";
 				}
 			} elseif ($search == 3) {
-				while ($line = mysql_fetch_row($requetestats)) {
+				while ($line = $requetestats->fetch_row()) {
 					$crawlerinfo = $line[1];
 					if (preg_match('#' . $crawler . '#i', $crawlerinfo)) {
 						$list[] = $crawlerinfo;
@@ -457,7 +460,7 @@ if ($validform == 0) {
 					echo "<br><br><h2>" . $language['no_answer'] . "</h2>\n";
 				}
 			} elseif ($search == 5) {
-				while ($line = mysql_fetch_row($requetestats)) {
+				while ($line = $requetestats->fetch_row()) {
 					$crawlerua2 = $line[2];
 					if (preg_match('#' . $crawler . '#i', $crawlerua2)) {
 						$list[] = $crawlerua2;
@@ -526,9 +529,9 @@ if ($validform == 0) {
 				}
 			} elseif ($search == 6) {
 				$sqlexist = "SELECT crawler_name,crawler_user_agent, crawler_info, crawler_url FROM crawlt_crawler
-					WHERE crawler_user_agent='" . sql_quote($crawler) . "'";
+					WHERE crawler_user_agent='" . crawlt_sql_quote($connexion, $crawler) . "'";
 				$requeteexist = db_query($sqlexist, $connexion);
-				$line2 = mysql_fetch_row($requeteexist);
+				$line2 = $requeteexist->fetch_row();
 				
 				//crawler already exist
 				$crawlernamedisplay = htmlentities($line2[0]);
@@ -550,7 +553,7 @@ if ($validform == 0) {
 				echo "</div>\n";
 			} else {
 				$crawler = urldecode($crawler);
-				while ($line = mysql_fetch_row($requetestats)) {
+				while ($line = $requetestats->fetch_row()) {
 					$crawlerinfo = $line[1];
 					$crawlername = $line[0];
 					if ($crawlerinfo == $crawler) {
@@ -621,5 +624,5 @@ if ($validform == 0) {
 		}
 	}
 }
-mysql_close($connexion);
+mysqli_close($connexion);
 ?>

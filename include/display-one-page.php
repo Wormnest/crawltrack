@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: display-one-page.php
 //----------------------------------------------------------------------
-//  Last update: 13/02/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array
 $listcrawler = array();
 $nbvisits = array();
@@ -29,6 +31,7 @@ $nbvisits2 = array();
 $values = array();
 $table = array();
 $crawlencode = urlencode($crawler);
+
 if ($period >= 1000) {
 	$cachename = "permanent-" . $navig . "-" . $site . "-" . $crawlencode."-" . $order."-" . $rowdisplay . "-".$crawltlang . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
 } elseif ($period >= 100 && $period < 200) //previous month
@@ -40,58 +43,65 @@ if ($period >= 1000) {
 } else {
 	$cachename = $navig . $period . $site . $order.$rowdisplay . $crawlencode . $firstdayweek . $localday . $graphpos . $crawltlang;
 }
+
 //start the caching
 cache($cachename);
+
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 //include menu
 include ("include/menumain.php");
 include ("include/menusite.php");
+include "include/timecache.php";
+
 //date for the mysql query
 if ($period >= 10) {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "' 
-    AND  date <'" . sql_quote($daterequest2) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
+    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "'";
 } else {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "'";
 }
-include "include/timecache.php";
+
 //query to get crawler name
 $sql = "SELECT id_crawler, crawler_name FROM crawlt_crawler";
 $requete = db_query($sql, $connexion);
-$nbrresult = mysql_num_rows($requete);
+$nbrresult = $requete->num_rows;
 if ($nbrresult >= 1) {
-	while ($ligne = mysql_fetch_row($requete)) {
+	while ($ligne = $requete->fetch_row()) {
 	if ($ligne[1] == 'MSN Bot' || $ligne[1] == 'Bingbot') {
 	$ligne[1]='MSN Bot - Bingbot';
 	}
 		$crawlername[$ligne[0]] = $ligne[1];
 	}
 }
+
 //query to get page id
 $crawlerd= htmlspecialchars_decode($crawler);
 $sql = "SELECT id_page FROM crawlt_pages
-WHERE url_page='" . sql_quote($crawlerd) . "'";
+WHERE url_page='" . crawlt_sql_quote($connexion, $crawlerd) . "'";
 $requete = db_query($sql, $connexion);
-$nbrresult = mysql_num_rows($requete);
+$nbrresult = $requete->num_rows;
 if ($nbrresult >= 1) {
-	while ($ligne = mysql_fetch_row($requete)) {
+	while ($ligne = $requete->fetch_row()) {
 		$idpage = $ligne[0];
 	}
 }
+
 //query to count the number of page per crawler and to list the crawler and to count the number of visits per crawler and to have the date of last visit for each crawler
 $sqlstats = "SELECT  crawlt_crawler_id_crawler,   COUNT(id_visit) as maxvisites ,
 MAX(UNIX_TIMESTAMP(date)-($times*3600)), MIN(UNIX_TIMESTAMP(date)-($times*3600)) 
 FROM crawlt_visits
 WHERE $datetolookfor    
-AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'
-AND crawlt_pages_id_page='" . sql_quote($idpage) . "'   
+AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND crawlt_pages_id_page='" . crawlt_sql_quote($connexion, $idpage) . "'   
 GROUP BY crawlt_crawler_id_crawler";
 $requetestats = db_query($sqlstats, $connexion);
-$nbrresult = mysql_num_rows($requetestats);
+$nbrresult = $requetestats->num_rows;
 if ($nbrresult >= 1) {
 	$onlyarchive = 0;
-	while ($ligne = mysql_fetch_row($requetestats)) {
+	while ($ligne = $requetestats->fetch_row()) {
 		$nbvisits[$crawlername[$ligne[0]]] = @$nbvisits[$crawlername[$ligne[0]]] + $ligne[1];
 		if ($ligne[2] > @$lastdatedisplay[$crawlername[$ligne[0]]]) {
 			$lastdatedisplay[$crawlername[$ligne[0]]] = $ligne[2];
@@ -101,18 +111,18 @@ if ($nbrresult >= 1) {
 		}
 		$listcrawler[$crawlername[$ligne[0]]] = $crawlername[$ligne[0]];
 	}
-	//query to count the total number of  pages viewed ,total number of visits and total number of crawler
-	//first we check if that calculation has not already been done
+	//query to count the total number of pages viewed, total number of visits and total number of crawlers
+	//first we check if the calculation has not already been done
 	if (isset($_SESSION['nbrtotcrawlers-' . $cachename]) && isset($_SESSION['nbrtotvisits-' . $cachename])) {
 		$nbrtotcrawlers = $_SESSION['nbrtotcrawlers-' . $cachename];
 		$nbrtotvisits = $_SESSION['nbrtotvisits-' . $cachename];
 	} else {
 		$sqlstats2 = "SELECT id_visit FROM crawlt_visits
       WHERE $datetolookfor         
-      AND crawlt_site_id_site='" . sql_quote($site) . "'
-      AND crawlt_pages_id_page='" . sql_quote($idpage) . "'";
+      AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+      AND crawlt_pages_id_page='" . crawlt_sql_quote($connexion, $idpage) . "'";
 		$requetestats2 = db_query($sqlstats2, $connexion);
-		$nbrtotvisits = mysql_num_rows($requetestats2);
+		$nbrtotvisits = $requetestats2->num_rows;
 		$nbrtotcrawlers = count($listcrawler);
 		$_SESSION['nbrtotcrawlers-' . $cachename] = $nbrtotcrawlers;
 		$_SESSION['nbrtotvisits-' . $cachename] = $nbrtotvisits;
@@ -138,18 +148,19 @@ if ($nbrresult >= 1) {
 	$graphname = "crawler-" . $cachename;
 	//check if this graph already exists in the table
 	$sql = "SELECT name  FROM crawlt_graph
-                WHERE name= '" . sql_quote($graphname) . "'";
+                WHERE name= '" . crawlt_sql_quote($connexion, $graphname) . "'";
 	$requete = db_query($sql, $connexion);
-	$nbrresult = mysql_num_rows($requete);
+	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
-		$sql2 = "UPDATE crawlt_graph SET graph_values='" . sql_quote($datatransferttograph) . "'
-                  WHERE name= '" . sql_quote($graphname) . "'";
+		$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($connexion, $datatransferttograph) . "'
+                  WHERE name= '" . crawlt_sql_quote($connexion, $graphname) . "'";
 	} else {
-		$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . sql_quote($graphname) . "','" . sql_quote($datatransferttograph) . "')";
+		$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($connexion, $graphname) . "','" . crawlt_sql_quote($connexion, $datatransferttograph) . "')";
 	}
 	$requete2 = db_query($sql2, $connexion);
 	//mysql connexion close
-	mysql_close($connexion);
+	mysqli_close($connexion);
+
 	//display---------------------------------------------------------------------------------
 	echo "<div class=\"content2\"><br><br><br><br><hr>\n";
 	//graph
@@ -365,12 +376,12 @@ if ($nbrresult >= 1) {
 	echo "<br>\n";
 } else {
 	$sqlstats2 = "SELECT * FROM crawlt_pages
-	WHERE crawlt_pages.url_page='" . sql_quote($crawler) . "'
+	WHERE crawlt_pages.url_page='" . crawlt_sql_quote($connexion, $crawler) . "'
 	ORDER BY url_page ASC";
 	$requetestats2 = db_query($sqlstats2, $connexion);
 	//mysql connexion close
-	mysql_close($connexion);
-	$nbrresult2 = mysql_num_rows($requetestats2);
+	mysqli_close($connexion);
+	$nbrresult2 = $requetestats2->num_rows;
 	if ($nbrresult2 == 0) {
 		exit('<h1>Hacking attempt !!!!</h1>');
 	}

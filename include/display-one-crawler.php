@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: display-one-crawler.php
 //----------------------------------------------------------------------
-//  Last update: 13/02/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array
 $listpage = array();
 $nbvisits = array();
@@ -30,6 +32,7 @@ $ip = array();
 $uagent = array();
 $table = array();
 $crawlencode = urlencode($crawler);
+
 if ($period >= 1000) {
 	$cachename = "permanent-" . $navig . "-" . $site . "-" . $crawlencode."-" . $order."-" . $rowdisplay . "-".$crawltlang . "-".$displayall . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
 } elseif ($period >= 100 && $period < 200) //previous month
@@ -41,26 +44,29 @@ if ($period >= 1000) {
 } else {
 	$cachename = $navig . $period . $site . $order.$rowdisplay . $crawlencode . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang;
 }
+
 //start the caching
 cache($cachename);
+
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //case change of name of MSN Bot
 if( urldecode($crawler)=='MSN Bot - Bingbot' || urldecode($crawler)=='MSN Bot' || urldecode($crawler)=='Bingbot') {
 	$crawlertolookfor= "AND crawlt_crawler.crawler_name IN ('MSN Bot','Bingbot')";
 	$crawler='MSN Bot - Bingbot';
-	}
+}
 else {
-	$crawlertolookfor="AND crawlt_crawler.crawler_name='" . sql_quote($crawler) . "'";
-	}
+	$crawlertolookfor="AND crawlt_crawler.crawler_name='" . crawlt_sql_quote($connexion, $crawler) . "'";
+}
+
 //date for the mysql query
 if ($period >= 10) {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "' 
-    AND  date <'" . sql_quote($daterequest2) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
+    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "'";
 } else {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "'";
 }
 
 //include menu
@@ -78,17 +84,17 @@ ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
 INNER JOIN crawlt_pages
 ON crawlt_visits.crawlt_pages_id_page=crawlt_pages.id_page 
 WHERE $datetolookfor    
-AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'
+AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
 $crawlertolookfor
 GROUP BY crawlt_pages_id_page
 ORDER BY maxvisites DESC
 LIMIT 0, 200
 ";
 $requetestats = db_query($sqlstats, $connexion);
-$nbrresult = mysql_num_rows($requetestats);
+$nbrresult = $requetestats->num_rows;
 if ($nbrresult >= 1) {
 	$onlyarchive = 0;
-	while ($ligne = mysql_fetch_row($requetestats)) {
+	while ($ligne = $requetestats->fetch_row()) {
 		$nbvisits[$ligne[0]] = $ligne[1];
 		$lastdatedisplay[$ligne[0]] = $ligne[2];
 		$firstdatedisplay[$ligne[0]] = $ligne[3];
@@ -100,13 +106,13 @@ if ($nbrresult >= 1) {
     INNER JOIN crawlt_crawler 
     ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler 
     WHERE  $datetolookfor          
-    AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'
+    AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
     $crawlertolookfor
     GROUP BY robot";
 	$requetestats2 = db_query($sqlstats2, $connexion);
 	$nbrtotvisits = 0;
 	$nbrtotpages = 0;
-	while ($ligne = mysql_fetch_row($requetestats2)) {
+	while ($ligne = $requetestats2->fetch_row()) {
 		$nbrtotvisits = $nbrtotvisits + $ligne[5];
 		$nbrtotpages = $nbrtotpages + $ligne[6];
 		$address = $ligne[1];
@@ -121,7 +127,8 @@ if ($nbrresult >= 1) {
 		}
 	}
 	//mysql connexion close
-	mysql_close($connexion);
+	mysqli_close($connexion);
+
 	//display--------------------------------------------------------------------------------------------------
 	$crawlerdisplay = htmlentities($crawler);
 	$addressdisplay = htmlentities($address);
@@ -419,16 +426,16 @@ if ($nbrresult >= 1) {
 	echo "<br>\n";
 } else {
 	$sqlstats2 = "SELECT * FROM crawlt_crawler
-	WHERE crawlt_crawler.crawler_name='" . sql_quote($crawler) . "'
+	WHERE crawlt_crawler.crawler_name='" . crawlt_sql_quote($connexion, $crawler) . "'
 	ORDER BY crawler_name ASC";
 	$requetestats2 = db_query($sqlstats2, $connexion);
 	//mysql connexion close
-	mysql_close($connexion);
-	$nbrresult2 = mysql_num_rows($requetestats2);
+	mysqli_close($connexion);
+	$nbrresult2 = $requetestats2->num_rows;
 	if ($nbrresult2 == 0) {
 		exit('<h1>Hacking attempt !!!!</h1>');
 	}
-	while ($ligne = mysql_fetch_object($requetestats2)) {
+	while ($ligne = $requetestats2->fetch_object()) {
 		$address = $ligne->crawler_url;
 		$info = $ligne->crawler_info;
 		$agent = $ligne->crawler_user_agent;

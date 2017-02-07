@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,23 +8,26 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: display-all-pages.php
 //----------------------------------------------------------------------
-//  Last update: 19/11/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array
 $nbrcrawlerpage = array();
 $nbvisits = array();
 $lastdatedisplay = array();
 $listpage = array();
 $crawlencode = urlencode($crawler);
+
 if ($period >= 1000) //previous days
 {
 	$cachename = "permanent-" . $navig . "-" . $site . "-" . $crawlencode."-" . $order."-" . $rowdisplay . "-".$crawltlang . "-".$displayall . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
@@ -37,22 +40,27 @@ if ($period >= 1000) //previous days
 } else {
 	$cachename = $navig . $period . $site . $order.$rowdisplay . $crawlencode . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang;
 }
+
 //start the caching
 cache($cachename);
+
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 //include menu
 include ("include/menumain.php");
 include ("include/menusite.php");
 include ("include/timecache.php");
+
 //date for the mysql query
 if ($period >= 10) {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "' 
-    AND  date <'" . sql_quote($daterequest2) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
+    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "'";
 } else {
-	$datetolookfor = " date >'" . sql_quote($daterequest) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "'";
 }
+
 //query to count the number of crawler per page and to list the page viewed and to count the number of visits per page and to have the date of last visit for each pages
 $sqlstats = "SELECT  crawlt_pages_id_page, COUNT(DISTINCT crawler_name),  COUNT(id_visit) AS nbrvisits,
 MAX(UNIX_TIMESTAMP(date)-($times*3600)), MIN(UNIX_TIMESTAMP(date)-($times*3600))
@@ -60,48 +68,49 @@ FROM crawlt_visits
 INNER JOIN crawlt_crawler
 ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
 WHERE $datetolookfor    
-AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'    
+AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'    
 GROUP BY crawlt_pages_id_page
 ORDER BY nbrvisits DESC
 LIMIT 0, 100
 ";
 $requetestats = db_query($sqlstats, $connexion);
-$nbrresult = mysql_num_rows($requetestats);
+$nbrresult = $requetestats->num_rows;
 if ($nbrresult >= 1) {
 	$onlyarchive = 0;
-	while ($ligne = mysql_fetch_row($requetestats)) {
+	while ($ligne = $requetestats->fetch_row()) {
 		$nbrcrawlerpage[$ligne[0]] = $ligne[1];
 		$nbvisits[$ligne[0]] = $ligne[2];
 		$lastdatedisplay[$ligne[0]] = $ligne[3];
 		$firstdatedisplay[$ligne[0]] = $ligne[4];
 		$listpageid[$ligne[0]] = $ligne[0];
 	}
-	mysql_free_result($requetestats);
+	mysqli_free_result($requetestats);
 	//query to get page url list
 	$crawltlistpageid = implode("','", $listpageid);
 	$sql = "SELECT  id_page, url_page
   FROM crawlt_pages
   WHERE id_page IN ('$crawltlistpageid')";
 	$requete = db_query($sql, $connexion);
-	$nbrresult = mysql_num_rows($requete);
+	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
-		while ($ligne = mysql_fetch_row($requete)) {
+		while ($ligne = $requete->fetch_row()) {
 			$listpage[$ligne[0]] = $ligne[1];
 		}
 	}
-	mysql_free_result($requete);
+	mysqli_free_result($requete);
 	$sqlstats2 = "SELECT COUNT(DISTINCT crawlt_pages_id_page), COUNT(DISTINCT crawler_name), COUNT(id_visit)
   FROM crawlt_visits
   INNER JOIN crawlt_crawler
   ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
   WHERE $datetolookfor         
-  AND crawlt_visits.crawlt_site_id_site='" . sql_quote($site) . "'";
+  AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'";
 	$requetestats2 = db_query($sqlstats2, $connexion);
-	$ligne2 = mysql_fetch_row($requetestats2);
+	$ligne2 = $requetestats2->fetch_row();
 	$nbrtotpages = $ligne2[0];
 	$nbrtotcrawlers = $ligne2[1];
 	$nbrtotvisits = $ligne2[2];
-	mysql_close($connexion);
+	mysqli_close($connexion);
+
 	//display----------------------------------------------------------------------------------------------------
 	echo "<div class=\"content2\"><br><hr>\n";
 	echo "</div>\n";
