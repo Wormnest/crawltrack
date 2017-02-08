@@ -1,7 +1,7 @@
 <?php
 //No-visitor-CrawlTrack
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -9,15 +9,18 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: crawltrack.php
 //----------------------------------------------------------------------
-//  Last update: 12/11/2011
-//----------------------------------------------------------------------
+
+// Don't show any errors, warnings, notices
 error_reporting(0);
+
 @set_time_limit(10);
 $crawltattack=0;
 // Function to remove http(s) at beginning of URLs
@@ -29,15 +32,18 @@ if(!function_exists('strip_protocol')) {
 }
 //connection to database
 require_once("FILE_PATH/include/configconnect.php");
-$crawltconnexion = mysql_connect($crawlthost,$crawltuser,$crawltpassword);
-$selection = mysql_select_db($crawltdb);
+$connexion = mysqli_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb) or die("MySQL connection to database problem");
+if (mysqli_connect_errno()) {
+	die(mysqli_connect_error());
+}
+
 //query to get the good site list
 $sql = "SELECT host_site FROM crawlt_good_sites";
-$requete = mysql_query($sql, $crawltconnexion);
-$nbrresult=mysql_num_rows($requete);
+$requete = $connexion->query($sql);
+$nbrresult = $requete->num_rows;
 if($nbrresult>=1)
 {
-	while ($ligne = mysql_fetch_row($requete))
+	while ($ligne = $requete->fetch_row())
 	{
 		$crawltlistgoodsite[]=$ligne[0];
 	}
@@ -50,11 +56,11 @@ else
 require_once("FILE_PATH/include/searchenginelist.php");
  //query to get the session id list
 $sql = "SELECT sessionid FROM crawlt_sessionid";
-$requete = mysql_query($sql, $crawltconnexion);
-$nbrresult=mysql_num_rows($requete);
+$requete = $connexion->query($sql);
+$nbrresult = $requete->num_rows;
 if($nbrresult>=1)
 {
-	while ($ligne = mysql_fetch_row($requete))
+	while ($ligne = $requete->fetch_row())
 	{
 		$crawltlistsessionid[]=$ligne[0];
 	}
@@ -66,16 +72,16 @@ else
 //mysql escape function
 if(!function_exists( "crawlt_sql_quote" ))
 {
-	function crawlt_sql_quote( $value )
+	function crawlt_sql_quote( $connexion,$value )
 	{
 	if( get_magic_quotes_gpc() )
 		{
 		$value = stripslashes( $value );
 		}
 	//check if this function exists
-	if( function_exists( "mysql_real_escape_string" ) )
+	if( function_exists( "mysqli_real_escape_string" ) )
 		{
-		$value = mysql_real_escape_string( $value );
+		$value = $connexion->real_escape_string( $value );
 		}
 	//for PHP version < 4.3.0 use addslashes
 	else
@@ -220,15 +226,20 @@ if($crawltispostdata==1)
 }
 else
 {
-	$crawlthttpcode = $_SERVER['REDIRECT_STATUS'];
+	if (isset($_SERVER['REDIRECT_STATUS'])) {
+		$crawlthttpcode = $_SERVER['REDIRECT_STATUS'];
+	}
+	else {
+		$crawlthttpcode = 0;
+	}
 }
 //get config parameters
 $sqlcrawltconfig = "SELECT mail, datelastmail, timeshift, lang, addressmail, datelastseorequest, loop1, loop2, typemail, typecharset, blockattack, datelastcleaning, sessionid,includeparameter FROM crawlt_config";
-$requetecrawltconfig = mysql_query($sqlcrawltconfig, $crawltconnexion);
-$nbrresultcrawlt=mysql_num_rows($requetecrawltconfig);
+$requetecrawltconfig = $connexion->query($sqlcrawltconfig);
+$nbrresultcrawlt = $requetecrawltconfig->num_rows;
 if($nbrresultcrawlt>=1)
 {
-	$lignecrawlt = mysql_fetch_row($requetecrawltconfig);
+	$lignecrawlt = $requetecrawltconfig->fetch_row();
 	$crawltmail=$lignecrawlt[0];
 	$crawltdatemail=$lignecrawlt[1];
 	$crawlttime=$lignecrawlt[2];
@@ -253,26 +264,26 @@ $crawlturl = crawlturltreatment($crawlturl2);
 //count all the hits---------------------------------------------------
 //check if the date exist in the crawlt_hits table for that site
 $crawlttodaylocal = date("Y-m-d",(time() - ($crawlttime * 3600)));
-$crawltresult = mysql_query("SELECT id FROM crawlt_hits
-	WHERE  date='".crawlt_sql_quote($crawlttodaylocal)."'
-	AND idsite='".crawlt_sql_quote($crawltsite)."'",$crawltconnexion);
-$crawltnum_rows = mysql_num_rows($crawltresult);
+$crawltresult = $connexion-> query("SELECT id FROM crawlt_hits
+	WHERE  date='".crawlt_sql_quote($connexion, $crawlttodaylocal)."'
+	AND idsite='".crawlt_sql_quote($connexion, $crawltsite)."'");
+$crawltnum_rows = $crawltresult->num_rows;
 if($crawltnum_rows>0)
 {
 	//the date already exist in the table
-	while ($crawltligne = mysql_fetch_row($crawltresult))
+	while ($crawltligne = $crawltresult->fetch_row())
 	{
 		$crawltid=$crawltligne[0];
 	}
 	//add 1 in the date count
-	$crawltsqlupdate="UPDATE crawlt_hits SET count=count+1 WHERE id='".crawlt_sql_quote($crawltid)."'";
-	$crawltrequeteupdate = mysql_query($crawltsqlupdate, $crawltconnexion);
+	$crawltsqlupdate="UPDATE crawlt_hits SET count=count+1 WHERE id='".crawlt_sql_quote($connexion, $crawltid)."'";
+	$crawltrequeteupdate = $connexion->query($crawltsqlupdate);
 }
 else
 {
 	//the link didn't exist in the table, create it
-	$crawltsql="INSERT INTO crawlt_hits ( count,date, idsite) VALUES ('1','".crawlt_sql_quote($crawlttodaylocal)."','".crawlt_sql_quote($crawltsite)."')";
-	$crawltrequete = mysql_query($crawltsql, $crawltconnexion);
+	$crawltsql="INSERT INTO crawlt_hits ( count,date, idsite) VALUES ('1','".crawlt_sql_quote($connexion, $crawlttodaylocal)."','".crawlt_sql_quote($connexion, $crawltsite)."')";
+	$crawltrequete = $connexion->query($crawltsql);
 }
 //---------------------------------------------------------------------
 //check if it's an attack
@@ -327,48 +338,48 @@ if($crawlttypeattack != 0 && $crawltattack==1)
 	{
 		//we just count the number of 404 attack to avoid server overload and to big increase of database size
 		//check if the date exist in the crawlt_error table for that site
-		$crawltresult = mysql_query("SELECT id FROM crawlt_error
-		WHERE  date='".crawlt_sql_quote($crawlttodaylocal)."'
-		AND idsite='".crawlt_sql_quote($crawltsite)."'
-		AND attacktype='".crawlt_sql_quote($crawlttypeattack)."'",$crawltconnexion);
-		$crawltnum_rows = mysql_num_rows($crawltresult);
+		$crawltresult = $connexion->query("SELECT id FROM crawlt_error
+		WHERE  date='".crawlt_sql_quote($connexion, $crawlttodaylocal)."'
+		AND idsite='".crawlt_sql_quote($connexion, $crawltsite)."'
+		AND attacktype='".crawlt_sql_quote($connexion, $crawlttypeattack)."'");
+		$crawltnum_rows = $crawltresult->num_rows;
 		if($crawltnum_rows>0)
 		{
 			//the date already exist in the table
-			while ($crawltligne = mysql_fetch_row($crawltresult))
+			while ($crawltligne = $crawltresult->fetch_row())
 			{
 				$crawltid=$crawltligne[0];
 			}
 			//add 1 in the date count
 			$crawltsqlupdate="UPDATE crawlt_error SET count=count+1
-			WHERE id='".crawlt_sql_quote($crawltid)."'";
-			$crawltrequeteupdate = mysql_query($crawltsqlupdate, $crawltconnexion);
+			WHERE id='".crawlt_sql_quote($connexion, $crawltid)."'";
+			$crawltrequeteupdate = $connexion->query($crawltsqlupdate);
 		}
 		else
 		{
 			//the link didn't exist in the table, create it
-			$crawltsql="INSERT INTO crawlt_error ( count,date, idsite, attacktype) VALUES ('1','".crawlt_sql_quote($crawlttodaylocal)."','".crawlt_sql_quote($crawltsite)."','".crawlt_sql_quote($crawlttypeattack)."')";
-			$crawltrequete = mysql_query($crawltsql, $crawltconnexion);
+			$crawltsql="INSERT INTO crawlt_error ( count,date, idsite, attacktype) VALUES ('1','".crawlt_sql_quote($connexion, $crawlttodaylocal)."','".crawlt_sql_quote($connexion, $crawltsite)."','".crawlt_sql_quote($connexion, $crawlttypeattack)."')";
+			$crawltrequete = $connexion->query($crawltsql);
 		}
 	}
 	else
 	{
 		//check if the page already exist, if not add it to the table
-		$result2 = mysql_query("SELECT id_page FROM crawlt_pages_attack WHERE url_page='".crawlt_sql_quote($crawlturl)."'",$crawltconnexion);
-		$num_rows2 = mysql_num_rows($result2);
+		$result2 = $connexion->query("SELECT id_page FROM crawlt_pages_attack WHERE url_page='".crawlt_sql_quote($connexion, $crawlturl)."'");
+		$num_rows2 = $result2->num_rows;
 		if ($num_rows2>0)
 		{
-			$crawltdata2 = mysql_fetch_row($result2);
+			$crawltdata2 = $result2->fetch_row();
 			$crawltpage= $crawltdata2[0];
 		}
 		else
 		{
-			mysql_query("INSERT INTO crawlt_pages_attack (url_page) VALUES ('".crawlt_sql_quote($crawlturl)."')",$crawltconnexion);
-			$crawltid_insert = mysql_fetch_row(mysql_query("SELECT LAST_INSERT_ID()",$crawltconnexion));
+			$connexion->query("INSERT INTO crawlt_pages_attack (url_page) VALUES ('".crawlt_sql_quote($connexion, $crawlturl)."')");
+			$crawltid_insert = mysqli_fetch_row($connexion->query("SELECT LAST_INSERT_ID()"));
 			$crawltpage = $crawltid_insert[0];
 		}
 		//insertion of the visit datas in the visits database
-		mysql_query("INSERT INTO crawlt_visits (crawlt_site_id_site, crawlt_pages_id_page, crawlt_crawler_id_crawler, date, crawlt_ip_used, crawlt_error) VALUES ('".crawlt_sql_quote($crawltsite)."', '".crawlt_sql_quote($crawltpage)."', '".crawlt_sql_quote($crawlttypeattack)."', '".crawlt_sql_quote($crawltdate)."', '".crawlt_sql_quote($crawltip)."','0')",$crawltconnexion);
+		$connexion->query("INSERT INTO crawlt_visits (crawlt_site_id_site, crawlt_pages_id_page, crawlt_crawler_id_crawler, date, crawlt_ip_used, crawlt_error) VALUES ('".crawlt_sql_quote($connexion, $crawltsite)."', '".crawlt_sql_quote($connexion, $crawltpage)."', '".crawlt_sql_quote($connexion, $crawlttypeattack)."', '".crawlt_sql_quote($connexion, $crawltdate)."', '".crawlt_sql_quote($connexion, $crawltip)."','0')");
 	}
 }
 else
@@ -383,27 +394,27 @@ else
 	}
 	$crawltlistip=implode("','",$crawlttableip);
 	// check if the user agent or the ip exist in the crawler table
-	$result = mysql_query("SELECT crawler_user_agent, crawler_ip,id_crawler FROM crawlt_crawler
-	 WHERE INSTR('".crawlt_sql_quote($crawltagent)."',crawler_user_agent) > 0
-	OR crawler_ip IN ('$crawltlistip') ",$crawltconnexion);
-	$num_rows = mysql_num_rows($result);
+	$result = $connexion->query("SELECT crawler_user_agent, crawler_ip,id_crawler FROM crawlt_crawler
+	 WHERE INSTR('".crawlt_sql_quote($connexion, $crawltagent)."',crawler_user_agent) > 0
+	OR crawler_ip IN ('$crawltlistip') ");
+	$num_rows = $result->num_rows;
 	if ($num_rows>0)
 	{
-		$crawltdata = mysql_fetch_row($result);
+		$crawltdata = $result->fetch_row();
 		$crawltcrawler = $crawltdata[2];
 		$crawltdate  = date("Y-m-d H:i:s");
 		//check if the page already exist, if not add it to the table
-		$result2 = mysql_query("SELECT id_page FROM crawlt_pages WHERE url_page='".crawlt_sql_quote($crawlturl)."'",$crawltconnexion);
-		$num_rows2 = mysql_num_rows($result2);
+		$result2 = $connexion->query("SELECT id_page FROM crawlt_pages WHERE url_page='".crawlt_sql_quote($connexion, $crawlturl)."'");
+		$num_rows2 = $result2->num_rows;
 		if ($num_rows2>0)
 		{
-			$crawltdata2 = mysql_fetch_row($result2);
+			$crawltdata2 = $result2->fetch_row();
 			$crawltpage= $crawltdata2[0];
 		}
 		else
 		{
-			mysql_query("INSERT INTO crawlt_pages (url_page) VALUES ('".crawlt_sql_quote($crawlturl)."')",$crawltconnexion);
-			$crawltid_insert = mysql_fetch_row(mysql_query("SELECT LAST_INSERT_ID()",$crawltconnexion));
+			$connexion->query("INSERT INTO crawlt_pages (url_page) VALUES ('".crawlt_sql_quote($connexion, $crawlturl)."')");
+			$crawltid_insert = mysqli_fetch_row($connexion->query("SELECT LAST_INSERT_ID()"));
 			$crawltpage = $crawltid_insert[0];
 		}
 		if($crawlthttpcode==404)
@@ -415,7 +426,7 @@ else
 			$crawlterror=0;
 		}
 		//insertion of the visit datas in the visits database
-		mysql_query("INSERT INTO crawlt_visits (crawlt_site_id_site, crawlt_pages_id_page, crawlt_crawler_id_crawler, date, crawlt_ip_used, crawlt_error) VALUES ('".crawlt_sql_quote($crawltsite)."', '".crawlt_sql_quote($crawltpage)."', '".crawlt_sql_quote($crawltcrawler)."', '".crawlt_sql_quote($crawltdate)."', '".crawlt_sql_quote($crawltip)."', '".crawlt_sql_quote($crawlterror)."')",$crawltconnexion);
+		$connexion->query("INSERT INTO crawlt_visits (crawlt_site_id_site, crawlt_pages_id_page, crawlt_crawler_id_crawler, date, crawlt_ip_used, crawlt_error) VALUES ('".crawlt_sql_quote($connexion, $crawltsite)."', '".crawlt_sql_quote($connexion, $crawltpage)."', '".crawlt_sql_quote($connexion, $crawltcrawler)."', '".crawlt_sql_quote($connexion, $crawltdate)."', '".crawlt_sql_quote($connexion, $crawltip)."', '".crawlt_sql_quote($connexion, $crawlterror)."')");
 	}
 }
 //Email daily stats
@@ -434,7 +445,7 @@ if(($crawltdatetoday != $crawltdatemail) && $crawltmail==1 && ($crawltdatetoday 
 	$crawltpath="FILE_PATH";
 	require_once("FILE_PATH/include/mail.php");
 }
-mysql_close($crawltconnexion);
+mysqli_close($connexion);
 if($crawltattack==1 && $crawltblockattack==1 && $crawltpostrequest==1)
 {
 	echo "crawltrack1";
@@ -451,7 +462,7 @@ elseif($crawltattack==1 && $crawltblockattack==1)
 	$_SERVER = array();
 	$_SESSION = array();
 	@session_destroy();
-	@mysql_close();
+	@mysqli_close();
 	@header("Location: URL_CRAWLTRACKhtml/noacces.php");
 	echo "<head>";
 	echo "<META HTTP-EQUIV='Refresh' CONTENT='0;URL=URL_CRAWLTRACKhtml/noacces.php'>";
