@@ -258,8 +258,8 @@ if ($period == 3) //case one year
 		$googlelink[$ligne[0]] = $ligne[7];
 		$googlepage[$ligne[0]] = $ligne[8];
 	}
+	mysqli_free_result($requeteseograph);
 }
-mysqli_free_result($requeteseograph);
 
 //create table for graph
 if ($typegraph == 'link') {
