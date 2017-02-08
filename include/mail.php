@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.3
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,21 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: mail.php
 //----------------------------------------------------------------------
-//  Last update 02/01/2012
-//----------------------------------------------------------------------
+
+if (!isset($connexion)) {
+	exit('<h1>Invalid connection</h1>');
+}
 //update the crawlt_config table
-$sqlcrawltupdatemail = "UPDATE crawlt_config SET datelastmail='" . crawlt_sql_quote($crawltdatetoday) . "'";
-$requetecrawltupdatemail = mysql_query($sqlcrawltupdatemail, $crawltconnexion);
+$sqlcrawltupdatemail = "UPDATE crawlt_config SET datelastmail='" . crawlt_sql_quote($connexion, $crawltdatetoday) . "'";
+$requetecrawltupdatemail = $connexion->query($sqlcrawltupdatemail);
 
 //function to format the numbers for display
 if (function_exists("crawltnumbdispmail") == false) {
@@ -35,10 +39,10 @@ if (function_exists("crawltnumbdispmail") == false) {
 
 //function to count the number of mysql query
 if (function_exists("db_query") == false) {
-	function db_query($sql) {
+	function db_query($sql, $connexion) {
 		global $numbquery;
 		$numbquery++;
-		return mysql_query($sql);
+		return $connexion->query($sql);
 	}
 }
 
@@ -58,7 +62,7 @@ if (function_exists("nbdayfromtoday") == false) {
 	}
 }
 
-//function to know if the string is encodes in utf8
+//function to know if the string is encoded in utf8
 if (function_exists("isutf8mail") == false) {
 	function isutf8mail($string) {
 		return (utf8_encode(utf8_decode($string)) == $string);
@@ -121,17 +125,17 @@ $daterequest = date("Y-m-d", ($crawltts - 86400));
 $daterequest2 = date("Y-m-d", $crawltts);
 $datebeginlocal = $daterequest;
 $datebeginlocalcut[0] = $daterequest;
-$datetolookfor = " `date` >='" . crawlt_sql_quote($daterequest) . "' 
-	AND  `date` <'" . crawlt_sql_quote($daterequest2) . "'";
+$datetolookfor = " `date` >='" . crawlt_sql_quote($connexion, $daterequest) . "' 
+	AND  `date` <'" . crawlt_sql_quote($connexion, $daterequest2) . "'";
 //mysql query for site id
 $sqlcrawltsite = "SELECT * FROM crawlt_site";
-$requetecrawltsite = mysql_query($sqlcrawltsite, $crawltconnexion);
-$nbrresultcrawlt2 = mysql_num_rows($requetecrawltsite);
+$requetecrawltsite = $connexion->query($sqlcrawltsite);
+$nbrresultcrawlt2 = $requetecrawltsite->num_rows;
 if ($nbrresultcrawlt2 >= 1) {
 	$listsitecrawlt = array();
 	$crawltsitename = array();
 	$crawltsiteurl = array();
-	while ($lignecrawlt2 = mysql_fetch_object($requetecrawltsite)) {
+	while ($lignecrawlt2 = $requetecrawltsite->fetch_object()) {
 		$namecrawlt = $lignecrawlt2->name;
 		$siteidcrawlt = $lignecrawlt2->id_site;
 		$listsitecrawlt[] = $siteidcrawlt;
@@ -185,7 +189,7 @@ foreach ($listsitecrawlt as $site) {
 	include ($crawltpath . "/include/cleaning-crawler-entry.php");
 	
 	//include visitors calculation file
-	$connexion = $crawltconnexion;
+	$connexion = $connexion;
 	include ($crawltpath . "/include/visitors-calculation.php");
 	if ($totalvisitor > 0) {
 		if ($visitsendgoogle > 0) {
@@ -230,11 +234,11 @@ foreach ($listsitecrawlt as $site) {
 		INNER JOIN crawlt_crawler
 		ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
 		WHERE  $datetolookfor
-		AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
+		AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
 		AND crawler_name IN ('GoogleBot','MSN Bot','Slurp Inktomi (Yahoo)','YandexBot','Exabot','Baiduspider','Bingbot','Google-Adsense','Google-Image')      
 		GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($times*3600), '%d-%m-%Y'), crawler_name";
-	$requete = mysql_query($sql, $crawltconnexion);
-	while ($ligne = mysql_fetch_row($requete)) {
+	$requete = $connexion->query($sql);
+	while ($ligne = $requete->fetch_row()) {
 		if ($ligne[1] == 'GoogleBot') {
 			$googlebotvisit[$ligne[0]] = $ligne[2];
 		} elseif ($ligne[1] == 'MSN Bot' || $ligne[1] == 'Bingbot') {
@@ -265,23 +269,24 @@ foreach ($listsitecrawlt as $site) {
 		INNER JOIN crawlt_crawler
 		ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
 		AND $datetolookfor         
-		AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($site) . "'";
-	$requetestats2 = mysql_query($sqlstats2, $crawltconnexion);
-	$ligne2 = mysql_fetch_row($requetestats2);
+		AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'";
+	$requetestats2 = $connexion->query($sqlstats2);
+	$ligne2 = $requetestats2->fetch_row();
 	$nbrtotpages = $ligne2[0];
 	$nbrtotcrawlers = $ligne2[1];
 	$nbrtotvisits = $ligne2[2];
+
 	//Indexation calculation----------------------------------------------------------------------------------------
 	//query to get the msn and yahoo positions data and the number of Delicious bookmarks and  Delicious keywords
 	$sqlseo = "SELECT  linkyahoo, pageyahoo,  pagemsn, nbrdelicious, linkexalead, pageexalead, linkgoogle, pagegoogle
 		FROM crawlt_seo_position
-		WHERE  id_site='" . crawlt_sql_quote($site) . "' 
-		AND  date ='" . crawlt_sql_quote($daterequest) . "'";
-	$requeteseo = mysql_query($sqlseo, $crawltconnexion);
-	$nbrresult = mysql_num_rows($requeteseo);
+		WHERE  id_site='" . crawlt_sql_quote($connexion, $site) . "' 
+		AND  date ='" . crawlt_sql_quote($connexion, $daterequest) . "'";
+	$requeteseo = $connexion->query($sqlseo);
+	$nbrresult = $requeteseo->num_rows;
 	
 	if ($nbrresult >= 1) {
-		while ($ligneseo = mysql_fetch_row($requeteseo)) {
+		while ($ligneseo = $requeteseo->fetch_row()) {
 			$tablinkgoogle[] = $ligneseo[6];
 			$tabpagegoogle[] = $ligneseo[7];
 		}
@@ -298,10 +303,10 @@ foreach ($listsitecrawlt as $site) {
 		FROM crawlt_visits
 		WHERE crawlt_crawler_id_crawler IN ('65500','65501')
 		AND $datetolookfor       
-		AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
+		AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
 		GROUP BY crawlt_crawler_id_crawler";
-	$requete = mysql_query($sql, $crawltconnexion);
-	while ($ligne = mysql_fetch_row($requete)) {
+	$requete = $connexion->query($sql);
+	while ($ligne = $requete->fetch_row()) {
 		if ($ligne[0] == 65500) {
 			$nbrcss = $ligne[1];
 		}
@@ -314,13 +319,13 @@ foreach ($listsitecrawlt as $site) {
 	//query to have the number for the period
 	$sql = "SELECT link, count 
 		FROM crawlt_download
-		WHERE  idsite='" . crawlt_sql_quote($site) . "'
-		AND  `date` ='" . crawlt_sql_quote($daterequest) . "'";
-	$requete = mysql_query($sql, $crawltconnexion);
-	$num_rows = mysql_num_rows($requete);
+		WHERE  idsite='" . crawlt_sql_quote($connexion, $site) . "'
+		AND  `date` ='" . crawlt_sql_quote($connexion, $daterequest) . "'";
+	$requete = $connexion->query($sql);
+	$num_rows = $requete->num_rows;
 	
 	if ($num_rows > 0) {
-		while ($ligne = mysql_fetch_row($requete)) {
+		while ($ligne = $requete->fetch_row()) {
 			$explodelink = explode('/', $ligne[0]);
 			$countexplode = count($explodelink) - 1;
 			$linkname[$ligne[0]] = $explodelink[$countexplode];
@@ -328,17 +333,18 @@ foreach ($listsitecrawlt as $site) {
 		}
 	}
 	arsort($count);
+
 	//error 404 calculation------------------------------------------------------------------------------------------------
 	//attack
 	$sql = "SELECT attacktype, count 
 		FROM crawlt_error
-		WHERE  idsite='" . crawlt_sql_quote($site) . "'
-		AND  `date` ='" . crawlt_sql_quote($daterequest) . "'
+		WHERE  idsite='" . crawlt_sql_quote($connexion, $site) . "'
+		AND  `date` ='" . crawlt_sql_quote($connexion, $daterequest) . "'
 		GROUP BY attacktype";
-	$requete = mysql_query($sql, $crawltconnexion);
-	$num_rows = mysql_num_rows($requete);
+	$requete = $connexion->query($sql);
+	$num_rows = $requete->num_rows;
 	if ($num_rows > 0) {
-		while ($ligne = mysql_fetch_row($requete)) {
+		while ($ligne = $requete->fetch_row()) {
 			$nbrerrorattack = $nbrerrorattack + $ligne[1];
 			if ($ligne[0] == '65500') {
 				$nbrcss = $nbrcss + $ligne[1];
@@ -352,12 +358,12 @@ foreach ($listsitecrawlt as $site) {
 	$sql = "SELECT  COUNT(id_visit) 
 		FROM crawlt_visits
 		WHERE  $datetolookfor       
-		AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
+		AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
 		AND crawlt_error='1'";
-	$requete = mysql_query($sql, $crawltconnexion);
-	$num_rows = mysql_num_rows($requete);
+	$requete = $connexion->query($sql);
+	$num_rows = $requete->num_rows;
 	if ($num_rows > 0) {
-		$ligne = mysql_fetch_row($requete);
+		$ligne = $requete->fetch_row();
 		$nbrerrorcrawler = $ligne[0];
 	}
 	
@@ -367,25 +373,25 @@ foreach ($listsitecrawlt as $site) {
 		INNER JOIN crawlt_referer
 		ON  crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
 		AND $datetolookfor       
-		AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
-		AND Substring(referer From 1 For " . $lengthurl . ") != '" . crawlt_sql_quote($hostsite) . "'
+		AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+		AND Substring(referer From 1 For " . $lengthurl . ") != '" . crawlt_sql_quote($connexion, $hostsite) . "'
 		AND crawlt_id_referer !='0'
 		AND crawlt_error='1'";
-	$requete = mysql_query($sql, $crawltconnexion);
-	$num_rows = mysql_num_rows($requete);
+	$requete = $connexion->query($sql);
+	$num_rows = $requete->num_rows;
 	if ($num_rows > 0) {
-		$ligne = mysql_fetch_row($requete);
+		$ligne = $requete->fetch_row();
 		$nbrerrorextern = $ligne[0];
 	}
 	
 	//query to get error from visitor direct
 	$sql = "SELECT crawlt_id_page FROM crawlt_visits_human
 		WHERE $datetolookfor       
-		AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
+		AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
 		AND crawlt_error='1'
 		AND crawlt_id_referer=''";
-	$requete = mysql_query($sql, $crawltconnexion);
-	$nbrerrordirect = mysql_num_rows($requete);
+	$requete = $connexion->query($sql);
+	$nbrerrordirect = $requete->num_rows;
 	
 	//query to get error from visitors internal link
 	$sql = "SELECT COUNT(id_visit) 
@@ -393,13 +399,14 @@ foreach ($listsitecrawlt as $site) {
 		INNER JOIN crawlt_referer
 		ON  crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
 		AND $datetolookfor       
-		AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($site) . "'
-		AND Substring(referer From 1 For " . $lengthurl . ") = '" . crawlt_sql_quote($hostsite) . "'
+		AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+		AND Substring(referer From 1 For " . $lengthurl . ") = '" . crawlt_sql_quote($connexion, $hostsite) . "'
 		AND crawlt_error='1'";
-	$requete = mysql_query($sql, $crawltconnexion);
-	$ligne = mysql_fetch_row($requete);
+	$requete = $connexion->query($sql);
+	$ligne = $requete->fetch_row();
 	
 	$nbrerrorintern = $ligne[0];
+
 	//email--------------------------------------------------------------------------------------------
 	if ($crawltmailishtml == 1) {
 		//case html email
@@ -596,7 +603,7 @@ foreach ($listsitecrawlt as $site) {
 	} else {
 		$mail->IsHTML(false);
 	}
-	$mail->FromName = "CrawlTrack 3-3-2";
+	$mail->FromName = "CrawlTrack";
 	$mail->Subject = $language['mailsubject'] . "--" . $crawltsitename[$site];
 	$mail->Body = $crawltmessage;
 	$crawltemail = explode(',', $crawltdest);
@@ -628,18 +635,18 @@ $crawltracklitekeepday = 0;
 //=================================================================================================================================
 $daterequest2 = date("Y-m-d H:i:s", (strtotime($daterequest) - ($crawltracklitekeepday * 86400)));
 if ($crawltracklite == 1) {
-	$sqldelete = "DELETE FROM crawlt_visits WHERE `date` < '" . crawlt_sql_quote($daterequest2) . "'";
-	$requete = mysql_query($sqldelete, $crawltconnexion);
-	$sqldelete = "DELETE FROM crawlt_visits_human WHERE `date` < '" . crawlt_sql_quote($daterequest2) . "'";
-	$requete = mysql_query($sqldelete, $crawltconnexion);
+	$sqldelete = "DELETE FROM crawlt_visits WHERE `date` < '" . crawlt_sql_quote($connexion, $daterequest2) . "'";
+	$requete = $connexion->query($sqldelete);
+	$sqldelete = "DELETE FROM crawlt_visits_human WHERE `date` < '" . crawlt_sql_quote($connexion, $daterequest2) . "'";
+	$requete = $connexion->query($sqldelete);
 	
 	//database query to optimize the table
 	$sqloptimize2 = "OPTIMIZE TABLE crawlt_visits";
-	$requeteoptimize2 = mysql_query($sqloptimize2, $crawltconnexion);
+	$requeteoptimize2 = $connexion->query($sqloptimize2);
 	
 	//database query to optimize the table
 	$sqloptimize2 = "OPTIMIZE TABLE crawlt_visits_human";
-	$requeteoptimize2 = mysql_query($sqloptimize2, $crawltconnexion);
+	$requeteoptimize2 = $connexion->query($sqloptimize2);
 	
 	//database query to list the pages no more used in crawlt_visits and crawlt_visits_human  table
 	$sql = "SELECT id_page 
@@ -650,30 +657,30 @@ if ($crawltracklite == 1) {
 		ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page       
 		WHERE crawlt_visits.crawlt_pages_id_page IS NULL
 		AND crawlt_visits_human.crawlt_id_page IS NULL";
-	$requete = mysql_query($sql, $crawltconnexion);
-	$nbrresult = mysql_num_rows($requete);
+	$requete = $connexion->query($sql);
+	$nbrresult = $requete->num_rows;
 	
 	if ($nbrresult >= 1) {
-		while ($ligne = mysql_fetch_row($requete)) {
+		while ($ligne = $requete->fetch_row()) {
 			$crawlttablepage[] = $ligne[0];
 		}
 		$crawltlistpage = implode("','", $crawlttablepage);
 		
 		//database query to suppress the data in page table
 		$sqldelete2 = "DELETE FROM crawlt_pages WHERE id_page IN ('$crawltlistpage')";
-		$requetedelete2 = mysql_query($sqldelete2, $crawltconnexion);
+		$requetedelete2 = $connexion->query($sqldelete2);
 		
 		//database query to optimize the table
 		$sqloptimize2 = "OPTIMIZE TABLE crawlt_pages";
-		$requeteoptimize2 = mysql_query($sqloptimize2, $crawltconnexion);
+		$requeteoptimize2 = $connexion->query($sqloptimize2);
 		
 		//database query to suppress the data in page attack table
 		$sqldelete2 = "DELETE FROM crawlt_pages_attack WHERE id_page IN ('$crawltlistpage')";
-		$requetedelete2 = mysql_query($sqldelete2, $crawltconnexion);
+		$requetedelete2 = $connexion->query($sqldelete2);
 		
 		//database query to optimize the table
 		$sqloptimize2 = "OPTIMIZE TABLE crawlt_pages_attack";
-		$requeteoptimize2 = mysql_query($sqloptimize2, $crawltconnexion);
+		$requeteoptimize2 = $connexion->query($sqloptimize2);
 	}
 	//database query to list the referer no more used in crawlt_visits_human  table
 	$sql = "SELECT id_referer 
@@ -681,21 +688,21 @@ if ($crawltracklite == 1) {
 		LEFT OUTER JOIN crawlt_visits_human
 		ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer       
 		WHERE crawlt_visits_human.crawlt_id_referer IS NULL LIMIT 100000";
-	$requete = mysql_query($sql, $crawltconnexion);
-	$nbrresult = mysql_num_rows($requete);
+	$requete = $connexion->query($sql);
+	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
-		while ($ligne = mysql_fetch_row($requete)) {
+		while ($ligne = $requete->fetch_row()) {
 			$crawlttablereferer[] = $ligne[0];
 		}
 		$crawltlistreferer = implode("','", $crawlttablereferer);
 		
 		//database query to suppress the data in referer table
 		$sqldelete2 = "DELETE FROM crawlt_referer WHERE id_referer IN ('$crawltlistreferer')";
-		$requetedelete2 = mysql_query($sqldelete2, $crawltconnexion);
+		$requetedelete2 = $connexion->query($sqldelete2);
 		
 		//database query to optimize the table
 		$sqloptimize2 = "OPTIMIZE TABLE crawlt_referer";
-		$requeteoptimize2 = mysql_query($sqloptimize2, $crawltconnexion);
+		$requeteoptimize2 = $connexion->query($sqloptimize2);
 	}
 	//database query to list the keyword no more used in crawlt_visits_human  table
 	$sql = "SELECT id_keyword 
@@ -703,21 +710,21 @@ if ($crawltracklite == 1) {
 		LEFT OUTER JOIN crawlt_visits_human
 		ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword       
 		WHERE crawlt_visits_human.crawlt_keyword_id_keyword IS NULL LIMIT 100000";
-	$requete = mysql_query($sql, $crawltconnexion);
-	$nbrresult = mysql_num_rows($requete);
+	$requete = $connexion->query($sql);
+	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
-		while ($ligne = mysql_fetch_row($requete)) {
+		while ($ligne = $requete->fetch_row()) {
 			$crawlttablekeyword[] = $ligne[0];
 		}
 		$crawltlistkeyword = implode("','", $crawlttablekeyword);
 		
 		//database query to suppress the data in referer table
 		$sqldelete2 = "DELETE FROM crawlt_keyword WHERE id_keyword IN ('$crawltlistkeyword')";
-		$requetedelete2 = mysql_query($sqldelete2, $crawltconnexion);
+		$requetedelete2 = $connexion->query($sqldelete2);
 		
 		//database query to optimize the table
 		$sqloptimize2 = "OPTIMIZE TABLE crawlt_keyword";
-		$requeteoptimize2 = mysql_query($sqloptimize2, $crawltconnexion);
+		$requeteoptimize2 = $connexion->query($sqloptimize2);
 	}
 }
 ?>
