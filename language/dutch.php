@@ -1,32 +1,32 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
 // Author: Jean-Denis Brun
 //----------------------------------------------------------------------
-// Translation: Leo Vonk
+// Translation: Leo Vonk, Jacob Boerema
 //----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: dutch.php
 //----------------------------------------------------------------------
-//  Last update: 17/11/2011
+//  Last update: 2017-02-08
 //----------------------------------------------------------------------
 $language= array();
 //installation
 $language['install']="Installatie";
-$language['welcome_install'] ="Welkom bij CrawlTrack, installatie in drie eenvoudige stappen .";
+$language['welcome_install'] ="Welkom bij CrawlTrack, installatie in drie eenvoudige stappen.";
 $language['menu_install_1']="1) Voer de database toegangsgegevens in dit formulier in.";
 $language['menu_install_2']="2) Set-up websites.";
 $language['menu_install_3']="3) Beheerders account set-up.";
 $language['go_install']="Installeren";
 $language['step1_install'] ="Voer de volgende gegevens in voor toegang tot de database, als de invoer wordt goedgekeurd wordt de database automatisch aangemaakt.";
-$language['step1_install_login_mysql']="Gebruikersnaam  MySQL";
-$language['step1_install_password_mysql']="Password MySQL";
+$language['step1_install_login_mysql']="Gebruikersnaam MySQL";
+$language['step1_install_password_mysql']="Wachtwoord MySQL";
 $language['step1_install_host_mysql']="Host MySQL";
 $language['step1_install_database_mysql']="Database MySQL";
 $language['step1_install_ok'] ="Toegangsgevens OK.";
@@ -50,13 +50,13 @@ $language['new_site']="Nieuwe website toevoegen";
 //tag creation
 $language['tag']="Tag om op uw website in te voegen";
 //modified in 2.3.0
-$language['create_tag']="<p><b>How to use that CrawlTrack tag:</b><br><ul id=\"listtag\">
+$language['create_tag']="<p><b>How to use the CrawlTrack tag:</b><br><ul id=\"listtag\">
 <li>the CrawlTrack tag is a php file, you have to insert it in a .php page.</li>
 <li>the CrawlTrack tag have to be between &#60;?php and ?&#62 tags, if there is not such tags on your page, you have to add them before and after the CrawlTrack tag.</li>
 <li>if your site is not using .php pages, see documentation on www.crawltrack.net.</li>
 <li>the best for anti-hacking protection is to have the CrawlTrack tag being the first thing in your page just after &#60;?php.</li>
 <li>if you are using any sort of content management script (discussion board, blog, gallery, CMS etc.), have a look on www.crawltrack.net/doccms.php to find the best solution to place the tag.</li>
-<li>the CrawlTrack tag will give absolutly no output  visible on your pages (even in the source code).</li>
+<li>the CrawlTrack tag will give absolutly no output visible on your pages (even in the source code).</li>
 <li>if to support CrawlTrack you would like to see the logo with a link to www.crawltrack.net, you will find below logo models that you can put at any place on your pages.</li>
 <li>for any other questions, see the documentation on www.crawltrack.net or use the support forum on the same site.</li></ul></p><br>" ;
 $language['site_name2']="Website naam";
@@ -65,16 +65,16 @@ $language['local_tag']="Gebruik deze tag in het geval uw site zich op dezelfde s
 $language['non_local_tag']="Gebruik deze tag indien uw site zich op een andere server bevindt dan Crawltrack, in dit geval is het noodzakelijk de fsockopen en fputs functies te activeren.";
 //login set_up
 $language['admin_creation']="Beheerders account set-up";
-$language['admin_setup']="Voer beheerders login en password in.";
+$language['admin_setup']="Voer beheerders login en wachtwoord in.";
 $language['user_creation']="Gebruikers account set-up";
-$language['user_setup']="Voer beheerders login and password in.";
+$language['user_setup']="Voer beheerders login and wachtwoord in.";
 $language['user_site_creation']="Gebruikers account set-up";
-$language['user_site_setup']="Voer beheerders login and password in.";
+$language['user_site_setup']="Voer beheerders login and wachtwoord in.";
 $language['admin_rights']="De beheerder heeft toegang tot alle statistieken en set-up gegevens.";
 $language['login']="Login";
-$language['password']="Password";
-$language['valid_password']="Herhaal het password.";
-$language['login_no_ok']=" Gegevens niet juist of password niet hetzelfde, controleer de gegevens en probeer opnieuw.";
+$language['password']="Wachtwoord";
+$language['valid_password']="Herhaal het wachtwoord.";
+$language['login_no_ok']=" Gegevens niet juist of wachtwoord niet hetzelfde, controleer de gegevens en probeer opnieuw.";
 $language['login_ok']="Account is aangemaakt.";
 $language['login_no_ok2']="Er is een probleem ontstaan tijdens de setup, probeer opnieuw.";
 $language['login_user']="Aanmaken gebruikers account";
@@ -141,7 +141,7 @@ $language['crawler_url2']="Gebruikers url:";
 $language['crawler_ip']="IP:";
 $language['crawler_no_ok']="Er missen gegevens, controleer het formulier en probeer opnieuw.";
 $language['exist']="Deze crawler is al in de database aanwezig";
-$language['exist_data']="Dit is de betreffende data uit de datebase:";
+$language['exist_data']="Dit zijn de betreffende gegevens uit de datebase:";
 $language['crawler_no_ok2']="Er is een probleem met het creëren van de crawler, probeer opnieuw.";
 $language['crawler_ok']="De crawler is aan de database toegevoegd.";
 $language['user_suppress']="Verwijder een gebruiker website account.";
@@ -152,7 +152,7 @@ $language['yes']="Ja";
 $language['no']="Nee";
 $language['user_suppress_ok']="Het account is verwijderd.";
 $language['user_suppress_no_ok']="Er is een probleem opgetreden tijdens het verwijderen, probeer het opnieuw.";
-$language['site_suppress']="Verwijder een website .";
+$language['site_suppress']="Verwijder een website.";
 $language['site_list']="Websites lijst";
 $language['suppress_site']="Verwijder deze website";
 $language['site_suppress_validation']="bent u er zeker van dat u deze website wilt verwijderen?";
@@ -172,7 +172,7 @@ $language['crawler_test_no_exist']="De test crawler bestaat niet in de database.
 $language['exist_site']="Deze site is al in de database aanwezig";
 $language['exist_login']="Deze login is al in database aanwezig";
 //1.2.0
-$language['update_title']="Crawlers update lijst .";
+$language['update_title']="Crawlers update lijst.";
 $language['update_crawler']="Update de crawlers lijst.";
 $language['list_up_to_date']="Op dit moment zijn er geen updates beschikbaar.";
 $language['update_ok']="Update geslaagd.";
@@ -190,10 +190,10 @@ $language['use_user_agent']="Crawler detectie wordt gedaan op basis van user age
 $language['user_agent_or_ip']="User agent of IP";
 $language['crawler_ip']="IP:";
 $language['table_mod_ok']="Crawlt_crawler tabel bijgwerkt OK.";
-$language['files_mod_ok']="Configconnect.php and crawltrack.php bestanden bijgwerkt OK.";
+$language['files_mod_ok']="Configconnect.php en crawltrack.php bestanden bijgwerkt OK.";
 $language['update_crawltrack_ok']="CrawlTrack bijwerken is klaar, u gebruikt nu versie:";
 $language['table_mod_no_ok']="Crawlt_crawler tabel bijwerken mislukt.";
-$language['files_mod_no_ok']="Er is een probleem ontstaan tijdens het bijwerken van configconnect.php and crawltrack.php.";
+$language['files_mod_no_ok']="Er is een probleem ontstaan tijdens het bijwerken van configconnect.php en crawltrack.php.";
 $language['update_crawltrack_no_ok']="Er is een probleem ontstaan tijdens het bijwerken van CrawlTrack.";
 $language['logo']="Logo keuze.";
 $language['logo_choice']="U kunt een logo kiezen dat verschijnt op de pagina's waarop de tag is geplaatst. Als u geen logo wilt kies dan: \"Geen logo\".";
@@ -247,15 +247,15 @@ $language['email-address']="E-mail adres:";
 $language['address_no_ok']="Fout e-mail adres.";
 $language['set_up_mail2']="De dagelijkse e-mail is geactiveerd. Wilt u dit stoppen?";
 $language['update']="De aanpassing is uitgevoerd.";
-$language['search_ip']="Track een IP address";
+$language['search_ip']="Volg een IP address";
 $language['ip']="IP address";
-$language['maxmind']="Deze track is uitgevoerd met behulp van de GeoLite database gemaakt door Maxmind en beschikbaar op het volgend adres:";
+$language['maxmind']="Dit is uitgevoerd met behulp van de GeoLite database gemaakt door Maxmind en beschikbaar op het volgende adres:";
 $language['ip_no_ok']="Het IP address is fout.";
 $language['public']="Stel vrije toegang tot de statistieken in.";
 $language['public-set-up2']="De toegang tot uw statistieken is vrij, wilt u deze beschermen met een password?";
 $language['public-set-up']="De toegang tot u statistieken is beveiligd met een wachtwoord, wilt u de statistieken vrij toegangkelijk maken?";
-$language['public2']="Alleen de Tool pagina blijft beschermd met het password.";
-$language['admin_protected']="De toegang tot de Tool pagina is beschermd.";
+$language['public2']="Alleen de Tools pagina blijft beschermd met een wachtwoord.";
+$language['admin_protected']="De toegang tot de Tools pagina is beschermd.";
 $language['no_data_to_suppress']="Er is geen informatie in de geselecteerde periode beschikbaar om te archiveren.";
 $language['data_suppress3']="Het archiveren van data reduceert de grote van de database. De gegevens zij echter niet meer te zien in de overzichten. Voor de samenvatting is deze informatie wel beschikbaar (pagina Crawlers sectie Archieven). Archiveer alleen als u database te groot wordt en u deze echt moet verkleinen."; 
 $language['archive']="Archieven";
@@ -265,7 +265,7 @@ $language['top_pages']="Top 3 in aantal bekeken pagina's";
 $language['no-archive']="Er is geen data gearchiveerd.";
 $language['use-archive']="De informatie is gedeeltelijk gearchiveerd en is niet compleet.";
 $language['url_update']="Werk de site informatie bij";
-$language['set_up_url']="Vul de volgende tabel met sites url: voorbeeld  www.example.com (zonder http:// aan het begin en zonder / aan het einde)."; 
+$language['set_up_url']="Vul de volgende tabel met sites url: voorbeeld www.example.com (zonder http:// aan het begin en zonder / aan het einde)."; 
 $language['site_url']="Site url:";
 //1.6.0
 $language['page_cache']="Laatste berekening: ";
@@ -275,8 +275,8 @@ $language['show_all']="Laat alle regels zien";
 $language['from']="van";
 $language['to']="tot";
 $language['firstweekday-title']="Kies de eerste dag van de week";
-$language['firstweekday-set-up2']="Thans is de eerste dag van de week Maandag, wilt u deze wijzigen in Zondag?";
-$language['firstweekday-set-up']="Thans is de eerste dag van de week Zondag, wilt u deze wijzigen in Maandag?";
+$language['firstweekday-set-up2']="De eerste dag van de week is nu Maandag, wilt u dit wijzigen in Zondag?";
+$language['firstweekday-set-up']="De eerste dag van de week is nu Zondag, wilt u dit wijzigen in Maandag?";
 $language['01']="Januari";
 $language['02']="Februari";
 $language['03']="Maart";
@@ -366,20 +366,20 @@ $language['spanish']="Spaans";
 $language['turkish']="Turks";
 $language['dutch']="Nederlands";
 //2.3.0
-$language['hacking']="Attacks";
-$language['hacking2']="Hacking attempts";
+$language['hacking']="Aanvallen";
+$language['hacking2']="Hack pogingen";
 $language['hacking3']="Code injection";
 $language['hacking4']="SQL injection";
-$language['no_hacking']="CrawlTrack detected no attempts";
-$language['attack_detail']="Attacks details";
+$language['no_hacking']="CrawlTrack detecteerde geen hack pogingen";
+$language['attack_detail']="Attack details";
 $language['attack']="Parameters used for code injection attempts";
 $language['attack_sql']="Parameters used for sql injection attempts";
 $language['bad_site']="File/script the hacker attempted to inject";
 $language['bad_sql']="SQL query the hacker attempted to inject";
 $language['bad_url']="Url requested";
 $language['hacker']="Attackers";
-$language['date_hacking']="Time";
-$language['unknown']="Unknown";
+$language['date_hacking']="Tijd";
+$language['unknown']="Onbekend";
 $language['danger']="You could be at risk if you run one of these scripts";
 $language['attack_number_display']="Attacks details (display limited to %d attackers).";
 $language['update_attack']="Update the attacks list.";
@@ -393,21 +393,21 @@ $language['no_access_attack']="Online update is not available.<br><br>To update,
 $language['download_update_attack']="If you have already upload on your site the new attacks list, click on the button below to update your database.";
 $language['download_attack']="Download the attacks list.";
 $language['no_attack_list']="The file attacklist.php didn't exist in your include folder.";
-$language['change_password']="Change your password";
-$language['old_password']="Actual password";
-$language['new_password']="New password";
-$language['valid_new_password']="Enter a second time the new password.";
-$language['goodsite_update']="Update trust sites list";
-$language['goodsite_list']="Trust sites";
-$language['goodsite_list2']="A link to these sites present in an url is not count as an attack";
+$language['change_password']="Wijzig uw wachtwoord";
+$language['old_password']="Huidige wachtwoord";
+$language['new_password']="Nieuw wachtwoord";
+$language['valid_new_password']="Nogmaals het nieuwe wachtwoord.";
+$language['goodsite_update']="Bijwerken trusted sites lijst";
+$language['goodsite_list']="Trusted sites";
+$language['goodsite_list2']="A link to these sites present in an url is not counted as an attack";
 $language['goodsite_list3']="Actual list of trust sites";
-$language['suppress_goodsite']="Suppress that site of the list.";
-$language['goodsite_suppress_validation']="Are you sure that you want to suppress that site?";
+$language['suppress_goodsite']="Suppress this site of the list.";
+$language['goodsite_suppress_validation']="Are you sure that you want to suppress this site?";
 $language['good_site']="Trust site";
 $language['goodsite_suppress_ok']="The site has been successfully deleted.";
-$language['goodsite_suppress_no_ok']="A problem appear during the site suppression, try again.";
-$language['list_empty']="There is no trust site yet";
-$language['add_goodsite']="Add a new trust site in the list";
+$language['goodsite_suppress_no_ok']="A problem occurred during the site suppression, try again.";
+$language['list_empty']="There is no trusted site yet";
+$language['add_goodsite']="Add a new trusted site in the list";
 $language['goodsite_no_ok']="You have to enter a website url.";
 $language['attack-blocked']="All these attacks have been blocked by CrawlTrack as requested";
 $language['attack-no-blocked']="Be carefull your CrawlTrack is not set-up to block attacks (see tools page)";
@@ -415,7 +415,7 @@ $language['attack_parameters']="Hacking protection parameters";
 $language['attack_action']="Action when an attack is detected";
 $language['attack_block']="Record it and block it";
 $language['attack_no_block']="Just record it";
-$language['attack_block_alert']="Before to block attacks, which is the best for your site safety, have a look on the documentation (on www.crawltrack.net) to 
+$language['attack_block_alert']="Before you block attacks, which is the best for your site safety, have a look at the documentation (on www.crawltrack.net) to 
 be sure that they will be no problem with your normal visitors.";
 $language['crawltrack-backlink']="CrawlTrack is free, if you like it and want to share it why don't put a backlink on your page?<br>If you choose
 the nologo option, this link will be invisible on your page. You will find below two options per logo, one for a php page and the second one for an html page. You can put that link in any position on your page.";
@@ -678,7 +678,7 @@ $country = array(
     "id" => "Indonesia",
     "ie" => "Ireland",
     "il" => "Israel",
-     "im" => "Isle of Man",
+    "im" => "Isle of Man",
     "in" => "India",
     "io" => "British Indian Ocean Territory",
     "iq" => "Iraq",
@@ -813,7 +813,7 @@ $country = array(
     "vi" => "Virgin Islands, U.S.",
     "vn" => "Vietnam",
     "vu" => "Vanuatu",
-"wf" => "Wallis et Futuna",
+    "wf" => "Wallis et Futuna",
     "ws" => "Samoa",
     "ye" => "Yemen",
     "yt" => "Mayotte",

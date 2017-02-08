@@ -1,12 +1,12 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
 // Author: Jean-Denis Brun
 //----------------------------------------------------------------------
-// Translation: Leo Vonk
+// Translation: Leo Vonk, Jacob Boerema
 //----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
@@ -14,18 +14,18 @@
 //----------------------------------------------------------------------
 // file: dutchiso.php
 //----------------------------------------------------------------------
-//  Last update: 17/11/2011
+//  Last update: 2017-02-08
 //----------------------------------------------------------------------
 $language= array();
 //installation
 $language['install']="Installatie";
-$language['welcome_install'] ="Welkom bij CrawlTrack, installatie in drie eenvoudige stappen .";
+$language['welcome_install'] ="Welkom bij CrawlTrack, installatie in drie eenvoudige stappen.";
 $language['menu_install_1']="1) Voer de database toegangsgegevens in dit formulier in.";
 $language['menu_install_2']="2) Set-up websites.";
 $language['menu_install_3']="3) Beheerders account set-up.";
 $language['go_install']="Installeren";
 $language['step1_install'] ="Voer de volgende gegevens in voor toegang tot de database, als de invoer wordt goedgekeurd wordt de database automatisch aangemaakt.";
-$language['step1_install_login_mysql']="Gebruikersnaam  MySQL";
+$language['step1_install_login_mysql']="Gebruikersnaam MySQL";
 $language['step1_install_password_mysql']="Password MySQL";
 $language['step1_install_host_mysql']="Host MySQL";
 $language['step1_install_database_mysql']="Database MySQL";
@@ -56,7 +56,7 @@ $language['create_tag']="<p><b>How to use that CrawlTrack tag:</b><br><ul id=\"l
 <li>if your site is not using .php pages, see documentation on www.crawltrack.net.</li>
 <li>the best for anti-hacking protection is to have the CrawlTrack tag being the first thing in your page just after &#60;?php.</li>
 <li>if you are using any sort of content management script (discussion board, blog, gallery, CMS etc.), have a look on www.crawltrack.net/doccms.php to find the best solution to place the tag.</li>
-<li>the CrawlTrack tag will give absolutly no output  visible on your pages (even in the source code).</li>
+<li>the CrawlTrack tag will give absolutly no output visible on your pages (even in the source code).</li>
 <li>if to support CrawlTrack you would like to see the logo with a link to www.crawltrack.net, you will find below logo models that you can put at any place on your pages.</li>
 <li>for any other questions, see the documentation on www.crawltrack.net or use the support forum on the same site.</li></ul></p><br>" ;
 $language['site_name2']="Website naam";
@@ -152,7 +152,7 @@ $language['yes']="Ja";
 $language['no']="Nee";
 $language['user_suppress_ok']="Het account is verwijderd.";
 $language['user_suppress_no_ok']="Er is een probleem opgetreden tijdens het verwijderen, probeer het opnieuw.";
-$language['site_suppress']="Verwijder een website .";
+$language['site_suppress']="Verwijder een website.";
 $language['site_list']="Websites lijst";
 $language['suppress_site']="Verwijder deze website";
 $language['site_suppress_validation']="bent u er zeker van dat u deze website wilt verwijderen?";
@@ -172,7 +172,7 @@ $language['crawler_test_no_exist']="De test crawler bestaat niet in de database.
 $language['exist_site']="Deze site is al in de database aanwezig";
 $language['exist_login']="Deze login is al in database aanwezig";
 //1.2.0
-$language['update_title']="Crawlers update lijst .";
+$language['update_title']="Crawlers update lijst.";
 $language['update_crawler']="Update de crawlers lijst.";
 $language['list_up_to_date']="Op dit moment zijn er geen updates beschikbaar.";
 $language['update_ok']="Update geslaagd.";
@@ -265,7 +265,7 @@ $language['top_pages']="Top 3 in aantal bekeken pagina's";
 $language['no-archive']="Er is geen data gearchiveerd.";
 $language['use-archive']="De informatie is gedeeltelijk gearchiveerd en is niet compleet.";
 $language['url_update']="Werk de site informatie bij";
-$language['set_up_url']="Vul de volgende tabel met sites url: voorbeeld  www.example.com (zonder http:// aan het begin en zonder / aan het einde)."; 
+$language['set_up_url']="Vul de volgende tabel met sites url: voorbeeld www.example.com (zonder http:// aan het begin en zonder / aan het einde)."; 
 $language['site_url']="Site url:";
 //1.6.0
 $language['page_cache']="Laatste berekening: ";
@@ -813,7 +813,7 @@ $country = array(
     "vi" => "Virgin Islands, U.S.",
     "vn" => "Vietnam",
     "vu" => "Vanuatu",
-"wf" => "Wallis et Futuna",
+    "wf" => "Wallis et Futuna",
     "ws" => "Samoa",
     "ye" => "Yemen",
     "yt" => "Mayotte",
