@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: adminuser.php
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //valid form
 if ($validlogin == 1) {
 	if (empty($login) || empty($password2) || empty($password3) || $password2 != $password3) {
@@ -38,14 +40,14 @@ if ($validlogin == 1) {
 		echo "</div><br><br>\n";
 	} else {
 		//database connection
-		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+		require_once("jgbdb.php");
+		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 		
 		//check if login already exist
 		$sqlexist = "SELECT * FROM crawlt_login
-			WHERE crawlt_user='" . sql_quote($login) . "'";
+			WHERE crawlt_user='" . crawlt_sql_quote($connexion, $login) . "'";
 		$queryexist = db_query($sqlexist, $connexion);
-		$nbrresult = mysql_num_rows($queryexist);
+		$nbrresult = $queryexist->num_rows;
 		if ($nbrresult >= 1) {
 			//login already exist
 			echo "<br><br><h1>" . $language['exist_login'] . "</h1>";
@@ -69,7 +71,7 @@ if ($validlogin == 1) {
 			$pass = md5($password2);
 			$admin = 0;
 			$website = 0;
-			$sqllogin = "INSERT INTO crawlt_login (crawlt_user,crawlt_password,admin,site) VALUES ('" . sql_quote($login) . "','" . sql_quote($pass) . "','" . sql_quote($admin) . "','" . sql_quote($website) . "')";
+			$sqllogin = "INSERT INTO crawlt_login (crawlt_user,crawlt_password,admin,site) VALUES ('" . crawlt_sql_quote($connexion, $login) . "','" . crawlt_sql_quote($connexion, $pass) . "','" . crawlt_sql_quote($connexion, $admin) . "','" . crawlt_sql_quote($connexion, $website) . "')";
 			$querylogin = db_query($sqllogin, $connexion);
 			
 			//check is query is successfull
@@ -100,7 +102,7 @@ if ($validlogin == 1) {
 			}
 		}
 	}
-mysql_close($connexion);
+mysqli_close($connexion);
 }
 //form
 else {

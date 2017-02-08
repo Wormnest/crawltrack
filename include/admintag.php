@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: admintag.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array
 $listsite = array();
 $listid = array();
@@ -26,8 +28,8 @@ echo "<h1>" . $language['tag'] . "</h1>\n";
 echo "" . $language['create_tag'] . "\n";
 
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //local tag creation
 if (isset($_SERVER['SCRIPT_FILENAME']) && !empty($_SERVER['SCRIPT_FILENAME'])) {
@@ -51,11 +53,11 @@ $tab = '&nbsp;&nbsp;&nbsp;&nbsp;';
 
 //website list query
 $sqlsite = "SELECT * FROM crawlt_site
-	WHERE id_site = '" . sql_quote($site) . "'";
+	WHERE id_site = '" . crawlt_sql_quote($connexion, $site) . "'";
 $requetesite = db_query($sqlsite, $connexion);
-$nbrresult = mysql_num_rows($requetesite);
+$nbrresult = $requetesite->num_rows;
 if ($nbrresult >= 1) {
-	while ($ligne = mysql_fetch_object($requetesite)) {
+	while ($ligne = $requetesite->fetch_object()) {
 		$site = $ligne->name;
 		$idsite = $ligne->id_site;
 		$listsite[$idsite] = $site;
@@ -217,7 +219,7 @@ if ($nbrresult >= 1) {
 				$logo = 'nologo.png';
 				$lengthlogo = 1;
 				$heigthlogo = 1;
-				$alt = 'CrawlTrack: free crawlers and spiders tracking script for webmaster- SEO script -script gratuit de dsuivi des robots pour webmaster';
+				$alt = 'CrawlTrack: free crawlers and spiders tracking script for webmaster- SEO script -script gratuit de suivi des robots pour webmaster';
 			}
 			echo "<td class='tableau42'>\n";
 			if ($logo == 'nologo.png') {
@@ -255,7 +257,8 @@ if ($nbrresult >= 1) {
 	echo "</div>\n";
 	echo "<br>\n";
 }
-mysql_close($connexion);
+mysqli_close($connexion);
+
 //continue
 echo "<div class=\"form\">\n";
 echo "<form action=\"index.php\" method=\"POST\" >\n";

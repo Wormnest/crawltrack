@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: admintime.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 if ($validlogin == 0) {
 	echo "<h1>" . $language['time_set_up'] . "</h1>\n";
 	$hre = Date("H");
@@ -172,24 +174,24 @@ if ($validlogin == 0) {
 	//update the crawlt_config_table
 	
 	//database connection
-	$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-	$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+	require_once("jgbdb.php");
+	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 	
-	$sqltime = "UPDATE crawlt_config SET timeshift='" . sql_quote($decal) . "'";
+	$sqltime = "UPDATE crawlt_config SET timeshift='" . crawlt_sql_quote($connexion, $decal) . "'";
 	$requetetime = db_query($sqltime, $connexion);
 	
 	//empty the cache table
 	$sqlcache = "TRUNCATE TABLE crawlt_cache";
 	$requetecache = db_query($sqlcache, $connexion);
-	mysql_close($connexion);
+	mysqli_close($connexion);
 	echo "<h1>" . $language['time_set_up'] . "</h1>\n";
 	echo "<p>" . $language['decal_ok'] . "</p><br>\n";
 } elseif ($validlogin == 2) {
 	//update the crawlt_config_table
 	
 	//database connection
-	$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-	$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+	require_once("jgbdb.php");
+	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 	
 	$sqltime2 = "UPDATE crawlt_config SET timeshift='0'";
 	$requetetime2 = db_query($sqltime2, $connexion);
@@ -197,7 +199,7 @@ if ($validlogin == 0) {
 	//empty the cache table
 	$sqlcache = "TRUNCATE TABLE crawlt_cache";
 	$requetecache = db_query($sqlcache, $connexion);
-	mysql_close($connexion);
+	mysqli_close($connexion);
 	echo "<h1>" . $language['time_set_up'] . "</h1>\n";
 	echo "<p>" . $language['nodecal_ok'] . "</p><br>\n";
 }

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.3.2
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,29 +8,32 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: admin.php
 //----------------------------------------------------------------------
-//  Last update: 25/11/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 // do not modify
 define('IN_CRAWLT_ADMIN', TRUE);
+
 //database connection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //query to know the actual session id in the table
 $sql = "SELECT sessionid FROM crawlt_sessionid";
 $requete = db_query($sql, $connexion);
-$nbrresult = mysql_num_rows($requete);
+$nbrresult = $requete->num_rows;
 if ($nbrresult >= 1) {
-	while ($ligne = mysql_fetch_row($requete)) {
+	while ($ligne = $requete->fetch_row()) {
 		$listsessionid[] = $ligne[0];
 	}
 } else {
@@ -45,14 +48,14 @@ if ($_SESSION['rightsite'] == 0) {
 	$siteright = $_SESSION['rightsite'];
 	$sql = "SELECT id_site, name, url 
 	FROM crawlt_site	
-	WHERE id_site = '" . sql_quote($siteright) . "'";
+	WHERE id_site = '" . crawlt_sql_quote($connexion, $siteright) . "'";
 }
 
 //request to get the sites datas
 $requete = db_query($sql, $connexion);
-$nbrresult = mysql_num_rows($requete);
+$nbrresult = $requete->num_rows;
 if ($nbrresult >= 1) {
-	while ($ligne = mysql_fetch_row($requete)) {
+	while ($ligne = $requete->fetch_row()) {
 		$listsite[] = $ligne[0];
 		$namesite[$ligne[0]] = $ligne[1];
 		$urlsite[$ligne[0]] = $ligne[2];
@@ -69,12 +72,12 @@ else
 $novisitorcrawltrack=0;
 }
 
-
 //include menu
 include ("include/menumain.php");
 if ($validform == 33) {
 	include ("include/menusite.php");
 }
+
 echo "<div class=\"content\">\n";
 if ($crawltlang == 'french' || $crawltlang == 'frenchiso') {
 ?>
@@ -196,27 +199,27 @@ if ($_SESSION['rightadmin'] == 1) {
 			switch($validform) {
 				case 96:
 					//update the crawlt_config table
-					$sql = "UPDATE crawlt_config SET typecharset='" . sql_quote($crawltcharset) . "'";
+					$sql = "UPDATE crawlt_config SET typecharset='" . crawlt_sql_quote($connexion, $crawltcharset) . "'";
 					$requete = db_query($sql, $connexion);
 				break;
 				case 97:
 					//update the crawlt_config table
-					$sql = "UPDATE crawlt_config SET typemail='" . sql_quote($crawltmailishtml) . "'";
+					$sql = "UPDATE crawlt_config SET typemail='" . crawlt_sql_quote($connexion, $crawltmailishtml) . "'";
 					$requete = db_query($sql, $connexion);
 				break;
 				case 98:
 					//update the crawlt_config table
-					$sql = "UPDATE crawlt_config SET rowdisplay='" . sql_quote($rowdisplay) . "'";
+					$sql = "UPDATE crawlt_config SET rowdisplay='" . crawlt_sql_quote($connexion, $rowdisplay) . "'";
 					$requete = db_query($sql, $connexion);
 				break;
 				case 99:
 					//update the crawlt_config table
-					$sql = "UPDATE crawlt_config SET orderdisplay='" . sql_quote($order) . "'";
+					$sql = "UPDATE crawlt_config SET orderdisplay='" . crawlt_sql_quote($connexion, $order) . "'";
 					$requete = db_query($sql, $connexion);
 				break;
 				case 100:
 					//update the crawlt_config table
-					$sql = "UPDATE crawlt_config SET blockattack='" . sql_quote($crawltblockattack) . "'";
+					$sql = "UPDATE crawlt_config SET blockattack='" . crawlt_sql_quote($connexion, $crawltblockattack) . "'";
 					$requete = db_query($sql, $connexion);
 				break;
 				case 101:
@@ -279,7 +282,7 @@ if ($_SESSION['rightadmin'] == 1) {
 						$listsessionid = array();
 					}
 					//update the crawlt_config table
-					$sql = "UPDATE crawlt_config SET sessionid='" . sql_quote($crawltsessionid) . "'";
+					$sql = "UPDATE crawlt_config SET sessionid='" . crawlt_sql_quote($connexion, $crawltsessionid) . "'";
 					$requete = db_query($sql, $connexion);
 				break;
 				case 102:
@@ -305,7 +308,7 @@ if ($_SESSION['rightadmin'] == 1) {
 				break;
 				case 103:
 					//update the crawlt_config table
-					$sql = "UPDATE crawlt_config SET includeparameter='" . sql_quote($crawltincludeparameter) . "'";
+					$sql = "UPDATE crawlt_config SET includeparameter='" . crawlt_sql_quote($connexion, $crawltincludeparameter) . "'";
 					$requete = db_query($sql, $connexion);
 				break;
 				case 104:				
@@ -363,7 +366,7 @@ if ($_SESSION['rightadmin'] == 1) {
 				break;				
 				
 			} // end switch($validform) - 2nd level
-			mysql_close($connexion);
+			mysqli_close($connexion);
 			
 			?>
 			<h1><?php echo $language['admin'] ?></h1>
@@ -433,12 +436,7 @@ if ($_SESSION['rightadmin'] == 1) {
 				}
 			
 			echo "</table><br><div width=\"100%\" align=\"right\"><input name='ok' type='submit'  value=' OK ' size='20' >&nbsp;&nbsp;&nbsp;&nbsp;</div>\n";
-			echo "</form></div>&nbsp;\n";			
-			
-			
-			
-			
-			
+			echo "</form></div>&nbsp;\n";
 			
 			echo "<br><h2>" . $language['display_parameters'] . "</h2>";
 			echo "<div style=\"border: 2px solid #003399 ; padding-left:5px; padding-top:5px; padding-bottom:15px; margin-left:71px; margin-right:71px;\" >\n";

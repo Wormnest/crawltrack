@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: adminbadreferer.php
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 $siteurldisplay = htmlentities($siteurl);
 if (isset($_POST['suppresscrawler'])) {
 	$suppresscrawler = (int)$_POST['suppresscrawler'];
@@ -46,11 +48,11 @@ if ($suppresscrawler == 1) {
 	if ($suppresscrawlerok == 1) {
 		//good site suppression
 		//database connection
-		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+		require_once("jgbdb.php");
+		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 		
 		//database query to suppress the good site
-		$sqldelete = "DELETE FROM crawlt_badreferer WHERE id_referer= '" . sql_quote($idcrawlertosuppress) . "'";
+		$sqldelete = "DELETE FROM crawlt_badreferer WHERE id_referer= '" . crawlt_sql_quote($connexion, $idcrawlertosuppress) . "'";
 		$requetedelete = db_query($sqldelete, $connexion);
 		
 		//empty the cache table
@@ -134,13 +136,14 @@ if ($suppresscrawler == 1) {
 	$siteurl = $parseurl['host'];
 	
 	//database connection
-	$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-	$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+	require_once("jgbdb.php");
+	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 	//check if site already exist
 	$sqlexist = "SELECT * FROM crawlt_badreferer
-		WHERE referer='" . sql_quote($siteurl) . "'";
+		WHERE referer='" . crawlt_sql_quote($connexion, $siteurl) . "'";
 	$requeteexist = db_query($sqlexist, $connexion);
-	$nbrresult = mysql_num_rows($requeteexist);
+	$nbrresult = $requeteexist->num_rows;
 	if ($nbrresult >= 1) {
 		//site already exist
 		echo "<br><br><h1>" . $language['exist_site'] . "</h1>\n";
@@ -157,7 +160,7 @@ if ($suppresscrawler == 1) {
 		echo "</form><br><br>\n";
 	} else {
 		//the site didn't exist, we can add it in the database
-		$sqlsite2 = "INSERT INTO crawlt_badreferer (referer) VALUES ('" . sql_quote($siteurl) . "')";
+		$sqlsite2 = "INSERT INTO crawlt_badreferer (referer) VALUES ('" . crawlt_sql_quote($connexion, $siteurl) . "')";
 		$requetesite2 = db_query($sqlsite2, $connexion);
 		//check is requete is successfull
 		if ($requetesite2 == 1) {
@@ -176,20 +179,21 @@ if ($suppresscrawler == 1) {
 			echo "</form><br><br>\n";
 		}
 	}
-mysql_close($connexion);
+mysqli_close($connexion);
 } else {
 	//database connection
-	$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-	$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+	require_once("jgbdb.php");
+	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 	//database query to get good sites list
 	$sql = "SELECT id_referer, referer FROM crawlt_badreferer";
 	$requete = db_query($sql, $connexion);
-	$nbrresult = mysql_num_rows($requete);
+	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
-		while ($ligne = mysql_fetch_row($requete)) {
+		while ($ligne = $requete->fetch_row()) {
 			$listgoodsite[$ligne[0]] = $ligne[1];
 		}
-		mysql_close($connexion);
+		mysqli_close($connexion);
 		//display
 		echo "<br><br><h1>" . $language['badreferer_list'] . "<br><span class='smalltext'>" . $language['badreferer_list2'] . "</span></h1>\n";
 		echo "<div class='tableau' align='center' width='550px'>\n";

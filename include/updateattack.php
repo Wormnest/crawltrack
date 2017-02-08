@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,21 +8,23 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: updateattack.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //crawlt_update table creation if not exist in case of upgrade from a previous version
 //check if table already exist
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 // Call the maintenance script which will do the job
 // Override the default tables_to_check array
@@ -50,14 +52,14 @@ if($existing_crawlt_update_attack_table)
 	$sqlupdate = "SELECT * FROM crawlt_update_attack";
 	$requeteupdate = db_query($sqlupdate, $connexion);
 	$idlastupdate = 0;
-	while ($ligne = mysql_fetch_object($requeteupdate)) {
+	while ($ligne = $requeteupdate->fetch_object()) {
 		$update = $ligne->update_id;
 		if ($update > $idlastupdate) {
 			$idlastupdate = $update;
 		}
 	}
 }
-mysql_close($connexion);
+mysqli_close($connexion);
 if (!empty($tables_actions_error_messages)) {
 	//case we had a problem during table creation
 	echo "<br><br><h5>" . $language['step1_install_no_ok3'] . "</h5><br><br>";

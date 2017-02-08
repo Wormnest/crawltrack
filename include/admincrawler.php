@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: admincrawler.php
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //valid form
 if ($validlogin == 1) {
 	if (empty($crawlername2) || (empty($crawlerua2) && empty($crawlerip2)) || empty($crawleruser2) || empty($crawlerurl2)) {
@@ -39,8 +41,8 @@ if ($validlogin == 1) {
 		echo "</div><br><br>\n";
 	} else {
 		//database connection
-		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+		require_once("jgbdb.php");
+		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 		
 		//check if crawler already exist
 		if (empty($crawlerip2)) {
@@ -55,16 +57,16 @@ if ($validlogin == 1) {
 		}
 		if ($crawlerua3 == 'no-user-agent-in-crawltrack-for-that-bot') {
 			$sqlexist = "SELECT * FROM crawlt_crawler
-            WHERE crawler_ip='" . sql_quote($crawlerip3) . "'";
+            WHERE crawler_ip='" . crawlt_sql_quote($connexion, $crawlerip3) . "'";
 		} else {
 			$sqlexist = "SELECT * FROM crawlt_crawler
-            WHERE crawler_user_agent='" . sql_quote($crawlerua3) . "'
-            OR crawler_ip='" . sql_quote($crawlerip3) . "'";
+            WHERE crawler_user_agent='" . crawlt_sql_quote($connexion, $crawlerua3) . "'
+            OR crawler_ip='" . crawlt_sql_quote($connexion, $crawlerip3) . "'";
 		}
 		$queryexist = db_query($sqlexist, $connexion);
-		$nbrresult = mysql_num_rows($queryexist);
+		$nbrresult = $queryexist->num_rows;
 		if ($nbrresult >= 1) {
-			$ligne = mysql_fetch_object($queryexist);
+			$ligne = $queryexist->fetch_object();
 			
 			//crawler already exist
 			$crawlernamedisplay = htmlentities($ligne->crawler_name);
@@ -88,7 +90,7 @@ if ($validlogin == 1) {
 			echo "</div><br><br>\n";
 		} else {
 			//crawler didn't exist we can add the crawler in the database
-			$sqlcrawler = "INSERT INTO crawlt_crawler (crawler_user_agent,crawler_name,crawler_url,crawler_info, crawler_ip) VALUES ('" . sql_quote($crawlerua3) . "','" . sql_quote($crawlername2) . "','" . sql_quote($crawlerurl2) . "','" . sql_quote($crawleruser2) . "','" . sql_quote($crawlerip2) . "')";
+			$sqlcrawler = "INSERT INTO crawlt_crawler (crawler_user_agent,crawler_name,crawler_url,crawler_info, crawler_ip) VALUES ('" . crawlt_sql_quote($connexion, $crawlerua3) . "','" . crawlt_sql_quote($connexion, $crawlername2) . "','" . crawlt_sql_quote($connexion, $crawlerurl2) . "','" . crawlt_sql_quote($connexion, $crawleruser2) . "','" . crawlt_sql_quote($connexion, $crawlerip2) . "')";
 			$querycrawler = db_query($sqlcrawler, $connexion);
 			
 			//empty the cache table
@@ -124,7 +126,7 @@ if ($validlogin == 1) {
 				echo "</div><br><br>\n";
 			}
 		}
-		mysql_close($connexion);
+		mysqli_close($connexion);
 	}
 }
 //form

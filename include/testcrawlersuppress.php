@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: testcrawlersuppress.php
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 if (isset($_POST['suppresscrawler'])) {
 	$suppresscrawler = (int)$_POST['suppresscrawler'];
 } else {
@@ -27,20 +29,20 @@ if (isset($_POST['suppresscrawler'])) {
 if ($suppresscrawler == 1) {
 	//crawler suppression
 	//database connection
-	$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-	$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+	require_once("jgbdb.php");
+	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 	
 	//database query to suppress the crawler
 	$sqlstats = "SELECT * FROM crawlt_crawler WHERE crawler_name ='Test-Crawltrack'";
 	$requetestats = db_query($sqlstats, $connexion);
-	$nbrresult = mysql_num_rows($requetestats);
+	$nbrresult = $requetestats->num_rows;
 	if ($nbrresult >= 1) {
-		while ($ligne = mysql_fetch_object($requetestats)) {
+		while ($ligne = $requetestats->fetch_object()) {
 			$testcrawltrackid = $ligne->id_crawler;
 		}
-		$sqldelete = "DELETE FROM crawlt_crawler WHERE id_crawler= '" . sql_quote($testcrawltrackid) . "'";
+		$sqldelete = "DELETE FROM crawlt_crawler WHERE id_crawler= '" . crawlt_sql_quote($connexion, $testcrawltrackid) . "'";
 		$requetedelete = db_query($sqldelete, $connexion);
-		$sqldelete2 = "DELETE FROM crawlt_visits WHERE crawlt_crawler_id_crawler= '" . sql_quote($testcrawltrackid) . "'";
+		$sqldelete2 = "DELETE FROM crawlt_visits WHERE crawlt_crawler_id_crawler= '" . crawlt_sql_quote($connexion, $testcrawltrackid) . "'";
 		$requetedelete2 = db_query($sqldelete2, $connexion);
 		
 		//database query to optimize the table
@@ -74,7 +76,7 @@ if ($suppresscrawler == 1) {
 		//empty the cache table
 		$sqlcache = "TRUNCATE TABLE crawlt_cache";
 		$requetecache = db_query($sqlcache, $connexion);
-		mysql_close($connexion);
+		mysqli_close($connexion);
 		if ($requetedelete && $requetedelete2) {
 			echo "<br><br><h1>" . $language['crawler_suppress_ok'] . "</h1>\n";
 			echo "<div class=\"form\">\n";

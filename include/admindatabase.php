@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,19 +8,22 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: admindatabase.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword);
-$selection = mysql_select_db($crawltdb);
+
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 if (!isset($_SESSION['flag'])) {
 	session_name('crawlt');
 	session_start();
@@ -39,7 +42,7 @@ if (!isset($_SESSION['optimize'])) {
 	$_SESSION['optimize'] = 1;
 }
 $requete = db_query("show table status", $connexion);
-mysql_close($connexion);
+mysqli_close($connexion);
 echo "<h1>" . $language['database_size'] . "</h1>\n";
 
 //summary table display
@@ -70,7 +73,7 @@ $tablesize = 0;
 $databasesize = 0;
 $indexsize = 0;
 $indexbasesize = 0;
-while ($result = mysql_fetch_assoc($requete)) {
+while ($result = $requete->fetch_assoc()) {
 	if (preg_match('/^crawlt_/i', $result['Name'])) {
 		if ($comptligne % 2 == 0) {
 			echo "<tr><td class='tableau3'>" . $result['Name'] . "</td>\n";

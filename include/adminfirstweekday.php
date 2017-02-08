@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,32 +8,35 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: adminfirstweekday.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 echo "<h1>" . $language['firstweekday-title'] . "</h1>\n";
 if ($firstdayweek == 'Monday') {
 	if ($validsite == 1) {
 		//update the crawlt_config_table
 		
 		//database connection
-		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+		require_once("jgbdb.php");
+		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 		$sqlupdatepublic = "UPDATE crawlt_config SET firstdayweek='Sunday'";
 		$requeteupdatepublic = db_query($sqlupdatepublic, $connexion);
 		
 		//clear cache table
 		$sqlcache = "TRUNCATE TABLE crawlt_cache";
 		$requetecache = db_query($sqlcache, $connexion);
-		mysql_close($connexion);
+		mysqli_close($connexion);
 		echo "<br><br><p>" . $language['update'] . "</p><br><br>";
 		
 		//continue
@@ -106,15 +109,16 @@ if ($firstdayweek == 'Monday') {
 		//update the crawlt_config_table
 		
 		//database connection
-		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+		require_once("jgbdb.php");
+		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 		$sqlupdatepublic = "UPDATE crawlt_config SET firstdayweek='Monday'";
 		$requeteupdatepublic = db_query($sqlupdatepublic, $connexion);
 		
 		//clear cache table
 		$sqlcache = "TRUNCATE TABLE crawlt_cache";
 		$requetecache = db_query($sqlcache, $connexion);
-		mysql_close($connexion);
+		mysqli_close($connexion);
 		echo "<br><br><p>" . $language['update'] . "</p><br><br>";
 		
 		//continue

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,25 +8,28 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: adminchangepassword.php
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 if ($validlogin == 1) {
 		//database connection
-		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
-		$sqllogin = "SELECT crawlt_password FROM crawlt_login WHERE crawlt_user='" . sql_quote($_SESSION['userlogin']) . "'";
-		$requetelogin = mysql_query($sqllogin, $connexion) or die("MySQL query error");
-		mysql_close($connexion);
-		while ($ligne = mysql_fetch_object($requetelogin)) {
+		require_once("jgbdb.php");
+		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+		
+		$sqllogin = "SELECT crawlt_password FROM crawlt_login WHERE crawlt_user='" . crawlt_sql_quote($connexion, $_SESSION['userlogin']) . "'";
+		$requetelogin = db_mysql_query($sqllogin, $connexion);
+		mysqli_close($connexion);
+		while ($ligne = $requetelogin->fetch_object()) {
 			$userpass = $ligne->crawlt_password;
 		}
 
@@ -42,14 +45,15 @@ if ($validlogin == 1) {
 		echo "</div><br><br>\n";
 	} else {
 		//password treatment
-		$pass = md5($password2);
+		$pass = md5($password2); // TODO: Better password hashing!
 		
 		//database connection
-		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
-		$sqllogin = "UPDATE crawlt_login SET  crawlt_password='" . sql_quote($pass) . "' WHERE crawlt_user='" . sql_quote($_SESSION['userlogin']) . "'";
+		require_once("jgbdb.php");
+		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
+		$sqllogin = "UPDATE crawlt_login SET  crawlt_password='" . crawlt_sql_quote($connexion, $pass) . "' WHERE crawlt_user='" . crawlt_sql_quote($connexion, $_SESSION['userlogin']) . "'";
 		$requetelogin = db_query($sqllogin, $connexion);
-		mysql_close($connexion);
+		mysqli_close($connexion);
 
 		echo "<br><br><p>" . $language['update'] . "</p><br><br>";
 		

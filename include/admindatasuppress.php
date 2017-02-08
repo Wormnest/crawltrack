@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: admindatasuppress.php
 //----------------------------------------------------------------------
-//  Last update: 13/02/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 if (isset($_POST['suppressdata'])) {
 	$suppressdata = (int)$_POST['suppressdata'];
 } else {
@@ -45,8 +47,8 @@ if ($suppressdata == 1) {
 	if ($suppressdataok == 1) {
 		//data suppression
 		//database connection
-		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+		require_once("jgbdb.php");
+		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 		
 		//period calculation
 		if($datatosuppress == 1) {
@@ -146,7 +148,7 @@ if ($suppressdata == 1) {
 				default:
 					exit('<h1>Hacking attempt !!!!</h1>');
 			}
-			$sqldelete = "DELETE FROM $table_name WHERE `date` < '" . sql_quote($datetosuppress) . "'";
+			$sqldelete = "DELETE FROM $table_name WHERE `date` < '" . crawlt_sql_quote($connexion, $datetosuppress) . "'";
 		}
 		//suppress data
 		$requetedelete = db_query($sqldelete, $connexion);
@@ -168,9 +170,9 @@ if ($suppressdata == 1) {
 			AND crawlt_visits_human.crawlt_id_page IS NULL
 			LIMIT 0,100000";
 		$requete = db_query($sql, $connexion);
-		$nbrresult = mysql_num_rows($requete);
+		$nbrresult = $requete->num_rows;
 		if ($nbrresult >= 1) {
-			while ($ligne = mysql_fetch_row($requete)) {
+			while ($ligne = $requete->fetch_row()) {
 				$crawlttablepage[] = $ligne[0];
 			}
 			$crawltlistpage = implode("','", $crawlttablepage);
@@ -189,10 +191,10 @@ if ($suppressdata == 1) {
 				ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer       
 				WHERE crawlt_visits_human.crawlt_id_referer IS NULL LIMIT 0,100000";
 			$requete = db_query($sql, $connexion);
-			$nbrresult = mysql_num_rows($requete);
+			$nbrresult = $requete->num_rows;
 			
 			if ($nbrresult >= 1) {
-				while ($ligne = mysql_fetch_row($requete)) {
+				while ($ligne = $requete->fetch_row()) {
 					$crawlttablereferer[] = $ligne[0];
 				}
 				$crawltlistreferer = implode("','", $crawlttablereferer);
@@ -212,9 +214,9 @@ if ($suppressdata == 1) {
 				ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword       
 				WHERE crawlt_visits_human.crawlt_keyword_id_keyword IS NULL LIMIT 0,100000";
 			$requete = db_query($sql, $connexion);
-			$nbrresult = mysql_num_rows($requete);
+			$nbrresult = $requete->num_rows;
 			if ($nbrresult >= 1) {
-				while ($ligne = mysql_fetch_row($requete)) {
+				while ($ligne = $requete->fetch_row()) {
 					$crawlttablekeyword[] = $ligne[0];
 				}
 				$crawltlistkeyword = implode("','", $crawlttablekeyword);
@@ -235,7 +237,7 @@ if ($suppressdata == 1) {
 		}
 		//empty the cache table
 		$sqlcache = "TRUNCATE TABLE crawlt_cache";
-		$requetecache = mysql_query($sqlcache, $connexion) or die("MySQL query error");
+		$requetecache = db_mysql_query($sqlcache, $connexion);
 		if ($requetedelete) {
 			echo "<br><br><h1>" . $language['data_suppress_ok'] . "</h1>\n";
 			echo "<div class=\"form\">\n";
@@ -253,7 +255,7 @@ if ($suppressdata == 1) {
 			echo "</form>\n";
 			echo "</div><br><br>\n";
 		}
-mysql_close($connexion);
+mysqli_close($connexion);
 	} else {
 		//validation of suppression
 		//display

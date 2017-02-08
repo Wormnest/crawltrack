@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: updatelocal.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array
 $updatelistua = array();
 $updatelistname = array();
@@ -27,18 +29,19 @@ $updatelistuser = array();
 $listcrawler = array();
 $crawlernameadd = array();
 $crawleruaadd = array();
+
 if (file_exists('include/crawlerlist.php')) {
 	include ("include/crawlerlist.php");
 	
 	//databaseconnection
-	$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or exit("MySQL connection to database problem");
-	$selection = mysql_select_db($crawltdb) or exit("MySQL database selection problem");
+	require_once("jgbdb.php");
+	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 	
-	//query to get the actual liste id
+	//query to get the actual list id
 	$sqlupdate = "SELECT * FROM crawlt_update";
 	$queryupdate = db_query($sqlupdate, $connexion);
 	$idlastupdate = 0;
-	while ($ligne = mysql_fetch_object($queryupdate)) {
+	while ($ligne = $queryupdate->fetch_object()) {
 		$update = $ligne->update_id;
 		if ($update > $idlastupdate) {
 			$idlastupdate = $update;
@@ -66,7 +69,7 @@ if (file_exists('include/crawlerlist.php')) {
 		
 		$sqlexist = "SELECT * FROM crawlt_crawler";
 		$queryexist = db_query($sqlexist, $connexion);
-		while ($ligne = mysql_fetch_object($queryexist)) {
+		while ($ligne = $queryexist->fetch_object()) {
 			$crawlerua = $ligne->crawler_user_agent;
 			$listcrawler[] = $crawlerua;
 		}
@@ -82,7 +85,7 @@ if (file_exists('include/crawlerlist.php')) {
 			if (in_array($uatest, $listcrawler)) {
 			} else {
 				$sqlinsert = "INSERT INTO crawlt_crawler (crawler_user_agent,crawler_name, crawler_url, crawler_info, crawler_ip)
-					VALUES ('" . sql_quote($ua) . "','" . sql_quote($name) . "','" . sql_quote($url) . "','" . sql_quote($user) . "','')";
+					VALUES ('" . crawlt_sql_quote($connexion, $ua) . "','" . crawlt_sql_quote($connexion, $name) . "','" . crawlt_sql_quote($connexion, $url) . "','" . crawlt_sql_quote($connexion, $user) . "','')";
 				$queryinsert = db_query($sqlinsert, $connexion);
 				$nbrupdate = $nbrupdate + 1;
 				$crawlernameadd[] = $name;
@@ -92,7 +95,7 @@ if (file_exists('include/crawlerlist.php')) {
 		
 		echo "<h1><br><br>$nbrupdate&nbsp;" . $language['crawler_add'] . "<br></h1>";
 		
-		$sqlinsertid = "INSERT INTO crawlt_update (update_id) VALUES ('" . sql_quote($idlist) . "')";
+		$sqlinsertid = "INSERT INTO crawlt_update (update_id) VALUES ('" . crawlt_sql_quote($connexion, $idlist) . "')";
 		$queryinsertid = db_query($sqlinsertid, $connexion);
 		echo "<div align='center'><table cellpadding='0px' cellspacing='0' width='750px'><tr><td class='tableau1'>" . $language['crawler_name'] . "</td><td class='tableau2'>" . $language['user_agent'] . "</td></tr>\n";
 		for ($l = 0;$l < $nbrupdate;$l++) {
@@ -108,7 +111,7 @@ if (file_exists('include/crawlerlist.php')) {
 		}
 		echo "</tr></table></div><br><br>";
 	}
-mysql_close($connexion);
+mysqli_close($connexion);
 } else {
 	echo "<br><br><h1>" . $language['no_crawler_list'] . "</h1><br>";
 }

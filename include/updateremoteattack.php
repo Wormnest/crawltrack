@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: updateremoteattack.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array
 $updatelistua = array();
 $updatelistname = array();
@@ -29,14 +31,14 @@ $crawlernameadd = array();
 $crawleruaadd = array();
 
 //databaseconnection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //query to get the actual liste id
 $sqlupdate = "SELECT * FROM crawlt_update_attack";
 $requeteupdate = db_query($sqlupdate, $connexion);
 $idlastupdate = 0;
-while ($ligne = mysql_fetch_object($requeteupdate)) {
+while ($ligne = $requeteupdate->fetch_object()) {
 	$update = $ligne->update_id;
 	if ($update > $idlastupdate) {
 		$idlastupdate = $update;
@@ -129,7 +131,7 @@ if (!$file || $nofile) {
 					}
 					$sqlexist = "SELECT * FROM crawlt_attack";
 					$requeteexist = db_query($sqlexist, $connexion);
-					while ($ligne = mysql_fetch_object($requeteexist)) {
+					while ($ligne = $requeteexist->fetch_object()) {
 						$attackid = $ligne->id_attack;
 						$listattack[] = $attackid;
 					}
@@ -144,7 +146,7 @@ if (!$file || $nofile) {
 						if (in_array($id, $listattack)) {
 						} else {
 							$sqlinsert = "INSERT INTO crawlt_attack (id_attack,attack, script, type)
-								VALUES ('" . sql_quote($id) . "','" . sql_quote($attack) . "','" . sql_quote($script) . "','" . sql_quote($type) . "')";
+								VALUES ('" . crawlt_sql_quote($connexion, $id) . "','" . crawlt_sql_quote($connexion, $attack) . "','" . crawlt_sql_quote($connexion, $script) . "','" . crawlt_sql_quote($connexion, $type) . "')";
 							$requeteinsert = db_query($sqlinsert, $connexion);
 							$nbrupdate = $nbrupdate + 1;
 							$crawlernameadd[] = $attack;
@@ -153,7 +155,7 @@ if (!$file || $nofile) {
 						}
 					}
 					echo "<h1><br><br>$nbrupdate&nbsp;" . $language['attack_add'] . "<br></h1>";
-					$sqlinsertid = "INSERT INTO crawlt_update_attack (update_id) VALUES ('" . sql_quote($idlist) . "')";
+					$sqlinsertid = "INSERT INTO crawlt_update_attack (update_id) VALUES ('" . crawlt_sql_quote($connexion, $idlist) . "')";
 					$requeteinsertid = db_query($sqlinsertid, $connexion);
 					
 					echo "<div align='center'><table cellpadding='0px' cellspacing='0' width='750px'><tr><td class='tableau1'>" . $language['parameter'] . "</td><td class='tableau1'>" . $language['script'] . "</td><td class='tableau2'>" . $language['attack_type'] . "</td></tr>\n";
@@ -177,5 +179,5 @@ if (!$file || $nofile) {
 		}
 	}
 }
-mysql_close($connexion);
+mysqli_close($connexion);
 ?>

@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,32 +8,36 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: adminmail.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array
 $listaddresstosuppress = array();
 $listaddress = array();
 $listaddresstokeep = array();
+
 echo "<h1>" . $language['mail'] . "</h1>\n";
 if ($crawltmail == 1) {
 	if ($validsite == 1) {
 		//update the crawlt_config_table
 		
 		//database connection
-		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+		require_once("jgbdb.php");
+		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 		$sqlupdatemail = "UPDATE crawlt_config SET mail='0'";
 		$requeteupdatemail = db_query($sqlupdatemail, $connexion);
-		mysql_close($connexion);
+		mysqli_close($connexion);
 		echo "<br><br><p>" . $language['update'] . "</p><br><br>";
 		
 		//continue
@@ -92,19 +96,19 @@ if ($crawltmail == 1) {
 			echo "</div><br>\n";
 		} else {
 			//database connection
-			$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-			$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+			require_once("jgbdb.php");
+			$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 			
 			$sql = "SELECT addressmail FROM crawlt_config";
 			$requete = db_query($sql, $connexion);
-			$ligne = mysql_fetch_assoc($requete);
+			$ligne = $requete->fetch_assoc();
 			$addressmail = $ligne['addressmail'];
 			$sitename = $addressmail . "," . $sitename;
 			
 			//update the crawlt_config_table
-			$sqlupdatemail = "UPDATE crawlt_config SET addressmail='" . sql_quote($sitename) . "'";
+			$sqlupdatemail = "UPDATE crawlt_config SET addressmail='" . crawlt_sql_quote($connexion, $sitename) . "'";
 			$requeteupdatemail = db_query($sqlupdatemail, $connexion);
-			mysql_close($connexion);
+			mysqli_close($connexion);
 			echo "<br><br><p>" . $language['update'] . "</p><br><br>";
 			
 			//continue
@@ -122,13 +126,14 @@ if ($crawltmail == 1) {
 	} elseif ($validsite == 4) //choice of email address to suppress
 	{
 		//database connection
-		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+		require_once("jgbdb.php");
+		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
 		$sql = "SELECT addressmail FROM crawlt_config";
 		$requete = db_query($sql, $connexion);
-		$ligne = mysql_fetch_assoc($requete);
+		$ligne = $requete->fetch_assoc();
 		$addressmail = $ligne['addressmail'];
-		mysql_close($connexion);
+		mysqli_close($connexion);
 		$email = explode(',', $addressmail);
 		echo "<hr><p><b>" . $language['set_up_mail6'] . "</b></p>\n";
 		echo "<div align='center'>";
@@ -167,12 +172,12 @@ if ($crawltmail == 1) {
 			//case all the address are suppress
 			
 			//database connection
-			$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-			$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+			require_once("jgbdb.php");
+			$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 			
 			$sqlupdatemail = "UPDATE crawlt_config SET mail='0', addressmail=''";
 			$requeteupdatemail = db_query($sqlupdatemail, $connexion);
-			mysql_close($connexion);
+			mysqli_close($connexion);
 			echo "<br><br><p>" . $language['update'] . "</p><br><br>";
 			
 			//continue
@@ -188,11 +193,11 @@ if ($crawltmail == 1) {
 			echo "</form><br>\n";
 		} else {
 			//database connection
-			$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-			$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+			require_once("jgbdb.php");
+			$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 			$sql = "SELECT addressmail FROM crawlt_config";
 			$requete = db_query($sql, $connexion);
-			$ligne = mysql_fetch_assoc($requete);
+			$ligne = $requete->fetch_assoc();
 			$addressmail = $ligne['addressmail'];
 			$email = explode(',', $addressmail);
 			foreach ($email as $adress) {
@@ -204,9 +209,9 @@ if ($crawltmail == 1) {
 				$sitename = $adress . ',' . $sitename;
 			}
 			$sitename = rtrim($sitename, ",");
-			$sqlupdatemail = "UPDATE crawlt_config SET addressmail='" . sql_quote($sitename) . "'";
+			$sqlupdatemail = "UPDATE crawlt_config SET addressmail='" . crawlt_sql_quote($connexion, $sitename) . "'";
 			$requeteupdatemail = db_query($sqlupdatemail, $connexion);
-			mysql_close($connexion);
+			mysqli_close($connexion);
 			echo "<br><br><p>" . $language['update'] . "</p><br><br>";
 			
 			//continue
@@ -253,13 +258,13 @@ if ($crawltmail == 1) {
 		echo "<hr><p><b>" . $language['set_up_mail3'] . "</b></p>\n";
 		echo "<div align='center'>";
 		//database connection
-		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+		require_once("jgbdb.php");
+		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 		$sql = "SELECT addressmail FROM crawlt_config";
 		$requete = db_query($sql, $connexion);
-		$ligne = mysql_fetch_assoc($requete);
+		$ligne = $requete->fetch_assoc();
 		$addressmail = $ligne['addressmail'];
-		mysql_close($connexion);
+		mysqli_close($connexion);
 		$email = explode(',', $addressmail);
 		foreach ($email as $adress) {
 			echo $adress . "<br>";
@@ -339,12 +344,12 @@ if ($crawltmail == 1) {
 			//update the crawlt_config_table
 			
 			//database connection
-			$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-			$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+			require_once("jgbdb.php");
+			$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 			
-			$sqlupdatemail = "UPDATE crawlt_config SET mail='1', addressmail='" . sql_quote($sitename) . "'";
+			$sqlupdatemail = "UPDATE crawlt_config SET mail='1', addressmail='" . crawlt_sql_quote($connexion, $sitename) . "'";
 			$requeteupdatemail = db_query($sqlupdatemail, $connexion);
-			mysql_close($connexion);
+			mysqli_close($connexion);
 			echo "<br><br><p>" . $language['update'] . "</p><br><br>";
 			
 			//continue

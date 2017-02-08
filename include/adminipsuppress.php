@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: adminipsuppress.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 if (isset($_GET['suppressip'])) {
 	$suppressip = (int)$_GET['suppressip'];
 } else {
@@ -64,11 +66,11 @@ if ($suppressip == 1) {
 	if ($suppressipok == 1 && $validaddress == 1) {
 		//ip suppression
 		//database connection
-		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+		require_once("jgbdb.php");
+		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 		
 		//database query to suppress the visits coming from that ip
-		$sqldelete = "DELETE FROM crawlt_visits WHERE crawlt_ip_used= '" . sql_quote($iptosuppress) . "'";
+		$sqldelete = "DELETE FROM crawlt_visits WHERE crawlt_ip_used= '" . crawlt_sql_quote($connexion, $iptosuppress) . "'";
 		$requetedelete = db_query($sqldelete, $connexion);
 		
 		//empty the cache table
@@ -105,7 +107,7 @@ if ($suppressip == 1) {
 			echo "</form>\n";
 			echo "</div>\n";
 		}
-mysql_close($connexion);
+mysqli_close($connexion);
 	} elseif ($suppressipok == 1 && $validaddress == 0) {
 		echo "<p>" . $language['ip_no_ok'] . "</p><br><br>\n";
 	} else {

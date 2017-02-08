@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: adminusersuppress.php
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array
 $loginuser = array();
 if (isset($_POST['suppressuser'])) {
@@ -42,11 +44,11 @@ if ($suppressuser == 1) {
 		//login suppression
 		
 		//database connection
-		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+		require_once("jgbdb.php");
+		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 		
 		//database query to suppress the login
-		$sqldelete = "DELETE FROM crawlt_login WHERE crawlt_user= '" . sql_quote($logintosuppress) . "'";
+		$sqldelete = "DELETE FROM crawlt_login WHERE crawlt_user= '" . crawlt_sql_quote($connexion, $logintosuppress) . "'";
 		$requetedelete = db_query($sqldelete, $connexion);
 		if ($requetedelete) {
 			echo "<br><br><h1>" . $language['user_suppress_ok'] . "</h1>\n";
@@ -65,7 +67,7 @@ if ($suppressuser == 1) {
 			echo "</form>\n";
 			echo "</div><br><br>\n";
 		}
-	mysql_close($connexion);
+	mysqli_close($connexion);
 	} else {
 		//validation of suppression
 		
@@ -108,20 +110,21 @@ if ($suppressuser == 1) {
 	}
 } else {
 	//database connection
-	$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-	$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+	require_once("jgbdb.php");
+	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 	
 	//database query to get user list
 	$sqldeleteuser = "SELECT * FROM crawlt_login WHERE admin=0";
 	$requetedeleteuser = db_query($sqldeleteuser, $connexion);
-	$nbrresult = mysql_num_rows($requetedeleteuser);
+	$nbrresult = $requetedeleteuser->num_rows;
 	if ($nbrresult >= 1) {
-		while ($ligne = mysql_fetch_object($requetedeleteuser)) {
+		while ($ligne = $requetedeleteuser->fetch_object()) {
 			$idlogin = $ligne->id_login;
 			$userlogin = $ligne->crawlt_user;
 			$loginuser[$idlogin] = $userlogin;
 		}
-		mysql_close($connexion);
+		mysqli_close($connexion);
+
 		//display
 		echo "<br><br><h1>" . $language['user_suppress'] . "</h1>\n";
 		echo "<div class='tableau' align='center'>\n";

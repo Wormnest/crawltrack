@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: adminmodifsite.php
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 $sitenamedisplay = htmlentities($sitename);
 $siteurldisplay = htmlentities($siteurl);
 if ($validsite == 1) {
@@ -67,13 +69,13 @@ if ($validsite == 1) {
 		//update database
 		
 		//database connection
-		$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-		$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+		require_once("jgbdb.php");
+		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 		
-		$sql = "UPDATE crawlt_site SET name='" . sql_quote($sitename) . "',url='" . sql_quote($siteurl) . "'
-			WHERE id_site= '" . sql_quote($site) . "'";
+		$sql = "UPDATE crawlt_site SET name='" . crawlt_sql_quote($connexion, $sitename) . "',url='" . crawlt_sql_quote($connexion, $siteurl) . "'
+			WHERE id_site= '" . crawlt_sql_quote($connexion, $site) . "'";
 		$requete = db_query($sql, $connexion);
-		mysql_close($connexion);
+		mysqli_close($connexion);
 		echo "<br><br><h1>" . $language['modif_site'] . "</h1>\n";
 		echo "<br><br><p>" . $language['update'] . "</p><br><br>";
 		
@@ -92,21 +94,21 @@ if ($validsite == 1) {
 } else {
 	//first arrival on the page
 	//database connection
-	$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-	$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+	require_once("jgbdb.php");
+	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 	
 	//request to get the sites datas
 	$sql = "SELECT id_site, name, url FROM crawlt_site";
 	$requete = db_query($sql, $connexion);
-	$nbrresult = mysql_num_rows($requete);
+	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
-		while ($ligne = mysql_fetch_row($requete)) {
+		while ($ligne = $requete->fetch_row()) {
 			$listsite2[] = $ligne[0];
 			$namesite[$ligne[0]] = $ligne[1];
 			$urlsite[$ligne[0]] = $ligne[2];
 		}
 	}
-	mysql_close($connexion);
+	mysqli_close($connexion);
 	echo "<br><br><h1>" . $language['modif_site'] . "</h1>\n";
 	echo "</div>\n";
 	echo "<div align=\"center\"><table cellpadding='0px' cellspacing='0'>\n";

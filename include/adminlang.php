@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,28 +8,31 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: adminlang.php
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 if ($validlogin == 1) {
 	//update the crawlt_config_table
 	//database connection
-	$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-	$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
-	$sqlupdatemail = "UPDATE crawlt_config SET lang='" . sql_quote($crawltnewlang) . "'";
+	require_once("jgbdb.php");
+	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+
+	$sqlupdatemail = "UPDATE crawlt_config SET lang='" . crawlt_sql_quote($connexion, $crawltnewlang) . "'";
 	$requeteupdatemail = db_query($sqlupdatemail, $connexion);
 	if ($crawltnewlang == "russian" || $crawltnewlang == "bulgarian" || $crawltnewlang == "turkish" || $crawltnewlang == "italian") {
 		$sqlupdate = "UPDATE crawlt_config SET typecharset='1'";
 		$requeteupdate = db_query($sqlupdate, $connexion);
-	mysql_close($connexion);
+	mysqli_close($connexion);
 	}
 	echo "<br><br><p>" . $language['update'] . "</p><br><br>";
 	

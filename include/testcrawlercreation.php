@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,31 +8,33 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: testcrawlercreation.php
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //valid form
 if ($validlogin == 1) {
 	//database connection
-	$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-	$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+	require_once("jgbdb.php");
+	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 	
 	//check if crawler already exist
 	$sqlexist = "SELECT * FROM crawlt_crawler
 	WHERE crawler_name='Test-CrawlTrack'";
 	$requeteexist = db_query($sqlexist, $connexion);
-	$nbrresult = mysql_num_rows($requeteexist);
+	$nbrresult = $requeteexist->num_rows;
 	
 	if ($nbrresult >= 1) {
-		$ligne = mysql_fetch_object($requeteexist);
+		$ligne = $requeteexist->fetch_object();
 		
 		//crawler already exist
 		echo "<br><br><h2>" . $language['crawler_test_creation'] . "</h2>\n";
@@ -50,7 +52,7 @@ if ($validlogin == 1) {
 			$_SERVER = $HTTP_SERVER_VARS;
 		}
 		$agent2 = $_SERVER['HTTP_USER_AGENT'];
-		$sqlcrawler = "INSERT INTO crawlt_crawler (crawler_user_agent,crawler_name,crawler_url,crawler_info,crawler_ip) VALUES ('" . sql_quote($agent2) . "','Test-Crawltrack','no-url','me','')";
+		$sqlcrawler = "INSERT INTO crawlt_crawler (crawler_user_agent,crawler_name,crawler_url,crawler_info,crawler_ip) VALUES ('" . crawlt_sql_quote($connexion, $agent2) . "','Test-Crawltrack','no-url','me','')";
 		$requetecrawler = db_query($sqlcrawler, $connexion);
 		
 		//determine the path to the nocache file
@@ -102,8 +104,9 @@ if ($validlogin == 1) {
 			echo "</div><br><br>\n";
 		}
 	}
-mysql_close($connexion);
+mysqli_close($connexion);
 }
+
 //form
 else {
 	echo "<br><br><h1>" . $language['crawler_test_creation'] . "</h1>\n";

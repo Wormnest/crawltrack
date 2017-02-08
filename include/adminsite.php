@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.8
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: adminsite.php
 //----------------------------------------------------------------------
-//  Last update: 12/02/2011
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 $sitenamedisplay = htmlentities($sitename);
 $siteurldisplay = htmlentities($siteurl);
 //valid form
@@ -36,8 +38,8 @@ if ($validsite == 1 && empty($sitename)) {
 	echo "</div><br><br>\n";
 } else {
 	//database connection
-	$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-	$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+	require_once("jgbdb.php");
+	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 	
 	if ($validsite != 1) {
 		//form to add site in the database
@@ -70,9 +72,9 @@ if ($validsite == 1 && empty($sitename)) {
 		
 		//check if site already exist
 		$sqlexist = "SELECT * FROM crawlt_site
-			WHERE name='" . sql_quote($sitename) . "'";
+			WHERE name='" . crawlt_sql_quote($connexion, $sitename) . "'";
 		$queryexist = db_query($sqlexist, $connexion);
-		$nbrresult = mysql_num_rows($queryexist);
+		$nbrresult = $queryexist->num_rows;
 		if ($nbrresult >= 1) {
 			//site already exist
 			echo "<br><br><h1>" . $language['exist_site'] . "</h1>\n";
@@ -88,7 +90,7 @@ if ($validsite == 1 && empty($sitename)) {
 			echo "</form><br><br>\n";
 		} else {
 			//the site didn't exist, we can add it in the database
-			$sqlsite2 = "INSERT INTO crawlt_site (name, url) VALUES ('" . sql_quote($sitename) . "','" . sql_quote($siteurl) . "')";
+			$sqlsite2 = "INSERT INTO crawlt_site (name, url) VALUES ('" . crawlt_sql_quote($connexion, $sitename) . "','" . crawlt_sql_quote($connexion, $siteurl) . "')";
 			$querysite2 = db_query($sqlsite2, $connexion);
 			
 			//check is query is successfull
@@ -109,6 +111,6 @@ if ($validsite == 1 && empty($sitename)) {
 			}
 		}
 	}
-mysql_close($connexion);
+mysqli_close($connexion);
 }
 ?>

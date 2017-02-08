@@ -1,6 +1,6 @@
 <?php
 //----------------------------------------------------------------------
-//  CrawlTrack 3.2.6
+//  CrawlTrack
 //----------------------------------------------------------------------
 // Crawler Tracker for website
 //----------------------------------------------------------------------
@@ -8,17 +8,19 @@
 //----------------------------------------------------------------------
 // Code cleaning: Philippe Villiers
 //----------------------------------------------------------------------
+// Updating: Jacob Boerema
+//----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: updateremote.php
 //----------------------------------------------------------------------
-//  Last update: 12/09/2010
-//----------------------------------------------------------------------
+
 if (!defined('IN_CRAWLT_ADMIN')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
+
 //initialize array
 $updatelistua = array();
 $updatelistname = array();
@@ -29,14 +31,14 @@ $crawlernameadd = array();
 $crawleruaadd = array();
 
 //databaseconnection
-$connexion = mysql_connect($crawlthost, $crawltuser, $crawltpassword) or die("MySQL connection to database problem");
-$selection = mysql_select_db($crawltdb) or die("MySQL database selection problem");
+require_once("jgbdb.php");
+$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //query to get the actual liste id
 $sqlupdate = "SELECT * FROM crawlt_update";
 $requeteupdate = db_query($sqlupdate, $connexion);
 $idlastupdate = 0;
-while ($ligne = mysql_fetch_object($requeteupdate)) {
+while ($ligne = $requeteupdate->fetch_object()) {
 	$update = $ligne->update_id;
 	if ($update > $idlastupdate) {
 		$idlastupdate = $update;
@@ -128,8 +130,8 @@ if (!$file || $nofile) {
 						$i = $i + 1;
 					}
 					$sqlexist = "SELECT * FROM crawlt_crawler";
-					$requeteexist = mysql_query($sqlexist, $connexion);
-					while ($ligne = mysql_fetch_object($requeteexist)) {
+					$requeteexist = $connexion->query($sqlexist);
+					while ($ligne = $requeteexist->fetch_object()) {
 						$crawlerua = $ligne->crawler_user_agent;
 						$listcrawler[] = $crawlerua;
 					}
@@ -145,7 +147,7 @@ if (!$file || $nofile) {
 						if (in_array($uatest, $listcrawler)) {
 						} else {
 							$sqlinsert = "INSERT INTO crawlt_crawler (crawler_user_agent,crawler_name, crawler_url, crawler_info, crawler_ip)
-								VALUES ('" . sql_quote($ua) . "','" . sql_quote($name) . "','" . sql_quote($url) . "','" . sql_quote($user) . "','')";
+								VALUES ('" . crawlt_sql_quote($connexion, $ua) . "','" . crawlt_sql_quote($connexion, $name) . "','" . crawlt_sql_quote($connexion, $url) . "','" . crawlt_sql_quote($connexion, $user) . "','')";
 							$requeteinsert = db_query($sqlinsert, $connexion);
 							$nbrupdate = $nbrupdate + 1;
 							$crawlernameadd[] = $name;
@@ -153,7 +155,7 @@ if (!$file || $nofile) {
 						}
 					}
 					echo "<h1><br><br>$nbrupdate&nbsp;" . $language['crawler_add'] . "<br></h1>";
-					$sqlinsertid = "INSERT INTO crawlt_update (update_id) VALUES ('" . sql_quote($idlist) . "')";
+					$sqlinsertid = "INSERT INTO crawlt_update (update_id) VALUES ('" . crawlt_sql_quote($connexion, $idlist) . "')";
 					$requeteinsertid = db_query($sqlinsertid, $connexion);
 					
 					echo "<div align='center'><table cellpadding='0px' cellspacing='0' width='750px'><tr><td class='tableau1'>" . $language['crawler_name'] . "</td><td class='tableau2'>" . $language['user_agent'] . "</td></tr>\n";
@@ -174,5 +176,5 @@ if (!$file || $nofile) {
 		}
 	}
 }
-mysql_close($connexion);
+mysqli_close($connexion);
 ?>
