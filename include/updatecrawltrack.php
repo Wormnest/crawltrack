@@ -20,7 +20,7 @@
 //this file is needed to update from a previous release
 
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
 //connexion to database
 require_once("jgbdb.php");
@@ -104,7 +104,7 @@ if ($version < 340) {
 	}
 	$filename = $path . '/crawltrack.php';
 	$filedir = $path;
-	//suppress existing file
+	// Delete existing crawltrack.php
 	@chmod($filedir, 0755);
 	if (@unlink($filename)) {
 		//url calculation
