@@ -1,8 +1,30 @@
 Crawltrack 3.4.0
 ================
 
-README
-======
+Contents
+========
+1. English readme.
+2. Lisez-moi en français.
+
+
+English readme
+--------------
+CrawlTrack will give youu a detailed view of the crawler (also called bot or spider)
+activity on your website.
+Crawler visits count for more than 85% of hits on www.Crawltrack.net. Some are usefull,
+others not so much or even dangerous (30% are hacking attempts on www.crawltrack.net).
+
+CrawlTrack is able to give a clear view of spiders crawling your website and to follow
+the indexing of your website from minute to minute.
+This knowledge can help you to improve your website ranking in search engine indexes
+and through that increase the number of visitors.
+
+CrawlTrack gives you information about the number and origin of visitors, the bounce rate,
+the number of 404 errors, the number of file downloads, your server load and your site
+indexation.
+
+Besides this CrawlTrack can also block numerous hacking attempts.
+
 
 Requirements
 ------------
