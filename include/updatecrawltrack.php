@@ -89,9 +89,9 @@ if ($version < 328) {
 	}
 }
 //----------------------------------------------------------------------------------------------------
-//update crawltrack.php file if version <332
+//update crawltrack.php file if version < 340
 $crawltrack_php_updated = false;
-if ($version < 332) {
+if ($version < 340) {
 	//update the crawltrack file
 	
 	//determine the path to the file
