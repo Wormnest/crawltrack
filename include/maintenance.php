@@ -12,10 +12,14 @@
 //----------------------------------------------------------------------
 // Website: www.crawltrack.net
 //----------------------------------------------------------------------
-// That script is distributed under GNU GPL license
+// This script is distributed under GNU GPL license
 //----------------------------------------------------------------------
 // file: maintenance.php
 //----------------------------------------------------------------------
+
+if (!defined('IN_CRAWLT')) {
+	exit('<h1>No direct access</h1>');
+}
 
 // This file will manage all maintenance actions, database level (initial creation and updates)
 
