@@ -1,39 +1,45 @@
-Crawltrack 3.3.1
+Crawltrack 3.4.0
+================
 
 README
-------
+======
 
--First installation:
+Requirements
+------------
+PHP version 5.3 or higher including PHP 7.
 
-Once the files upload on your website, you just have to enter your CrawlTrack url in your
+
+New installation
+----------------
+Upload all files in a folder on your website then enter your CrawlTrack url in your
 browser and follow the instructions to install CrawlTrack.
-You will find more details information on the official website : http://www.crawltrack.net
+You will find more detailed information on the official website: http://www.crawltrack.net
 
--Upgrade from a previous version:
-
-Upload on your website all the new files, taking care not to destroy the crawltrack.php file at the root
+Upgrade from a previous version
+-------------------------------
+Upload all new files to your website, taking care not to destroy the crawltrack.php file at the root
 of your crawltrack folder and the configconnect.php file in the include folder.
 Thats all what you have to do. You will keep all your datas, just the config will be updated.
 
-If you are using the second tag (the biggest one with http request) from a version before the 3.0.0, you need to replace the tag on your page
-to be able to use that version.
+If you are using the second tag (the biggest one with http request) from a version before the 3.0.0,
+you need to replace the tag on your page to be able to use that version.
 
-Once Crawltrack install, don't forget to add your site to the Crawltrack users directory:
+Once Crawltrack is installed, don't forget to add your site to the Crawltrack users directory:
 http://www.crawltrack.net/user-list/english.html
 
 
 
 LISEZ MOI
----------
+=========
 
--Première installation:
-
+Première installation
+---------------------
 Une fois les fichier uploadés sur votre site, il suffit d'entrer l'adresse de votre crawltrack
 dans votre navigateur et de suivre les instructions pour installer Crawltrack.
 Vous trouverez des informations plus détaillées sur le site officiel: http://www.crawltrack.net/fr
 
--Mise à jour à partir d'une version précédente:
-
+Mise à jour à partir d'une version précédente
+---------------------------------------------
 Uploadez sur votre site les nouveaux fichiers, en prenant garde de ne pas écraser le fichier crawltrack.php à la racine
 du répertoire crawltrack et le fichier configconnect.php dans le répertoire include.
 C'est tout ce que vous avez à faire. Vos données sont conservées, seul la configuration sera mise à jour.
