@@ -191,7 +191,7 @@ $language['user_agent_or_ip']="User agent of IP";
 $language['crawler_ip']="IP:";
 $language['table_mod_ok']="Crawlt_crawler tabel bijgwerkt OK.";
 $language['files_mod_ok']="Configconnect.php en crawltrack.php bestanden bijgwerkt OK.";
-$language['update_crawltrack_ok']="CrawlTrack bijwerken is klaar, u gebruikt nu versie:";
+$language['update_crawltrack_ok']="CrawlTrack bijwerken is voltooid. U gebruikt nu versie:";
 $language['table_mod_no_ok']="Crawlt_crawler tabel bijwerken mislukt.";
 $language['files_mod_no_ok']="Er is een probleem ontstaan tijdens het bijwerken van configconnect.php en crawltrack.php.";
 $language['update_crawltrack_no_ok']="Er is een probleem ontstaan tijdens het bijwerken van CrawlTrack.";
@@ -536,24 +536,24 @@ $language['nbr_tot_visit_seo']="Origin visits";
 $language['url_parameters']="Parameters in the url";
 $language['remove_parameter']="Remove url parameters";
 $language['remove_parameter_alert']="Remove url parameters, will prevent page table growing excessively, for against any type of url: www.example.com/index.php?article=225 will be recorded in the form www.example.com / index.php giving less detail on the pages visited.";
-$language['bookmark']="Use this address for this page to your Favorites";
-$language['evolution']="Trend number of unique visitors";
-$language['perday']="per day";
-$language['shortterm']="Last 7 days:";
-$language['longterm']="30 days:";
+$language['bookmark']="Gebruik dit adres om deze pagina toe te voegen aan uw Favorieten";
+$language['evolution']="Trend aantal unieke bezoekers";
+$language['perday']="per dag";
+$language['shortterm']="Laatste 7 dagen:";
+$language['longterm']="30 dagen:";
 $language['bounce_rate']="Bounce Rate";
 $language['visit_summary']="Cumulative visits on all sites";
 $language['data']="Data";
 $language['index']="Index";
-$language['sponsorship']="They support CrawlTrack:";
+$language['sponsorship']="CrawlTrack wordt ondersteund door:";
 //3.1.0
 $language['browser']="Browsers";
-$language['visitor-browser']="Browsers used by visitors";
-$language['hits-per-hour']="Hits per hour";
-$language['russian']="Russian";
+$language['visitor-browser']="Browsers gebruikt door bezoekers";
+$language['hits-per-hour']="Hits per uur";
+$language['russian']="Russisch";
 //3.1.2
-$language['besponsor']="Gebruik CrawlTrack te weten uw producten en diensten aan duizenden webmasters.";
-$language['ad-on-crawltrack']="<a href=\"http://translate.google.fr/translate?hl=fr&sl=fr&tl=nl&u=http%3A%2F%2Fwww.ad42.com%2Fzone.aspx%3Fidz%3D6690%26ida%3D-1\" target=\"_blank\">Waarom niet gebruik CrawlTrack om uw producten en diensten te presenteren aan duizenden webmasters?</a>";
+$language['besponsor']="Gebruik CrawlTrack om de resultaten te meten van uw producten en diensten.";
+$language['ad-on-crawltrack']="<a href=\"http://translate.google.fr/translate?hl=fr&sl=fr&tl=nl&u=http%3A%2F%2Fwww.ad42.com%2Fzone.aspx%3Fidz%3D6690%26ida%3D-1\" target=\"_blank\">Waarom niet CrawlTrack gebruiken om uw producten en diensten te presenteren aan duizenden webmasters?</a>";
 //3.2.0
 $language['baidu']="Baidu";
 $language['googleposition']="Position<br>in Google";
@@ -563,9 +563,9 @@ $language['positiontwomonth']="Position two months ago";
 $language['positionthreemonth']="Position three months ago";
 $language['googledetail']="Details of position in Google and hits generated";
 //3.2.3
-$language['bulgarian']="Bulgaarse";
+$language['bulgarian']="Bulgaars";
 //3.2.8
-$language['italian']="Italiaanse";
+$language['italian']="Italiaans";
 $language['two_year_data']="all the old robot visits over two years";
 $language['two_year_data_human']="all the old visitors from more than two years";
 //3.3.1
