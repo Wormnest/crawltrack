@@ -163,7 +163,7 @@ $requetecache = $connexion->query($sqlcache) or exit("MySQL query error");
 
 // Just check if the main errors mesages array are empty
 if (empty($tables_actions_error_messages) && empty($fields_actions_error_messages) && $process_ok) {
-	$sqlupdateversion = "UPDATE crawlt_config SET version='332'";
+	$sqlupdateversion = "UPDATE crawlt_config SET version='" . crawlt_sql_quote($connexion, $versionid) . "'";
 	$requeteupdateversion = $connexion->query($sqlupdateversion);
 	$a = substr($versionid, 0, 1);
 	$b = substr($versionid, 1, 1);

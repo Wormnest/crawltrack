@@ -179,7 +179,7 @@ if(!isset($tables_to_check) || empty($tables_to_check))
 				PRIMARY KEY  (id_config)
 				)",
 			'insert_query' => "INSERT INTO crawlt_config (id_config, timeshift, public, mail, datelastmail, addressmail, lang, version, firstdayweek, rowdisplay, orderdisplay, typemail, typecharset, blockattack, sessionid, includeparameter) 
-			VALUES ('1','0','0','0','0','','".crawlt_sql_quote($connexion, $crawltlang)."','332','Monday','30','0','1','1','0','0','0')"
+			VALUES ('1','0','0','0','0','','".crawlt_sql_quote($connexion, $crawltlang)."','".crawlt_sql_quote($connexion, $versionid)."','Monday','30','0','1','1','0','0','0')"
 		),
 		array(
 			'table_name' => 'crawlt_update_attack',
