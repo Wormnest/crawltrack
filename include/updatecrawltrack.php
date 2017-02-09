@@ -171,7 +171,7 @@ if (empty($tables_actions_error_messages) && empty($fields_actions_error_message
 ?>
     <div class="content">
 
-    <h1><?php echo $language['update_crawltrack_ok'] ?>&nbsp;<?php echo $a . $b . $c; ?></h1>
+    <h1><?php echo $language['update_crawltrack_ok'] ?>&nbsp;<?php echo $a.".".$b.".".$c; ?></h1>
     
     <?php if (!$existing_crawlt_site_url_field): //we need to add the site url in the table
 		 ?> 
