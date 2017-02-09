@@ -32,20 +32,20 @@ http://www.crawltrack.net/user-list/english.html
 LISEZ MOI
 =========
 
-Première installation
+PremiÃ¨re installation
 ---------------------
-Une fois les fichier uploadés sur votre site, il suffit d'entrer l'adresse de votre crawltrack
+Une fois les fichier uploadÃ©s sur votre site, il suffit d'entrer l'adresse de votre crawltrack
 dans votre navigateur et de suivre les instructions pour installer Crawltrack.
-Vous trouverez des informations plus détaillées sur le site officiel: http://www.crawltrack.net/fr
+Vous trouverez des informations plus dÃ©taillÃ©es sur le site officiel: http://www.crawltrack.net/fr
 
-Mise à jour à partir d'une version précédente
+Mise Ã  jour Ã  partir d'une version prÃ©cÃ©dente
 ---------------------------------------------
-Uploadez sur votre site les nouveaux fichiers, en prenant garde de ne pas écraser le fichier crawltrack.php à la racine
-du répertoire crawltrack et le fichier configconnect.php dans le répertoire include.
-C'est tout ce que vous avez à faire. Vos données sont conservées, seul la configuration sera mise à jour.
+Uploadez sur votre site les nouveaux fichiers, en prenant garde de ne pas Ã©craser le fichier crawltrack.php Ã  la racine
+du rÃ©pertoire crawltrack et le fichier configconnect.php dans le rÃ©pertoire include.
+C'est tout ce que vous avez Ã  faire. Vos donnÃ©es sont conservÃ©es, seul la configuration sera mise Ã  jour.
 
-Si vous utilisiez le deuxième tag (le plus long, avec la requète http) d'une version avant la 3.0.0, il faut remplacer
+Si vous utilisiez le deuxiÃ¨me tag (le plus long, avec la requÃ¨te http) d'une version avant la 3.0.0, il faut remplacer
 le tag Crawltrack sur vos pages pour pouvoir utiliser cette version.
 
-Une fois CrawlTrack installé, n'oubliez pas d'inscrire votre site dans l'annuaire des utilisateurs de Crawltrack:
+Une fois CrawlTrack installÃ©, n'oubliez pas d'inscrire votre site dans l'annuaire des utilisateurs de Crawltrack:
 http://www.crawltrack.net/user-list/french.html
