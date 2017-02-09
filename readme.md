@@ -4,7 +4,7 @@ Crawltrack 3.4.0
 Contents
 ========
 1. English readme.
-2. Lisez-moi en français.
+2. Lisez-moi en français. Not updated.
 
 
 English readme
@@ -30,6 +30,9 @@ Requirements
 ------------
 PHP version 5.3 or higher including PHP 7.
 
+License
+-------
+GNU GPL version 2 or higher.
 
 New installation
 ----------------
@@ -45,9 +48,6 @@ Thats all what you have to do. You will keep all your datas, just the config wil
 
 If you are using the second tag (the biggest one with http request) from a version before the 3.0.0,
 you need to replace the tag on your page to be able to use that version.
-
-Once Crawltrack is installed, don't forget to add your site to the Crawltrack users directory:
-http://www.crawltrack.net/user-list/english.html
 
 
 
