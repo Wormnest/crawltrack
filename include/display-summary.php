@@ -267,6 +267,9 @@ AND referer !='' )
 GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($times*3600), '%d-%m-%Y')
 ORDER BY date";
 $requete = db_query($sql, $connexion);
+// Init arrays
+$UVlast7days = array();
+$UVlast30days = array();
 while ($ligne = $requete->fetch_row()) {
 	if (strtotime($ligne[0]) >= strtotime($daterequestUV)) {
 		$UVlast7days[] = $ligne[1];
