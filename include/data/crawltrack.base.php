@@ -22,6 +22,11 @@ error_reporting(0);
 
 @set_time_limit(10);
 $crawltattack=0;
+
+// Set the time zone to whatever the default is to avoid errors
+// Will default to UTC if it's not set properly in php.ini
+date_default_timezone_set(@date_default_timezone_get());
+
 // Function to remove http(s) at beginning of URLs
 if(!function_exists('strip_protocol')) {
 	function strip_protocol($url='')

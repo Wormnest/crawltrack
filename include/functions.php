@@ -925,6 +925,10 @@ function strip_protocol($url='')
 
 //request date calculation according period
 //-------period calculation including time shift-----------------------------------------
+// Set the time zone to whatever the default is to avoid errors
+// Will default to UTC if it's not set properly in php.ini
+date_default_timezone_set(@date_default_timezone_get());
+
 //day server
 $serverday = date("j", strtotime("today"));
 $todayserver = date("Y-m-d", strtotime("today"));
