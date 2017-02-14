@@ -3,3 +3,6 @@ crawltrack.php
 include/configconnect.php
 cache/*.txt
 cachecloseperiod/*.gz
+composer.lock
+vendor/autoload.php
+vendor/composer
