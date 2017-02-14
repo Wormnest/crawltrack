@@ -113,6 +113,11 @@ class ctAccounts
 			if ($user == $loginuser) {
 				if ($type == 1) {
 					// Using new safe password hash
+					// password functions built in starting php 5.5, before that use compat library
+					if (version_compare(PHP_VERSION, '5.5.0', '<')) {
+						$compatfile = dirname(__FILE__) . '/../vendor/ircmaxell/password-compat/lib/password.php';
+						require_once($compatfile);
+					}
 					if (password_verify($loginpassword, $hash)) {
 						$result = true;
 					}
