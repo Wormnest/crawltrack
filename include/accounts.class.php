@@ -91,13 +91,20 @@ class ctAccounts
 	 * Version using bind_param and bind_result
 	 */
 	public function is_valid_login($loginuser, $loginpassword) {
-		//$encoded_pw_old = $this->encode_password_old($loginpassword);
 		$sql = "SELECT * FROM crawlt_login WHERE crawlt_user=?";
 		$stmt = $this->db->connexion->prepare($sql);
 		$stmt->bind_param('s', $loginuser);
 		$stmt->execute();
 		$stmt->store_result();
-		$stmt->bind_result($dummyid, $user, $password, $admin, $site, $type, $hash);
+		// We need special handling in case the login table hasn't been updated yet
+		$numfields = $stmt->result_metadata()->field_count;
+		if ($numfields == 5) {
+			// Database not yet updated
+			$stmt->bind_result($dummyid, $user, $password, $admin, $site);
+			$type = 3; // Dummy number so we know when we can't check or add hash
+		} else {
+			$stmt->bind_result($dummyid, $user, $password, $admin, $site, $type, $hash);
+		}
 		// TODO: Only one row is probably allowed since user should be unique?
 		// However need to check with non admin users and the site code!
 		// $site = 0 means is allowed to visit all sites, other number: only allowed to visit that site id
@@ -116,6 +123,11 @@ class ctAccounts
 						if ($this->update_password_encoding($user, $loginpassword)) {
 							$result = true;
 						}
+					}
+				} elseif ($type == 3) {
+					// Database not updated yet. Only check for correct md5 hashed password.
+					if ($password == $this->encode_password_old($loginpassword)) {
+						$result = true;
 					}
 				}
 				
