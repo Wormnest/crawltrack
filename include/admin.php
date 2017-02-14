@@ -399,9 +399,21 @@ if ($_SESSION['rightadmin'] == 1) {
 			</td><td valign="top" width="450px">
 			<?php
 			if ($crawltlang == 'french' || $crawltlang == 'frenchiso') {
-				echo "<h2>CrawlTrack infos<br><iframe name=\"I1\" src=\"http://www.crawltrack.net/news/crawltrack-news-fr.php\" marginwidth=\"1\" marginheight=\"1\" scrolling=\"auto\" border=\"1\" bordercolor=\"#003399\" frameborder=\"1px\" width=\"300px\" height=\"150px\"></iframe></h2>\n";
+				?>
+			<h2>CrawlTrack Infos</h2>
+			<div>
+				<script src="https://gist.github.com/Wormnest/4f16708f7ff73b41a5688ee365ee12d1.js"></script>
+			</div>
+				<?php
+				echo "<iframe name=\"I1\" src=\"http://www.crawltrack.net/news/crawltrack-news-fr.php\" marginwidth=\"1\" marginheight=\"1\" scrolling=\"auto\" border=\"1\" bordercolor=\"#003399\" frameborder=\"1px\" width=\"300px\" height=\"150px\"></iframe>\n";
 			} else {
-				echo "<h2>CrawlTrack news<br><iframe name=\"I1\" src=\"http://www.crawltrack.net/news/crawltrack-news-en.php\" marginwidth=\"1\" marginheight=\"1\" scrolling=\"auto\" border=\"1\" bordercolor=\"#003399\" frameborder=\"1px\" width=\"300px\" height=\"150px\"></iframe></h2>\n";
+				?>
+			<h2>CrawlTrack News</h2>
+			<div>
+				<script src="https://gist.github.com/Wormnest/4f16708f7ff73b41a5688ee365ee12d1.js"></script>
+			</div>
+				<?php
+				echo "<iframe name=\"I1\" src=\"http://www.crawltrack.net/news/crawltrack-news-en.php\" marginwidth=\"1\" marginheight=\"1\" scrolling=\"auto\" border=\"1\" bordercolor=\"#003399\" frameborder=\"1px\" width=\"400px\" height=\"150px\"></iframe>\n";
 			}
 			echo "<br><h2>" . $language['stats_visitors'] . "</h2>";
 			echo "<div style=\"border: 2px solid #003399 ; padding-left:5px; padding-top:5px; padding-bottom:15px; margin-left:71px; margin-right:71px; font-size:13px; font-weight:bold; color: #003399;
