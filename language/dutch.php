@@ -478,9 +478,9 @@ $language['download']="Downloads";
 $language['file']="File";
 $language['download_period']="Over the period";
 $language['download_link']="Count downloads";
-$language['download_link2']="<b>For your downloads are counted by CrawlTrack:</b><br><br>
--The downloadable files must be hosted on one of the sites followed by CrawlTrack.<br>
--the download link (for a file whose location is http://www.example.com/folder/file.zip) must be of the form :";
+$language['download_link2']="<b>How to get your downloads counted by CrawlTrack:</b><br><br>
+-The downloadable files must be hosted on one of the sites tracked by CrawlTrack.<br>
+-The download link (for a file whose location is http://www.example.com/folder/file.zip) must be like:";
 $language['download_link3']="http://www.example.com/folder/file.zip";
 $language['download_link4']="That's it, no further manipulation is necessary.";
 $language['error']="Errors 404";
