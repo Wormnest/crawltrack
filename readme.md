@@ -28,7 +28,7 @@ Besides this CrawlTrack can also block numerous hacking attempts.
 
 Requirements
 ------------
-PHP version 5.3 or higher including PHP 7.
+PHP version 5.3.7 or higher including PHP 7.
 
 License
 -------
@@ -44,7 +44,8 @@ Upgrade from a previous version
 -------------------------------
 Upload all new files to your website, taking care not to destroy the crawltrack.php file at the root
 of your crawltrack folder and the configconnect.php file in the include folder.
-Thats all what you have to do. You will keep all your datas, just the config will be updated.
+That's all you have to do. As soon as you log in everything needing updates will be
+automatically upgraded.
 
 If you are using the second tag (the biggest one with http request) from a version before the 3.0.0,
 you need to replace the tag on your page to be able to use that version.
