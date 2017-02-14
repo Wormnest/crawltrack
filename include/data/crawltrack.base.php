@@ -544,7 +544,9 @@ else
 	//check if it's really a visitor and if it's not you !!!
 	$crawltbrowserconcat=implode("|",$crawltbrowserlist);
 	$crawltnonebrowserconcat=implode("|",$crawltnonebrowserlist);
-	if((!isset($_COOKIE["crawltrackstats".$crawltsite]) || $_COOKIE["crawltrackstats".$crawltsite]!='nocountinstats') && (preg_match('/'.preg_quote($crawltbrowserconcat, '/').'/', $crawltagent) && !preg_match('/'.preg_quote($crawltnonebrowserconcat, '/').'/', $crawltagent)))
+	if((!isset($_COOKIE["crawltrackstats".$crawltsite]) || $_COOKIE["crawltrackstats".$crawltsite]!='nocountinstats') &&
+		(preg_match('/('.$crawltbrowserconcat.')/', $crawltagent) && 
+		!preg_match('/('.$crawltnonebrowserconcat.')/', $crawltagent)))
 	{
 		//case human visit
 		$crawltbrowser = crawltbrowserid($crawltagent);

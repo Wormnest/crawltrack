@@ -979,35 +979,37 @@ $crawltaollist = array(
 "wap.aol.com",
 );
 
+// Note certain characters in this list need to be escaped
+// since we use this in preg_match!
 $crawltbrowserlist = array(
 //Chrome
 "Chrome",
 //Firefox
 "Firefox",
 //Internet explorer-windows 98
-"compatible; MSIE 5.0; Windows 98;",
-"compatible; MSIE 5.01; Windows 98;",
-"compatible; MSIE 5.5; Windows 98;",
-"compatible; MSIE 6.0; Windows 98;",
+"compatible; MSIE 5\.0; Windows 98;",
+"compatible; MSIE 5\.01; Windows 98;",
+"compatible; MSIE 5\.5; Windows 98;",
+"compatible; MSIE 6\.0; Windows 98;",
 //Internet explorer-windows 2000
-"compatible; MSIE 5.01; Windows NT 5.0;",
-"compatible; MSIE 5.5; Windows NT 5.0;",
-"compatible; MSIE 6.0; Windows NT 5.0;",
+"compatible; MSIE 5\.01; Windows NT 5\.0;",
+"compatible; MSIE 5\.5; Windows NT 5\.0;",
+"compatible; MSIE 6\.0; Windows NT 5\.0;",
 //Internet explorer-windows XP
-"compatible; MSIE 6.0; Windows NT 5.1;",
-"compatible; MSIE 7.0; Windows NT 5.1;",
-"compatible; MSIE 8.0; Windows NT 5.1;",
+"compatible; MSIE 6\.0; Windows NT 5\.1;",
+"compatible; MSIE 7\.0; Windows NT 5\.1;",
+"compatible; MSIE 8\.0; Windows NT 5\.1;",
 //Internet explorer-windows Vista
-"compatible; MSIE 7.0; Windows NT 6.0;",
-"compatible; MSIE 8.0; Windows NT 5.2;",
-"compatible; MSIE 8.0; Windows NT 6.0;",
-"compatible; MSIE 9.0; Windows NT 6.0;",
+"compatible; MSIE 7\.0; Windows NT 6\.0;",
+"compatible; MSIE 8\.0; Windows NT 5\.2;",
+"compatible; MSIE 8\.0; Windows NT 6\.0;",
+"compatible; MSIE 9\.0; Windows NT 6\.0;",
 //Internet explorer-windows Seven
-"compatible; MSIE 7.0; Windows NT 6.1;",
-"compatible; MSIE 8.0; Windows NT 6.1;",
-"compatible; MSIE 9.0; Windows NT 6.1;",
+"compatible; MSIE 7\.0; Windows NT 6\.1;",
+"compatible; MSIE 8\.0; Windows NT 6\.1;",
+"compatible; MSIE 9\.0; Windows NT 6\.1;",
 //Internet explorer pocket
-"compatible; MSIE 4.01; Windows CE;",
+"compatible; MSIE 4\.01; Windows CE;",
 //PlayStation
 "PlayStation Portable",
 //others
@@ -1057,8 +1059,10 @@ $crawltbrowserlist2 = array(
 );
 
 
+// Note certain characters in this list need to be escaped
+// since we use this in preg_match!
 $crawltnonebrowserlist = array(
-"bsalsa.com",
+"bsalsa\.com",
 "HTTrack",
 "MemoWeb",
 "AspiWeb",
