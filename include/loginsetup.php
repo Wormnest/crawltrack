@@ -18,7 +18,7 @@
 //----------------------------------------------------------------------
 
 if (!defined('IN_CRAWLT_INSTALL')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
 
 //valid form
@@ -40,18 +40,14 @@ if ($validlogin == 1) {
 		echo "<br></div>\n";
 	} else {
 		//database connection
-		include ("include/configconnect.php");
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+		require_once("db.class.php");
+		require_once("accounts.class.php");
+
+		$db = new ctDb(); // Create db connection
+		$accounts = new ctAccounts($db);
 		
-		//check if login already exist
-		$sqlexist = "SELECT * FROM crawlt_login
-			WHERE crawlt_user='" . crawlt_sql_quote($connexion, $login) . "'";
-		$requeteexist = db_query($sqlexist, $connexion);
-		$nbrresult = $requeteexist->num_rows;
-		
-		if ($nbrresult >= 1) {
-			//login already exist
+		if ($accounts->username_exists($login)) {
+			// This username already exists
 			echo "<h1>" . $language['exist_login'] . "</h1>";
 			echo "<div class=\"form\">\n";
 			echo "<form action=\"index.php\" method=\"POST\" >\n";
@@ -67,16 +63,9 @@ if ($validlogin == 1) {
 			echo "</form>\n";
 			echo "<br></div>\n";
 		} else {
-			//add the login in the database
-			//password treatment
-			$pass = md5($password2);
-			$admin = 1;
-			$website = 0;
-			$sqllogin = "INSERT INTO crawlt_login (crawlt_user,crawlt_password,admin,site) VALUES ('" . crawlt_sql_quote($connexion, $login) . "','" . crawlt_sql_quote($connexion, $pass) . "','" . crawlt_sql_quote($connexion, $admin) . "','" . crawlt_sql_quote($connexion, $website) . "')";
-			$requetelogin = db_query($sqllogin, $connexion);
-			
-			//check is requete is successfull
-			if ($requetelogin == 1) {
+			// Add the user to the database
+			if ($accounts->add_admin($login, $password2)) {
+				// Admin user was added
 				echo "<h2>" . $language['admin_creation'] . "</h2>\n";
 				echo "<p>" . $language['login_ok'] . "</p>\n";
 				echo "<h5>" . $language['login_finish'] . "</h5>\n";
@@ -86,6 +75,7 @@ if ($validlogin == 1) {
 				echo "</form>\n";
 				echo "<br></div>\n";
 			} else {
+				// Adding admin user failed
 				echo "<h2>" . $language['admin_creation'] . "</h2>\n";
 				echo "<p>" . $language['login_no_ok2'] . "</p>";
 				echo "<div class=\"form\">\n";
@@ -102,7 +92,7 @@ if ($validlogin == 1) {
 				echo "<br></div>\n";
 			}
 		}
-mysqli_close($connexion);
+		$db->close();
 	}
 }
 //form

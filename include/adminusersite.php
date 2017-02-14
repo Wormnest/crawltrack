@@ -16,6 +16,9 @@
 //----------------------------------------------------------------------
 // file: adminusersite.php
 //----------------------------------------------------------------------
+// Purpose: Add a new non admin user that has access to statistics of one site
+// TODO: adminuser.php and adminusersite.php should be combined (add an option all sites)
+//----------------------------------------------------------------------
 
 if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>No direct access</h1>');
@@ -44,15 +47,15 @@ if ($validlogin == 1) {
 		echo "</div><br><br>\n";
 	} else {
 		//database connection
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-		
-		//check if login already exist
-		$sqlexist = "SELECT * FROM crawlt_login
-			WHERE crawlt_user='" . crawlt_sql_quote($connexion, $login) . "'";
-		$queryexist = db_query($sqlexist, $connexion);
-		$nbrresult = $queryexist->num_rows;
-		if ($nbrresult >= 1) {
+		require_once("db.class.php");
+		require_once("accounts.class.php");
+
+		$db = new ctDb(); // Create db connection
+		$accounts = new ctAccounts($db); // Create login handling class
+
+		//check if user already exists
+		if ($accounts->username_exists($login)) {
+			// User already exists. Try again.
 			//login already exist
 			echo "<br><br><h1>" . $language['exist_login'] . "</h1>";
 			echo "<div class=\"form\">\n";
@@ -69,17 +72,8 @@ if ($validlogin == 1) {
 			echo "</form>\n";
 			echo "</div><br><br>\n";
 		} else {
-			//add the login in the database
-			
-			//password treatment
-			$pass = md5($password2);
-			$admin = 0;
-			$website = $site;
-			$sqllogin = "INSERT INTO crawlt_login (crawlt_user,crawlt_password,admin,site) VALUES ('" . crawlt_sql_quote($connexion, $login) . "','" . crawlt_sql_quote($connexion, $pass) . "','" . crawlt_sql_quote($connexion, $admin) . "','" . crawlt_sql_quote($connexion, $website) . "')";
-			$querylogin = db_mysql_query($sqllogin, $connexion);
-			
-			//check is query is successfull
-			if ($querylogin == 1) {
+			// Add user credentials to the database
+			if ($accounts->add_nonadmin_user($login, $password2, $site)) {
 				echo "<br><br><h2>" . $language['user_site_creation'] . "</h2>\n";
 				echo "<p>" . $language['login_ok'] . "</p>\n";
 				echo "<div class=\"form\">\n";
@@ -89,6 +83,7 @@ if ($validlogin == 1) {
 				echo "</form>\n";
 				echo "</div><br><br>\n";
 			} else {
+				// Adding user account failed
 				echo "<br><br><h2>" . $language['user_site_creation'] . "</h2>\n";
 				echo "<p>" . $language['login_no_ok2'] . "</p>";
 				echo "<div class=\"form\">\n";
@@ -106,8 +101,8 @@ if ($validlogin == 1) {
 				echo "</div><br><br>\n";
 			}
 		}
+		$db->close();
 	}
-mysqli_close($connexion);
 }
 
 //form
@@ -124,6 +119,7 @@ else {
 	$sqlsite = "SELECT * FROM crawlt_site";
 	$querysite = db_query($sqlsite, $connexion);
 	$nbrresult = $querysite->num_rows;
+	// TODO: Add option "All sites" (translated).
 	while ($ligne = $querysite->fetch_object()) {
 		$sitename = $ligne->name;
 		$siteid = $ligne->id_site;

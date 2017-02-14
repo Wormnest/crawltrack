@@ -87,6 +87,8 @@ if(!isset($tables_to_check) || empty($tables_to_check))
 				crawlt_password VARCHAR(45) NULL,
 				admin SMALLINT UNSIGNED NULL,
 				site SMALLINT UNSIGNED NULL,
+				password_type SMALLINT UNSIGNED NOT NULL default '0',
+				password_hash VARCHAR(255) NULL,
 				PRIMARY KEY(id_login)
 			)",
 			'insert_query' => ''
@@ -411,6 +413,16 @@ function update_crawlt_update_attack($connexion)
 
 // Missing fields used when updating
 $fields_to_check = array(
+	'crawlt_login' => array(
+		array(
+		'field_name' => 'password_type',
+		'add_query' => "ALTER TABLE crawlt_login ADD password_type SMALLINT UNSIGNED NOT NULL default '0'"
+		),
+		array(
+		'field_name' => 'password_hash',
+		'add_query' => "ALTER TABLE crawlt_login ADD password_hash VARCHAR(255) NULL"
+		)
+	),
 	'crawlt_config' => array(
 		array(
 		'field_name' => 'firstdayweek',

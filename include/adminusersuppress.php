@@ -16,6 +16,9 @@
 //----------------------------------------------------------------------
 // file: adminusersuppress.php
 //----------------------------------------------------------------------
+// Purpose: Delete a non admin user account
+// TODO: Show which site(s) a user can view
+//----------------------------------------------------------------------
 
 if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>No direct access</h1>');
@@ -41,16 +44,15 @@ if ($suppressuser == 1) {
 		exit;
 	}
 	if ($suppressuserok == 1) {
-		//login suppression
+		// Delete a non admin user account
 		
-		//database connection
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-		
-		//database query to suppress the login
-		$sqldelete = "DELETE FROM crawlt_login WHERE crawlt_user= '" . crawlt_sql_quote($connexion, $logintosuppress) . "'";
-		$requetedelete = db_query($sqldelete, $connexion);
-		if ($requetedelete) {
+		require_once("db.class.php");
+		require_once("accounts.class.php");
+
+		$db = new ctDb(); // Create db connection
+		$accounts = new ctAccounts($db);
+
+		if ($accounts->delete_user_account($logintosuppress)) {
 			echo "<br><br><h1>" . $language['user_suppress_ok'] . "</h1>\n";
 			echo "<div class=\"form\">\n";
 			echo "<form action=\"index.php\" method=\"POST\" >\n";
@@ -67,7 +69,7 @@ if ($suppressuser == 1) {
 			echo "</form>\n";
 			echo "</div><br><br>\n";
 		}
-	mysqli_close($connexion);
+		$db->close();
 	} else {
 		//validation of suppression
 		
@@ -109,22 +111,16 @@ if ($suppressuser == 1) {
 		echo "</div><br><br>";
 	}
 } else {
-	//database connection
-	require_once("jgbdb.php");
-	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-	
-	//database query to get user list
-	$sqldeleteuser = "SELECT * FROM crawlt_login WHERE admin=0";
-	$requetedeleteuser = db_query($sqldeleteuser, $connexion);
-	$nbrresult = $requetedeleteuser->num_rows;
-	if ($nbrresult >= 1) {
-		while ($ligne = $requetedeleteuser->fetch_object()) {
-			$idlogin = $ligne->id_login;
-			$userlogin = $ligne->crawlt_user;
-			$loginuser[$idlogin] = $userlogin;
-		}
-		mysqli_close($connexion);
+	// Show all non admin user accounts
 
+	require_once("db.class.php");
+	require_once("accounts.class.php");
+
+	$db = new ctDb(); // Create db connection
+	$accounts = new ctAccounts($db);
+	$users = $accounts->get_all_nonadmin_users();
+	$db->close();
+	if (count($users) > 0) {
 		//display
 		echo "<br><br><h1>" . $language['user_suppress'] . "</h1>\n";
 		echo "<div class='tableau' align='center'>\n";
@@ -132,7 +128,7 @@ if ($suppressuser == 1) {
 		echo "<tr><th class='tableau2' colspan='2'>\n";
 		echo "" . $language['user_list'] . "\n";
 		echo "</th></tr>\n";
-		foreach ($loginuser as $user1) {
+		foreach ($users as $user1) {
 			$user1display = htmlentities($user1);
 			echo "<tr><td class='tableau3' width='300px'>\n";
 			echo "" . $user1display . "\n";

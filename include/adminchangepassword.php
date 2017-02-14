@@ -16,24 +16,23 @@
 //----------------------------------------------------------------------
 // file: adminchangepassword.php
 //----------------------------------------------------------------------
+// Purpose: Change password
+// TODO: Minimum pw length and strength
+//----------------------------------------------------------------------
 
 if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>No direct access</h1>');
 }
 
 if ($validlogin == 1) {
-		//database connection
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-		
-		$sqllogin = "SELECT crawlt_password FROM crawlt_login WHERE crawlt_user='" . crawlt_sql_quote($connexion, $_SESSION['userlogin']) . "'";
-		$requetelogin = db_mysql_query($sqllogin, $connexion);
-		mysqli_close($connexion);
-		while ($ligne = $requetelogin->fetch_object()) {
-			$userpass = $ligne->crawlt_password;
-		}
+	//database connection
+	require_once("db.class.php");
+	require_once("accounts.class.php");
 
-	if (md5($password1) != $userpass || empty($password2) || empty($password3) || $password2 != $password3) {
+	$db = new ctDb(); // Create db connection
+	$accounts = new ctAccounts($db);
+
+	if (!$accounts->is_valid_login($_SESSION['userlogin'], $password1) || empty($password2) || empty($password3) || $password2 != $password3) {
 		echo "<p>" . $language['login_no_ok'] . "</p>";
 		echo "<div class=\"form\">\n";
 		echo "<form action=\"index.php\" method=\"POST\" >\n";
@@ -44,16 +43,13 @@ if ($validlogin == 1) {
 		echo "</form>\n";
 		echo "</div><br><br>\n";
 	} else {
-		//password treatment
-		$pass = md5($password2); // TODO: Better password hashing!
+		// Update the currently logged in users password
+		$result = $accounts->change_password($_SESSION['userlogin'], $password2);
 		
-		//database connection
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-
-		$sqllogin = "UPDATE crawlt_login SET  crawlt_password='" . crawlt_sql_quote($connexion, $pass) . "' WHERE crawlt_user='" . crawlt_sql_quote($connexion, $_SESSION['userlogin']) . "'";
-		$requetelogin = db_query($sqllogin, $connexion);
-		mysqli_close($connexion);
+		// TODO: What to do when changing password fails
+		if (!$result) {
+			echo "<h1>Warning: changing password failed!</h1>";
+		}
 
 		echo "<br><br><p>" . $language['update'] . "</p><br><br>";
 		
@@ -69,6 +65,7 @@ if ($validlogin == 1) {
 		echo "</table>\n";
 		echo "</form><br><br>\n";
 	}
+	$db->close();
 } else {
 	//first arrival on the page
 	echo "<h1>" . $language['change_password'] . "</h1>\n";
