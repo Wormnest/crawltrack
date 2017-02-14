@@ -151,7 +151,7 @@ if (file_exists("language/" . $crawltlang . ".php") && in_array($crawltlang, $li
 }
 
 //version id
-$versionid = '340';
+$versionid = '341';
 
 // do not modify
 define('IN_CRAWLT', TRUE);
