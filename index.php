@@ -17,8 +17,8 @@
 // file: index.php
 //----------------------------------------------------------------------
 
-// make sure PHP version  >= 5.3.0 is used (Artichow needs that for anonymous functions.)
-if (version_compare(PHP_VERSION, '5.3.0', '<')) exit("Sorry, CrawlTrack needs at least PHP version 5.3.0 to run ! You are running version " . PHP_VERSION . " \n");
+// make sure PHP version  >= 5.3.7 is used (New password hashing function needs at least 5.3.7)
+if (version_compare(PHP_VERSION, '5.3.7', '<')) exit("Sorry, CrawlTrack needs at least PHP version 5.3.0 to run ! You are running version " . PHP_VERSION . " \n");
 
 // Set debugging to non zero to turn it on.
 // DON'T FORGET TO TURN IT OFF AFTER YOU FINISH DEBUGGING OR WHEN COMMITTING CHANGES!
