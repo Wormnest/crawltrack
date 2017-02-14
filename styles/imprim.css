@@ -2031,6 +2031,13 @@ width:244px;
 text-align: left;
 }
 
+.gist {width:400px !important;}
+.gist-file
+.gist-data {max-height: 300px;max-width: 400px;}
+#readme h2 {font-size:18px;}
+#readme p  {font-size:14px;}
+#readme li  {font-size:12px;}
+
 .forIEonly {
 display: none;
 }
