@@ -122,30 +122,32 @@ if (file_exists('include/configconnect.php')) {
 			}
 		}
 	}
-	$charset = 1;
+	$installed = 1;
 } else {
 	// New installation
-	$charset = 0;
+	$installed = 0;
 	$crawltcharset = 1;
 }
 
 // Needs to be included AFTER reading settings since post may set values that are not yet set.
+// TODO: Maybe this should also be processed from within the settings class!
 include ("include/post.php");
 
-if ($charset == 1) {
-	if ($crawltcharset != 1) {
-		$crawltlang = $crawltlang . "iso";
-	}
-}
 //for the install we need to give a value to $times
 if (!isset($times)) {
 	$times = 0;
 }
 
+if ($installed) {
+	if ($crawltcharset != 1) {
+		$crawltlang = $crawltlang . "iso";
+	}
+}
+
 require_once ("include/listlang.php");
 require_once ("include/functions.php");
 
-if ($charset == 1) {
+if ($installed) {
 	mysqli_close($connexion);
 }
 
@@ -164,7 +166,7 @@ if (!isset($_SESSION['flag'])) {
 }
 
 //if already install
-if (file_exists('include/configconnect.php') && $navig != 15) {
+if ($installed && $navig != 15) {
 	if ($navig == 0) {
 		$main = ("include/display-dashboard.php");
 	} elseif ($navig == 1) {
