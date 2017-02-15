@@ -129,8 +129,9 @@ if (file_exists('include/configconnect.php')) {
 	$crawltcharset = 1;
 }
 
-// Make all POST values safe.
+// Needs to be included AFTER reading settings since post may set values that are not yet set.
 include ("include/post.php");
+
 if ($charset == 1) {
 	if ($crawltcharset != 1) {
 		$crawltlang = $crawltlang . "iso";
