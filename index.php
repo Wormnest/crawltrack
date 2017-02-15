@@ -32,6 +32,8 @@ if ($DEBUG == 0) {
 	error_reporting(E_ALL);
 }
 
+// CrawlTrack version id
+$versionid = '341';
 
 //initialize array & data
 $listlangcrawlt = array();
@@ -58,6 +60,9 @@ function getTime() {
 	}
 }
 getTime();
+
+// do not modify
+define('IN_CRAWLT', TRUE);
 
 //if already installed get all the config datas
 if (file_exists('include/configconnect.php')) {
@@ -149,12 +154,6 @@ if (file_exists("language/" . $crawltlang . ".php") && in_array($crawltlang, $li
 } else {
 	exit('<h1>Language file " . $crawltlang . " missing!</h1>');
 }
-
-//version id
-$versionid = '341';
-
-// do not modify
-define('IN_CRAWLT', TRUE);
 
 // session start 'crawlt'
 if (!isset($_SESSION['flag'])) {
