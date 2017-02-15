@@ -52,10 +52,8 @@ if ($crawltcharset != 1) {
 mysqli_close($connexion);
 //get the listlang files
 include ("../include/listlang.php");
-//get the functions files
-$times = 0;
-$period = 0;
-include ("../include/functions.php");
+// Needed for crawltcuturl
+require_once("../include/functions.php");
 
 //language file include
 if (file_exists("../language/" . $crawltlang . ".php") && in_array($crawltlang, $listlangcrawlt)) {

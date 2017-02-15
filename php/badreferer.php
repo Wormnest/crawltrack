@@ -75,12 +75,11 @@ if (isset($_GET['referer'])) {
 } else {
 	exit('<h1>Hacking attempt !!!!</h1>');
 }
-// include
-$times = 0; //give value just to avoid error in functions.php
-$firstdayweek = 'Monday'; //give value just to avoid error in functions.php
 
+// include
 include ("../include/configconnect.php");
-include ("../include/functions.php");
+// Needed for crawlt_sql_quote and empty_cache
+require_once("../include/functions.php");
 //database connection
 require_once("../include/jgbdb.php");
 $connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
@@ -102,7 +101,6 @@ $requetecache = $connexion->query($sqlcache);
 mysqli_close($connexion);
 
 //clear the cache folder
-require_once("../include/functions.php");
 empty_cache('../cache/');
 
 //clear the cleaning session value

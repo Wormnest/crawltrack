@@ -37,7 +37,8 @@ $crawlencode = urlencode($crawler);
 
 //get the functions files
 $times = 0;
-include ("../include/functions.php");
+// Needed for empty_cache
+require_once("../include/functions.php");
 
 //clear the cache folder at the first entry on crawltrack to avoid to have it oversized
 empty_cache('../cache/');

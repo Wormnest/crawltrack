@@ -146,6 +146,7 @@ if ($installed) {
 
 require_once ("include/listlang.php");
 require_once ("include/functions.php");
+include("include/periodcalculation.php");
 
 if ($installed) {
 	mysqli_close($connexion);

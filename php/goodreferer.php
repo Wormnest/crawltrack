@@ -73,10 +73,9 @@ if (isset($_GET['referer'])) {
 }
 
 // include
-$times = 0; //give value just to avoid error in functions.php
-$firstdayweek = 'Monday'; //give value just to avoid error in functions.php
 include ("../include/configconnect.php");
-include ("../include/functions.php");
+// Needed for crawlt_sql_quote and empty_cache
+require_once("../include/functions.php");
 
 //database connection
 require_once("../include/jgbdb.php");
@@ -100,7 +99,6 @@ $requetecache = $connexion->query($sqlcache);
 mysqli_close($connexion);
 
 //clear the cache folder
-require_once("../include/functions.php");
 empty_cache('../cache/');
 
 //call back the page

@@ -39,11 +39,8 @@ include ("../include/configconnect.php");
 require_once("../include/jgbdb.php");
 $connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
-//get the functions files
-$times = 0; //give value just to avoid error in functions.php
-$firstdayweek = 'Monday'; //give value just to avoid error in functions.php
-$period = 0; //give value just to avoid error in functions.php
-include ("../include/functions.php");
+// Needed for crawlt_sql_quote
+require_once("../include/functions.php");
 
 //get graph values
 if (file_exists("../cachecloseperiod/$graphname.gz")) {

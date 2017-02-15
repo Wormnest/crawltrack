@@ -65,7 +65,9 @@ if ($nbrresult >= 1) {
 	$firstdayweek = 'Monday'; //give value just to avoid error in functions.php
 	$noconnect = 1;
 }
-include ("../include/functions.php");
+
+// Needed for crawlt_sql_quote
+require_once("../include/functions.php");
 
 //get local date
 $todaylocal = date("Y-m-d", (time() - ($times * 3600)));

@@ -17,10 +17,9 @@
 //  Last update: 11/11/2011
 //----------------------------------------------------------------------
 error_reporting(0);
-$times=0;
-$period=0;
 $formattedresults='';
-include ("../../include/functions.php");
+// Needed for crawltcuturl
+require_once("../../include/functions.php");
 //call back the page
 $keywordurl=$_GET['q'];
 $crawltcharset=1;

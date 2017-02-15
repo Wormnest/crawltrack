@@ -111,7 +111,8 @@ if (isset($_GET['retry'])) {
 } else {
 	exit('<h1>Hacking attempt !!!!</h1>');
 }
-include ("../include/functions.php");
+// Needed for crawlt_sql_quote and empty_cache
+require_once("../include/functions.php");
 //database connection
 include ("../include/configconnect.php");
 require_once("../include/jgbdb.php");
@@ -525,12 +526,12 @@ if ($retry == 'google') {
 		if ($crawltnbrresultcheck >= 1) {
 				$crawltligne = $crawltrequetecheck->fetch_assoc();
 				$crawltexitingvalue = $crawltligne['pagegoogle'];
-				if($crawltexitingvalue == 0) {			
+				if($crawltexitingvalue == 0) {
 			$crawltsqlseo = "UPDATE crawlt_seo_position SET pagegoogle='" . crawlt_sql_quote($connexion, $crawltnbrgoogle2) . "'
 				WHERE `date`= '" . crawlt_sql_quote($connexion, $crawltdatetoday2) . "'
 				AND id_site='" . crawlt_sql_quote($connexion, $crawltidsite) . "'";
 			$crawltrequeteseo = $connexion->query($crawltsqlseo);
-			}				
+			}
 		} else {
 			$crawltsqlseo = "INSERT INTO crawlt_seo_position (`date`, id_site, linkyahoo, pageyahoo, linkmsn, pagemsn, nbrdelicious, tagdelicious, linkexalead, pageexalead, linkgoogle, pagegoogle) VALUES ( '" . crawlt_sql_quote($connexion, $crawltdatetoday2) . "','" . crawlt_sql_quote($connexion, $crawltidsite) . "','0','0','0','0','0',' ','0','0','0','" . crawlt_sql_quote($connexion, $crawltnbrgoogle2) . "')";
 			$crawltrequeteseo = $connexion->query($crawltsqlseo);
