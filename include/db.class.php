@@ -22,6 +22,8 @@ class ctDb
 	
 	// $oldversion is true if the version we are updating from is < 150
 	public $oldversion = false;
+	// old versions stored language in config file
+	public $oldlang;
 	
 	private $configfile;
 	
@@ -44,6 +46,7 @@ class ctDb
 			if (!isset($crawlthost)) {
 				// Older configuration files before version 150 had different names
 				$this->oldversion = true;
+				$this->oldlang = $lang;
 				$crawlthost = $host;
 				$crawltuser = $user;
 				$crawltpassword = $password;
