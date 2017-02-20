@@ -17,6 +17,7 @@ if (!defined('IN_CRAWLT')) {
  * - Add minimum length of password
  * - Maybe check for certain very common entered passwords
  * - Require maybe numbers, non alphanumeric characters, minimum length of pw
+ * - Before making changes we should check if the logged in user is admin in most cases.
  */
 class ctAccounts
 {
