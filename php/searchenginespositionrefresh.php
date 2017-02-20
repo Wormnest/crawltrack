@@ -29,8 +29,6 @@ if ($DEBUG == 0) {
 	error_reporting(E_ALL);
 }
 
-//to avoid notice error
-$times = 0;
 //nusoap
 require_once (dirname(__FILE__).'/../nusoap/class.nusoap_base.php');
 require_once (dirname(__FILE__).'/../nusoap/class.soap_transport_http.php');
@@ -106,6 +104,7 @@ if (isset($_GET['graphpos'])) {
 } else {
 	exit('<h1>Hacking attempt !!!!</h1>');
 }
+// TODO: Make safe!
 if (isset($_GET['retry'])) {
 	$retry = $_GET['retry'];
 } else {
@@ -150,6 +149,10 @@ if ($crawltnbrresult >= 1) {
 
 //looking for position in search engines database using api
 //test which one to retry
+// Yahoo SiteExplorerService stopped in 2011.
+// Msn has been replaced with Bing.
+// TODO: Check if Bing has a free public API that we can use.
+/*
 if ($retry == 'yahoo') {
 	//yahoo
 	foreach ($listsitecrawlt as $crawltidsite) {
@@ -306,7 +309,11 @@ if ($retry == 'yahoo') {
 			$crawltrequeteseo = $connexion->query($crawltsqlseo);
 		}
 	}
-} elseif ($retry == 'exalead') {
+} else*/
+// TODO: Exalead search query is ok but matching for span class orange is NOT.
+// New version is working but apparently anything except retry=google was turned off.
+// TODO: See if we could/should turn this on again.
+if ($retry == 'exalead') {
 	//exalead
 	foreach ($listsitecrawlt as $crawltidsite) {
 		$crawlturlsite = $crawltsiteurl[$crawltidsite];
@@ -322,8 +329,10 @@ if ($retry == 'yahoo') {
 		$crawltnbrexalead1 = 0;
 		if (ini_get('allow_url_fopen') == 1) {
 			$result = file_get_contents($crawltrequete1);
-			if(preg_match('#<span class="orange">([^<]+)</span>#iUs', $result, $matches))
-				$crawltnbrexalead1 = str_replace(",", "", $matches[1]);
+//			if(preg_match('#<span class="orange">([^<]+)</span>#iUs', $result, $matches))
+			if(preg_match('#<small class="pull-right">(.+) results</small>#iUs', $result, $matches))
+//				$crawltnbrexalead1 = str_replace(",", "", $matches[1]);
+				$crawltnbrexalead1 = (int)$matches[1];
 		}
 
 		//insert values in the crawlt_seo_position table
