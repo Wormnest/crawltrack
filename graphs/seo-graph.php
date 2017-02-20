@@ -34,9 +34,23 @@ if ($DEBUG == 0) {
 //initialize array
 $listlangcrawlt = array();
 //get graph info
-$typegraph = $_GET['typegraph'];
-$period = $_GET['period'];
-$graphname = $_GET['graphname'];
+$typegraph = htmlspecialchars($_GET['typegraph']);
+$period = (int)$_GET['period'];
+$graphname = urlencode($_GET['graphname']);
+$crawltlang = htmlspecialchars($_GET['crawltlang']);
+if (($crawltlang == 'russian' && !file_exists('./artichow/font/simsun.ttf')) || $crawltlang == 'bulgarian' || $crawltlang == 'turkish') {
+	$crawltlang = 'english';
+}
+
+//get the listlang files
+include ("../include/listlang.php");
+
+//language file include
+if (file_exists("../language/" . $crawltlang . ".php") && in_array($crawltlang, $listlangcrawlt)) {
+	include ("../language/" . $crawltlang . ".php");
+} else {
+	exit('<h1>Language file not available!</h1>');
+}
 
 //database connection
 include ("../include/configconnect.php");
@@ -75,20 +89,6 @@ if ($graphnameexplode[1] == 'permanent') {
 	$fp = fopen("../cachecloseperiod/$graphname.gz", 'w');
 	fwrite($fp, gzcompress($data));
 	fclose($fp);
-}
-
-//get language to use
-$crawltlang = $_GET['crawltlang'];
-if (($crawltlang == 'russian' && !file_exists('./artichow/font/simsun.ttf')) || $crawltlang == 'bulgarian' || $crawltlang == 'turkish') {
-	$crawltlang = 'english';
-}
-
-//language file include
-if (file_exists("../language/" . $crawltlang . ".php") && in_array($crawltlang, $listlangcrawlt)) {
-	include ("../language/" . $crawltlang . ".php");
-} else {
-	echo "<h1>No language files available !!!!</h1>";
-	exit();
 }
 
 //legend and title text

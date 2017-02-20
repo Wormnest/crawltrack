@@ -35,14 +35,25 @@ if ($DEBUG == 0) {
 $listlangcrawlt = array();
 //get graph infos
 $graphname = urlencode($_GET['graphname']);
+$crawltlang = htmlspecialchars($_GET['crawltlang']);
+if (($crawltlang == 'russian' && !file_exists('./artichow/font/simsun.ttf')) || $crawltlang == 'bulgarian' || $crawltlang == 'turkish') {
+	$crawltlang = 'english';
+}
+
+//get the listlang files
+include ("../include/listlang.php");
+
+//language file include
+if (file_exists("../language/" . $crawltlang . ".php") && in_array($crawltlang, $listlangcrawlt)) {
+	include ("../language/" . $crawltlang . ".php");
+} else {
+	exit('<h1>Language file not available!</h1>');
+}
 
 //database connection
 include ("../include/configconnect.php");
 require_once("../include/jgbdb.php");
 $connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-
-//get the listlang files
-include ("../include/listlang.php");
 
 // Needed for crawlt_sql_quote
 require_once("../include/functions.php");
@@ -70,18 +81,6 @@ if (file_exists("../cachecloseperiod/$graphname.gz")) {
 }
 mysqli_close($connexion);
 $totvalues = array_sum($datatransfert);
-
-$crawltlang = $_GET['crawltlang'];
-if (($crawltlang == 'russian' && !file_exists('./artichow/font/simsun.ttf')) || $crawltlang == 'bulgarian'  || $crawltlang == 'turkish') {
-	$crawltlang = 'english';
-}
-
-//language file include
-if (file_exists("../language/" . $crawltlang . ".php") && in_array($crawltlang, $listlangcrawlt)) {
-	include ("../language/" . $crawltlang . ".php");
-} else {
-	exit('<h1>No language files available !!!!</h1>');
-}
 
 $graphnameexplode = explode('-', $graphname);
 $graphtitle = $graphnameexplode[0];

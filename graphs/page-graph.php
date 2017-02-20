@@ -33,17 +33,19 @@ if ($DEBUG == 0) {
 
 //initialize array
 $listlangcrawlt = array();
-//get graph values
-$nbrpageview = $_GET['nbrpageview'];
-$nbrpagestotal = $_GET['nbrpagestotal'];
-$crawltlang = $_GET['crawltlang'];
-if (($crawltlang == 'russian' && !file_exists('./artichow/font/simsun.ttf')) || $crawltlang == 'bulgarian' || $crawltlang == 'turkish') {
-	$crawltlang = 'english';
-}
+
+// Init GET values
+$nbrpageview = (int)$_GET['nbrpageview'];
+$nbrpagestotal = (int)$_GET['nbrpagestotal'];
 if (isset($_GET['navig'])) {
 	$navig = (int)$_GET['navig'];
 } else {
 	$navig = 1;
+}
+$crawltlang = htmlspecialchars($_GET['crawltlang']);
+
+if (($crawltlang == 'russian' && !file_exists('./artichow/font/simsun.ttf')) || $crawltlang == 'bulgarian' || $crawltlang == 'turkish') {
+	$crawltlang = 'english';
 }
 
 //get the listlang files
@@ -53,7 +55,7 @@ include ("../include/listlang.php");
 if (file_exists("../language/" . $crawltlang . ".php") && in_array($crawltlang, $listlangcrawlt)) {
 	include ("../language/" . $crawltlang . ".php");
 } else {
-	exit('<h1>No language files available !!!!</h1>');
+	exit('<h1>Language file not available!</h1>');
 }
 
 $values[0] = $nbrpageview;

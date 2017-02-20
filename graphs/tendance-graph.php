@@ -32,8 +32,8 @@ if ($DEBUG == 0) {
 }
 
 //get graph values
-$tendance7 = $_GET['tendance7'];
-$tendance30 = $_GET['tendance30'];
+$tendance7 = (int)$_GET['tendance7'];
+$tendance30 = (int)$_GET['tendance30'];
 
 //graph creation
 //create table for graph

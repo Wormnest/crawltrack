@@ -32,7 +32,21 @@ if ($DEBUG == 0) {
 }
 
 //get graph infos
-$graphname = $_GET['graphname'];
+$graphname = urlencode($_GET['graphname']);
+$crawltlang = htmlspecialchars($_GET['crawltlang']);
+if (($crawltlang == 'russian' && !file_exists('./artichow/font/simsun.ttf')) || $crawltlang == 'bulgarian' || $crawltlang == 'turkish') {
+	$crawltlang = 'english';
+}
+
+//get the listlang files
+include ("../include/listlang.php");
+
+//language file include
+if (file_exists("../language/" . $crawltlang . ".php") && in_array($crawltlang, $listlangcrawlt)) {
+	include ("../language/" . $crawltlang . ".php");
+} else {
+	exit('<h1>Language file not available!</h1>');
+}
 
 //database connection
 include ("../include/configconnect.php");
@@ -65,19 +79,6 @@ if (file_exists("../cachecloseperiod/$graphname.gz")) {
 mysqli_close($connexion);
 $totvalues = array_sum($datatransfert);
 
-//get the listlang files
-include ("../include/listlang.php");
-$crawltlang = $_GET['crawltlang'];
-if (($crawltlang == 'russian' && !file_exists('./artichow/font/simsun.ttf')) || $crawltlang == 'bulgarian' || $crawltlang == 'turkish') {
-	$crawltlang = 'english';
-}
-
-//language file include
-if (file_exists("../language/" . $crawltlang . ".php") && in_array($crawltlang, $listlangcrawlt)) {
-	include ("../language/" . $crawltlang . ".php");
-} else {
-	exit('<h1>No language files available !!!!</h1>');
-}
 foreach ($datatransfert as $key => $value) {
 	if (($value / $totvalues) > 0.009) //to avoid Artichow bug with php 5.2
 	{
