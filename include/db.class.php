@@ -26,6 +26,10 @@ class ctDb
 	public $oldlang;
 	
 	private $configfile;
+	private $crawlthost;
+	private $crawltuser;
+	private $crawltpassword;
+	private $crawltdb;
 	
 	/**
 	 * Init our class and connect to the database.
@@ -56,6 +60,10 @@ class ctDb
 			if (mysqli_connect_errno()) {
 				die(mysqli_connect_error());
 			}
+			$this->crawlthost = $crawlthost;
+			$this->crawltuser = $crawltuser;
+			$this->crawltpassword = $crawltpassword;
+			$this->crawltdb = $crawltdb;
 		}
 	}
 	
@@ -63,9 +71,23 @@ class ctDb
 	 * Close the database connection.
 	 */
 	public function close() {
-		 if ($this->connexion) {
+		if ($this->connexion) {
 			mysqli_close($this->connexion);
-		 }
+			$this->connexion = null;
+		}
+	}
+	
+	/**
+	 * Open the database connection and return the connection;
+	 */
+	public function open() {
+		if (!$this->connexion) {
+			$this->connexion = mysqli_connect($this->crawlthost, $this->crawltuser, $this->crawltpassword, $this->crawltdb) or die("MySQL: problem connecting to database");
+			if (mysqli_connect_errno()) {
+				die(mysqli_connect_error());
+			}
+		}
+		return $this->connexion;
 	}
 	
 	/**

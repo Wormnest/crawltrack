@@ -25,7 +25,7 @@
 <br><br>
 <div align="center">
 <?php
-if ($crawltlang == 'french' || $crawltlang == 'frenchiso') {
+if ($settings->language == 'french' || $settings->language == 'frenchiso') {
 ?>
  <p > <a  href="http://www.crawltrack.net/crawlprotect/fr" target="_blank" style="font: bold 10pt Arial; text-decoration: underline; color: #00008b;">CrawlProtect</a><br>
 <span style="font: normal 10pt Arial; text-decoration: none; color: #000;">Vous prot&eacute;gez d&eacute;j&agrave; votre site des pirates avec CrawlTrack, vous pouvez faire mieux encore avec CrawlProtect</span></p>

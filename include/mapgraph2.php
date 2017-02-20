@@ -63,22 +63,22 @@ $datatransfert4 = array();
 //number of days (or months) for the period
 $nbday2 = 0;
 $date = $datebeginlocalcut[0];
-if ($period == 0 || $period >= 1000) {
+if ($settings->period == 0 || $settings->period >= 1000) {
 	$nbday = 8;
 	$daterequestseo = date("Y-m-d H:i:s", (strtotime($daterequest) - 604800));
 	$datebeginlocalseo = date("Y-m-d H:i:s", (strtotime($datebeginlocal) - 604800));
 	$datebeginlocalcutseo = explode(' ', $datebeginlocalseo);
 	$date = $datebeginlocalcutseo[0];
-} elseif ($period == 1 || ($period >= 300 && $period < 400)) {
+} elseif ($settings->period == 1 || ($settings->period >= 300 && $settings->period < 400)) {
 	$nbday = 7;
 	$daterequestseo = $daterequest;
-} elseif ($period == 2 || ($period >= 100 && $period < 200)) {
+} elseif ($settings->period == 2 || ($settings->period >= 100 && $settings->period < 200)) {
 	$nbday = date("t", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
 	$daterequestseo = $daterequest;
-} elseif ($period == 3 || ($period >= 200 && $period < 300)) {
+} elseif ($settings->period == 3 || ($settings->period >= 200 && $settings->period < 300)) {
 	$nbday = 12;
 	$daterequestseo = $daterequest;
-} elseif ($period == 4) {
+} elseif ($settings->period == 4) {
 	$nbday = 8;
 	$daterequestseo = $daterequest;
 }
@@ -89,7 +89,7 @@ do {
 	$monthdate = $date20[1];
 	$daydate = $date20[2];
 	if ($nbday == 7) {
-		if ($firstdayweek == 'Monday') {
+		if ($settings->firstdayweek == 'Monday') {
 			$day = "day" . $nbday2;
 		} else {
 			//case first week day is sunday
@@ -182,21 +182,16 @@ do {
 	$nbday2++;
 } while ($nbday2 < $nbday);
 
-//mysql query
-//database connection
-require_once("jgbdb.php");
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-
 //request to count the number of link, index page and bookmark
-if ($period == 3) //case one year
+if ($settings->period == 3) //case one year
 {
 	//request to count the number of link, index page and bookmarks
-	$sqlseograph = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($times*3600), '%Y%m') , MAX(linkyahoo),MAX(pageyahoo),  MAX(pagemsn),  MAX(nbrdelicious), MAX(linkexalead),MAX(pageexalead) , MAX(linkgoogle),MAX(pagegoogle)
+	$sqlseograph = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($settings->timediff*3600), '%Y%m') , MAX(linkyahoo),MAX(pageyahoo),  MAX(pagemsn),  MAX(nbrdelicious), MAX(linkexalead),MAX(pageexalead) , MAX(linkgoogle),MAX(pagegoogle)
 		FROM crawlt_seo_position
-		WHERE `date` >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'
-		AND id_site='" . crawlt_sql_quote($connexion, $site) . "' 
-		GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($times*3600), '%Y%m')";
-	$requeteseograph = db_query($sqlseograph, $connexion);
+		WHERE `date` >='" . crawlt_sql_quote($db->connexion, $daterequestseo) . "'
+		AND id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "' 
+		GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($settings->timediff*3600), '%Y%m')";
+	$requeteseograph = db_query($sqlseograph, $db->connexion);
 	while ($ligne = $requeteseograph->fetch_row()) {
 		$year = substr($ligne[0], 0, 4);
 		$month = substr($ligne[0], 4, 2);
@@ -211,15 +206,15 @@ if ($period == 3) //case one year
 		$googlepage[$yearmonth] = $ligne[8];
 	}
 	mysqli_free_result($requeteseograph);
-} elseif ($period >= 200 && $period < 300) //case one year back and forward
+} elseif ($settings->period >= 200 && $settings->period < 300) //case one year back and forward
 {
-	$sqlseograph = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($times*3600), '%Y%m') , MAX(linkyahoo),MAX(pageyahoo),MAX(pagemsn),  MAX(nbrdelicious), MAX(linkexalead),MAX(pageexalead)  , MAX(linkgoogle),MAX(pagegoogle)
+	$sqlseograph = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($settings->timediff*3600), '%Y%m') , MAX(linkyahoo),MAX(pageyahoo),MAX(pagemsn),  MAX(nbrdelicious), MAX(linkexalead),MAX(pageexalead)  , MAX(linkgoogle),MAX(pagegoogle)
 		FROM crawlt_seo_position
-		WHERE `date` >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'
-		AND `date` <'" . crawlt_sql_quote($connexion, $daterequest2) . "'    
-		AND id_site='" . crawlt_sql_quote($connexion, $site) . "' 
-		GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($times*3600), '%Y%m')";
-	$requeteseograph = db_query($sqlseograph, $connexion);
+		WHERE `date` >='" . crawlt_sql_quote($db->connexion, $daterequestseo) . "'
+		AND `date` <'" . crawlt_sql_quote($db->connexion, $daterequest2) . "'    
+		AND id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "' 
+		GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($settings->timediff*3600), '%Y%m')";
+	$requeteseograph = db_query($sqlseograph, $db->connexion);
 	while ($ligne = $requeteseograph->fetch_row()) {
 		$year = substr($ligne[0], 0, 4);
 		$month = substr($ligne[0], 4, 2);
@@ -235,19 +230,19 @@ if ($period == 3) //case one year
 	}
 	mysqli_free_result($requeteseograph);
 } else {
-	if ($period >= 10) {
-		$sqlseograph = "SELECT  FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($times*3600), '%d-%m-%Y'), linkyahoo, pageyahoo,  pagemsn,nbrdelicious, linkexalead, pageexalead ,linkgoogle, pagegoogle
+	if ($settings->period >= 10) {
+		$sqlseograph = "SELECT  FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($settings->timediff*3600), '%d-%m-%Y'), linkyahoo, pageyahoo,  pagemsn,nbrdelicious, linkexalead, pageexalead ,linkgoogle, pagegoogle
 			FROM crawlt_seo_position
-			WHERE `date` >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'
-			AND `date` <='" . crawlt_sql_quote($connexion, $daterequest2) . "'
-			AND id_site='" . crawlt_sql_quote($connexion, $site) . "'";
+			WHERE `date` >='" . crawlt_sql_quote($db->connexion, $daterequestseo) . "'
+			AND `date` <='" . crawlt_sql_quote($db->connexion, $daterequest2) . "'
+			AND id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'";
 	} else {
-		$sqlseograph = "SELECT  FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($times*3600), '%d-%m-%Y'), linkyahoo, pageyahoo, pagemsn, nbrdelicious, linkexalead, pageexalead , linkgoogle, pagegoogle
+		$sqlseograph = "SELECT  FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($settings->timediff*3600), '%d-%m-%Y'), linkyahoo, pageyahoo, pagemsn, nbrdelicious, linkexalead, pageexalead , linkgoogle, pagegoogle
 			FROM crawlt_seo_position
-			WHERE `date` >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'
-			AND id_site='" . crawlt_sql_quote($connexion, $site) . "'";
+			WHERE `date` >='" . crawlt_sql_quote($db->connexion, $daterequestseo) . "'
+			AND id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'";
 	}
-	$requeteseograph = db_query($sqlseograph, $connexion);
+	$requeteseograph = db_query($sqlseograph, $db->connexion);
 	while ($ligne = $requeteseograph->fetch_row()) {
 		$yahoolink[$ligne[0]] = $ligne[1];
 		$yahoopage[$ligne[0]] = $ligne[2];
@@ -298,24 +293,25 @@ $graphname = $typegraph . "-" . $cachename;
 
 //check if this graph already exists in the table
 $sql = "SELECT name  FROM crawlt_graph
-            WHERE name= '" . crawlt_sql_quote($connexion, $graphname) . "'";
-$requete = db_query($sql, $connexion);
+            WHERE name= '" . crawlt_sql_quote($db->connexion, $graphname) . "'";
+$requete = db_query($sql, $db->connexion);
 $nbrresult = $requete->num_rows;
 if ($nbrresult >= 1) {
-	$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($connexion, $datatransferttograph) . "'
-              WHERE name= '" . crawlt_sql_quote($connexion, $graphname) . "'";
+	$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($db->connexion, $datatransferttograph) . "'
+              WHERE name= '" . crawlt_sql_quote($db->connexion, $graphname) . "'";
 } else {
-	$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($connexion, $graphname) . "','" . crawlt_sql_quote($connexion, $datatransferttograph) . "')";
+	$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($db->connexion, $graphname) . "','" . crawlt_sql_quote($db->connexion, $datatransferttograph) . "')";
 }
-$requete2 = db_query($sql2, $connexion);
+$requete2 = db_query($sql2, $db->connexion);
+// Don't close database here since mapgraph may be called again needing this connection.
 
 //map graph
-if ($period == 3 || ($period >= 200 && $period < 300)) {
+if ($settings->period == 3 || ($settings->period >= 200 && $settings->period < 300)) {
 	$widthzone = 67;
 	$x2 = 132.3;
 	$y = 31;
 	$y2 = 211;
-} elseif ($period == 2 || ($period >= 100 && $period < 200)) {
+} elseif ($settings->period == 2 || ($settings->period >= 100 && $settings->period < 200)) {
 	if ($nbday == 28) {
 		$widthzone = 28.7;
 		$x2 = 94;
@@ -337,12 +333,12 @@ if ($period == 3 || ($period >= 200 && $period < 300)) {
 		$y = 31;
 		$y2 = 211;
 	}
-} elseif ($period == 0 || $period == 4 || $period >= 1000) {
+} elseif ($settings->period == 0 || $settings->period == 4 || $settings->period >= 1000) {
 	$widthzone = 100.75;
 	$x2 = 166.05;
 	$y = 31;
 	$y2 = 211;
-} elseif ($period == 1 || ($period >= 300 && $period < 400)) {
+} elseif ($settings->period == 1 || ($settings->period >= 300 && $settings->period < 400)) {
 	$widthzone = 115.14;
 	$x2 = 180.44;
 	$y = 31;
@@ -355,8 +351,8 @@ if ($typegraph == 'link') {
 	do {
 		echo "<area shape=\"rect\" coords=\"" . $x . "," . $y . "," . $x2 . "," . $y2 . "\" onmouseover=\"javascript:montre('smenu" . ($iday + 9) . "');\" onmouseout=\"javascript:montre();\"";
 		$dateday = $axex[$iday];
-		$periodtogo = $totperiod[$dateday];
-		echo "href=\"index.php?navig=$navig&amp;period=$periodtogo&amp;site=$site&amp;graphpos=$graphpos\" alt=\"go\">\n";
+		$settings->periodtogo = $totperiod[$dateday];
+		echo "href=\"index.php?navig=$settings->navig&amp;period=$settings->periodtogo&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\" alt=\"go\">\n";
 		$x = $x + $widthzone;
 		$x2 = $x2 + $widthzone;
 		$iday++;
@@ -379,8 +375,8 @@ if ($typegraph == 'link') {
 	do {
 		echo "<area shape=\"rect\" coords=\"" . $x . "," . $y . "," . $x2 . "," . $y2 . "\" onmouseover=\"javascript:montre('smenu" . ($iday + 70) . "');\" onmouseout=\"javascript:montre();\"";
 		$dateday = $axex[$iday];
-		$periodtogo = $totperiod[$dateday];
-		echo "href=\"index.php?navig=$navig&amp;period=$periodtogo&amp;site=$site&amp;graphpos=$graphpos\" alt=\"go\">\n";
+		$settings->periodtogo = $totperiod[$dateday];
+		echo "href=\"index.php?navig=$settings->navig&amp;period=$settings->periodtogo&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\" alt=\"go\">\n";
 		$x = $x + $widthzone;
 		$x2 = $x2 + $widthzone;
 		$iday++;
@@ -405,8 +401,8 @@ if ($typegraph == 'link') {
 	do {
 		echo "<area shape=\"rect\" coords=\"" . $x . "," . $y . "," . $x2 . "," . $y2 . "\" onmouseover=\"javascript:montre('smenu" . ($iday + 131) . "');\" onmouseout=\"javascript:montre();\"";
 		$dateday = $axex[$iday];
-		$periodtogo = $totperiod[$dateday];
-		echo "href=\"index.php?navig=$navig&amp;period=$periodtogo&amp;site=$site&amp;graphpos=$graphpos\" alt=\"go\">\n";
+		$settings->periodtogo = $totperiod[$dateday];
+		echo "href=\"index.php?navig=$settings->navig&amp;period=$settings->periodtogo&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\" alt=\"go\">\n";
 		$x = $x + $widthzone;
 		$x2 = $x2 + $widthzone;
 		$iday++;
@@ -432,8 +428,8 @@ if ($typegraph == 'link') {
 	do {
 		echo "<area shape=\"rect\" coords=\"" . $x . "," . $y . "," . $x2 . "," . $y2 . "\" onmouseover=\"javascript:montre('smenu" . ($iday + 192) . "');\" onmouseout=\"javascript:montre();\"";
 		$dateday = $axex[$iday];
-		$periodtogo = $totperiod[$dateday];
-		echo "href=\"index.php?navig=$navig&amp;period=$periodtogo&amp;site=$site&amp;graphpos=$graphpos\" alt=\"go\">\n";
+		$settings->periodtogo = $totperiod[$dateday];
+		echo "href=\"index.php?navig=$settings->navig&amp;period=$settings->periodtogo&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\" alt=\"go\">\n";
 		$x = $x + $widthzone;
 		$x2 = $x2 + $widthzone;
 		$iday++;

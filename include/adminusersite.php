@@ -28,9 +28,42 @@ if (!defined('IN_CRAWLT_ADMIN')) {
 $listsite = array();
 $listidsite = array();
 
+// Init _POST variables
+// TODO: logintype does not seem to be used currently!
+if (isset($_POST['logintype'])) {
+	$logintype = (int)$_POST['logintype'];
+} else {
+	$logintype = 0;
+}
+
+if (isset($_POST['login'])) {
+    $login = trim($_POST['login']); // trim whitespace at begin and end
+    $login = filter_var($login, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+	$changed = $_POST['login'] != $login;
+} else {
+	$login = '';
+	$changed = false;
+}
+
+// TODO: Check for min/max length of username and show a message if not within limits.
+// TODO: Specific message if using characters in username that are not allowed.
 //valid form
-if ($validlogin == 1) {
-	if (empty($login) || empty($password2) || empty($password3) || $password2 != $password3) {
+if ($settings->validlogin == 1) {
+	// Init password variables
+	// There is no need for sanitizing your password as you need to hash it anyway and passwords with random characters are allowed.
+	// In case of mistakes and showing the form again just leave the fields empty since user can't know or see what was entered wrong!
+	if (isset($_POST['password2'])) {
+		$password2 = $_POST['password2'];
+	} else {
+		$password2 = '';
+	}
+	if (isset($_POST['password3'])) {
+		$password3 = $_POST['password3'];
+	} else {
+		$password3 = '';
+	}
+
+	if (empty($login) || $changed || empty($password2) || empty($password3) || $password2 != $password3) {
 		echo "<br><br><p>" . $language['login_no_ok'] . "</p>";
 		echo "<div class=\"form\">\n";
 		echo "<form action=\"index.php\" method=\"POST\" >\n";
@@ -39,24 +72,19 @@ if ($validlogin == 1) {
 		echo "<input type=\"hidden\" name ='validlogin' value='0'>\n";
 		echo "<input type=\"hidden\" name ='logintype' value='$logintype'>\n";
 		echo "<input type=\"hidden\" name ='login' value='$login'>\n";
-		echo "<input type=\"hidden\" name ='password2' value='$password2'>\n";
-		echo "<input type=\"hidden\" name ='password3' value='$password3'>\n";
-		echo "<input type=\"hidden\" name ='site' value='$site'>\n";
+		echo "<input type=\"hidden\" name ='password2' value=''>\n";
+		echo "<input type=\"hidden\" name ='password3' value=''>\n";
+		echo "<input type=\"hidden\" name ='site' value='$settings->siteid'>\n";
 		echo "<input name='ok' type='submit'  value=' " . $language['back_to_form'] . " ' size='20'>\n";
 		echo "</form>\n";
 		echo "</div><br><br>\n";
 	} else {
-		//database connection
-		require_once("db.class.php");
 		require_once("accounts.class.php");
-
-		$db = new ctDb(); // Create db connection
 		$accounts = new ctAccounts($db); // Create login handling class
 
 		//check if user already exists
 		if ($accounts->username_exists($login)) {
 			// User already exists. Try again.
-			//login already exist
 			echo "<br><br><h1>" . $language['exist_login'] . "</h1>";
 			echo "<div class=\"form\">\n";
 			echo "<form action=\"index.php\" method=\"POST\" >\n";
@@ -65,15 +93,15 @@ if ($validlogin == 1) {
 			echo "<input type=\"hidden\" name ='validlogin' value='0'>\n";
 			echo "<input type=\"hidden\" name ='logintype' value='$logintype'>\n";
 			echo "<input type=\"hidden\" name ='login' value='$login'>\n";
-			echo "<input type=\"hidden\" name ='password2' value='$password2'>\n";
-			echo "<input type=\"hidden\" name ='password3' value='$password3'>\n";
-			echo "<input type=\"hidden\" name ='site' value='$site'>\n";
+			echo "<input type=\"hidden\" name ='password2' value=''>\n";
+			echo "<input type=\"hidden\" name ='password3' value=''>\n";
+			echo "<input type=\"hidden\" name ='site' value='$settings->siteid'>\n";
 			echo "<input name='ok' type='submit'  value=' " . $language['back_to_form'] . " ' size='20'>\n";
 			echo "</form>\n";
 			echo "</div><br><br>\n";
 		} else {
 			// Add user credentials to the database
-			if ($accounts->add_nonadmin_user($login, $password2, $site)) {
+			if ($accounts->add_nonadmin_user($login, $password2, $settings->siteid)) {
 				echo "<br><br><h2>" . $language['user_site_creation'] . "</h2>\n";
 				echo "<p>" . $language['login_ok'] . "</p>\n";
 				echo "<div class=\"form\">\n";
@@ -91,16 +119,17 @@ if ($validlogin == 1) {
 				echo "<input type=\"hidden\" name ='validform' value='7'>\n";
 				echo "<input type=\"hidden\" name ='navig' value='6'>\n";
 				echo "<input type=\"hidden\" name ='validlogin' value='1'>\n";
-				echo "<input type=\"hidden\" name ='site' value='$site'>\n";
+				echo "<input type=\"hidden\" name ='site' value='$settings->siteid'>\n";
 				echo "<input type=\"hidden\" name ='logintype' value='$logintype'>\n";
 				echo "<input type=\"hidden\" name ='login' value='$login'>\n";
-				echo "<input type=\"hidden\" name ='password2' value='$password2'>\n";
-				echo "<input type=\"hidden\" name ='password3' value='$password3'>\n";
+				echo "<input type=\"hidden\" name ='password2' value=''>\n";
+				echo "<input type=\"hidden\" name ='password3' value=''>\n";
 				echo "<input name='ok' type='submit'  value=' " . $language['retry'] . " ' size='20'>\n";
 				echo "</form>\n";
 				echo "</div><br><br>\n";
 			}
 		}
+		$accounts = null;
 		$db->close();
 	}
 }
@@ -111,13 +140,9 @@ else {
 	echo "<p>" . $language['user_site_setup'] . "</p>\n";
 	echo "<p>" . $language['login_user_site_what'] . "</p>\n";
 	
-	//database connection
-	require_once("jgbdb.php");
-	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-	
 	//mysql query
 	$sqlsite = "SELECT * FROM crawlt_site";
-	$querysite = db_query($sqlsite, $connexion);
+	$querysite = db_query($sqlsite, $db->connexion);
 	$nbrresult = $querysite->num_rows;
 	// TODO: Add option "All sites" (translated).
 	while ($ligne = $querysite->fetch_object()) {
@@ -126,7 +151,7 @@ else {
 		$listsite[] = $sitename;
 		$listidsite[] = $siteid;
 	}
-	mysqli_close($connexion);
+	$db->close(); // Close database
 	//preparation of site list display
 	$nbrsite = sizeof($listsite);
 	$nbrsiteaf = 0;
@@ -141,7 +166,7 @@ else {
 	echo "<select  size=\"1\" name=\"site\"  style=\" font-size:14px; font-weight:bold; color: #003399;
 	font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">\n";
 	do {
-		if ($listidsite[$nbrsiteaf] == $site) {
+		if ($listidsite[$nbrsiteaf] == $settings->siteid) {
 			echo "<option value=\"$listidsite[$nbrsiteaf]\" selected style=\" font-size:14px; font-weight:bold; color: #003399;
 			font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $listsite[$nbrsiteaf] . "</option>\n";
 		} else {
@@ -162,7 +187,7 @@ else {
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td>" . $language['password'] . "</td>\n";
-	echo "<td><input name='password2' value='$password2' type='password' size='50'/></td>\n";
+	echo "<td><input name='password2' value='' type='password' size='50'/></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td colspan=\"2\">\n";
@@ -171,7 +196,7 @@ else {
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td>" . $language['password'] . "</td>\n";
-	echo "<td><input name='password3' value='$password3' type='password' size='50'/></td>\n";
+	echo "<td><input name='password3' value='' type='password' size='50'/></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td colspan=\"2\">\n";

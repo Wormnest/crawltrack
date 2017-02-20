@@ -33,24 +33,20 @@ $nbrcountry2 = array();
 $name2 = array();
 $values = array();
 
-if ($period >= 1000) {
-	$cachename = "permanent-" . $navig . "-" . $site . "-".$crawltlang . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
-} elseif ($period >= 100 && $period < 200) //previous month
+if ($settings->period >= 1000) {
+	$cachename = "permanent-" . $settings->navig . "-" . $settings->siteid . "-".$settings->language . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
+} elseif ($settings->period >= 100 && $settings->period < 200) //previous month
 {
-	$cachename = "permanent-month" . $navig . "-" . $site . "-".$crawltlang . "-" . date("Y-m", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
-} elseif ($period >= 200 && $period < 300) //previous year
+	$cachename = "permanent-month" . $settings->navig . "-" . $settings->siteid . "-".$settings->language . "-" . date("Y-m", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
+} elseif ($settings->period >= 200 && $settings->period < 300) //previous year
 {
-	$cachename = "permanent-year" . $navig . "-" . $site . "-".$crawltlang . "-" . date("Y", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
+	$cachename = "permanent-year" . $settings->navig . "-" . $settings->siteid . "-".$settings->language . "-" . date("Y", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
 } else {
-	$cachename = $navig . $period . $site . $firstdayweek . $localday . $graphpos . $crawltlang;
+	$cachename = $settings->navig . $settings->period . $settings->siteid . $settings->firstdayweek . $localday . $settings->graphpos . $settings->language;
 }
 
 //start the caching
 cache($cachename);
-
-//database connection
-require_once("jgbdb.php");
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //include menu
 include ("include/menumain.php");
@@ -58,23 +54,23 @@ include ("include/menusite.php");
 include ("include/timecache.php");
 
 //mysql query
-if ($period >= 10) {
+if ($settings->period >= 10) {
 	$sqlstats = "SELECT crawler_name, crawlt_ip_used, date, crawler_info
     FROM crawlt_visits
     INNER JOIN crawlt_crawler
     ON  crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
-    WHERE crawlt_visits.date >'" . crawlt_sql_quote($connexion, $daterequest) . "'
-    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "'     
-    AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'";
+    WHERE crawlt_visits.date >'" . crawlt_sql_quote($db->connexion, $daterequest) . "'
+    AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest2) . "'     
+    AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'";
 } else {
 	$sqlstats = "SELECT crawler_name, crawlt_ip_used, date, crawler_info
     FROM crawlt_visits
     INNER JOIN crawlt_crawler
     ON  crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
-    WHERE crawlt_visits.date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
-    AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'";
+    WHERE crawlt_visits.date >'" . crawlt_sql_quote($db->connexion, $daterequest) . "' 
+    AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'";
 }
-$requetestats = db_query($sqlstats, $connexion);
+$requetestats = db_query($sqlstats, $db->connexion);
 $nbrresult1 = $requetestats->num_rows;
 $testip = false;
 if ($nbrresult1 >= 1) {
@@ -144,12 +140,12 @@ if ($nbrresult1 >= 1) {
 		$i = 0;
 		foreach ($nbrcountry as $nbr) {
 			if ($i > 4 && $nbrtotcountry > 6) {
-				$crawler = $name[$i];
-				$crawler3 = 'other';
-				@$nbrcountry2[$crawler3] = @$nbrcountry2[$crawler3] + $nbrcountry[$crawler];
+				$crawlername = $name[$i];
+				$crawlerother = 'other';
+				@$nbrcountry2[$crawlerother] = @$nbrcountry2[$crawlerother] + $nbrcountry[$crawlername];
 			} else {
-				$crawler = $name[$i];
-				@$nbrcountry2[$crawler] = $nbrcountry[$crawler];
+				$crawlername = $name[$i];
+				@$nbrcountry2[$crawlername] = $nbrcountry[$crawlername];
 			}
 			$i++;
 		}
@@ -171,25 +167,24 @@ if ($nbrresult1 >= 1) {
 		$graphname = "origin-" . $cachename;
 		//check if this graph already exists in the table
 		$sql = "SELECT name  FROM crawlt_graph
-                WHERE name= '" . crawlt_sql_quote($connexion, $graphname) . "'";
-		$requete = db_query($sql, $connexion);
+                WHERE name= '" . crawlt_sql_quote($db->connexion, $graphname) . "'";
+		$requete = db_query($sql, $db->connexion);
 		$nbrresult = $requete->num_rows;
 		if ($nbrresult >= 1) {
-			$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($connexion, $datatransferttograph) . "'
-                  WHERE name= '" . crawlt_sql_quote($connexion, $graphname) . "'";
+			$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($db->connexion, $datatransferttograph) . "'
+                  WHERE name= '" . crawlt_sql_quote($db->connexion, $graphname) . "'";
 		} else {
-			$sql2 = "INSERT INTO crawlt_graph (name, graph_values) VALUES ( '" . crawlt_sql_quote($connexion, $graphname) . "','" . crawlt_sql_quote($connexion, $datatransferttograph) . "')";
+			$sql2 = "INSERT INTO crawlt_graph (name, graph_values) VALUES ( '" . crawlt_sql_quote($db->connexion, $graphname) . "','" . crawlt_sql_quote($db->connexion, $datatransferttograph) . "')";
 		}
-		$requete2 = db_query($sql2, $connexion);
-		//mysql connexion close
-		mysqli_close($connexion);
+		$requete2 = db_query($sql2, $db->connexion);
+		$db->close(); // Close database
 
 		//display---------------------------------------------------------------------------------------------------------
 		echo "<div class=\"content2\"><br><hr>\n";
 		echo "</div>\n";
 		//graph
 		echo "<div align='center'onmouseover=\"javascript:montre();\">\n";
-		echo "<img src=\"./graphs/origine-graph.php?graphname=$graphname&amp;crawltlang=$crawltlang\" alt=\"graph\"  width=\"450px\" height=\"200px\"/>\n";
+		echo "<img src=\"./graphs/origine-graph.php?graphname=$graphname&amp;crawltlang=$settings->language\" alt=\"graph\"  width=\"450px\" height=\"200px\"/>\n";
 		echo "</div>\n";
 
 		//order per crawler name
@@ -217,7 +212,8 @@ if ($nbrresult1 >= 1) {
 			${'ipcrawler' . $crawl} = array_unique(${'ipcrawler' . $crawl});
 			sort(${'ipcrawler' . $crawl});
 			if ($comptligne % 2 == 0) {
-				echo "<tr><td class='tableau3h'><a href='index.php?navig=2&amp;period=" . $period . "&amp;site=" . $site . "&amp;crawler=" . $crawl . "&amp;graphpos=" . $graphpos . "'>" . $crawldisplay . "</a></td>\n";
+				$crawlencode = urlencode($crawl);
+				echo "<tr><td class='tableau3h'><a href='index.php?navig=2&amp;period=" . $settings->period . "&amp;site=" . $settings->siteid . "&amp;crawler=" . $crawlencode . "&amp;graphpos=" . $settings->graphpos . "'>" . $crawldisplay . "</a></td>\n";
 				echo "<td class='tableau3g' width='20%'>\n";
 				foreach (${'ipcrawler' . $crawl} as $ip) {
 					$nbip = count(${'crawler' . $ip});
@@ -238,7 +234,7 @@ if ($nbrresult1 >= 1) {
 						$teststrangeip = false;
 					}
 					if ($teststrangeip) {
-						echo "&nbsp;&nbsp;&nbsp;<span class='red'>$ip&nbsp;<a href='index.php?navig=6&amp;iptosuppress=" . $ip . "&amp;period=" . $period . "&amp;site=" . $site . "&amp;validform=19&amp;suppressip=1&amp;graphpos=" . $graphpos . "'>???</a></span><br>\n";
+						echo "&nbsp;&nbsp;&nbsp;<span class='red'>$ip&nbsp;<a href='index.php?navig=6&amp;iptosuppress=" . $ip . "&amp;period=" . $settings->period . "&amp;site=" . $settings->siteid . "&amp;validform=19&amp;suppressip=1&amp;graphpos=" . $settings->graphpos . "'>???</a></span><br>\n";
 					} else {
 						echo "&nbsp;&nbsp;&nbsp;$ip<br>\n";
 					}
@@ -260,7 +256,8 @@ if ($nbrresult1 >= 1) {
 				}
 				echo "</td></tr> \n";
 			} else {
-				echo "<tr><td class='tableau30h'><a href='index.php?navig=2&amp;period=" . $period . "&amp;site=" . $site . "&amp;crawler=" . $crawl . "&amp;graphpos=" . $graphpos . "'>" . $crawldisplay . "</a></td>\n";
+				$crawlencode = urlencode($crawl);
+				echo "<tr><td class='tableau30h'><a href='index.php?navig=2&amp;period=" . $settings->period . "&amp;site=" . $settings->siteid . "&amp;crawler=" . $crawlencode . "&amp;graphpos=" . $settings->graphpos . "'>" . $crawldisplay . "</a></td>\n";
 				echo "<td class='tableau30g' width='20%'>\n";
 				foreach (${'ipcrawler' . $crawl} as $ip) {
 					$nbip = count(${'crawler' . $ip});
@@ -280,7 +277,7 @@ if ($nbrresult1 >= 1) {
 						$teststrangeip = 0;
 					}
 					if ($teststrangeip == 1) {
-						echo "&nbsp;&nbsp;&nbsp;<span class='red'>$ip&nbsp;<a href='index.php?navig=6&amp;iptosuppress=" . $ip . "&amp;period=" . $period . "&amp;site=" . $site . "&amp;validform=19&amp;suppressip=1&amp;graphpos=" . $graphpos . "'>???</a></span><br>\n";
+						echo "&nbsp;&nbsp;&nbsp;<span class='red'>$ip&nbsp;<a href='index.php?navig=6&amp;iptosuppress=" . $ip . "&amp;period=" . $settings->period . "&amp;site=" . $settings->siteid . "&amp;validform=19&amp;suppressip=1&amp;graphpos=" . $settings->graphpos . "'>???</a></span><br>\n";
 					} else {
 						echo "&nbsp;&nbsp;&nbsp;$ip<br>\n";
 					}

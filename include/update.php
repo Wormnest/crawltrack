@@ -22,8 +22,6 @@ if (!defined('IN_CRAWLT_ADMIN')) {
 }
 
 //crawlt_update table creation if not exist in case of upgrade from a previous version
-require_once("jgbdb.php");
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 // Call the maintenance script which will do the job
 // Override the default tables_to_check array
@@ -42,14 +40,14 @@ $tables_to_check = array(
 
 $maintenance_mode = 'update';
 $tables_to_touch = array('crawlt_update');
-include 'maintenance.php';
+include('maintenance.php');
 
 $idlastupdate = 0;
 if ($existing_crawlt_update_table)
 {
 	//query to get the actual liste id
 	$sqlupdate = "SELECT * FROM crawlt_update";
-	$requeteupdate = db_query($sqlupdate, $connexion);
+	$requeteupdate = db_query($sqlupdate, $db->connexion);
 	while ($ligne = $requeteupdate->fetch_object()) {
 		$update = $ligne->update_id;
 		if ($update > $idlastupdate) {
@@ -57,7 +55,8 @@ if ($existing_crawlt_update_table)
 		}
 	}
 }
-mysqli_close($connexion);
+//mysqli_close($db->connexion);
+$db->close(); // Close database
 
 if (!empty($tables_actions_error_messages)) {
 	//case we had a problem during table creation

@@ -22,17 +22,13 @@ if (!defined('IN_CRAWLT_ADMIN')) {
 }
 
 echo "<h1>" . $language['public'] . "</h1>\n";
-if ($crawltpublic == 1) {
-	if ($validsite == 1) {
+if ($settings->ispublic == 1) {
+	if ($settings->validsite == 1) {
 		//update the crawlt_config_table
-		
-		//database connection
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-		
 		$sqlupdatepublic = "UPDATE crawlt_config SET public='0'";
-		$requeteupdatepublic = db_query($sqlupdatepublic, $connexion);
-		mysqli_close($connexion);
+		$requeteupdatepublic = db_query($sqlupdatepublic, $db->connexion);
+		$db->close(); // Close database
+		$settings->ispublic = 0;
 		echo "<br><br><p>" . $language['update'] . "</p><br><br>";
 		
 		//continue
@@ -74,7 +70,7 @@ if ($crawltpublic == 1) {
 		echo "</div><br>\n";
 	}
 } else {
-	if ($validsite != 1) {
+	if ($settings->validsite != 1) {
 		//form
 		echo "<br><br><p>" . $language['public-set-up'] . "</p>\n";
 		echo "<br><p>" . $language['public2'] . "</p>\n";
@@ -104,14 +100,10 @@ if ($crawltpublic == 1) {
 		echo "</div><br>\n";
 	} else {
 		//update the crawlt_config_table
-		
-		//database connection
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-		
 		$sqlupdatepublic = "UPDATE crawlt_config SET public='1'";
-		$requeteupdatepublic = db_query($sqlupdatepublic, $connexion);
-		mysqli_close($connexion);
+		$requeteupdatepublic = db_query($sqlupdatepublic, $db->connexion);
+		$db->close(); // Close database
+		$settings->ispublic = 1;
 		echo "<br><br><p>" . $language['update'] . "</p><br><br>";
 		
 		//continue

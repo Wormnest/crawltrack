@@ -21,6 +21,30 @@ if (!defined('IN_CRAWLT_INSTALL')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
 }
 
+if (isset($_POST['idmysql'])) {
+	$idmysql = filter_input(INPUT_POST, 'idmysql', FILTER_SANITIZE_SPECIAL_CHARS);
+} else {
+	$idmysql = '';
+}
+if (isset($_POST['passwordmysql'])) {
+	// TODO: Since we are storing it in a php variable with single quotes we should check that
+	// the password doesn't contain quotes since that would end the variable;
+	// Also: since passwords are supposed to contain strange characters we can't do normal filtering.
+	$passwordmysql = $_POST['passwordmysql'];
+} else {
+	$passwordmysql = '';
+}
+if (isset($_POST['hostmysql'])) {
+	$hostmysql = filter_input(INPUT_POST, 'hostmysql', FILTER_SANITIZE_SPECIAL_CHARS);
+} else {
+	$hostmysql = 'localhost';
+}
+if (isset($_POST['basemysql'])) {
+	$basemysql = filter_input(INPUT_POST, 'basemysql', FILTER_SANITIZE_SPECIAL_CHARS);
+} else {
+	$basemysql = '';
+}
+
 //determine the path to the file
 if (isset($_SERVER['SCRIPT_FILENAME']) && !empty($_SERVER['SCRIPT_FILENAME'])) {
 	$path = dirname($_SERVER['SCRIPT_FILENAME']);
@@ -36,7 +60,7 @@ if (empty($idmysql) || empty($passwordmysql) || empty($hostmysql) || empty($base
 	echo "<form action=\"index.php\" method=\"POST\" >\n";
 	echo "<input type=\"hidden\" name ='validform' value='2'>\n";
 	echo "<input type=\"hidden\" name ='navig' value='15'>\n";
-	echo "<input type=\"hidden\" name ='lang' value='$crawltlang'>\n";
+	echo "<input type=\"hidden\" name ='lang' value='$settings->language'>\n";
 	echo "<input type=\"hidden\" name ='idmysql' value='$idmysql'>\n";
 	echo "<input type=\"hidden\" name ='passwordmysql' value='$passwordmysql'>\n";
 	echo "<input type=\"hidden\" name ='hostmysql' value='$hostmysql'>\n";
@@ -47,6 +71,8 @@ if (empty($idmysql) || empty($passwordmysql) || empty($hostmysql) || empty($base
 }
 //configconnect file creation
 else {
+	// TODO: It would probably be better if we tested first if we can connect to the database
+	// before we try to create the config file.
 	//check if file already exist
 	if (file_exists('include/configconnect.php')) {
 		$config_filepath = $path . '/include/configconnect.php';
@@ -138,7 +164,7 @@ else {
 				echo "<form action=\"index.php\" method=\"POST\" >\n";
 				echo "<input type=\"hidden\" name ='validform' value='2'>\n";
 				echo "<input type=\"hidden\" name ='navig' value='15'>\n";
-				echo "<input type=\"hidden\" name ='lang' value='$crawltlang'>\n";
+				echo "<input type=\"hidden\" name ='lang' value='$settings->language'>\n";
 				echo "<input type=\"hidden\" name ='idmysql' value='$idmysql'>\n";
 				echo "<input type=\"hidden\" name ='passwordmysql' value='$passwordmysql'>\n";
 				echo "<input type=\"hidden\" name ='hostmysql' value='$hostmysql'>\n";
@@ -158,7 +184,7 @@ else {
 				echo "<form action=\"index.php\" method=\"POST\" >\n";
 				echo "<input type=\"hidden\" name ='validform' value='2'>\n";
 				echo "<input type=\"hidden\" name ='navig' value='15'>\n";
-				echo "<input type=\"hidden\" name ='lang' value='$crawltlang'>\n";
+				echo "<input type=\"hidden\" name ='lang' value='$settings->language'>\n";
 				echo "<input type=\"hidden\" name ='idmysql' value='$idmysql'>\n";
 				echo "<input type=\"hidden\" name ='passwordmysql' value='$passwordmysql'>\n";
 				echo "<input type=\"hidden\" name ='hostmysql' value='$hostmysql'>\n";
@@ -181,7 +207,7 @@ else {
 				echo "<form action=\"index.php\" method=\"POST\" >\n";
 				echo "<input type=\"hidden\" name ='navig' value='15'>\n";
 				echo "<input type=\"hidden\" name ='validform' value='4'>\n";
-				echo "<input type=\"hidden\" name ='lang' value='$crawltlang'>\n";
+				echo "<input type=\"hidden\" name ='lang' value='$settings->language'>\n";
 				echo "<input name='ok' type='submit'  value=' " . $language['step4_install'] . " ' size='60'>\n";
 				echo "</form>\n";
 				echo "<br></div>\n";
@@ -192,7 +218,7 @@ else {
 				echo "<form action=\"index.php\" method=\"POST\" >\n";
 				echo "<input type=\"hidden\" name ='validform' value='3'>\n";
 				echo "<input type=\"hidden\" name ='navig' value='15'>\n";
-				echo "<input type=\"hidden\" name ='lang' value='$crawltlang'>\n";
+				echo "<input type=\"hidden\" name ='lang' value='$settings->language'>\n";
 				echo "<input type=\"hidden\" name ='idmysql' value='$idmysql'>\n";
 				echo "<input type=\"hidden\" name ='passwordmysql' value='$passwordmysql'>\n";
 				echo "<input type=\"hidden\" name ='hostmysql' value='$hostmysql'>\n";
@@ -208,7 +234,7 @@ else {
 		echo "<div class=\"form\">\n";
 		echo "<form action=\"index.php\" method=\"POST\" >\n";
 		echo "<input type=\"hidden\" name ='validform' value='2'>\n";
-		echo "<input type=\"hidden\" name ='lang' value='$crawltlang'>\n";
+		echo "<input type=\"hidden\" name ='lang' value='$settings->language'>\n";
 		echo "<input type=\"hidden\" name ='idmysql' value='$idmysql'>\n";
 		echo "<input type=\"hidden\" name ='passwordmysql' value='$passwordmysql'>\n";
 		echo "<input type=\"hidden\" name ='hostmysql' value='$hostmysql'>\n";

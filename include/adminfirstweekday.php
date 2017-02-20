@@ -22,21 +22,17 @@ if (!defined('IN_CRAWLT_ADMIN')) {
 }
 
 echo "<h1>" . $language['firstweekday-title'] . "</h1>\n";
-if ($firstdayweek == 'Monday') {
-	if ($validsite == 1) {
+if ($settings->firstdayweek == 'Monday') {
+	if ($settings->validsite == 1) {
 		//update the crawlt_config_table
-		
-		//database connection
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-
 		$sqlupdatepublic = "UPDATE crawlt_config SET firstdayweek='Sunday'";
-		$requeteupdatepublic = db_query($sqlupdatepublic, $connexion);
+		$requeteupdatepublic = db_query($sqlupdatepublic, $db->connexion);
+		$settings->firstdayweek = 'Sunday';
 		
 		//clear cache table
 		$sqlcache = "TRUNCATE TABLE crawlt_cache";
-		$requetecache = db_query($sqlcache, $connexion);
-		mysqli_close($connexion);
+		$requetecache = db_query($sqlcache, $db->connexion);
+		$db->close(); // Close database
 		echo "<br><br><p>" . $language['update'] . "</p><br><br>";
 		
 		//continue
@@ -78,7 +74,7 @@ if ($firstdayweek == 'Monday') {
 		echo "</div><br>\n";
 	}
 } else {
-	if ($validsite != 1) {
+	if ($settings->validsite != 1) {
 		//form
 		echo "<br><br><p>" . $language['firstweekday-set-up'] . "</p>\n";
 		echo "<div class=\"form\">\n";
@@ -107,18 +103,14 @@ if ($firstdayweek == 'Monday') {
 		echo "</div><br>\n";
 	} else {
 		//update the crawlt_config_table
-		
-		//database connection
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-
 		$sqlupdatepublic = "UPDATE crawlt_config SET firstdayweek='Monday'";
-		$requeteupdatepublic = db_query($sqlupdatepublic, $connexion);
+		$requeteupdatepublic = db_query($sqlupdatepublic, $db->connexion);
+		$settings->firstdayweek = 'Monday';
 		
 		//clear cache table
 		$sqlcache = "TRUNCATE TABLE crawlt_cache";
-		$requetecache = db_query($sqlcache, $connexion);
-		mysqli_close($connexion);
+		$requetecache = db_query($sqlcache, $db->connexion);
+		$db->close(); // Close database
 		echo "<br><br><p>" . $language['update'] . "</p><br><br>";
 		
 		//continue

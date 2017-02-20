@@ -30,7 +30,7 @@
 				$crawlencode = '';
 			}
 			?>
-			<a href="index.php?navig=<?php echo $navig ?>&amp;graphpos=<?php echo $graphpos ?>&amp;period=<?php echo $period ?>&amp;site=<?php echo $site ?>&amp;crawler=<?php echo $crawlencode ?>"><img src="./images/star.png" width="16" height="16" border="0" title="<?php echo $language['bookmark'] ?>" alt="<?php echo $language['bookmark'] ?>" /></a>
+			<a href="index.php?navig=<?php echo $settings->navig ?>&amp;graphpos=<?php echo $settings->graphpos ?>&amp;period=<?php echo $settings->period ?>&amp;site=<?php echo $settings->siteid ?>&amp;crawler=<?php echo $crawlencode ?>"><img src="./images/star.png" width="16" height="16" border="0" title="<?php echo $language['bookmark'] ?>" alt="<?php echo $language['bookmark'] ?>" /></a>
 			</td></tr>
 		</table>
 	</div>

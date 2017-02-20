@@ -17,8 +17,6 @@
 // file: login.php
 //----------------------------------------------------------------------
 
-// TODO: Replace md5 with safer routine for password hashing!!!
-
 // Set debugging to non zero to turn it on.
 // DON'T FORGET TO TURN IT OFF AFTER YOU FINISH DEBUGGING OR WHEN COMMITTING CHANGES!
 $DEBUG = 0;
@@ -31,12 +29,6 @@ if ($DEBUG == 0) {
 	error_reporting(E_ALL);
 }
 
-// Convert POST/GET variables to named variables.
-include ("../include/post.php");
-$crawlencode = urlencode($crawler);
-
-//get the functions files
-$times = 0;
 // Needed for empty_cache
 require_once("../include/functions.php");
 
@@ -58,8 +50,40 @@ if(count($list)>200) {
 	$dir->close();
 }
 
-//get values
-// TODO: Should we add these to post.php
+//get url data
+if (isset($_GET['navig'])) {
+	$navig = (int)$_GET['navig'];
+} else {
+	$navig = 0;
+}
+if (isset($_GET['period'])) {
+	$period = (int)$_GET['period'];
+} else {
+	$period = 0;
+}
+if (isset($_GET['site'])) {
+	$site = (int)$_GET['site'];
+} else {
+	$site = 1; // Because 0 is all sites overview.
+}
+if (isset($_GET['crawler'])) {
+	$crawler = stripslashes($_GET['crawler']);
+} else {
+	$crawler = 0;
+}
+$crawlencode = urlencode($crawler);
+if (isset($_GET['graphpos'])) {
+	$graphpos = $_GET['graphpos'];
+} else {
+	$graphpos = 0;
+}
+if (isset($_GET['displayall']) && ($_GET['displayall'] == 'no' || $_GET['displayall'] == 'yes')) {
+	$displayall = $_GET['displayall'];
+} else {
+	$displayall = 'no';
+}
+
+// User login and password
 if (isset($_POST['userlogin'])) {
 	$userlogin = $_POST['userlogin'];
 } else {

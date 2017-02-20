@@ -21,29 +21,48 @@ if (!defined('IN_CRAWLT_INSTALL')) {
 	exit('<h1>No direct access</h1>');
 }
 
+if (isset($_POST['login'])) {
+    $login = trim($_POST['login']); // trim whitespace at begin and end
+    $login = filter_var($login, FILTER_SANITIZE_STRING, FILTER_FLAG_STRIP_LOW);
+	$changed = $_POST['login'] != $login;
+} else {
+	$login = '';
+	$changed = false;
+}
+
 //valid form
-if ($validlogin == 1) {
-	if (empty($login) || empty($password2) || empty($password3) || $password2 != $password3) {
+if ($settings->validlogin == 1) {
+	// Init password variables
+	// There is no need for sanitizing your password as you need to hash it anyway and passwords with random characters are allowed.
+	// In case of mistakes and showing the form again just leave the fields empty since user can't know or see what was entered wrong!
+	if (isset($_POST['password2'])) {
+		$password2 = $_POST['password2'];
+	} else {
+		$password2 = '';
+	}
+	if (isset($_POST['password3'])) {
+		$password3 = $_POST['password3'];
+	} else {
+		$password3 = '';
+	}
+
+	if (empty($login) || $changed || empty($password2) || empty($password3) || $password2 != $password3) {
 		echo "<p>" . $language['login_no_ok'] . "</p>";
 		echo "<div class=\"form\">\n";
 		echo "<form action=\"index.php\" method=\"POST\" >\n";
 		echo "<input type=\"hidden\" name ='validform' value='6'>\n";
 		echo "<input type=\"hidden\" name ='navig' value='15'>\n";
 		echo "<input type=\"hidden\" name ='validlogin' value='0'>\n";
-		echo "<input type=\"hidden\" name ='lang' value='$crawltlang'>\n";
+		echo "<input type=\"hidden\" name ='lang' value='$settings->language'>\n";
 		echo "<input type=\"hidden\" name ='login' value='$login'>\n";
-		echo "<input type=\"hidden\" name ='password2' value='$password2'>\n";
-		echo "<input type=\"hidden\" name ='password3' value='$password3'>\n";
-		echo "<input type=\"hidden\" name ='site' value='$site'>\n";
+		echo "<input type=\"hidden\" name ='password2' value=''>\n";
+		echo "<input type=\"hidden\" name ='password3' value=''>\n";
+		echo "<input type=\"hidden\" name ='site' value='$settings->siteid'>\n";
 		echo "<input name='ok' type='submit'  value=' " . $language['back_to_form'] . " ' size='20'>\n";
 		echo "</form>\n";
 		echo "<br></div>\n";
 	} else {
-		//database connection
-		require_once("db.class.php");
 		require_once("accounts.class.php");
-
-		$db = new ctDb(); // Create db connection
 		$accounts = new ctAccounts($db);
 		
 		if ($accounts->username_exists($login)) {
@@ -54,11 +73,11 @@ if ($validlogin == 1) {
 			echo "<input type=\"hidden\" name ='validform' value='6'>\n";
 			echo "<input type=\"hidden\" name ='navig' value='15'>\n";
 			echo "<input type=\"hidden\" name ='validlogin' value='0'>\n";
-			echo "<input type=\"hidden\" name ='lang' value='$crawltlang'>\n";
+			echo "<input type=\"hidden\" name ='lang' value='$settings->language'>\n";
 			echo "<input type=\"hidden\" name ='login' value='$login'>\n";
-			echo "<input type=\"hidden\" name ='password2' value='$password2'>\n";
-			echo "<input type=\"hidden\" name ='password3' value='$password3'>\n";
-			echo "<input type=\"hidden\" name ='site' value='$site'>\n";
+			echo "<input type=\"hidden\" name ='password2' value=''>\n";
+			echo "<input type=\"hidden\" name ='password3' value=''>\n";
+			echo "<input type=\"hidden\" name ='site' value='$settings->siteid'>\n";
 			echo "<input name='ok' type='submit'  value=' " . $language['back_to_form'] . " ' size='20'>\n";
 			echo "</form>\n";
 			echo "<br></div>\n";
@@ -83,15 +102,16 @@ if ($validlogin == 1) {
 				echo "<input type=\"hidden\" name ='validform' value='6'>\n";
 				echo "<input type=\"hidden\" name ='navig' value='15'>\n";
 				echo "<input type=\"hidden\" name ='validlogin' value='1'>\n";
-				echo "<input type=\"hidden\" name ='lang' value='$crawltlang'>\n";
+				echo "<input type=\"hidden\" name ='lang' value='$settings->language'>\n";
 				echo "<input type=\"hidden\" name ='login' value='$login'>\n";
-				echo "<input type=\"hidden\" name ='password2' value='$password2'>\n";
-				echo "<input type=\"hidden\" name ='password3' value='$password3'>\n";
+				echo "<input type=\"hidden\" name ='password2' value=''>\n";
+				echo "<input type=\"hidden\" name ='password3' value=''>\n";
 				echo "<input name='ok' type='submit'  value=' " . $language['retry'] . " ' size='20'>\n";
 				echo "</form>\n";
 				echo "<br></div>\n";
 			}
 		}
+		$accounts = null;
 		$db->close();
 	}
 }
@@ -108,7 +128,7 @@ else {
 	echo "<input type=\"hidden\" name ='validform' value=\"6\">";
 	echo "<input type=\"hidden\" name ='navig' value='15'>\n";
 	echo "<input type=\"hidden\" name ='validlogin' value='1'>\n";
-	echo "<input type=\"hidden\" name ='lang' value='$crawltlang'>\n";
+	echo "<input type=\"hidden\" name ='lang' value='$settings->language'>\n";
 	echo "<table class=\"centrer\">\n";
 	echo "<tr>\n";
 	echo "<td>" . $language['login'] . "</td>\n";
@@ -116,7 +136,7 @@ else {
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td>" . $language['password'] . "</td>\n";
-	echo "<td><input name='password2' value='$password2' type='password' size='50'/></td>\n";
+	echo "<td><input name='password2' value='' type='password' size='50'/></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td colspan=\"2\">\n";
@@ -125,7 +145,7 @@ else {
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td>" . $language['password'] . "</td>\n";
-	echo "<td><input name='password3' value='$password3' type='password' size='50'/></td>\n";
+	echo "<td><input name='password3' value='' type='password' size='50'/></td>\n";
 	echo "</tr>\n";
 	echo "<tr>\n";
 	echo "<td colspan=\"2\">\n";

@@ -23,8 +23,8 @@ require_once("../../include/functions.php");
 //call back the page
 $keywordurl=$_GET['q'];
 $crawltcharset=1;
-$keyworddisplay = stripslashes(crawltcuturl($keywordurl, '55'));
-$crawltlang=$_GET['lang'];
+$keyworddisplay = stripslashes(crawltcuturl($keywordurl, '55', $crawltcharset));
+$crawltlang=htmlspecialchars($_GET['lang']);
 
 require_once('JSON.phps');
 

@@ -22,15 +22,11 @@ if (!defined('IN_CRAWLT_ADMIN')) {
 }
 
 //valid form
-if ($validlogin == 1) {
-	//database connection
-	require_once("jgbdb.php");
-	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-	
+if ($settings->validlogin == 1) {
 	//check if crawler already exist
 	$sqlexist = "SELECT * FROM crawlt_crawler
 	WHERE crawler_name='Test-CrawlTrack'";
-	$requeteexist = db_query($sqlexist, $connexion);
+	$requeteexist = db_query($sqlexist, $db->connexion);
 	$nbrresult = $requeteexist->num_rows;
 	
 	if ($nbrresult >= 1) {
@@ -52,8 +48,8 @@ if ($validlogin == 1) {
 			$_SERVER = $HTTP_SERVER_VARS;
 		}
 		$agent2 = $_SERVER['HTTP_USER_AGENT'];
-		$sqlcrawler = "INSERT INTO crawlt_crawler (crawler_user_agent,crawler_name,crawler_url,crawler_info,crawler_ip) VALUES ('" . crawlt_sql_quote($connexion, $agent2) . "','Test-Crawltrack','no-url','me','')";
-		$requetecrawler = db_query($sqlcrawler, $connexion);
+		$sqlcrawler = "INSERT INTO crawlt_crawler (crawler_user_agent,crawler_name,crawler_url,crawler_info,crawler_ip) VALUES ('" . crawlt_sql_quote($db->connexion, $agent2) . "','Test-Crawltrack','no-url','me','')";
+		$requetecrawler = db_query($sqlcrawler, $db->connexion);
 		
 		//determine the path to the nocache file
 		if (isset($_SERVER['PATH_TRANSLATED']) && !empty($_SERVER['PATH_TRANSLATED'])) {
@@ -81,7 +77,7 @@ if ($validlogin == 1) {
 		
 		//empty the cache table
 		$sqlcache = "TRUNCATE TABLE crawlt_cache";
-		$requetecache = db_query($sqlcache, $connexion);
+		$requetecache = db_query($sqlcache, $db->connexion);
 		
 		//check is requete is successfull
 		if ($requetecrawler) {
@@ -104,7 +100,7 @@ if ($validlogin == 1) {
 			echo "</div><br><br>\n";
 		}
 	}
-mysqli_close($connexion);
+mysqli_close($db->connexion);
 }
 
 //form

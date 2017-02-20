@@ -24,13 +24,13 @@ if (!defined('IN_CRAWLT')) {
 // do not modify
 define('IN_CRAWLT_ADMIN', TRUE);
 
-//database connection
-require_once("jgbdb.php");
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+// Open db connection if not already open.
+$db->open();
 
 //query to know the actual session id in the table
+// TODO: Use parametrized queries!
 $sql = "SELECT sessionid FROM crawlt_sessionid";
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 $nbrresult = $requete->num_rows;
 if ($nbrresult >= 1) {
 	while ($ligne = $requete->fetch_row()) {
@@ -48,11 +48,11 @@ if ($_SESSION['rightsite'] == 0) {
 	$siteright = $_SESSION['rightsite'];
 	$sql = "SELECT id_site, name, url 
 	FROM crawlt_site	
-	WHERE id_site = '" . crawlt_sql_quote($connexion, $siteright) . "'";
+	WHERE id_site = '" . crawlt_sql_quote($db->connexion, $siteright) . "'";
 }
 
 //request to get the sites datas
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 $nbrresult = $requete->num_rows;
 if ($nbrresult >= 1) {
 	while ($ligne = $requete->fetch_row()) {
@@ -62,24 +62,25 @@ if ($nbrresult >= 1) {
 	}
 }
 //to check crawltrack.php file used (with or without visitor counting
+// TODO: This should be a database configuration table setting .
 $checkcrawltrack = file_get_contents('crawltrack.php');
 if(preg_match("/No-visitor-CrawlTrack/i", $checkcrawltrack))
 {
-$novisitorcrawltrack=1;
+	$novisitorcrawltrack=1;
 }
 else
 {
-$novisitorcrawltrack=0;
+	$novisitorcrawltrack=0;
 }
 
 //include menu
 include ("include/menumain.php");
-if ($validform == 33) {
+if ($settings->validform == 33) {
 	include ("include/menusite.php");
 }
 
 echo "<div class=\"content\">\n";
-if ($crawltlang == 'french' || $crawltlang == 'frenchiso') {
+if ($settings->language == 'french' || $settings->language == 'frenchiso') {
 ?>
 	<div align="right">
 	<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
@@ -103,7 +104,7 @@ if ($crawltlang == 'french' || $crawltlang == 'frenchiso') {
 	<?php
 }
 if ($_SESSION['rightadmin'] == 1) {
-	switch($validform)
+	switch($settings->validform)
 	{
 		case 6:
 			include ("include/adminuser.php");
@@ -196,94 +197,103 @@ if ($_SESSION['rightadmin'] == 1) {
 			include ("include/admingoodreferer.php");
 		break;
 		default:
-			switch($validform) {
+			switch($settings->validform) {
 				case 96:
 					//update the crawlt_config table
-					$sql = "UPDATE crawlt_config SET typecharset='" . crawlt_sql_quote($connexion, $crawltcharset) . "'";
-					$requete = db_query($sql, $connexion);
+					$sql = "UPDATE crawlt_config SET typecharset='" . crawlt_sql_quote($db->connexion, $settings->useutf8) . "'";
+					$requete = db_query($sql, $db->connexion);
 				break;
 				case 97:
 					//update the crawlt_config table
-					$sql = "UPDATE crawlt_config SET typemail='" . crawlt_sql_quote($connexion, $crawltmailishtml) . "'";
-					$requete = db_query($sql, $connexion);
+					$sql = "UPDATE crawlt_config SET typemail='" . crawlt_sql_quote($db->connexion, $settings->htmlmail) . "'";
+					$requete = db_query($sql, $db->connexion);
 				break;
 				case 98:
 					//update the crawlt_config table
-					$sql = "UPDATE crawlt_config SET rowdisplay='" . crawlt_sql_quote($connexion, $rowdisplay) . "'";
-					$requete = db_query($sql, $connexion);
+					$sql = "UPDATE crawlt_config SET rowdisplay='" . crawlt_sql_quote($db->connexion, $settings->displayrows) . "'";
+					$requete = db_query($sql, $db->connexion);
 				break;
 				case 99:
 					//update the crawlt_config table
-					$sql = "UPDATE crawlt_config SET orderdisplay='" . crawlt_sql_quote($connexion, $order) . "'";
-					$requete = db_query($sql, $connexion);
+					$sql = "UPDATE crawlt_config SET orderdisplay='" . crawlt_sql_quote($db->connexion, $settings->displayorder) . "'";
+					$requete = db_query($sql, $db->connexion);
 				break;
 				case 100:
 					//update the crawlt_config table
-					$sql = "UPDATE crawlt_config SET blockattack='" . crawlt_sql_quote($connexion, $crawltblockattack) . "'";
-					$requete = db_query($sql, $connexion);
+					$sql = "UPDATE crawlt_config SET blockattack='" . crawlt_sql_quote($db->connexion, $settings->blockattacks) . "'";
+					$requete = db_query($sql, $db->connexion);
 				break;
 				case 101:
 					//clear crawlt_sessionid table
 					$sql = "TRUNCATE TABLE crawlt_sessionid";
-					$requete = db_query($sql, $connexion);
+					$requete = db_query($sql, $db->connexion);
 					$listsessionid = array();
+					// Read _POST values. Since we always do _POST for this, no need to check _GET.
+					$sessionids = array();
+					for($i = 1; $i < 9; $i++ ) {
+						if (isset($_POST["sessionid" . $i])) {
+							$sessionids[$i] = (int)$_POST["sessionid" . $i];
+						} else {
+							$sessionids[$i] = 0;
+						}
+					}
 					//insert new value in the crawlt_sessionid table
 					$value = "";
 					$testsessionid = false;
-					if ($crawltsessionid1 == 1) {
+					if ($sessionids[1] == 1) {
 						$value.= "('PHPSESSID'),";
 						$testsessionid = true;
 						$listsessionid[] = 'PHPSESSID';
 					}
-					if ($crawltsessionid2 == 1) {
+					if ($sessionids[2] == 1) {
 						$value.= "('phpsessid'),";
 						$testsessionid = true;
 						$listsessionid[] = 'phpsessid';
 					}
-					if ($crawltsessionid3 == 1) {
+					if ($sessionids[3] == 1) {
 						$value.= "('ID'),";
 						$testsessionid = true;
 						$listsessionid[] = 'ID';
 					}
-					if ($crawltsessionid4 == 1) {
+					if ($sessionids[4] == 1) {
 						$value.= "('id'),";
 						$testsessionid = true;
 						$listsessionid[] = 'id';
 					}
-					if ($crawltsessionid5 == 1) {
+					if ($sessionids[5] == 1) {
 						$value.= "('SID'),";
 						$testsessionid = true;
 						$listsessionid[] = 'SID';
 					}
-					if ($crawltsessionid6 == 1) {
+					if ($sessionids[6] == 1) {
 						$value.= "('sid'),";
 						$testsessionid = true;
 						$listsessionid[] = 'sid';
 					}
-					if ($crawltsessionid7 == 1) {
+					if ($sessionids[7] == 1) {
 						$value.= "('S'),";
 						$testsessionid = true;
 						$listsessionid[] = 'S';
 					}
-					if ($crawltsessionid8 == 1) {
+					if ($sessionids[8] == 1) {
 						$value.= "('s'),";
 						$testsessionid = true;
 						$listsessionid[] = 's';
 					}
 					if (!$testsessionid) {
-						$crawltsessionid = 0;
+						$settings->removesessionid = 0;
 						$listsessionid = array();
-					} elseif ($crawltsessionid == 1) {
+					} elseif ($settings->removesessionid == 1) {
 						//update the crawlt_sessionid table
 						$value = rtrim($value, ",");
 						$sql = "INSERT INTO crawlt_sessionid (sessionid) VALUES $value";
-						$requete = db_query($sql, $connexion);
+						$requete = db_query($sql, $db->connexion);
 					} else {
 						$listsessionid = array();
 					}
 					//update the crawlt_config table
-					$sql = "UPDATE crawlt_config SET sessionid='" . crawlt_sql_quote($connexion, $crawltsessionid) . "'";
-					$requete = db_query($sql, $connexion);
+					$sql = "UPDATE crawlt_config SET sessionid='" . crawlt_sql_quote($db->connexion, $settings->removesessionid) . "'";
+					$requete = db_query($sql, $db->connexion);
 				break;
 				case 102:
 					foreach ($listsite as $idsite) {
@@ -308,10 +318,10 @@ if ($_SESSION['rightadmin'] == 1) {
 				break;
 				case 103:
 					//update the crawlt_config table
-					$sql = "UPDATE crawlt_config SET includeparameter='" . crawlt_sql_quote($connexion, $crawltincludeparameter) . "'";
-					$requete = db_query($sql, $connexion);
+					$sql = "UPDATE crawlt_config SET includeparameter='" . crawlt_sql_quote($db->connexion, $settings->includeurlparams) . "'";
+					$requete = db_query($sql, $db->connexion);
 				break;
-				case 104:				
+				case 104:
 					//determine the path to the file
 					if (isset($_SERVER['SCRIPT_FILENAME']) && !empty($_SERVER['SCRIPT_FILENAME'])) {
 						$path = dirname($_SERVER['SCRIPT_FILENAME']);
@@ -327,8 +337,15 @@ if ($_SESSION['rightadmin'] == 1) {
 					$file1 = substr($file1, -$size, -9);
 					$url_crawlt = "http://" . $dom . $file1;
 
+					// Get _POST value
+					if (isset($_POST['novisitor'])) {
+						$novisitor = (int)$_POST['novisitor'];
+					} else {
+						$novisitor = 0;
+					}
+
 					if($novisitorcrawltrack == 1 && $novisitor == 0)
-						{	
+						{
 							// Get the reference file and replace the needed values
 							$ref_file_content = file_get_contents(dirname(__FILE__) . '/data/crawltrack.base.php');
 							// Replace the values
@@ -365,8 +382,8 @@ if ($_SESSION['rightadmin'] == 1) {
 						}			
 				break;				
 				
-			} // end switch($validform) - 2nd level
-			mysqli_close($connexion);
+			} // end switch($settings->validform) - 2nd level
+			$db->close(); // Close database
 			
 			?>
 			<h1><?php echo $language['admin'] ?></h1>
@@ -398,7 +415,7 @@ if ($_SESSION['rightadmin'] == 1) {
 			<h5><img src="./images/compress.png" width="16" height="16" border="0" >&nbsp;&nbsp;<a href="./index.php?navig=6&validform=17"><?php echo $language['data_suppress'] ?></a></h5><br>
 			</td><td valign="top" width="450px">
 			<?php
-			if ($crawltlang == 'french' || $crawltlang == 'frenchiso') {
+			if ($settings->language == 'french' || $settings->language == 'frenchiso') {
 				?>
 			<h2>CrawlTrack Infos</h2>
 			<div>
@@ -456,7 +473,7 @@ if ($_SESSION['rightadmin'] == 1) {
 				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">\n";
 			echo "<input type=\"hidden\" name ='navig' value=\"6\">\n";
 			echo "<input type=\"hidden\" name ='validform' value=\"98\">\n";
-			echo $language['numberrowdisplay'] . "<br><input name='rowdisplay'  value='$rowdisplay' type='text' maxlength='5' size='5px' style=\" font-size:13px; font-weight:bold; color: #003399;
+			echo $language['numberrowdisplay'] . "<br><input name='rowdisplay'  value='$settings->displayrows' type='text' maxlength='5' size='5px' style=\" font-size:13px; font-weight:bold; color: #003399;
 			font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif; float:left\"/><input name='ok' type='submit'  value=' OK ' size='20' style=\" float:left\">\n";
 			echo "</form><br><br>\n";
 			echo "<form action=\"index.php\" method=\"POST\" z-index:0 style=\" font-size:13px; font-weight:bold; color: #003399;
@@ -465,21 +482,21 @@ if ($_SESSION['rightadmin'] == 1) {
 			echo "<input type=\"hidden\" name ='validform' value=\"99\">\n";
 			echo $language['ordertype'] . "<select onchange=\"form.submit()\" size=\"1\" name=\"order\"  style=\" font-size:13px; font-weight:bold; color: #003399;
 			font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif; float:left\">\n";
-			if ($order == 0) {
+			if ($settings->displayorder == 0) {
 				echo "<option value=\"0\" selected style=\" font-size:13px; font-weight:bold; color: #003399;
 				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $language['orderbydate'] . "</option>\n";
 			} else {
 				echo "<option value=\"0\" style=\" font-size:13px; font-weight:bold; color: #003399;
 				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $language['orderbydate'] . "</option>\n";
 			}
-			if ($order == 2) {
+			if ($settings->displayorder == 2) {
 				echo "<option value=\"2\" selected style=\" font-size:13px; font-weight:bold; color: #003399;
 				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $language['orderbyvisites'] . "</option>\n";
 			} else {
 				echo "<option value=\"2\" style=\" font-size:13px; font-weight:bold; color: #003399;
 				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $language['orderbyvisites'] . "</option>\n";
 			}
-			if ($order == 3) {
+			if ($settings->displayorder == 3) {
 				echo "<option value=\"3\" selected style=\" font-size:13px; font-weight:bold; color: #003399;
 				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $language['orderbyname'] . "</option>\n";
 			} else {
@@ -492,7 +509,7 @@ if ($_SESSION['rightadmin'] == 1) {
 			echo "<input type=\"hidden\" name ='navig' value=\"6\">\n";
 			echo "<input type=\"hidden\" name ='validform' value=\"97\">\n";
 			echo "Email:<br>\n";
-			if ($crawltmailishtml == 1) {
+			if ($settings->htmlmail == 1) {
 				echo "<input type=\"radio\" name=\"typemail\" value=\"1\" checked>HTML &nbsp;&nbsp;\n";
 				echo "<input type=\"radio\" name=\"typemail\" value=\"2\">Text\n";
 			} else {
@@ -501,13 +518,13 @@ if ($_SESSION['rightadmin'] == 1) {
 			}
 			echo "<input name='ok' type='submit'  value=' OK ' size='20' >\n";
 			echo "</form>&nbsp;\n";
-			if ($crawltlang != "russian" && $crawltlang != "bulgarian" && $crawltlang !="turkish" && $crawltlang !="italian") {
+			if ($settings->language != "russian" && $settings->language != "bulgarian" && $settings->language !="turkish" && $settings->language !="italian") {
 				echo "<form action=\"index.php\" method=\"POST\" z-index:0 style=\" font-size:13px; font-weight:bold; color: #003399;
 			font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif; \">\n";
 				echo "<input type=\"hidden\" name ='navig' value=\"6\">\n";
 				echo "<input type=\"hidden\" name ='validform' value=\"96\">\n";
 				echo "Charset:<br>\n";
-				if ($crawltcharset == 1) {
+				if ($settings->useutf8 == 1) {
 					echo "<input type=\"radio\" name=\"charset\" value=\"1\" checked>utf-8 &nbsp;&nbsp;\n";
 					echo "<input type=\"radio\" name=\"charset\" value=\"2\">iso-8859-1\n";
 				} else {
@@ -525,7 +542,7 @@ if ($_SESSION['rightadmin'] == 1) {
 			echo "<input type=\"hidden\" name ='navig' value=\"6\">\n";
 			echo "<input type=\"hidden\" name ='validform' value=\"100\">\n";
 			echo $language['attack_action'] . ":<br><br>\n";
-			if ($crawltblockattack == 1) {
+			if ($settings->blockattacks == 1) {
 				echo "<input type=\"radio\" name=\"blockattack\" value=\"1\" checked>" . $language['attack_block'] . " <br>\n";
 				echo "<input type=\"radio\" name=\"blockattack\" value=\"0\">" . $language['attack_no_block'] . "\n";
 			} else {
@@ -543,7 +560,7 @@ if ($_SESSION['rightadmin'] == 1) {
 			echo "<input type=\"hidden\" name ='navig' value=\"6\">\n";
 			echo "<input type=\"hidden\" name ='validform' value=\"103\">\n";
 			echo $language['remove_parameter'] . ":<br><br>\n";
-			if ($crawltincludeparameter == 0) {
+			if ($settings->includeurlparams == 0) {
 				echo "<input type=\"radio\" name=\"includeparameter\" value=\"0\" checked>" . $language['yes'] . " <br>\n";
 				echo "<input type=\"radio\" name=\"includeparameter\" value=\"1\">" . $language['no'] . "\n";
 			} else {
@@ -554,7 +571,7 @@ if ($_SESSION['rightadmin'] == 1) {
 			echo "</form>&nbsp;\n";
 			echo "<br><h3>" . $language['remove_parameter_alert'] . "</h3>";
 			echo "</div>";
-			if ($crawltincludeparameter == 1) {
+			if ($settings->includeurlparams == 1) {
 				echo "<br><h2>" . $language['session_id_parameters'] . "</h2>";
 				echo "<div style=\"border: 2px solid #003399 ; padding-left:5px; padding-top:5px; padding-bottom:15px; margin-left:71px; margin-right:71px;\" >\n";
 				echo "<form action=\"index.php\" method=\"POST\" z-index:0 style=\" font-size:13px; font-weight:bold; color: #003399;
@@ -562,7 +579,7 @@ if ($_SESSION['rightadmin'] == 1) {
 				echo "<input type=\"hidden\" name ='navig' value=\"6\">\n";
 				echo "<input type=\"hidden\" name ='validform' value=\"101\">\n";
 				echo $language['remove_session_id'] . ":<br><br>\n";
-				if ($crawltsessionid == 1) {
+				if ($settings->removesessionid == 1) {
 					echo "<input type=\"radio\" name=\"sessionid\" value=\"1\" checked>" . $language['yes'] . " <br>\n";
 					echo "<input type=\"radio\" name=\"sessionid\" value=\"0\">" . $language['no'] . "\n";
 				} else {
@@ -629,15 +646,16 @@ if ($_SESSION['rightadmin'] == 1) {
 			echo "</div>&nbsp;\n";
 			echo "</td></tr></table>";
 		break;
-	}  // end switch($validform) - 1st level
+	}  // end switch($settings->validform) - 1st level
 } // end if ($_SESSION['rightadmin'] == 1)
 else
 {
-	if ($validform == 3) {
+	// Not an admin. Show only options available to non admin users.
+	if ($settings->validform == 3) {
 		include "include/admintag.php";
-	} elseif ($validform == 16) {
+	} elseif ($settings->validform == 16) {
 		include "include/logochoice.php";
-	} elseif ($validform == 30) {
+	} elseif ($settings->validform == 30) {
 		include "include/adminchangepassword.php";
 	} else {
 		echo "<h1>" . $language['admin'] . "</h1>\n";

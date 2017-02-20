@@ -42,14 +42,14 @@ foreach ($listsite as $siteid) {
 
 <!-- continue -->
 <?php
-if ($navig == 6) {
-	$validform = 3;
-} elseif ($navig == 15) {
-	$validform = 7;
+if ($settings->navig == 6) {
+	$settings->validform = 3;
+} elseif ($settings->navig == 15) {
+	$settings->validform = 7;
 }
 ?>
-<input type="hidden" name="navig" value="<?php echo $navig; ?>" />
-<input type="hidden" name="validform" value="<?php echo $validform; ?>" />
+<input type="hidden" name="navig" value="<?php echo $settings->navig; ?>" />
+<input type="hidden" name="validform" value="<?php echo $settings->validform; ?>" />
 <table>
 <tr>
 <td>

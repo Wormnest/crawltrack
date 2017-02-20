@@ -21,6 +21,15 @@ if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>No direct access</h1>');
 }
 
+if (isset($_POST['urlreferer'])) {
+	$urlreferer = htmlspecialchars($_POST['urlreferer']);
+} else {
+	if (isset($_GET['urlreferer'])) {
+		$urlreferer = htmlspecialchars($_GET['urlreferer']);
+	} else {
+		$urlreferer = '';
+	}
+}
 $siteurldisplay = htmlentities($urlreferer);
 if (isset($_POST['suppresscrawler'])) {
 	$suppresscrawler = (int)$_POST['suppresscrawler'];
@@ -47,23 +56,19 @@ if ($suppresscrawler == 1) {
 	}
 	if ($suppresscrawlerok == 1) {
 		//good site suppression
-		//database connection
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-		
 		//database query to suppress the site
-		$sqldelete = "DELETE FROM crawlt_goodreferer WHERE referer= '" . crawlt_sql_quote($connexion, $crawlertosuppress) . "' AND id_site='" . crawlt_sql_quote($connexion, $site) . "'";
-		$requetedelete = db_query($sqldelete, $connexion);
+		$sqldelete = "DELETE FROM crawlt_goodreferer WHERE referer= '" . crawlt_sql_quote($db->connexion, $crawlertosuppress) . "' AND id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'";
+		$requetedelete = db_query($sqldelete, $db->connexion);
 		
 		//empty the cache table
 		$sqlcache = "TRUNCATE TABLE crawlt_cache";
-		$requetecache = db_query($sqlcache, $connexion);
+		$requetecache = db_query($sqlcache, $db->connexion);
 		if ($requetedelete) {
 			echo "<br><br><h1>" . $language['goodsite_suppress_ok'] . "</h1>\n";
 			echo "<div class=\"form\">\n";
 			echo "<form action=\"index.php\" method=\"POST\" >\n";
 			echo "<input type=\"hidden\" name ='navig' value='6'>\n";
-			echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+			echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 			echo "<input type=\"hidden\" name ='validform' value=\"33\">";
 			echo "<input name='ok' type='submit'  value='OK' size='20'>\n";
 			echo "</form>\n";
@@ -73,13 +78,13 @@ if ($suppresscrawler == 1) {
 			echo "<div class=\"form\">\n";
 			echo "<form action=\"index.php\" method=\"POST\" >\n";
 			echo "<input type=\"hidden\" name ='navig' value='6'>\n";
-			echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+			echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 			echo "<input type=\"hidden\" name ='validform' value=\"33\">";
 			echo "<input name='ok' type='submit'  value='OK' size='20'>\n";
 			echo "</form>\n";
 			echo "</div><br><br>\n";
 		}
-mysqli_close($connexion);
+		$db->close(); // Close database
 	} else {
 		//validation of suppression
 		//display
@@ -90,7 +95,7 @@ mysqli_close($connexion);
 		echo "<div class=\"form\">\n";
 		echo "<form action=\"index.php\" method=\"POST\" >\n";
 		echo "<input type=\"hidden\" name ='navig' value='6'>\n";
-		echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+		echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 		echo "<input type=\"hidden\" name ='validform' value=\"33\">";
 		echo "<input type=\"hidden\" name ='suppresscrawler' value=\"1\">\n";
 		echo "<input type=\"hidden\" name ='suppresscrawlerok' value=\"1\">\n";
@@ -108,7 +113,7 @@ mysqli_close($connexion);
 		echo "<div class=\"form\">\n";
 		echo "<form action=\"index.php\" method=\"POST\" >\n";
 		echo "<input type=\"hidden\" name ='navig' value='6'>\n";
-		echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+		echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 		echo "<input type=\"hidden\" name ='validform' value=\"33\">";
 		echo "<input type=\"hidden\" name ='suppresscrawler' value=\"0\">\n";
 		echo "<input type=\"hidden\" name ='suppresscrawlerok' value=\"0\">\n";
@@ -122,19 +127,19 @@ mysqli_close($connexion);
 		echo "</form>\n";
 		echo "</div><br><br>";
 	}
-} elseif ($validsite == 1 && empty($urlreferer)) {
+} elseif ($settings->validsite == 1 && empty($urlreferer)) {
 	echo "<br><br><p>" . $language['goodsite_no_ok'] . "</p>";
-	$validsite = 0;
+	$settings->validsite = 0;
 	echo "<div class=\"form\">\n";
 	echo "<form action=\"index.php\" method=\"POST\" >\n";
 	echo "<input type=\"hidden\" name ='validform' value='33'>\n";
 	echo "<input type=\"hidden\" name ='navig' value='6'>\n";
-	echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+	echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 	echo "<input type=\"hidden\" name ='siteurl' value='$siteurldisplay'>\n";
 	echo "<input name='ok' type='submit'  value=' " . $language['back_to_form'] . " ' size='20'>\n";
 	echo "</form>\n";
 	echo "</div><br><br>\n";
-} elseif ($validsite == 1 && !empty($urlreferer)) {
+} elseif ($settings->validsite == 1 && !empty($urlreferer)) {
 	//add the site in the database
 	
 	//treat the url to have only the host
@@ -142,21 +147,17 @@ mysqli_close($connexion);
 	$parseurl = parse_url('http://' . $urlreferer);
 	$urlreferer = $parseurl['host'];
 	
-	//database connection
-	require_once("jgbdb.php");
-	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-	
 	//check if site already exist
 	$sqlexist = "SELECT * FROM crawlt_goodreferer
-		WHERE referer='" . crawlt_sql_quote($connexion, $urlreferer) . "' AND id_site='" . crawlt_sql_quote($connexion, $site) . "'";
-	$requeteexist = db_query($sqlexist, $connexion);
+		WHERE referer='" . crawlt_sql_quote($db->connexion, $urlreferer) . "' AND id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'";
+	$requeteexist = db_query($sqlexist, $db->connexion);
 	$nbrresult = $requeteexist->num_rows;
 	if ($nbrresult >= 1) {
 		//site already exist
 		echo "<br><br><h1>" . $language['exist_site'] . "</h1>\n";
 		echo "<form action=\"index.php\" method=\"POST\" >\n";
 		echo "<input type=\"hidden\" name ='navig' value='6'>\n";
-		echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+		echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 		echo "<input type=\"hidden\" name ='validform' value=\"33\">";
 		echo "<table class=\"centrer\">\n";
 		echo "<tr>\n";
@@ -168,8 +169,8 @@ mysqli_close($connexion);
 		echo "</form><br><br>\n";
 	} else {
 		//the site didn't exist, we can add it in the database
-		$sqlsite2 = "INSERT INTO crawlt_goodreferer (id_site,referer) VALUES ('" . crawlt_sql_quote($connexion, $site) . "','" . crawlt_sql_quote($connexion, $urlreferer) . "')";
-		$requetesite2 = db_query($sqlsite2, $connexion);
+		$sqlsite2 = "INSERT INTO crawlt_goodreferer (id_site,referer) VALUES ('" . crawlt_sql_quote($db->connexion, $settings->siteid) . "','" . crawlt_sql_quote($db->connexion, $urlreferer) . "')";
+		$requetesite2 = db_query($sqlsite2, $db->connexion);
 		
 		//check is requete is successfull
 		if ($requetesite2 == 1) {
@@ -178,7 +179,7 @@ mysqli_close($connexion);
 			//continue
 			echo "<form action=\"index.php\" method=\"POST\" >\n";
 			echo "<input type=\"hidden\" name ='navig' value='6'>\n";
-			echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+			echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 			echo "<input type=\"hidden\" name ='validform' value=\"33\">";
 			echo "<table class=\"centrer\">\n";
 			echo "<tr>\n";
@@ -190,15 +191,11 @@ mysqli_close($connexion);
 			echo "</form><br><br>\n";
 		}
 	}
-mysqli_close($connexion);
+	$db->close(); // Close database
 } else {
-	//database connection
-	require_once("jgbdb.php");
-	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-	
 	//database query to get good sites list
-	$sql = "SELECT referer FROM crawlt_goodreferer WHERE id_site='" . crawlt_sql_quote($connexion, $site) . "' ";
-	$requete = db_query($sql, $connexion);
+	$sql = "SELECT referer FROM crawlt_goodreferer WHERE id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "' ";
+	$requete = db_query($sql, $db->connexion);
 	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
 		while ($ligne = $requete->fetch_row()) {
@@ -216,9 +213,9 @@ mysqli_close($connexion);
 			echo "" . $goodsite . "\n";
 			echo "</td><td class='tableau45' width='15%'>\n";
 			echo "<form action=\"index.php\" method=\"POST\" >\n";
-			echo "<input type=\"hidden\" name ='period' value=\"$period\">\n";
-			echo "<input type=\"hidden\" name ='navig' value=\"$navig\">\n";
-			echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+			echo "<input type=\"hidden\" name ='period' value=\"$settings->period\">\n";
+			echo "<input type=\"hidden\" name ='navig' value=\"$settings->navig\">\n";
+			echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 			echo "<input type=\"hidden\" name ='validform' value=\"33\">\n";
 			echo "<input type=\"hidden\" name ='suppresscrawler' value=\"1\">\n";
 			echo "<input type=\"hidden\" name ='crawlertosuppress' value=\"" . $goodsite . "\">\n";
@@ -233,7 +230,7 @@ mysqli_close($connexion);
 		echo "<div class=\"form\">\n";
 		echo "<form action=\"index.php\" method=\"POST\" >\n";
 		echo "<input type=\"hidden\" name ='navig' value='6'>\n";
-		echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+		echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 		echo "<input type=\"hidden\" name ='validform' value=\"33\">";
 		echo "<input type=\"hidden\" name ='validsite' value=\"1\">";
 		echo "<table class=\"centrer\">\n";
@@ -268,7 +265,7 @@ mysqli_close($connexion);
 		echo "<input type=\"hidden\" name ='navig' value='6'>\n";
 		echo "<input type=\"hidden\" name ='validform' value=\"33\">";
 		echo "<input type=\"hidden\" name ='validsite' value=\"1\">";
-		echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+		echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 		echo "<table class=\"centrer\">\n";
 		echo "<tr>\n";
 		echo "<td>" . $language['site_url'] . "</td>\n";
@@ -283,6 +280,6 @@ mysqli_close($connexion);
 		echo "</table>\n";
 		echo "</form></div><br><br>\n";
 	}
-mysqli_close($connexion);
+	$db->close(); // Close database
 }
 ?>

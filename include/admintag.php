@@ -27,10 +27,6 @@ $listid = array();
 echo "<h1>" . $language['tag'] . "</h1>\n";
 echo "" . $language['create_tag'] . "\n";
 
-//database connection
-require_once("jgbdb.php");
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-
 //local tag creation
 if (isset($_SERVER['SCRIPT_FILENAME']) && !empty($_SERVER['SCRIPT_FILENAME'])) {
 	$path = dirname($_SERVER['SCRIPT_FILENAME']);
@@ -53,8 +49,8 @@ $tab = '&nbsp;&nbsp;&nbsp;&nbsp;';
 
 //website list query
 $sqlsite = "SELECT * FROM crawlt_site
-	WHERE id_site = '" . crawlt_sql_quote($connexion, $site) . "'";
-$requetesite = db_query($sqlsite, $connexion);
+	WHERE id_site = '" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'";
+$requetesite = db_query($sqlsite, $db->connexion);
 $nbrresult = $requetesite->num_rows;
 if ($nbrresult >= 1) {
 	while ($ligne = $requetesite->fetch_object()) {
@@ -257,7 +253,7 @@ if ($nbrresult >= 1) {
 	echo "</div>\n";
 	echo "<br>\n";
 }
-mysqli_close($connexion);
+$db->close(); // Close database
 
 //continue
 echo "<div class=\"form\">\n";

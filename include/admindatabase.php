@@ -21,9 +21,6 @@ if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>No direct access</h1>');
 }
 
-require_once("jgbdb.php");
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-
 if (!isset($_SESSION['flag'])) {
 	session_name('crawlt');
 	session_start();
@@ -32,17 +29,17 @@ if (!isset($_SESSION['flag'])) {
 if (!isset($_SESSION['optimize'])) {
 	//database query to optimize the tables
 	$sqloptimize1 = "OPTIMIZE TABLE crawlt_visits";
-	$requeteoptimize1 = db_query($sqloptimize1, $connexion);
+	$requeteoptimize1 = db_query($sqloptimize1, $db->connexion);
 	$sqloptimize2 = "OPTIMIZE TABLE crawlt_visits_human";
-	$requeteoptimize2 = db_query($sqloptimize2, $connexion);
+	$requeteoptimize2 = db_query($sqloptimize2, $db->connexion);
 	$sqloptimize3 = "OPTIMIZE TABLE crawlt_pages";
-	$requeteoptimize3 = db_query($sqloptimize3, $connexion);
+	$requeteoptimize3 = db_query($sqloptimize3, $db->connexion);
 	$sqloptimize4 = "OPTIMIZE TABLE crawlt_referer";
-	$requeteoptimize4 = db_query($sqloptimize4, $connexion);
+	$requeteoptimize4 = db_query($sqloptimize4, $db->connexion);
 	$_SESSION['optimize'] = 1;
 }
-$requete = db_query("show table status", $connexion);
-mysqli_close($connexion);
+$requete = db_query("show table status", $db->connexion);
+$db->close(); // Close database
 echo "<h1>" . $language['database_size'] . "</h1>\n";
 
 //summary table display

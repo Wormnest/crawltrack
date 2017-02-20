@@ -17,45 +17,44 @@
 // file: updatecrawltrack.php
 //----------------------------------------------------------------------
 
-//this file is needed to update from a previous release
+// This file is needed to update from a previous release
+// It is always called from index.php. A valid $db and $settings are assumed to exist.
 
 if (!defined('IN_CRAWLT')) {
 	exit('<h1>No direct access</h1>');
 }
-//connexion to database
-require_once("jgbdb.php");
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 $process_ok = true;
 
 //----------------------------------------------------------------------------------------------------
 // Call the maintenance script which will do the job
 $maintenance_mode = 'update';
 $tables_to_touch = 'all';
-include 'maintenance.php';
+include('maintenance.php');
 
 // Special case for 'crawlt_config' table: set some default values
 if (!$existing_crawlt_config_table) {
 	//give a value to $time for release before 1.4.0
-	if (!isset($times)) {
-		$times = 0;
+	if (!isset($settings->timediff)) {
+		$settings->timedif = 0;
 	}
 	//give a value to $mail for release before 1.5.0
-	if (!isset($mail)) {
-		$mail = 0;
+	if (!isset($settings->email)) {
+		$settings->email = 0;
 	}
 	//give a value to $dest for release before 1.5.0
+	// TODO: Can probably be removed. It doesn't seem to be used anywhere!
 	if (!isset($dest)) {
 		$dest = '';
 	}
 	//give a value to $public for release before 1.5.0
-	if (!isset($public)) {
-		$public = 0;
+	if (!isset($settings->ispublic)) {
+		$settings->ispublic = 0;
 	}
 }
 
 //----------------------------------------------------------------------------------------------------
 //update configconnect.php file if version <328
-if ($version < 328) {
+if ($settings->version < 328) {
 	//update the configconnect file
 	
 	//determine the path to the file
@@ -91,7 +90,7 @@ if ($version < 328) {
 //----------------------------------------------------------------------------------------------------
 //update crawltrack.php file if version < 341
 $crawltrack_php_updated = false;
-if ($version < 341) {
+if ($settings->version < 341) {
 	//update the crawltrack file
 	
 	//determine the path to the file
@@ -159,12 +158,12 @@ if (isset($_SERVER['SCRIPT_FILENAME']) && !empty($_SERVER['SCRIPT_FILENAME'])) {
 
 //empty the cache table
 $sqlcache = "TRUNCATE TABLE crawlt_cache";
-$requetecache = $connexion->query($sqlcache) or exit("MySQL query error");
+$requetecache = $db->connexion->query($sqlcache) or exit("MySQL query error");
 
 // Just check if the main errors mesages array are empty
 if (empty($tables_actions_error_messages) && empty($fields_actions_error_messages) && $process_ok) {
-	$sqlupdateversion = "UPDATE crawlt_config SET version='" . crawlt_sql_quote($connexion, $versionid) . "'";
-	$requeteupdateversion = $connexion->query($sqlupdateversion);
+	$sqlupdateversion = "UPDATE crawlt_config SET version='" . crawlt_sql_quote($db->connexion, $versionid) . "'";
+	$requeteupdateversion = $db->connexion->query($sqlupdateversion);
 	$a = substr($versionid, 0, 1);
 	$b = substr($versionid, 1, 1);
 	$c = substr($versionid, 2, 1);
@@ -225,8 +224,8 @@ if (empty($tables_actions_error_messages) && empty($fields_actions_error_message
     <div class="form">
     <form action="index.php" method="POST" >
 	<input type="hidden" name="navig" value="1">
-    <?php if (isset($crawltlang)): ?>
-		<input type="hidden" name="lang" value="<?php echo $crawltlang ?>">
+    <?php if (isset($settings->language)): ?>
+		<input type="hidden" name="lang" value="<?php echo $settings->language ?>">
 	<?php
 	else: ?>
 		<input type="hidden" name="lang" value="<?php echo $lang ?>">
@@ -243,5 +242,5 @@ if (empty($tables_actions_error_messages) && empty($fields_actions_error_message
     <br><br><br>
 <?php
 }
-mysqli_close($connexion);
+$db->close(); // Close database
 ?>

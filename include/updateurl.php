@@ -27,13 +27,9 @@ $urlsite = array();
 $listidsite = array();
 
 echo "<div class=\"content\">\n";
-if ($validsite == 0) {
-	//database connection
-	require_once("jgbdb.php");
-	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-	
+if ($settings->validsite == 0) {
 	$sqlsite = "SELECT * FROM crawlt_site";
-	$requetesite = db_query($sqlsite, $connexion);
+	$requetesite = db_query($sqlsite, $db->connexion);
 	$nbrresult = $requetesite->num_rows;
 	if ($nbrresult >= 1) {
 		while ($ligne = $requetesite->fetch_object()) {
@@ -45,7 +41,7 @@ if ($validsite == 0) {
 			$listidsite[] = $siteid;
 		}
 	}
-	mysqli_close($connexion);
+	$db->close(); // Close database
 
 	echo "<p>" . $language['set_up_url'] . "</p>\n";
 	echo "<form action=\"index.php\" method=\"POST\" >\n";
@@ -93,13 +89,9 @@ if ($validsite == 0) {
 		} else {
 			$siteurl = '';
 		}
-		//database connection
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-		
-		$sqlupdatesite = "UPDATE crawlt_site SET url='" . sql_quote($siteurl) . "' WHERE name='" . sql_quote($sitename) . "'";
-		$requeteupdatesite = db_query($sqlupdatesite, $connexion);
-		mysqli_close($connexion);
+		$sqlupdatesite = "UPDATE crawlt_site SET url='" . crawlt_sql_quote($siteurl) . "' WHERE name='" . crawlt_sql_quote($sitename) . "'";
+		$requeteupdatesite = db_query($sqlupdatesite, $db->connexion);
+		$db->close(); // Close database
 	}
 	?>
 	<p><?php echo $language['update']; ?></p>

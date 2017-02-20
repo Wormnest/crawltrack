@@ -33,27 +33,23 @@ $nbrdirectvisits = array();
 $nbrexternvisits = array();
 $nbrinternvisits = array();
 $comptligne = 0;
-$crawlencode = urlencode($crawler);
+$crawlencode = urlencode($settings->crawler);
 
-if ($period >= 1000) //previous days
+if ($settings->period >= 1000) //previous days
 {
-	$cachename = "permanent-" . $navig . "-" . $site . "-" . $crawlencode."-" . $order . "-".$crawltlang . "-".$displayall . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
-} elseif ($period >= 100 && $period < 200) //previous month
+	$cachename = "permanent-" . $settings->navig . "-" . $settings->siteid . "-" . $crawlencode."-" . $settings->displayorder . "-".$settings->language . "-".$settings->displayall . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
+} elseif ($settings->period >= 100 && $settings->period < 200) //previous month
 {
-	$cachename = "permanent-month" . $navig . "-" . $site . "-" . $crawlencode."-" . $order . "-".$crawltlang . "-".$displayall . "-" . date("Y-m", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
-} elseif ($period >= 200 && $period < 300) //previous year
+	$cachename = "permanent-month" . $settings->navig . "-" . $settings->siteid . "-" . $crawlencode."-" . $settings->displayorder . "-".$settings->language . "-".$settings->displayall . "-" . date("Y-m", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
+} elseif ($settings->period >= 200 && $settings->period < 300) //previous year
 {
-	$cachename = "permanent-year" . $navig . "-" . $site . "-" . $crawlencode."-" . $order . "-".$crawltlang . "-".$displayall . "-" . date("Y", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
+	$cachename = "permanent-year" . $settings->navig . "-" . $settings->siteid . "-" . $crawlencode."-" . $settings->displayorder . "-".$settings->language . "-".$settings->displayall . "-" . date("Y", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
 } else {
-	$cachename = $navig . $period . $site . $order . $crawlencode . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang;
+	$cachename = $settings->navig . $settings->period . $settings->siteid . $settings->displayorder . $crawlencode . $settings->displayall . $settings->firstdayweek . $localday . $settings->graphpos . $settings->language;
 }
 
 //start the caching
 cache($cachename);
-
-//database connection
-require_once("jgbdb.php");
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //include menu
 include ("include/menumain.php");
@@ -62,26 +58,26 @@ include ("include/timecache.php");
 
 //error 404 calculation------------------------------------------------------------------------------------------------
 //date for the mysql query
-if ($period >= 10) {
-	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
-    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "'";
+if ($settings->period >= 10) {
+	$datetolookfor = " date >'" . crawlt_sql_quote($db->connexion, $daterequest) . "' 
+    AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest2) . "'";
 } else {
-	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($db->connexion, $daterequest) . "'";
 }
 //query to get attack which give an error 404
-if ($period >= 10) {
+if ($settings->period >= 10) {
 	$sql = "SELECT count 
     FROM crawlt_error
-    WHERE  idsite='" . crawlt_sql_quote($connexion, $site) . "'
-    AND  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "' 
-    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2seo) . "'";
+    WHERE  idsite='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+    AND  date >='" . crawlt_sql_quote($db->connexion, $daterequestseo) . "' 
+    AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest2seo) . "'";
 } else {
 	$sql = "SELECT count 
     FROM crawlt_error
-    WHERE  idsite='" . crawlt_sql_quote($connexion, $site) . "'
-    AND  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'";
+    WHERE  idsite='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+    AND  date >='" . crawlt_sql_quote($db->connexion, $daterequestseo) . "'";
 }
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 $num_rows = $requete->num_rows;
 if ($num_rows > 0) {
 	while ($ligne = $requete->fetch_row()) {
@@ -96,9 +92,9 @@ ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
 INNER JOIN crawlt_pages
 ON crawlt_visits.crawlt_pages_id_page=crawlt_pages.id_page
 WHERE $datetolookfor       
-AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 AND crawlt_error='1'";
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 $num_rows = $requete->num_rows;
 if ($num_rows > 0) {
 	while ($ligne = $requete->fetch_row()) {
@@ -116,10 +112,10 @@ FROM crawlt_visits_human
 INNER JOIN crawlt_pages
 ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 WHERE $datetolookfor       
-AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 AND crawlt_error='1'
 AND crawlt_id_referer=''";
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 $num_rows = $requete->num_rows;
 if ($num_rows > 0) {
 	while ($ligne = $requete->fetch_row()) {
@@ -137,10 +133,10 @@ ON  crawlt_referer.id_referer = crawlt_visits_human.crawlt_id_referer
 INNER JOIN crawlt_pages
 ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 WHERE $datetolookfor       
-AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
-AND Substring(referer From 1 For " . $lengthurl . ") != '" . crawlt_sql_quote($connexion, $hostsite) . "'
+AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+AND Substring(referer From 1 For " . $lengthurl . ") != '" . crawlt_sql_quote($db->connexion, $hostsite) . "'
 AND crawlt_error='1'";
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 $num_rows = $requete->num_rows;
 if ($num_rows > 0) {
 	while ($ligne = $requete->fetch_row()) {
@@ -159,10 +155,10 @@ ON  crawlt_referer.id_referer = crawlt_visits_human.crawlt_id_referer
 INNER JOIN crawlt_pages
 ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 WHERE $datetolookfor       
-AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
-AND Substring(referer From 1 For " . $lengthurl . ") = '" . crawlt_sql_quote($connexion, $hostsite) . "'
+AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+AND Substring(referer From 1 For " . $lengthurl . ") = '" . crawlt_sql_quote($db->connexion, $hostsite) . "'
 AND crawlt_error='1'";
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 $num_rows = $requete->num_rows;
 if ($num_rows > 0) {
 	while ($ligne = $requete->fetch_row()) {
@@ -171,8 +167,7 @@ if ($num_rows > 0) {
 		${'intern' . $ligne[1]}[$ligne[0]] = $ligne[0];
 	}
 }
-//mysql connexion close
-mysqli_close($connexion);
+$db->close(); // Close database
 
 arsort($nbrinternvisits);
 
@@ -214,19 +209,19 @@ if ($nbrerrorintern > 0) {
 	echo "</th></tr>\n";
 	foreach ($nbrinternvisits as $page => $value) {
 		echo "<tr><td class='tableau3hg'";
-		$pagedisplay = crawltcutkeyword($page, '50');
+		$pagedisplay = crawltcutkeyword($page, '50', $settings->useutf8);
 		if ($keywordcut == 1) {
 			echo "onmouseover=\"javascript:montre('smenu" . ($comptligne) . "');\"   onmouseout=\"javascript:montre();\"";
 		}
 		echo ">&nbsp;&nbsp;" . $pagedisplay . "</td>\n";
 		if ($keywordcut == 1) {
 			echo "<div id=\"smenu" . ($comptligne) . "\"  style=\"display:none; font-size:14px; font-weight:bold; color:#ff0000; font-family:Verdana,Geneva, Arial, Helvetica, Sans-Serif; text-align:left; border:2px solid navy; position:absolute; top:" . (250 + (20 * $comptligne)) . "px; left:10px; background:#fff;\">\n";
-			echo "&nbsp;" . crawltcuturl($page, '60') . "&nbsp;\n";
+			echo "&nbsp;" . crawltcuturl($page, '60', $settings->useutf8) . "&nbsp;\n";
 			echo "</div>\n";
 		}
 		echo "<td class='tableau5g'>\n";
 		foreach (${'intern' . $page} as $url) {
-			echo "&nbsp;&nbsp;<a href='" . $url . "'>" . crawltcutkeyword($url, '50') . "</a><br>\n";
+			echo "&nbsp;&nbsp;<a href='" . $url . "'>" . crawltcutkeyword($url, '50', $settings->useutf8) . "</a><br>\n";
 		}
 		echo "</td>\n";
 		$comptligne++;
@@ -247,19 +242,19 @@ if ($nbrerrorextern > 0) {
 	echo "</th></tr>\n";
 	foreach ($nbrexternvisits as $page => $value) {
 		echo "<tr><td class='tableau3hg'";
-		$pagedisplay = crawltcutkeyword($page, '50');
+		$pagedisplay = crawltcutkeyword($page, '50', $settings->useutf8);
 		if ($keywordcut == 1) {
 			echo "onmouseover=\"javascript:montre('smenu" . ($comptligne) . "');\"   onmouseout=\"javascript:montre();\"";
 		}
 		echo ">&nbsp;&nbsp;" . $pagedisplay . "</td>\n";
 		if ($keywordcut == 1) {
 			echo "<div id=\"smenu" . ($comptligne) . "\"  style=\"display:none; font-size:14px; font-weight:bold; color:#ff0000; font-family:Verdana,Geneva, Arial, Helvetica, Sans-Serif; text-align:left; border:2px solid navy; position:absolute; top:" . (250 + (20 * $comptligne)) . "px; left:10px; background:#fff;\">\n";
-			echo "&nbsp;" . crawltcuturl($page, '60') . "&nbsp;\n";
+			echo "&nbsp;" . crawltcuturl($page, '60', $settings->useutf8) . "&nbsp;\n";
 			echo "</div>\n";
 		}
 		echo "<td class='tableau5g'>\n";
 		foreach (${'extern' . $page} as $url) {
-			echo "&nbsp;&nbsp;<a href='" . $url . "'>" . crawltcutkeyword($url, '50') . "</a><br>\n";
+			echo "&nbsp;&nbsp;<a href='" . $url . "'>" . crawltcutkeyword($url, '50', $settings->useutf8) . "</a><br>\n";
 		}
 		echo "</td>\n";
 		$comptligne++;
@@ -277,14 +272,14 @@ if ($nbrerrordirect > 0) {
 	echo "</th></tr>\n";
 	foreach ($nbrdirectvisits as $page => $value) {
 		echo "<tr><td class='tableau5g'";
-		$pagedisplay = crawltcutkeyword($page, '110');
+		$pagedisplay = crawltcutkeyword($page, '110', $settings->useutf8);
 		if ($keywordcut == 1) {
 			echo "onmouseover=\"javascript:montre('smenu" . ($comptligne) . "');\"   onmouseout=\"javascript:montre();\"";
 		}
 		echo ">&nbsp;&nbsp;" . $pagedisplay . "</td>\n";
 		if ($keywordcut == 1) {
 			echo "<div id=\"smenu" . ($comptligne) . "\"  style=\"display:none; font-size:14px; font-weight:bold; color:#ff0000; font-family:Verdana,Geneva, Arial, Helvetica, Sans-Serif; text-align:left; border:2px solid navy; position:absolute; top:" . (250 + (20 * $comptligne)) . "px; left:10px; background:#fff;\">\n";
-			echo "&nbsp;" . crawltcuturl($page, '60') . "&nbsp;\n";
+			echo "&nbsp;" . crawltcuturl($page, '60', $settings->useutf8) . "&nbsp;\n";
 			echo "</div>\n";
 		}
 		$comptligne++;
@@ -306,7 +301,7 @@ if ($nbrerrorcrawler > 0) {
 		echo "<tr><td class='tableau3hg'>&nbsp;&nbsp;" . $crawler . "</td>\n";
 		echo "<td class='tableau5g'>\n";
 		foreach (${'crawler' . $crawler} as $url) {
-			echo "&nbsp;&nbsp;" . crawltcutkeyword($url, '105') . "<br>\n";
+			echo "&nbsp;&nbsp;" . crawltcutkeyword($url, '105', $settings->useutf8) . "<br>\n";
 		}
 		echo "</td>\n";
 	}

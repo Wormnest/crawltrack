@@ -21,12 +21,12 @@ if (!defined('IN_CRAWLT_INSTALL')) {
 	exit('<h1>Hacking attempt !!!!</h1>');
 }
 
-$sitenamedisplay = htmlentities($sitename);
+$sitenamedisplay = htmlentities($settings->sitename);
 $siteurldisplay = htmlentities($siteurl);
 //valid form
-if ($validsite == 1 && empty($sitename)) {
+if ($settings->validsite == 1 && empty($settings->sitename)) {
 	echo "<p>" . $language['site_no_ok'] . "</p>";
-	$validsite = 0;
+	$settings->validsite = 0;
 	echo "<div class=\"form\">\n";
 	echo "<form action=\"index.php\" method=\"POST\" >\n";
 	echo "<input type=\"hidden\" name ='validform' value='4'>\n";
@@ -37,12 +37,7 @@ if ($validsite == 1 && empty($sitename)) {
 	echo "</form>\n";
 	echo "</div><br><br>\n";
 } else {
-	//database connection
-	include ("include/configconnect.php");
-	require_once("jgbdb.php");
-	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-
-	if ($validsite != 1) {
+	if ($settings->validsite != 1) {
 		//form to add site in the database
 		echo "<p>" . $language['set_up_site'] . "</p>\n";
 		echo "</div>\n";
@@ -70,11 +65,10 @@ if ($validsite == 1 && empty($sitename)) {
 		echo "</form><br><br>\n";
 	} else {
 		//add the site in the database
-		
 		//check if site already exist
 		$sqlexist = "SELECT * FROM crawlt_site
-		WHERE name='" . crawlt_sql_quote($connexion, $sitename) . "'";
-		$queryexist = db_query($sqlexist, $connexion);
+		WHERE name='" . crawlt_sql_quote($db->connexion, $settings->sitename) . "'";
+		$queryexist = db_query($sqlexist, $db->connexion);
 		$nbrresult = $queryexist->num_rows;
 		
 		if ($nbrresult >= 1) {
@@ -109,13 +103,13 @@ if ($validsite == 1 && empty($sitename)) {
 			echo "</div><br><br>";
 		} else {
 			//the site didn't exist, we can add it in the database
-			$sqlsite2 = "INSERT INTO crawlt_site (name, url) VALUES ('" . crawlt_sql_quote($connexion, $sitename) . "','" . crawlt_sql_quote($connexion, $siteurl) . "')";
-			$querysite2 = db_query($sqlsite2, $connexion);
+			$sqlsite2 = "INSERT INTO crawlt_site (name, url) VALUES ('" . crawlt_sql_quote($db->connexion, $settings->sitename) . "','" . crawlt_sql_quote($db->connexion, $siteurl) . "')";
+			$querysite2 = db_query($sqlsite2, $db->connexion);
 			
 			//empty the cache table
 			$sqlcache = "TRUNCATE TABLE crawlt_cache";
-			$querycache = db_query($sqlcache, $connexion);
-			mysqli_close($connexion);
+			$querycache = db_query($sqlcache, $db->connexion);
+			$db->close(); // Close database
 			//check is query is successfull
 			if ($querysite2 == 1) {
 				echo "<p>" . $language['site_ok'] . "</p>\n";

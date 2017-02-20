@@ -22,7 +22,7 @@ if (!defined('IN_CRAWLT')) {
 }
 
 //create table for graph
-if ($navig == 23) {
+if ($settings->navig == 23) {
 	foreach ($axex as $data) {
 		$google1[] = $googlevisitsumary[$data];
 		$googleimage1[] = $googleimagevisitsumary[$data];
@@ -31,7 +31,7 @@ if ($navig == 23) {
 		$ask1[] = $askvisitsumary[$data];
 		$exalead1[] = $exaleadvisitsumary[$data];
 		$yandex1[] = $yandexvisitsumary[$data];	
-		$aol1[] = $aolvisitsumary[$data];			
+		$aol1[] = $aolvisitsumary[$data];
 		$referer1[] = $referervisitsumary[$data];
 		$direct1[] = $directvisitsumary[$data];
 		$unique1[] = $uniquevisitorsumary[$data];
@@ -40,13 +40,13 @@ if ($navig == 23) {
 } else {
 	foreach ($axex as $data) {
 		$google1[] = $googlevisit[$data];
-		$googleimage1[] = $googleimagevisit[$data];		
+		$googleimage1[] = $googleimagevisit[$data];
 		$msn1[] = $msnvisit[$data];
 		$yahoo1[] = $yahoovisit[$data];
 		$ask1[] = $askvisit[$data];
 		$exalead1[] = $exaleadvisit[$data];
-		$yandex1[] = $yandexvisit[$data];	
-		$aol1[] = $aolvisit[$data];			
+		$yandex1[] = $yandexvisit[$data];
+		$aol1[] = $aolvisit[$data];
 		$referer1[] = $referervisit[$data];
 		$direct1[] = $directvisit[$data];
 		$unique1[] = $uniquevisitor[$data];
@@ -58,31 +58,28 @@ $datatransferttograph = addslashes(urlencode(serialize($datatransfert2)));
 
 //insert the values in the graph table
 $graphname = $typegraph . "-" . $cachename;
-//database connection
-require_once("jgbdb.php");
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //check if this graph already exists in the table
 $sql = "SELECT name  FROM crawlt_graph
-            WHERE name= '" . crawlt_sql_quote($connexion, $graphname) . "'";
-$requete = db_query($sql, $connexion);
+            WHERE name= '" . crawlt_sql_quote($db->connexion, $graphname) . "'";
+$requete = db_query($sql, $db->connexion);
 $nbrresult = $requete->num_rows;
 
 if ($nbrresult >= 1) {
-	$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($connexion, $datatransferttograph) . "'
-              WHERE name= '" . crawlt_sql_quote($connexion, $graphname) . "'";
+	$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($db->connexion, $datatransferttograph) . "'
+              WHERE name= '" . crawlt_sql_quote($db->connexion, $graphname) . "'";
 } else {
-	$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($connexion, $graphname) . "','" . crawlt_sql_quote($connexion, $datatransferttograph) . "')";
+	$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($db->connexion, $graphname) . "','" . crawlt_sql_quote($db->connexion, $datatransferttograph) . "')";
 }
-$requete2 = db_query($sql2, $connexion);
+$requete2 = db_query($sql2, $db->connexion);
 
 //map graph
-if ($period == 3 || ($period >= 200 && $period < 300)) {
+if ($settings->period == 3 || ($settings->period >= 200 && $settings->period < 300)) {
 	$widthzone = 67;
 	$x2 = 132.3;
 	$y = 31;
 	$y2 = 211;
-} elseif ($period == 2 || ($period >= 100 && $period < 200)) {
+} elseif ($settings->period == 2 || ($settings->period >= 100 && $settings->period < 200)) {
 	if ($nbday == 28) {
 		$widthzone = 28.7;
 		$x2 = 94;
@@ -104,12 +101,12 @@ if ($period == 3 || ($period >= 200 && $period < 300)) {
 		$y = 31;
 		$y2 = 211;
 	}
-} elseif ($period == 0 || $period == 4 || $period >= 1000) {
+} elseif ($settings->period == 0 || $settings->period == 4 || $settings->period >= 1000) {
 	$widthzone = 100.75;
 	$x2 = 166.05;
 	$y = 31;
 	$y2 = 211;
-} elseif ($period == 1 || ($period >= 300 && $period < 400)) {
+} elseif ($settings->period == 1 || ($settings->period >= 300 && $settings->period < 400)) {
 	$widthzone = 115.14;
 	$x2 = 180.44;
 	$y = 31;
@@ -122,8 +119,8 @@ $x = 65.3;
 do {
 	echo "<area shape=\"rect\" coords=\"" . $x . "," . $y . "," . $x2 . "," . $y2 . "\" onmouseover=\"javascript:montre('smenu" . ($iday + 131) . "');\" onmouseout=\"javascript:montre();\"";
 	$dateday = $axex[$iday];
-	$periodtogo = $totperiod[$dateday];
-	echo "href=\"index.php?navig=$navig&amp;period=$periodtogo&amp;site=$site&amp;graphpos=$graphpos\" alt=\"go\">\n";
+	$settings->periodtogo = $totperiod[$dateday];
+	echo "href=\"index.php?navig=$settings->navig&amp;period=$settings->periodtogo&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\" alt=\"go\">\n";
 	$x = $x + $widthzone;
 	$x2 = $x2 + $widthzone;
 	$iday++;

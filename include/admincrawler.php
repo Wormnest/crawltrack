@@ -21,8 +21,39 @@ if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>No direct access</h1>');
 }
 
+if (isset($_POST['logintype'])) {
+	$logintype = (int)$_POST['logintype'];
+} else {
+	$logintype = 0;
+}
+if (isset($_POST['crawlername2'])) {
+	$crawlername2 = htmlspecialchars($_POST['crawlername2']);
+} else {
+	$crawlername2 = '';
+}
+if (isset($_POST['crawlerua2'])) {
+	$crawlerua2 = htmlspecialchars($_POST['crawlerua2']);
+} else {
+	$crawlerua2 = '';
+}
+if (isset($_POST['crawleruser2'])) {
+	$crawleruser2 = htmlspecialchars($_POST['crawleruser2']);
+} else {
+	$crawleruser2 = '';
+}
+if (isset($_POST['crawlerurl2'])) {
+	$crawlerurl2 = htmlspecialchars($_POST['crawlerurl2']);
+} else {
+	$crawlerurl2 = '';
+}
+if (isset($_POST['crawlerip2'])) {
+	$crawlerip2 = htmlspecialchars($_POST['crawlerip2']);
+} else {
+	$crawlerip2 = '';
+}
+
 //valid form
-if ($validlogin == 1) {
+if ($settings->validlogin == 1) {
 	if (empty($crawlername2) || (empty($crawlerua2) && empty($crawlerip2)) || empty($crawleruser2) || empty($crawlerurl2)) {
 		echo "<br><br><p>" . $language['crawler_no_ok'] . "</p>";
 		echo "<div class=\"form\">\n";
@@ -40,10 +71,6 @@ if ($validlogin == 1) {
 		echo "</form>\n";
 		echo "</div><br><br>\n";
 	} else {
-		//database connection
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-		
 		//check if crawler already exist
 		if (empty($crawlerip2)) {
 			$crawlerip3 = 'no-ip';
@@ -57,13 +84,13 @@ if ($validlogin == 1) {
 		}
 		if ($crawlerua3 == 'no-user-agent-in-crawltrack-for-that-bot') {
 			$sqlexist = "SELECT * FROM crawlt_crawler
-            WHERE crawler_ip='" . crawlt_sql_quote($connexion, $crawlerip3) . "'";
+            WHERE crawler_ip='" . crawlt_sql_quote($db->connexion, $crawlerip3) . "'";
 		} else {
 			$sqlexist = "SELECT * FROM crawlt_crawler
-            WHERE crawler_user_agent='" . crawlt_sql_quote($connexion, $crawlerua3) . "'
-            OR crawler_ip='" . crawlt_sql_quote($connexion, $crawlerip3) . "'";
+            WHERE crawler_user_agent='" . crawlt_sql_quote($db->connexion, $crawlerua3) . "'
+            OR crawler_ip='" . crawlt_sql_quote($db->connexion, $crawlerip3) . "'";
 		}
-		$queryexist = db_query($sqlexist, $connexion);
+		$queryexist = db_query($sqlexist, $db->connexion);
 		$nbrresult = $queryexist->num_rows;
 		if ($nbrresult >= 1) {
 			$ligne = $queryexist->fetch_object();
@@ -90,12 +117,12 @@ if ($validlogin == 1) {
 			echo "</div><br><br>\n";
 		} else {
 			//crawler didn't exist we can add the crawler in the database
-			$sqlcrawler = "INSERT INTO crawlt_crawler (crawler_user_agent,crawler_name,crawler_url,crawler_info, crawler_ip) VALUES ('" . crawlt_sql_quote($connexion, $crawlerua3) . "','" . crawlt_sql_quote($connexion, $crawlername2) . "','" . crawlt_sql_quote($connexion, $crawlerurl2) . "','" . crawlt_sql_quote($connexion, $crawleruser2) . "','" . crawlt_sql_quote($connexion, $crawlerip2) . "')";
-			$querycrawler = db_query($sqlcrawler, $connexion);
+			$sqlcrawler = "INSERT INTO crawlt_crawler (crawler_user_agent,crawler_name,crawler_url,crawler_info, crawler_ip) VALUES ('" . crawlt_sql_quote($db->connexion, $crawlerua3) . "','" . crawlt_sql_quote($db->connexion, $crawlername2) . "','" . crawlt_sql_quote($db->connexion, $crawlerurl2) . "','" . crawlt_sql_quote($db->connexion, $crawleruser2) . "','" . crawlt_sql_quote($db->connexion, $crawlerip2) . "')";
+			$querycrawler = db_query($sqlcrawler, $db->connexion);
 			
 			//empty the cache table
 			$sqlcache = "TRUNCATE TABLE crawlt_cache";
-			$querycache = db_query($sqlcache, $connexion);
+			$querycache = db_query($sqlcache, $db->connexion);
 			
 			//check is query is successfull
 			if ($querycrawler == 1) {
@@ -126,7 +153,7 @@ if ($validlogin == 1) {
 				echo "</div><br><br>\n";
 			}
 		}
-		mysqli_close($connexion);
+		$db->close(); // Close database
 	}
 }
 //form

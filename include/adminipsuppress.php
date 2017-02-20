@@ -65,17 +65,13 @@ if ($suppressip == 1) {
 	}
 	if ($suppressipok == 1 && $validaddress == 1) {
 		//ip suppression
-		//database connection
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-		
 		//database query to suppress the visits coming from that ip
-		$sqldelete = "DELETE FROM crawlt_visits WHERE crawlt_ip_used= '" . crawlt_sql_quote($connexion, $iptosuppress) . "'";
-		$requetedelete = db_query($sqldelete, $connexion);
+		$sqldelete = "DELETE FROM crawlt_visits WHERE crawlt_ip_used= '" . crawlt_sql_quote($db->connexion, $iptosuppress) . "'";
+		$requetedelete = db_query($sqldelete, $db->connexion);
 		
 		//empty the cache table
 		$sqlcache = "TRUNCATE TABLE crawlt_cache";
-		$requetecache = db_query($sqlcache, $connexion);
+		$requetecache = db_query($sqlcache, $db->connexion);
 		if ($requetedelete) {
 			echo "<br><br><h1>" . $language['ip_suppress_ok'] . "</h1>\n";
 			echo "<div class=\"form\">\n";
@@ -86,8 +82,8 @@ if ($suppressip == 1) {
 				echo "<input type=\"hidden\" name ='navig' value='8'>\n";
 			}
 			echo "<input type=\"hidden\" name ='originsuprip' value=\"$originsuprip\">\n";
-			echo "<input type=\"hidden\" name ='period' value=\"$period\">";
-			echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+			echo "<input type=\"hidden\" name ='period' value=\"$settings->period\">";
+			echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 			echo "<input name='ok' type='submit'  value='OK' size='20'>\n";
 			echo "</form>\n";
 			echo "</div>\n";
@@ -101,13 +97,13 @@ if ($suppressip == 1) {
 				echo "<input type=\"hidden\" name ='navig' value='8'>\n";
 			}
 			echo "<input type=\"hidden\" name ='originsuprip' value=\"$originsuprip\">\n";
-			echo "<input type=\"hidden\" name ='period' value=\"$period\">";
-			echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+			echo "<input type=\"hidden\" name ='period' value=\"$settings->period\">";
+			echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 			echo "<input name='ok' type='submit'  value='OK' size='20'>\n";
 			echo "</form>\n";
 			echo "</div>\n";
 		}
-mysqli_close($connexion);
+		$db->close(); // Close database
 	} elseif ($suppressipok == 1 && $validaddress == 0) {
 		echo "<p>" . $language['ip_no_ok'] . "</p><br><br>\n";
 	} else {
@@ -146,8 +142,8 @@ mysqli_close($connexion);
 		} else {
 			echo "<input type=\"hidden\" name ='navig' value='8'>\n";
 		}
-		echo "<input type=\"hidden\" name ='period' value=\"$period\">";
-		echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+		echo "<input type=\"hidden\" name ='period' value=\"$settings->period\">";
+		echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 		echo "<input type=\"hidden\" name ='originsuprip' value=\"$originsuprip\">\n";
 		echo "<table class=\"centrer\">\n";
 		echo "<tr>\n";

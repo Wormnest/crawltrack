@@ -46,9 +46,6 @@ if ($suppressdata == 1) {
 	$crawlttablereferer = array();
 	if ($suppressdataok == 1) {
 		//data suppression
-		//database connection
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 		
 		//period calculation
 		if($datatosuppress == 1) {
@@ -148,17 +145,17 @@ if ($suppressdata == 1) {
 				default:
 					exit('<h1>Hacking attempt !!!!</h1>');
 			}
-			$sqldelete = "DELETE FROM $table_name WHERE `date` < '" . crawlt_sql_quote($connexion, $datetosuppress) . "'";
+			$sqldelete = "DELETE FROM $table_name WHERE `date` < '" . crawlt_sql_quote($db->connexion, $datetosuppress) . "'";
 		}
 		//suppress data
-		$requetedelete = db_query($sqldelete, $connexion);
+		$requetedelete = db_query($sqldelete, $db->connexion);
 		//database query to optimize the table
 		if ($datatosuppress < 9 || $datatosuppress == 16) {
 			$sqloptimize = "OPTIMIZE TABLE crawlt_visits";
 		} else {
 			$sqloptimize = "OPTIMIZE TABLE crawlt_visits_human";
 		}
-		$requeteoptimize = db_query($sqloptimize, $connexion);
+		$requeteoptimize = db_query($sqloptimize, $db->connexion);
 		//database query to list the pages no more used in crawlt_visits and crawlt_visits_human  table
 		$sql = "SELECT id_page 
 			FROM  crawlt_pages
@@ -169,7 +166,7 @@ if ($suppressdata == 1) {
 			WHERE crawlt_visits.crawlt_pages_id_page IS NULL
 			AND crawlt_visits_human.crawlt_id_page IS NULL
 			LIMIT 0,100000";
-		$requete = db_query($sql, $connexion);
+		$requete = db_query($sql, $db->connexion);
 		$nbrresult = $requete->num_rows;
 		if ($nbrresult >= 1) {
 			while ($ligne = $requete->fetch_row()) {
@@ -178,10 +175,10 @@ if ($suppressdata == 1) {
 			$crawltlistpage = implode("','", $crawlttablepage);
 			//database query to suppress the data in page table
 			$sqldelete2 = "DELETE FROM crawlt_pages WHERE id_page IN ('$crawltlistpage')";
-			$requetedelete2 = db_query($sqldelete2, $connexion);
+			$requetedelete2 = db_query($sqldelete2, $db->connexion);
 			//database query to optimize the table
 			$sqloptimize2 = "OPTIMIZE TABLE crawlt_pages";
-			$requeteoptimize2 = db_query($sqloptimize2, $connexion);
+			$requeteoptimize2 = db_query($sqloptimize2, $db->connexion);
 		}
 		if ($datatosuppress > 8 && $datatosuppress != 16) {
 			//database query to list the referer no more used in crawlt_visits_human  table
@@ -190,7 +187,7 @@ if ($suppressdata == 1) {
 				LEFT OUTER JOIN crawlt_visits_human
 				ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer       
 				WHERE crawlt_visits_human.crawlt_id_referer IS NULL LIMIT 0,100000";
-			$requete = db_query($sql, $connexion);
+			$requete = db_query($sql, $db->connexion);
 			$nbrresult = $requete->num_rows;
 			
 			if ($nbrresult >= 1) {
@@ -201,11 +198,11 @@ if ($suppressdata == 1) {
 				
 				//database query to suppress the data in referer table
 				$sqldelete2 = "DELETE FROM crawlt_referer WHERE id_referer IN ('$crawltlistreferer')";
-				$requetedelete2 = db_query($sqldelete2, $connexion);
+				$requetedelete2 = db_query($sqldelete2, $db->connexion);
 				
 				//database query to optimize the table
 				$sqloptimize2 = "OPTIMIZE TABLE crawlt_referer";
-				$requeteoptimize2 = db_query($sqloptimize2, $connexion);
+				$requeteoptimize2 = db_query($sqloptimize2, $db->connexion);
 			}
 			//database query to list the keyword no more used in crawlt_visits_human  table
 			$sql = "SELECT id_keyword 
@@ -213,7 +210,7 @@ if ($suppressdata == 1) {
 				LEFT OUTER JOIN crawlt_visits_human
 				ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword       
 				WHERE crawlt_visits_human.crawlt_keyword_id_keyword IS NULL LIMIT 0,100000";
-			$requete = db_query($sql, $connexion);
+			$requete = db_query($sql, $db->connexion);
 			$nbrresult = $requete->num_rows;
 			if ($nbrresult >= 1) {
 				while ($ligne = $requete->fetch_row()) {
@@ -223,21 +220,21 @@ if ($suppressdata == 1) {
 				
 				//database query to suppress the data in referer table
 				$sqldelete2 = "DELETE FROM crawlt_keyword WHERE id_keyword IN ('$crawltlistkeyword')";
-				$requetedelete2 = db_query($sqldelete2, $connexion);
+				$requetedelete2 = db_query($sqldelete2, $db->connexion);
 				
 				//database query to optimize the table
 				$sqloptimize2 = "OPTIMIZE TABLE crawlt_keyword";
-				$requeteoptimize2 = db_query($sqloptimize2, $connexion);
+				$requeteoptimize2 = db_query($sqloptimize2, $db->connexion);
 			}
 		}
 		if ($datatosuppress == 16) {
 			//clear crawlt_pages_attack table
 			$sql = "TRUNCATE TABLE crawlt_pages_attack";
-			$requete = db_query($sql, $connexion);
+			$requete = db_query($sql, $db->connexion);
 		}
 		//empty the cache table
 		$sqlcache = "TRUNCATE TABLE crawlt_cache";
-		$requetecache = db_mysql_query($sqlcache, $connexion);
+		$requetecache = db_mysql_query($sqlcache, $db->connexion);
 		if ($requetedelete) {
 			echo "<br><br><h1>" . $language['data_suppress_ok'] . "</h1>\n";
 			echo "<div class=\"form\">\n";
@@ -255,7 +252,7 @@ if ($suppressdata == 1) {
 			echo "</form>\n";
 			echo "</div><br><br>\n";
 		}
-mysqli_close($connexion);
+		$db->close(); // Close database
 	} else {
 		//validation of suppression
 		//display

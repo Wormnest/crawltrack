@@ -32,13 +32,9 @@ $crawleruaadd = array();
 if (file_exists('include/attacklist.php')) {
 	include ("include/attacklist.php");
 	
-	//databaseconnection
-	require_once("jgbdb.php");
-	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-	
 	//query to get the actual liste id
 	$sqlupdate = "SELECT * FROM crawlt_update_attack";
-	$requeteupdate = db_query($sqlupdate, $connexion);
+	$requeteupdate = db_query($sqlupdate, $db->connexion);
 	$idlastupdate = 0;
 	while ($ligne = $requeteupdate->fetch_object()) {
 		$update = $ligne->update_id;
@@ -66,7 +62,7 @@ if (file_exists('include/attacklist.php')) {
 			$i = $i + 1;
 		}
 		$sqlexist = "SELECT * FROM crawlt_attack";
-		$requeteexist = $connexion->query($sqlexist);
+		$requeteexist = $db->connexion->query($sqlexist);
 		while ($ligne = $requeteexist->fetch_object()) {
 			$attackid = $ligne->id_attack;
 			$listattack[] = $attackid;
@@ -82,8 +78,8 @@ if (file_exists('include/attacklist.php')) {
 			if (in_array($id, $listattack)) {
 			} else {
 				$sqlinsert = "INSERT INTO crawlt_attack (id_attack,attack, script, type)
-								VALUES ('" . crawlt_sql_quote($connexion, $id) . "','" . crawlt_sql_quote($connexion, $attack) . "','" . crawlt_sql_quote($connexion, $script) . "','" . crawlt_sql_quote($connexion, $type) . "')";
-				$requeteinsert = db_query($sqlinsert, $connexion);
+								VALUES ('" . crawlt_sql_quote($db->connexion, $id) . "','" . crawlt_sql_quote($db->connexion, $attack) . "','" . crawlt_sql_quote($db->connexion, $script) . "','" . crawlt_sql_quote($db->connexion, $type) . "')";
+				$requeteinsert = db_query($sqlinsert, $db->connexion);
 				$nbrupdate = $nbrupdate + 1;
 				$crawlernameadd[] = $attack;
 				$crawleruaadd[] = $script;
@@ -91,8 +87,8 @@ if (file_exists('include/attacklist.php')) {
 			}
 		}
 		echo "<h1><br><br>$nbrupdate&nbsp;" . $language['attack_add'] . "<br></h1>";
-		$sqlinsertid = "INSERT INTO crawlt_update_attack (update_id) VALUES ('" . crawlt_sql_quote($connexion, $idlist) . "')";
-		$requeteinsertid = db_query($sqlinsertid, $connexion);
+		$sqlinsertid = "INSERT INTO crawlt_update_attack (update_id) VALUES ('" . crawlt_sql_quote($db->connexion, $idlist) . "')";
+		$requeteinsertid = db_query($sqlinsertid, $db->connexion);
 		
 		echo "<div align='center'><table cellpadding='0px' cellspacing='0' width='750px'><tr><td class='tableau1'>" . $language['parameter'] . "</td><td class='tableau1'>" . $language['script'] . "</td><td class='tableau2'>" . $language['attack_type'] . "</td></tr>\n";
 		for ($l = 0;$l < $nbrupdate;$l++) {
@@ -111,7 +107,7 @@ if (file_exists('include/attacklist.php')) {
 		}
 		echo "</tr></table></div><br><br>";
 	}
-mysqli_close($connexion);
+	$db->close(); // Close database
 } else {
 	echo "<br><br><h1>" . $language['no_attack_list'] . "</h1><br>";
 }

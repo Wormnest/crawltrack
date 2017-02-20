@@ -18,7 +18,7 @@
 //----------------------------------------------------------------------
 
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
 
 //initialize array
@@ -26,10 +26,11 @@ $listsites = array();
 $urlsite = array();
 $listidsite = array();
 $nbrpagestotal = 0;
+
 if ($_SESSION['rightsite'] == 0) {
 	//mysql query
 	$sqlsite = "SELECT * FROM crawlt_site";
-	$requetesite = db_query($sqlsite, $connexion);
+	$requetesite = db_query($sqlsite, $db->connexion);
 	$nbrresult = $requetesite->num_rows;
 	
 	if ($nbrresult >= 1) {
@@ -42,29 +43,31 @@ if ($_SESSION['rightsite'] == 0) {
 			$listsiteid[] = $siteid;
 		}
 		//case site 1 not in the base
-		if (!in_array($site, $listsiteid)) {
-			$site = min($listsiteid);
+		if (!in_array($settings->siteid, $listsiteid)) {
+			$settings->siteid = min($listsiteid);
 		}
-		$sitename2 = $listsites[$site];
+		$sitename2 = $listsites[$settings->siteid];
 		
 		//to avoid problem if the url is entered in the database with http://
-		if (!preg_match('#^http://#i', $urlsite[$site])) {
-			$hostsite = "http://" . $urlsite[$site];
+		if (!preg_match('#^http://#i', $urlsite[$settings->siteid])) {
+			$hostsite = "http://" . $urlsite[$settings->siteid];
 		} else {
-			$hostsite = $urlsite[$site];
+			$hostsite = $urlsite[$settings->siteid];
 		}
 		
 		//preparation of site list display
-		if ($navig == 2 || $navig == 3) {
+		if ($settings->navig == 2 || $settings->navig == 3) {
 			if (!isset($_SESSION[$sitename2])) {
 				//query to have the total number of page for the site
 				$sqlstats = "SELECT COUNT(DISTINCT crawlt_pages_id_page) as numrow FROM crawlt_visits
-					WHERE  crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+					WHERE  crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 					AND crawlt_crawler_id_crawler !='0'
 					AND crawlt_crawler_id_crawler !='65500'
 					AND crawlt_crawler_id_crawler !='65501'
 					";
-				$nbrpagestotal = db_result(db_query($sqlstats, $connexion),0,"numrow");
+				// TODO: Remove need for jgbdb.php (used for db_result)
+				require_once("jgbdb.php");
+				$nbrpagestotal = db_result(db_query($sqlstats, $db->connexion),0,"numrow");
 				$_SESSION[$sitename2] = $nbrpagestotal;
 			} else {
 				$nbrpagestotal = $_SESSION[$sitename2];
@@ -73,23 +76,23 @@ if ($_SESSION['rightsite'] == 0) {
 		//display
 		echo "<div class=\"menusite\" align=\"center\">\n";
 		echo "<form action=\"index.php\" method=\"POST\">\n";
-		echo "<input type=\"hidden\" name ='navig' value=\"$navig\">\n";
-		echo "<input type=\"hidden\" name ='search' value=\"$search\">\n";
-		echo "<input type=\"hidden\" name ='period' value=\"$period\">\n";
-		echo "<input type=\"hidden\" name ='crawler' value=\"$crawler\">\n";
-		echo "<input type=\"hidden\" name ='validform' value=\"$validform\">\n";
-		echo "<input type=\"hidden\" name ='displayall' value=\"$displayall\">\n";
-		echo "<input type=\"hidden\" name ='order' value=\"$order\">\n";
-		echo "<input type=\"hidden\" name ='graphpos' value=\"$graphpos\">\n";
+		echo "<input type=\"hidden\" name ='navig' value=\"$settings->navig\">\n";
+		echo "<input type=\"hidden\" name ='search' value=\"$settings->searchtype\">\n";
+		echo "<input type=\"hidden\" name ='period' value=\"$settings->period\">\n";
+		echo "<input type=\"hidden\" name ='crawler' value=\"$settings->crawler\">\n";
+		echo "<input type=\"hidden\" name ='validform' value=\"$settings->validform\">\n";
+		echo "<input type=\"hidden\" name ='displayall' value=\"$settings->displayall\">\n";
+		echo "<input type=\"hidden\" name ='order' value=\"$settings->displayorder\">\n";
+		echo "<input type=\"hidden\" name ='graphpos' value=\"$settings->graphpos\">\n";
 		echo "<select onchange=\"form.submit()\" size=\"1\" name=\"site\"  style=\" font-size:13px; font-weight:bold; color: #003399;
 		font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif; \">\n";
 		
 		asort($listsites);
 		foreach ($listsites as $id => $sitename3) {
-			if ($id == $site && isset($_SESSION[$sitename3])) {
+			if ($id == $settings->siteid && isset($_SESSION[$sitename3])) {
 				echo "<option value=\"$id\" selected style=\" font-size:13px; font-weight:bold; color: #003399;
 				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $sitename3 . "&nbsp;&bull;&nbsp;" . numbdisp($_SESSION[$sitename3]) . " &nbsp;" . $language['page'] . "</option>\n";
-			} elseif ($id == $site && !isset($_SESSION[$sitename3])) {
+			} elseif ($id == $settings->siteid && !isset($_SESSION[$sitename3])) {
 				echo "<option value=\"$id\" selected style=\" font-size:13px; font-weight:bold; color: #003399;
 				font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $sitename3 . "</option>\n";
 			} elseif (isset($_SESSION[$sitename3])) {
@@ -108,10 +111,10 @@ if ($_SESSION['rightsite'] == 0) {
 	}
 } else {
 	//mysql query
-	$site = $_SESSION['rightsite'];
+	$settings->siteid = $_SESSION['rightsite'];
 	$sqlsite = "SELECT * FROM crawlt_site
-		WHERE id_site='" . crawlt_sql_quote($connexion, $site) . "'";
-	$requetesite = db_query($sqlsite, $connexion);
+		WHERE id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'";
+	$requetesite = db_query($sqlsite, $db->connexion);
 	$nbrresult = $requetesite->num_rows;
 	
 	if ($nbrresult >= 1) {
@@ -123,20 +126,20 @@ if ($_SESSION['rightsite'] == 0) {
 		}
 		
 		//to avoid problem if the url is entered in the database with http://
-		if (!preg_match('#^http://#i', $urlsite[$site])) {
-			$hostsite = "http://" . $urlsite[$site];
+		if (!preg_match('#^http://#i', $urlsite[$settings->siteid])) {
+			$hostsite = "http://" . $urlsite[$settings->siteid];
 		} else {
-			$hostsite = $urlsite[$site];
+			$hostsite = $urlsite[$settings->siteid];
 		}
 		if (!isset($_SESSION[$sitename])) {
 			//query to have the total number of page for the site
 			$sqlstats = "SELECT DISTINCT crawlt_pages_id_page FROM crawlt_visits
-				WHERE  crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+				WHERE  crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 				AND crawlt_crawler_id_crawler !='0'
 				AND crawlt_crawler_id_crawler !='65500'
 				AND crawlt_crawler_id_crawler !='65501'
 				";
-			$requetestats = db_query($sqlstats, $connexion);
+			$requetestats = db_query($sqlstats, $db->connexion);
 			$nbrpagestotal = $requetestats->num_rows;
 			$_SESSION[$sitename] = $nbrpagestotal;
 		} else {
@@ -146,21 +149,21 @@ if ($_SESSION['rightsite'] == 0) {
 		//display
 		echo "<div class=\"menusite\" >\n";
 		echo "<form action=\"index.php\" method=\"POST\" >\n";
-		echo "<input type=\"hidden\" name ='navig' value=\"$navig\">\n";
-		echo "<input type=\"hidden\" name ='search' value=\"$search\">\n";
-		echo "<input type=\"hidden\" name ='period' value=\"$period\">\n";
-		echo "<input type=\"hidden\" name ='crawler' value=\"$crawler\">\n";
-		echo "<input type=\"hidden\" name ='validform' value=\"$validform\">\n";
-		echo "<input type=\"hidden\" name ='displayall' value=\"$displayall\">\n";
-		echo "<input type=\"hidden\" name ='order' value=\"$order\">\n";
-		echo "<input type=\"hidden\" name ='graphpos' value=\"$graphpos\">\n";
+		echo "<input type=\"hidden\" name ='navig' value=\"$settings->navig\">\n";
+		echo "<input type=\"hidden\" name ='search' value=\"$settings->searchtype\">\n";
+		echo "<input type=\"hidden\" name ='period' value=\"$settings->period\">\n";
+		echo "<input type=\"hidden\" name ='crawler' value=\"$settings->crawler\">\n";
+		echo "<input type=\"hidden\" name ='validform' value=\"$settings->validform\">\n";
+		echo "<input type=\"hidden\" name ='displayall' value=\"$settings->displayall\">\n";
+		echo "<input type=\"hidden\" name ='order' value=\"$settings->displayorder\">\n";
+		echo "<input type=\"hidden\" name ='graphpos' value=\"$settings->graphpos\">\n";
 		echo "<select size=\"1\" name=\"site\"  style=\" font-size:13px; font-weight:bold; color: #003399;
 		font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif; width:244px;\">\n";
 		if (isset($_SESSION[$sitename])) {
-			echo "<option value=\"$site\" selected style=\" font-size:13px; font-weight:bold; color: #003399;
+			echo "<option value=\"$settings->siteid\" selected style=\" font-size:13px; font-weight:bold; color: #003399;
 			font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $sitename . "&nbsp;&bull;&nbsp;" . $_SESSION[$sitename] . "</option>\n";
 		} else {
-			echo "<option value=\"$site\" selected style=\" font-size:13px; font-weight:bold; color: #003399;
+			echo "<option value=\"$settings->siteid\" selected style=\" font-size:13px; font-weight:bold; color: #003399;
 			font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif;\">" . $sitename . "</option>\n";
 		}
 		echo "</select></form></div>\n";

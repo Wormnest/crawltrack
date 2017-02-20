@@ -28,21 +28,25 @@ if (isset($_POST['newlang'])) {
 } else {
 	$crawltnewlang = 'english';
 }
+// Used in install.php and createtable.php
 if (isset($_POST['idmysql'])) {
 	$idmysql = $_POST['idmysql'];
 } else {
 	$idmysql = '';
 }
+// Used in install.php and createtable.php
 if (isset($_POST['passwordmysql'])) {
 	$passwordmysql = $_POST['passwordmysql'];
 } else {
 	$passwordmysql = '';
 }
+// Used in install.php and createtable.php
 if (isset($_POST['hostmysql'])) {
 	$hostmysql = $_POST['hostmysql'];
 } else {
 	$hostmysql = 'localhost';
 }
+// Used in install.php and createtable.php
 if (isset($_POST['basemysql'])) {
 	$basemysql = $_POST['basemysql'];
 } else {
@@ -90,6 +94,7 @@ if (isset($_POST['sessionid'])) {
 		$crawltsessionid = (int)$_GET['sessionid'];
 	}
 }
+// Used in admin.php only.
 if (isset($_POST['sessionid1'])) {
 	$crawltsessionid1 = (int)$_POST['sessionid1'];
 } else {
@@ -99,6 +104,7 @@ if (isset($_POST['sessionid1'])) {
 		$crawltsessionid1 = 0;
 	}
 }
+// Used in admin.php only.
 if (isset($_POST['sessionid2'])) {
 	$crawltsessionid2 = (int)$_POST['sessionid2'];
 } else {
@@ -108,6 +114,7 @@ if (isset($_POST['sessionid2'])) {
 		$crawltsessionid2 = 0;
 	}
 }
+// Used in admin.php only.
 if (isset($_POST['sessionid3'])) {
 	$crawltsessionid3 = (int)$_POST['sessionid3'];
 } else {
@@ -117,6 +124,7 @@ if (isset($_POST['sessionid3'])) {
 		$crawltsessionid3 = 0;
 	}
 }
+// Used in admin.php only.
 if (isset($_POST['sessionid4'])) {
 	$crawltsessionid4 = (int)$_POST['sessionid4'];
 } else {
@@ -126,6 +134,7 @@ if (isset($_POST['sessionid4'])) {
 		$crawltsessionid4 = 0;
 	}
 }
+// Used in admin.php only.
 if (isset($_POST['sessionid5'])) {
 	$crawltsessionid5 = (int)$_POST['sessionid5'];
 } else {
@@ -135,6 +144,7 @@ if (isset($_POST['sessionid5'])) {
 		$crawltsessionid5 = 0;
 	}
 }
+// Used in admin.php only.
 if (isset($_POST['sessionid6'])) {
 	$crawltsessionid6 = (int)$_POST['sessionid6'];
 } else {
@@ -144,6 +154,7 @@ if (isset($_POST['sessionid6'])) {
 		$crawltsessionid6 = 0;
 	}
 }
+// Used in admin.php only.
 if (isset($_POST['sessionid7'])) {
 	$crawltsessionid7 = (int)$_POST['sessionid7'];
 } else {
@@ -153,6 +164,7 @@ if (isset($_POST['sessionid7'])) {
 		$crawltsessionid7 = 0;
 	}
 }
+// Used in admin.php only.
 if (isset($_POST['sessionid8'])) {
 	$crawltsessionid8 = (int)$_POST['sessionid8'];
 } else {
@@ -169,56 +181,67 @@ if (isset($_POST['includeparameter'])) {
 		$crawltincludeparameter = (int)$_GET['includeparameter'];
 	}
 }
+// Used in Install: loginsetup.php; and in Admin: adminuser.php, adminusersite.php
 if (isset($_POST['login'])) {
 	$login = $_POST['login'];
 } else {
 	$login = '';
 }
+// Used in adminchangepassword.php
 if (isset($_POST['password1'])) {
 	$password1 = $_POST['password1'];
 } else {
 	$password1 = '';
 }
+// Used in Install: loginsetup.php; and in Admin: adminchangepassword.php, adminuser.php, adminusersite.php
 if (isset($_POST['password2'])) {
 	$password2 = $_POST['password2'];
 } else {
 	$password2 = '';
 }
+// Used in Install: loginsetup.php; and in Admin: adminchangepassword.php, adminuser.php, adminusersite.php
 if (isset($_POST['password3'])) {
 	$password3 = $_POST['password3'];
 } else {
 	$password3 = '';
 }
+// Used in Admin: adminuser.php, adminusersite.php, admincrawler.php
 if (isset($_POST['logintype'])) {
 	$logintype = (int)$_POST['logintype'];
 } else {
 	$logintype = 0;
 }
+// Used in Admin: admincrawler.php
 if (isset($_POST['crawlername2'])) {
 	$crawlername2 = htmlspecialchars($_POST['crawlername2']);
 } else {
 	$crawlername2 = '';
 }
+// Used in Admin: admincrawler.php (and search.php but not from POST/GET)
 if (isset($_POST['crawlerua2'])) {
 	$crawlerua2 = htmlspecialchars($_POST['crawlerua2']);
 } else {
 	$crawlerua2 = '';
 }
+// Used in Admin: admincrawler.php
 if (isset($_POST['crawleruser2'])) {
 	$crawleruser2 = htmlspecialchars($_POST['crawleruser2']);
 } else {
 	$crawleruser2 = '';
 }
+// Used in Admin: admincrawler.php
 if (isset($_POST['crawlerurl2'])) {
 	$crawlerurl2 = htmlspecialchars($_POST['crawlerurl2']);
 } else {
 	$crawlerurl2 = '';
 }
+// Used in Admin: admincrawler.php
 if (isset($_POST['crawlerip2'])) {
 	$crawlerip2 = htmlspecialchars($_POST['crawlerip2']);
 } else {
 	$crawlerip2 = '';
 }
+// Not used anywhere as a POST variable.
 if (isset($_POST['logochoice'])) {
 	$logochoice = (int)$_POST['logochoice'];
 } else {
@@ -252,6 +275,7 @@ if (isset($_POST['siteurl'])) {
 		$siteurl = '';
 	}
 }
+// TODO: Only used in admingoodreferer.php
 if (isset($_POST['urlreferer'])) {
 	$urlreferer = htmlspecialchars($_POST['urlreferer']);
 } else {
@@ -371,6 +395,7 @@ if (isset($_GET['checklink'])) {
 } else {
 	$checklink = 0;
 }
+// TODO: Only used in admin.php; should be handled there.
 if (isset($_POST['novisitor'])) {
 	$novisitor = (int)$_POST['novisitor'];
 } else {

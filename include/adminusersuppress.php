@@ -45,11 +45,7 @@ if ($suppressuser == 1) {
 	}
 	if ($suppressuserok == 1) {
 		// Delete a non admin user account
-		
-		require_once("db.class.php");
 		require_once("accounts.class.php");
-
-		$db = new ctDb(); // Create db connection
 		$accounts = new ctAccounts($db);
 
 		if ($accounts->delete_user_account($logintosuppress)) {
@@ -69,6 +65,7 @@ if ($suppressuser == 1) {
 			echo "</form>\n";
 			echo "</div><br><br>\n";
 		}
+		$accounts = null;
 		$db->close();
 	} else {
 		//validation of suppression
@@ -112,13 +109,10 @@ if ($suppressuser == 1) {
 	}
 } else {
 	// Show all non admin user accounts
-
-	require_once("db.class.php");
 	require_once("accounts.class.php");
-
-	$db = new ctDb(); // Create db connection
 	$accounts = new ctAccounts($db);
 	$users = $accounts->get_all_nonadmin_users();
+	$accounts = null;
 	$db->close();
 	if (count($users) > 0) {
 		//display
@@ -134,8 +128,8 @@ if ($suppressuser == 1) {
 			echo "" . $user1display . "\n";
 			echo "</td><td class='tableau4'>\n";
 			echo "<form action=\"index.php\" method=\"POST\" >\n";
-			echo "<input type=\"hidden\" name ='period' value=\"$period\">\n";
-			echo "<input type=\"hidden\" name ='navig' value=\"$navig\">\n";
+			echo "<input type=\"hidden\" name ='period' value=\"$settings->period\">\n";
+			echo "<input type=\"hidden\" name ='navig' value=\"$settings->navig\">\n";
 			echo "<input type=\"hidden\" name ='validform' value=\"8\">\n";
 			echo "<input type=\"hidden\" name ='suppressuser' value=\"1\">\n";
 			echo "<input type=\"hidden\" name ='logintosuppress' value=\"$user1\">\n";

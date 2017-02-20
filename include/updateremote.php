@@ -30,13 +30,9 @@ $listcrawler = array();
 $crawlernameadd = array();
 $crawleruaadd = array();
 
-//databaseconnection
-require_once("jgbdb.php");
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-
 //query to get the actual liste id
 $sqlupdate = "SELECT * FROM crawlt_update";
-$requeteupdate = db_query($sqlupdate, $connexion);
+$requeteupdate = db_query($sqlupdate, $db->connexion);
 $idlastupdate = 0;
 while ($ligne = $requeteupdate->fetch_object()) {
 	$update = $ligne->update_id;
@@ -130,7 +126,7 @@ if (!$file || $nofile) {
 						$i = $i + 1;
 					}
 					$sqlexist = "SELECT * FROM crawlt_crawler";
-					$requeteexist = $connexion->query($sqlexist);
+					$requeteexist = $db->connexion->query($sqlexist);
 					while ($ligne = $requeteexist->fetch_object()) {
 						$crawlerua = $ligne->crawler_user_agent;
 						$listcrawler[] = $crawlerua;
@@ -147,16 +143,16 @@ if (!$file || $nofile) {
 						if (in_array($uatest, $listcrawler)) {
 						} else {
 							$sqlinsert = "INSERT INTO crawlt_crawler (crawler_user_agent,crawler_name, crawler_url, crawler_info, crawler_ip)
-								VALUES ('" . crawlt_sql_quote($connexion, $ua) . "','" . crawlt_sql_quote($connexion, $name) . "','" . crawlt_sql_quote($connexion, $url) . "','" . crawlt_sql_quote($connexion, $user) . "','')";
-							$requeteinsert = db_query($sqlinsert, $connexion);
+								VALUES ('" . crawlt_sql_quote($db->connexion, $ua) . "','" . crawlt_sql_quote($db->connexion, $name) . "','" . crawlt_sql_quote($db->connexion, $url) . "','" . crawlt_sql_quote($db->connexion, $user) . "','')";
+							$requeteinsert = db_query($sqlinsert, $db->connexion);
 							$nbrupdate = $nbrupdate + 1;
 							$crawlernameadd[] = $name;
 							$crawleruaadd[] = $ua;
 						}
 					}
 					echo "<h1><br><br>$nbrupdate&nbsp;" . $language['crawler_add'] . "<br></h1>";
-					$sqlinsertid = "INSERT INTO crawlt_update (update_id) VALUES ('" . crawlt_sql_quote($connexion, $idlist) . "')";
-					$requeteinsertid = db_query($sqlinsertid, $connexion);
+					$sqlinsertid = "INSERT INTO crawlt_update (update_id) VALUES ('" . crawlt_sql_quote($db->connexion, $idlist) . "')";
+					$requeteinsertid = db_query($sqlinsertid, $db->connexion);
 					
 					echo "<div align='center'><table cellpadding='0px' cellspacing='0' width='750px'><tr><td class='tableau1'>" . $language['crawler_name'] . "</td><td class='tableau2'>" . $language['user_agent'] . "</td></tr>\n";
 					for ($l = 0;$l < $nbrupdate;$l++) {
@@ -176,5 +172,5 @@ if (!$file || $nofile) {
 		}
 	}
 }
-mysqli_close($connexion);
+$db->close(); // Close database
 ?>

@@ -28,26 +28,22 @@ if (isset($_POST['suppresscrawler'])) {
 }
 if ($suppresscrawler == 1) {
 	//crawler suppression
-	//database connection
-	require_once("jgbdb.php");
-	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-	
 	//database query to suppress the crawler
 	$sqlstats = "SELECT * FROM crawlt_crawler WHERE crawler_name ='Test-Crawltrack'";
-	$requetestats = db_query($sqlstats, $connexion);
+	$requetestats = db_query($sqlstats, $db->connexion);
 	$nbrresult = $requetestats->num_rows;
 	if ($nbrresult >= 1) {
 		while ($ligne = $requetestats->fetch_object()) {
 			$testcrawltrackid = $ligne->id_crawler;
 		}
-		$sqldelete = "DELETE FROM crawlt_crawler WHERE id_crawler= '" . crawlt_sql_quote($connexion, $testcrawltrackid) . "'";
-		$requetedelete = db_query($sqldelete, $connexion);
-		$sqldelete2 = "DELETE FROM crawlt_visits WHERE crawlt_crawler_id_crawler= '" . crawlt_sql_quote($connexion, $testcrawltrackid) . "'";
-		$requetedelete2 = db_query($sqldelete2, $connexion);
+		$sqldelete = "DELETE FROM crawlt_crawler WHERE id_crawler= '" . crawlt_sql_quote($db->connexion, $testcrawltrackid) . "'";
+		$requetedelete = db_query($sqldelete, $db->connexion);
+		$sqldelete2 = "DELETE FROM crawlt_visits WHERE crawlt_crawler_id_crawler= '" . crawlt_sql_quote($db->connexion, $testcrawltrackid) . "'";
+		$requetedelete2 = db_query($sqldelete2, $db->connexion);
 		
 		//database query to optimize the table
 		$sqloptimize = "OPTIMIZE TABLE crawlt_visits";
-		$requeteoptimize = db_query($sqloptimize, $connexion);
+		$requeteoptimize = db_query($sqloptimize, $db->connexion);
 		
 		//determine the path to the nocache file
 		if (isset($_SERVER['PATH_TRANSLATED']) && !empty($_SERVER['PATH_TRANSLATED'])) {
@@ -75,8 +71,8 @@ if ($suppresscrawler == 1) {
 		
 		//empty the cache table
 		$sqlcache = "TRUNCATE TABLE crawlt_cache";
-		$requetecache = db_query($sqlcache, $connexion);
-		mysqli_close($connexion);
+		$requetecache = db_query($sqlcache, $db->connexion);
+		$db->close(); // Close database
 		if ($requetedelete && $requetedelete2) {
 			echo "<br><br><h1>" . $language['crawler_suppress_ok'] . "</h1>\n";
 			echo "<div class=\"form\">\n";

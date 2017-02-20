@@ -56,21 +56,18 @@ $UVlast7days = array();
 $UVlast30days = array();
 
 //cache name
-$crawlencode = urlencode($crawler);
-$cachename = $navig . $period . $site . $order . $crawlencode . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang;
+$crawlencode = urlencode($settings->crawler);
+$cachename = $settings->navig . $settings->period . $settings->siteid . $settings->displayorder . $crawlencode . $settings->displayall . $settings->firstdayweek . $localday . $settings->graphpos . $settings->language;
 
 //start the caching
 cache($cachename);
 
-//database connection
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-
 //date for the mysql query
-if ($period >= 10) {
-	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
-    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "'";
+if ($settings->period >= 10) {
+	$datetolookfor = " date >'" . crawlt_sql_quote($db->connexion, $daterequest) . "' 
+    AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest2) . "'";
 } else {
-	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($db->connexion, $daterequest) . "'";
 }
 
 //include menu
@@ -81,6 +78,7 @@ include ("include/timecache.php");
 include ("include/cleaning-crawler-entry.php");
 //include visitors calculation file
 include ("include/visitors-calculation.php");
+
 if ($totalvisitor > 0) {
 	if ($visitsendgoogle > 0) {
 		$values2[$language['google']] = $visitsendgoogle;
@@ -116,19 +114,20 @@ if ($totalvisitor > 0) {
 } else {
 	$values2 = array();
 }
+
 //crawler calculation-----------------------------------------------------------------------------------------------
-if ($period == 3 || ($period >= 200 && $period < 300) || $period >= 1000 || ($period >= 100 && $period < 200) || ($period >= 300 && $period < 400))
+if ($settings->period == 3 || ($settings->period >= 200 && $settings->period < 300) || $settings->period >= 1000 || ($settings->period >= 100 && $settings->period < 200) || ($settings->period >= 300 && $settings->period < 400))
 {
 	//query to have the number of Crawler visits
 	$sql = "SELECT crawler_name, COUNT(id_visit) 
     FROM crawlt_visits
     INNER JOIN crawlt_crawler
     ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
-    WHERE DATE(crawlt_visits.date) ='" . crawlt_sql_quote($connexion, $daterequestseo) . "'
-    AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+    WHERE DATE(crawlt_visits.date) ='" . crawlt_sql_quote($db->connexion, $daterequestseo) . "'
+    AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
     AND crawler_name IN ('GoogleBot','MSN Bot','Slurp Inktomi (Yahoo)','YandexBot','Exabot','Baiduspider','Bingbot','Google-Adsense','Google-Image') 
     GROUP BY  crawler_name";
-	$requete = db_query($sql, $connexion);
+	$requete = db_query($sql, $db->connexion);
 	while ($ligne = $requete->fetch_row()) {
 		if ($ligne[0] == 'GoogleBot') {
 			$visitgooglebot = $ligne[1];
@@ -157,11 +156,11 @@ if ($period == 3 || ($period >= 200 && $period < 300) || $period >= 1000 || ($pe
     FROM crawlt_visits
     INNER JOIN crawlt_crawler
     ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
-    WHERE DATE(crawlt_visits.date) >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'
-    AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+    WHERE DATE(crawlt_visits.date) >='" . crawlt_sql_quote($db->connexion, $daterequestseo) . "'
+    AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
     AND crawler_name IN ('GoogleBot','MSN Bot','Slurp Inktomi (Yahoo)','YandexBot','Exabot','Baiduspider','Bingbot','Google-Adsense','Google-Image')
     GROUP BY crawler_name";
-	$requete = db_query($sql, $connexion);
+	$requete = db_query($sql, $db->connexion);
 	while ($ligne = $requete->fetch_row()) {
 		if ($ligne[0] == 'GoogleBot') {
 			$visitgooglebot = $ligne[1];
@@ -181,7 +180,7 @@ if ($period == 3 || ($period >= 200 && $period < 300) || $period >= 1000 || ($pe
 			$visitgoogleadsense = $ligne[1];
 		}
 	}
-$visitgoogle = $visitgoogleadsense + $visitgoogleimage + $visitgooglebot;	
+	$visitgoogle = $visitgoogleadsense + $visitgoogleimage + $visitgooglebot;
 }
 //query to count the total number of  pages viewed ,total number of visits and total number of crawler
 $sqlstats2 = "SELECT COUNT(DISTINCT crawlt_pages_id_page), COUNT(DISTINCT crawler_name), COUNT(id_visit) 
@@ -189,29 +188,29 @@ $sqlstats2 = "SELECT COUNT(DISTINCT crawlt_pages_id_page), COUNT(DISTINCT crawle
   INNER JOIN crawlt_crawler
   ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler
   AND $datetolookfor         
-  AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'";
-$requetestats2 = db_query($sqlstats2, $connexion);
+  AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'";
+$requetestats2 = db_query($sqlstats2, $db->connexion);
 $ligne2 = $requetestats2->fetch_row();
 $nbrtotpages = $ligne2[0];
 $nbrtotcrawlers = $ligne2[1];
 $nbrtotvisits = $ligne2[2];
 //Indexation calculation----------------------------------------------------------------------------------------
 //query to get the msn and yahoo positions data and the number of Delicious bookmarks and  Delicious keywords
-if ($period >= 10) {
+if ($settings->period >= 10) {
 	$sqlseo = "SELECT   linkyahoo, pageyahoo,  pagemsn, nbrdelicious, linkexalead, pageexalead, linkgoogle, pagegoogle
     FROM crawlt_seo_position
-    WHERE  id_site='" . crawlt_sql_quote($connexion, $site) . "'
-    AND  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "' 
-    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2seo) . "'        
+    WHERE  id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+    AND  date >='" . crawlt_sql_quote($db->connexion, $daterequestseo) . "' 
+    AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest2seo) . "'        
     ORDER BY date";
 } else {
 	$sqlseo = "SELECT  linkyahoo, pageyahoo,  pagemsn, nbrdelicious, linkexalead, pageexalead, linkgoogle, pagegoogle
     FROM crawlt_seo_position
-    WHERE  id_site='" . crawlt_sql_quote($connexion, $site) . "' 
-    AND  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'        
+    WHERE  id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "' 
+    AND  date >='" . crawlt_sql_quote($db->connexion, $daterequestseo) . "'        
     ORDER BY date";
 }
-$requeteseo = db_query($sqlseo, $connexion);
+$requeteseo = db_query($sqlseo, $db->connexion);
 $nbrresult = $requeteseo->num_rows;
 if ($nbrresult >= 1) {
 	while ($ligneseo = $requeteseo->fetch_row()) {
@@ -219,7 +218,7 @@ if ($nbrresult >= 1) {
 		$tabpagegoogle[] = $ligneseo[7];
 	}
 	//preparation of values for display
-	if ($period == 0 || $period >= 1000) {
+	if ($settings->period == 0 || $settings->period >= 1000) {
 		$linkgoogle = numbdisp($tablinkgoogle[($nbrresult - 1) ]);
 		$pagegoogle = numbdisp($tabpagegoogle[($nbrresult - 1) ]);
 	} else {
@@ -237,9 +236,9 @@ $sql = "SELECT crawlt_crawler_id_crawler, COUNT(id_visit)
 FROM crawlt_visits
 WHERE crawlt_crawler_id_crawler IN ('65500','65501')
 AND $datetolookfor       
-AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 GROUP BY crawlt_crawler_id_crawler";
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 while ($ligne = $requete->fetch_row()) {
 	if ($ligne[0] == 65500) {
 		$nbrcss = $ligne[1];
@@ -250,19 +249,19 @@ while ($ligne = $requete->fetch_row()) {
 }
 //download calculation----------------------------------------------------------------------------------------------
 //query to have the total since beginning
-if ($period >= 10) {
+if ($settings->period >= 10) {
 	$sql = "SELECT link, SUM(count) 
     FROM crawlt_download
-    WHERE  idsite='" . crawlt_sql_quote($connexion, $site) . "'
-    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2seo) . "'
+    WHERE  idsite='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+    AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest2seo) . "'
     GROUP BY link";
 } else {
 	$sql = "SELECT link, SUM(count) 
     FROM crawlt_download
-    WHERE  idsite='" . crawlt_sql_quote($connexion, $site) . "'
+    WHERE  idsite='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
     GROUP BY link";
 }
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 $num_rows = $requete->num_rows;
 if ($num_rows > 0) {
 	while ($ligne = $requete->fetch_row()) {
@@ -280,19 +279,19 @@ if ($num_rows > 0) {
 	$linkname = array();
 }
 //query to have the number for the period
-if ($period >= 10) {
+if ($settings->period >= 10) {
 	$sql = "SELECT link, count 
     FROM crawlt_download
-    WHERE  idsite='" . crawlt_sql_quote($connexion, $site) . "'
-    AND  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "' 
-    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2seo) . "'";
+    WHERE  idsite='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+    AND  date >='" . crawlt_sql_quote($db->connexion, $daterequestseo) . "' 
+    AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest2seo) . "'";
 } else {
 	$sql = "SELECT link, count 
     FROM crawlt_download
-    WHERE  idsite='" . crawlt_sql_quote($connexion, $site) . "'
-    AND  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'";
+    WHERE  idsite='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+    AND  date >='" . crawlt_sql_quote($db->connexion, $daterequestseo) . "'";
 }
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 $num_rows = $requete->num_rows;
 if ($num_rows > 0) {
 	while ($ligne = $requete->fetch_row()) {
@@ -305,21 +304,21 @@ if ($num_rows > 0) {
 arsort($count);
 //error 404 calculation------------------------------------------------------------------------------------------------
 //attack
-if ($period >= 10) {
+if ($settings->period >= 10) {
 	$sql = "SELECT attacktype, count 
     FROM crawlt_error
-    WHERE  idsite='" . crawlt_sql_quote($connexion, $site) . "'
-    AND  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "' 
-    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2seo) . "'
+    WHERE  idsite='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+    AND  date >='" . crawlt_sql_quote($db->connexion, $daterequestseo) . "' 
+    AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest2seo) . "'
     GROUP BY attacktype";
 } else {
 	$sql = "SELECT attacktype, count 
     FROM crawlt_error
-    WHERE  idsite='" . crawlt_sql_quote($connexion, $site) . "'
-    AND  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'
+    WHERE  idsite='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+    AND  date >='" . crawlt_sql_quote($db->connexion, $daterequestseo) . "'
     GROUP BY attacktype";
 }
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 $num_rows = $requete->num_rows;
 if ($num_rows > 0) {
 	while ($ligne = $requete->fetch_row()) {
@@ -335,9 +334,9 @@ if ($num_rows > 0) {
 $sql = "SELECT  COUNT(id_visit) 
 FROM crawlt_visits
 WHERE  $datetolookfor       
-AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 AND crawlt_error='1'";
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 $num_rows = $requete->num_rows;
 if ($num_rows > 0) {
 	$ligne = $requete->fetch_row();
@@ -349,11 +348,11 @@ FROM crawlt_visits_human
 INNER JOIN crawlt_referer
 ON  crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
 AND $datetolookfor       
-AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
-AND Substring(referer From 1 For " . $lengthurl . ") != '" . crawlt_sql_quote($connexion, $hostsite) . "'
+AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+AND Substring(referer From 1 For " . $lengthurl . ") != '" . crawlt_sql_quote($db->connexion, $hostsite) . "'
 AND crawlt_id_referer !='0'
 AND crawlt_error='1'";
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 $num_rows = $requete->num_rows;
 if ($num_rows > 0) {
 	$ligne = $requete->fetch_row();
@@ -362,10 +361,10 @@ if ($num_rows > 0) {
 //query to get error from visitor direct
 $sql = "SELECT crawlt_id_page FROM crawlt_visits_human
 WHERE $datetolookfor       
-AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 AND crawlt_error='1'
 AND crawlt_id_referer=''";
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 $nbrerrordirect = $requete->num_rows;
 //query to get error from visitors internal link
 $sql = "SELECT COUNT(id_visit) 
@@ -373,27 +372,27 @@ FROM crawlt_visits_human
 INNER JOIN crawlt_referer
 ON  crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
 AND $datetolookfor       
-AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
-AND Substring(referer From 1 For " . $lengthurl . ") = '" . crawlt_sql_quote($connexion, $hostsite) . "'
+AND crawlt_visits_human.crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+AND Substring(referer From 1 For " . $lengthurl . ") = '" . crawlt_sql_quote($db->connexion, $hostsite) . "'
 AND crawlt_error='1'";
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 $ligne = $requete->fetch_row();
 $nbrerrorintern = $ligne[0];
 //graph preparation
 //count the total number of hits
-if ($period >= 10) {
+if ($settings->period >= 10) {
 	$sql = "SELECT  SUM(count) 
     FROM crawlt_hits
-    WHERE  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "' 
-    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2seo) . "'
-    AND idsite='" . crawlt_sql_quote($connexion, $site) . "'";
+    WHERE  date >='" . crawlt_sql_quote($db->connexion, $daterequestseo) . "' 
+    AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest2seo) . "'
+    AND idsite='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'";
 } else {
 	$sql = "SELECT SUM(count)  
     FROM crawlt_hits
-    WHERE date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'
-    AND idsite='" . crawlt_sql_quote($connexion, $site) . "'";
+    WHERE date >='" . crawlt_sql_quote($db->connexion, $daterequestseo) . "'
+    AND idsite='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'";
 }
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 $num_rows = $requete->num_rows;
 if ($num_rows > 0) {
 	$ligne = $requete->fetch_row();
@@ -410,44 +409,44 @@ if (($nbrpage + $nbrtotvisits + $nbrcss + $nbrsql + $totalhits) > 0) {
 	$piegraphname = "charge2-" . $cachename;
 	//check if this graph already exists in the table
 	$sql = "SELECT name  FROM crawlt_graph
-              WHERE name= '" . crawlt_sql_quote($connexion, $piegraphname) . "'";
-	$requete = db_query($sql, $connexion);
+              WHERE name= '" . crawlt_sql_quote($db->connexion, $piegraphname) . "'";
+	$requete = db_query($sql, $db->connexion);
 	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
-		$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($connexion, $datatransferttograph) . "'
-                WHERE name= '" . crawlt_sql_quote($connexion, $piegraphname) . "'";
+		$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($db->connexion, $datatransferttograph) . "'
+                WHERE name= '" . crawlt_sql_quote($db->connexion, $piegraphname) . "'";
 	} else {
-		$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($connexion, $piegraphname) . "','" . crawlt_sql_quote($connexion, $datatransferttograph) . "')";
+		$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($db->connexion, $piegraphname) . "','" . crawlt_sql_quote($db->connexion, $datatransferttograph) . "')";
 	}
-	$requete2 = db_query($sql2, $connexion);
+	$requete2 = db_query($sql2, $db->connexion);
 }
 //Evolution calculation------------------------------------------------------------------------------
 //query to get unique visitor for the last 30 days
-$datelocal2 = date("Y-m-d", (strtotime("today") - ($times * 3600)));
+$datelocal2 = date("Y-m-d", (strtotime("today") - ($settings->timediff * 3600)));
 $daterequestUV = date("Y-m-d", (strtotime($datelocal2) - 604800));
 $daterequestUV2 = date("Y-m-d", (strtotime($datelocal2) - 2592000));
-$sql = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($times*3600), '%d-%m-%Y'), count(DISTINCT crawlt_ip) 
+$sql = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($settings->timediff*3600), '%d-%m-%Y'), count(DISTINCT crawlt_ip) 
 FROM crawlt_visits_human
 LEFT OUTER JOIN crawlt_referer
 ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
-WHERE  (date >='" . crawlt_sql_quote($connexion, $daterequestUV2) . "'
-AND date <'" . crawlt_sql_quote($connexion, $datelocal2) . "'
-AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+WHERE  (date >='" . crawlt_sql_quote($db->connexion, $daterequestUV2) . "'
+AND date <'" . crawlt_sql_quote($db->connexion, $datelocal2) . "'
+AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 AND  crawlt_id_crawler='0'
 AND  crawlt_id_referer='0')
-OR (date >='" . crawlt_sql_quote($connexion, $daterequestUV2) . "' 
-AND date <'" . crawlt_sql_quote($connexion, $datelocal2) . "' 
-AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+OR (date >='" . crawlt_sql_quote($db->connexion, $daterequestUV2) . "' 
+AND date <'" . crawlt_sql_quote($db->connexion, $datelocal2) . "' 
+AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 AND  crawlt_id_crawler IN ('1','2','3','4','5','6','7','8'))
-OR (date >='" . crawlt_sql_quote($connexion, $daterequestUV2) . "' 
-AND date <'" . crawlt_sql_quote($connexion, $datelocal2) . "'  
-AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+OR (date >='" . crawlt_sql_quote($db->connexion, $daterequestUV2) . "' 
+AND date <'" . crawlt_sql_quote($db->connexion, $datelocal2) . "'  
+AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 AND  crawlt_id_crawler='0'
 $notinternalreferercondition
 AND referer !='' )
-GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($times*3600), '%d-%m-%Y')
+GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(date)-($settings->timediff*3600), '%d-%m-%Y')
 ORDER BY date";
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 while ($ligne = $requete->fetch_row()) {
 	if (strtotime($ligne[0]) >= strtotime($daterequestUV)) {
 		$UVlast7days[] = $ligne[1];
@@ -483,7 +482,7 @@ if (count($UVlast7days) > 6) {
 	$evolutionuniquevisitorST = 0;
 	$evolutionuniquevisitorLT = 0;
 }
-mysqli_close($connexion);
+$db->close(); // Close database
 
 //display----------------------------------------------------------------------------------------------------
 echo "<div class=\"content2\">\n";
@@ -492,7 +491,7 @@ echo "<table   cellpadding='0' cellspacing='0' width='100%' style=' border-top:2
 echo "<tr><td id='dashboard1' width='50%'>\n";
 
 //visitors------------------------------------------------------------------------------------------------------
-echo "&nbsp;&nbsp;<a href=\"index.php?navig=20&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/group.png\" style=\"border:0; width:16px; height:16px\" alt=\"" . $language['visitors'] . "\">&nbsp;&nbsp;<b>" . $language['visitors'] . "</b></a><br><br>\n";
+echo "&nbsp;&nbsp;<a href=\"index.php?navig=20&amp;period=$settings->period&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\"><img src=\"./images/group.png\" style=\"border:0; width:16px; height:16px\" alt=\"" . $language['visitors'] . "\">&nbsp;&nbsp;<b>" . $language['visitors'] . "</b></a><br><br>\n";
 //summary table display
 echo "<div class='tableaunarrow' align='center' onmouseout=\"javascript:montre();\">\n";
 echo "<table   cellpadding='0px' cellspacing='0' width='100%'>\n";
@@ -543,7 +542,7 @@ echo "</td>\n";
 echo "<td id='dashboard2'>\n";
 
 //crawlers-------------------------------------------------------------------------------------------------------
-echo "&nbsp;&nbsp;<a href=\"index.php?navig=1&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/bug.png\" style=\"border:0; width:16px; height:16px\" alt=\"" . $language['crawler_name'] . "\">&nbsp;&nbsp;<b>" . $language['crawler_name'] . "</b></a><br><br>\n";
+echo "&nbsp;&nbsp;<a href=\"index.php?navig=1&amp;period=$settings->period&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\"><img src=\"./images/bug.png\" style=\"border:0; width:16px; height:16px\" alt=\"" . $language['crawler_name'] . "\">&nbsp;&nbsp;<b>" . $language['crawler_name'] . "</b></a><br><br>\n";
 //summary table display
 echo "<div class='tableaunarrow' align='center' onmouseout=\"javascript:montre();\">\n";
 echo "<table   cellpadding='0px' cellspacing='0' width='100%'>\n";
@@ -595,7 +594,7 @@ echo "<td id='dashboard8'>\n";
 //server charge------------------------------------------------------------------------------------------------------
 echo "&nbsp;&nbsp;<img src=\"./images/server.png\" style=\"border:0; width:16px; height:16px\" alt=\"" . $language['charge'] . "\">&nbsp;&nbsp;<b>" . $language['charge'] . "</b> ( " . numbdisp($totalhits) . " " . $language['nbr_visits'] . " )<br>";
 if (($nbrpage + $nbrtotvisits + $nbrcss + $nbrsql) > 0) {
-	echo "<img src=\"./graphs/crawler-graph.php?graphname=$piegraphname&amp;crawltlang=$crawltlang\" alt=\"graph\" style=\"border:0; width:480px; height:220px\">\n";
+	echo "<img src=\"./graphs/crawler-graph.php?graphname=$piegraphname&amp;crawltlang=$settings->language\" alt=\"graph\" style=\"border:0; width:480px; height:220px\">\n";
 } else {
 	echo "&nbsp;";
 }
@@ -603,7 +602,7 @@ echo "</td></tr><tr>\n";
 echo "<td id='dashboard3'>\n";
 
 //indexation-----------------------------------------------------------------------------------------------------
-echo "&nbsp;&nbsp;<a href=\"index.php?navig=11&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/report_magnify.png\" style=\"border:0; width:16px; height:16px\" alt=\"" . $language['index'] . "\">&nbsp;&nbsp;<b>" . $language['index'] . "</b></a><br><br>\n";
+echo "&nbsp;&nbsp;<a href=\"index.php?navig=11&amp;period=$settings->period&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\"><img src=\"./images/report_magnify.png\" style=\"border:0; width:16px; height:16px\" alt=\"" . $language['index'] . "\">&nbsp;&nbsp;<b>" . $language['index'] . "</b></a><br><br>\n";
 //backling and index page table
 echo "<div class='tableaunarrow' align='center' onmouseout=\"javascript:montre();\">\n";
 echo "<table   cellpadding='0px' cellspacing='0' width='100%'>\n";
@@ -617,8 +616,8 @@ echo "<th class='tableau2' width=\"40%\">\n";
 echo "" . $language['nbr_tot_pages_index'] . "\n";
 echo "</th></tr>\n";
 echo "<tr><td class='tableau3g'>&nbsp;&nbsp;" . $language['google'] . "\n";
-if ($period == 0 && ($linkgoogle == 0 || $pagegoogle == 0)) {
-	echo "<a href=\"./php/searchenginespositionrefresh.php?retry=google&amp;navig=$navig&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/refresh.png\" width=\"16\" height=\"16\" border=\"0\" ></a></td>\n";
+if ($settings->period == 0 && ($linkgoogle == 0 || $pagegoogle == 0)) {
+	echo "<a href=\"./php/searchenginespositionrefresh.php?retry=google&amp;navig=$settings->navig&amp;period=$settings->period&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\"><img src=\"./images/refresh.png\" width=\"16\" height=\"16\" border=\"0\" ></a></td>\n";
 } else {
 	echo "</td>\n";
 }
@@ -636,7 +635,7 @@ echo "</table><br>\n";
 
 //Alexa traffic rank
 //to avoid problem if the url is enter in the database with http://
-$crawlturlsite = strip_protocol($urlsite[$site]);
+$crawlturlsite = strip_protocol($urlsite[$settings->siteid]);
 echo "<br><table   cellpadding='0px' cellspacing='0' width='468px' style=\"margin:auto;\">\n";
 echo "<tr><th class='tableau2'>\n";
 echo "Alexa\n";
@@ -648,7 +647,7 @@ echo "</td>\n";
 echo "<td id='dashboard4'>\n";
 
 //hacking---------------------------------------------------------------------------------------------------------
-echo "&nbsp;&nbsp;<a href=\"index.php?navig=17&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/hacker.png\" style=\"border:0; width:16px; height:16px\" alt=\"" . $language['hacking2'] . "\">&nbsp;&nbsp;<b>" . $language['hacking2'] . "</b></a><br><br>";
+echo "&nbsp;&nbsp;<a href=\"index.php?navig=17&amp;period=$settings->period&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\"><img src=\"./images/hacker.png\" style=\"border:0; width:16px; height:16px\" alt=\"" . $language['hacking2'] . "\">&nbsp;&nbsp;<b>" . $language['hacking2'] . "</b></a><br><br>";
 //summary table display
 echo "<div class='tableaunarrow' align='center' onmouseout=\"javascript:montre();\">\n";
 echo "<table   cellpadding='0px' cellspacing='0' width='100%'>\n";
@@ -661,9 +660,9 @@ echo "</th></tr>\n";
 echo "<tr><td class='tableau3'>" . numbdisp($nbrcss) . "</td>\n";
 echo "<td class='tableau5'>" . numbdisp($nbrsql) . "</td></tr>\n";
 echo "</table></div>\n";
-if ($crawltblockattack == 1 && ($nbrcss + $nbrsql) > 0) {
+if ($settings->blockattacks == 1 && ($nbrcss + $nbrsql) > 0) {
 	echo "<h2>" . $language['attack-blocked'] . "</h2>\n";
-} elseif ($crawltblockattack != 1 && ($nbrcss + $nbrsql) > 0) {
+} elseif ($settings->blockattacks != 1 && ($nbrcss + $nbrsql) > 0) {
 	echo "<h2><span class=\"alert2\">" . $language['attack-no-blocked'] . "</span></h2>\n";
 }
 echo "</td></tr><tr><td id='dashboard5'>\n";
@@ -686,20 +685,20 @@ echo "</th></tr>\n";
 $comptligne = 2;
 foreach ($count as $key => $value) {
 	if ($comptligne % 2 == 0 && $countperiod[$key]>0) {
-		echo "<tr><td class='tableau3gred'>&nbsp;&nbsp;" . crawltcuturl($key, 30) . "</td>\n";
+		echo "<tr><td class='tableau3gred'>&nbsp;&nbsp;" . crawltcuturl($key, 30, $settings->useutf8) . "</td>\n";
 		echo "<td class='tableau3red'>&nbsp;&nbsp;" . numbdisp($countperiod[$key]) . "</td>\n";
 		echo "<td class='tableau5red'>" . numbdisp($value) . "</td></tr>\n";
 	} elseif ($comptligne % 2 == 0 && $countperiod[$key]==0) {
-		echo "<tr><td class='tableau3g'>&nbsp;&nbsp;" . crawltcuturl($key, 30) . "</td>\n";
+		echo "<tr><td class='tableau3g'>&nbsp;&nbsp;" . crawltcuturl($key, 30, $settings->useutf8) . "</td>\n";
 		echo "<td class='tableau3'>&nbsp;&nbsp;" . numbdisp($countperiod[$key]) . "</td>\n";
 		echo "<td class='tableau5'>" . numbdisp($value) . "</td></tr>\n";
 	} elseif ($comptligne % 2 != 0 && $countperiod[$key]>0) {
-		echo "<tr><td class='tableau30gred'>&nbsp;&nbsp;" . crawltcuturl($key, 30) . "</td>\n";
+		echo "<tr><td class='tableau30gred'>&nbsp;&nbsp;" . crawltcuturl($key, 30, $settings->useutf8) . "</td>\n";
 		echo "<td class='tableau30red'>&nbsp;&nbsp;" . numbdisp($countperiod[$key]) . "</td>\n";
 		echo "<td class='tableau50red'>" . numbdisp($value) . "</td></tr>\n";
 	}
 	else {
-		echo "<tr><td class='tableau30g'>&nbsp;&nbsp;" . crawltcuturl($key, 30) . "</td>\n";
+		echo "<tr><td class='tableau30g'>&nbsp;&nbsp;" . crawltcuturl($key, 30, $settings->useutf8) . "</td>\n";
 		echo "<td class='tableau30'>&nbsp;&nbsp;" . numbdisp($countperiod[$key]) . "</td>\n";
 		echo "<td class='tableau50'>" . numbdisp($value) . "</td></tr>\n";
 	}
@@ -709,7 +708,7 @@ echo "</table></div><br>\n";
 echo "</td><td id='dashboard6'>\n";
 
 //error 404---------------------------------------------------------------------------------------------------------
-echo "&nbsp;&nbsp;<a href=\"index.php?navig=22&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/error.png\" style=\"border:0; width:16px; height:16px\" alt=\"" . $language['error'] . "\">&nbsp;&nbsp;<b>" . $language['error'] . "</b></a><br><br>";
+echo "&nbsp;&nbsp;<a href=\"index.php?navig=22&amp;period=$settings->period&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\"><img src=\"./images/error.png\" style=\"border:0; width:16px; height:16px\" alt=\"" . $language['error'] . "\">&nbsp;&nbsp;<b>" . $language['error'] . "</b></a><br><br>";
 echo "<div class='tableaunarrow' align='center' onmouseout=\"javascript:montre();\">\n";
 echo "<table   cellpadding='0px' cellspacing='0' width='100%'>\n";
 echo "<tr><th class='tableau1' >\n";

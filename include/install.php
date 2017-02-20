@@ -21,10 +21,34 @@ if (!defined('IN_CRAWLT')) {
 }
 // do not modify
 define('IN_CRAWLT_INSTALL', TRUE);
+
+if (isset($_POST['idmysql'])) {
+	$idmysql = filter_input(INPUT_POST, 'idmysql', FILTER_SANITIZE_SPECIAL_CHARS);
+} else {
+	$idmysql = '';
+}
+if (isset($_POST['passwordmysql'])) {
+	// Filtering password is problematic. When storing in database we don't need to filter since we
+	// will generate a hash. However here we save it in a .php variable.
+	// TODO: What to do here.
+	$passwordmysql = $_POST['passwordmysql'];
+} else {
+	$passwordmysql = '';
+}
+if (isset($_POST['hostmysql'])) {
+	$hostmysql = filter_input(INPUT_POST, 'hostmysql', FILTER_SANITIZE_SPECIAL_CHARS);
+} else {
+	$hostmysql = 'localhost';
+}
+if (isset($_POST['basemysql'])) {
+	$basemysql = filter_input(INPUT_POST, 'basemysql', FILTER_SANITIZE_SPECIAL_CHARS);
+} else {
+	$basemysql = '';
+}
 ?>
 <div class="content">
 <!-- test validity form -->
-<?php if ($validform == 1): ?>
+<?php if ($settings->validform == 1): ?>
 	<!-- echo text -->
 	<h1><?php echo $language['install']; ?></h1>
 	<p><?php echo $language['welcome_install']; ?></p>
@@ -36,12 +60,12 @@ define('IN_CRAWLT_INSTALL', TRUE);
 	<div class="form">
 		<form action="index.php" method="POST">
 			<input type="hidden" name="validform" value="2" />
-			<input type="hidden" name="lang" value="<?php echo $crawltlang; ?>" />
+			<input type="hidden" name="lang" value="<?php echo $settings->language; ?>" />
 			<input name="ok" type="submit" value="<?php echo $language['go_install']; ?>" />
 		</form>
 		<br />
 	</div>
-<?php elseif($validform == 2): ?>
+<?php elseif($settings->validform == 2): ?>
 	<!-- connection data collect -->
 	<h1><?php echo $language['install']; ?></h1>
 	<div align="left">
@@ -57,7 +81,7 @@ define('IN_CRAWLT_INSTALL', TRUE);
 		<form action="index.php" method="POST">
 			<input type="hidden" name="validform" value="3" />
 			<input type="hidden" name="navig" value="15" />
-			<input type="hidden" name="lang" value="<?php echo $crawltlang; ?>" />
+			<input type="hidden" name="lang" value="<?php echo $settings->language; ?>" />
 			<table class="centrer">
 				<tr>
 				<td><?php echo $language['step1_install_login_mysql']; ?></td>
@@ -83,7 +107,7 @@ define('IN_CRAWLT_INSTALL', TRUE);
 				</tr>
 			</table>
 		</form><br />
-<?php elseif($validform == 3): ?>
+<?php elseif($settings->validform == 3): ?>
 	<!-- file and tables creation -->
 	<h1><?php echo $language['install']; ?></h1>
 	<div align="left">
@@ -92,7 +116,7 @@ define('IN_CRAWLT_INSTALL', TRUE);
 		<h4><?php echo $language['menu_install_3']; ?></h4>
 	</div>
 	<?php include("include/createtable.php"); ?>
-<?php elseif($validform == 4): ?>
+<?php elseif($settings->validform == 4): ?>
 	<!-- site creation -->
 	<h1><?php echo $language['install']; ?></h1>
 	<div align="left">
@@ -101,7 +125,7 @@ define('IN_CRAWLT_INSTALL', TRUE);
 		<h4><?php echo $language['menu_install_3']; ?></h4>
 	</div>
 	<?php include("include/createsite.php"); ?>
-<?php elseif($validform == 6): ?>
+<?php elseif($settings->validform == 6): ?>
 	<!-- user right -->
 	<h1><?php echo $language['install']; ?></h1>
 	<div align="left">

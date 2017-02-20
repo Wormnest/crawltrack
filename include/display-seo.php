@@ -25,24 +25,20 @@ if (!defined('IN_CRAWLT')) {
 $tablinkgoogle = array();
 $tabpagegoogle = array();
 
-if ($period >= 1000) {
-	$cachename = "permanent-" . $navig . "-" . $site . "-".$crawltlang . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
-} elseif ($period >= 100 && $period < 200) //previous month
+if ($settings->period >= 1000) {
+	$cachename = "permanent-" . $settings->navig . "-" . $settings->siteid . "-".$settings->language . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
+} elseif ($settings->period >= 100 && $settings->period < 200) //previous month
 {
-	$cachename = "permanent-month" . $navig . "-" . $site . "-".$crawltlang . "-" . date("Y-m", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
-} elseif ($period >= 200 && $period < 300) //previous year
+	$cachename = "permanent-month" . $settings->navig . "-" . $settings->siteid . "-".$settings->language . "-" . date("Y-m", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
+} elseif ($settings->period >= 200 && $settings->period < 300) //previous year
 {
-	$cachename = "permanent-year" . $navig . "-" . $site . "-".$crawltlang . "-" . date("Y", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
+	$cachename = "permanent-year" . $settings->navig . "-" . $settings->siteid . "-".$settings->language . "-" . date("Y", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
 } else {
-	$cachename = $navig . $period . $site . $firstdayweek . $localday . $graphpos . $crawltlang;
+	$cachename = $settings->navig . $settings->period . $settings->siteid . $settings->firstdayweek . $localday . $settings->graphpos . $settings->language;
 }
 
 //start the caching
 cache($cachename);
-
-//database connection
-require_once("jgbdb.php");
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //include menu
 include ("include/menumain.php");
@@ -50,19 +46,19 @@ include ("include/menusite.php");
 include ("include/timecache.php");
 
 //request to get the msn and yahoo positions data and the number of Delicious bookmarks and  Delicious keywords
-if ($period >= 10) {
+if ($settings->period >= 10) {
 	$sqlseo = "SELECT   linkyahoo, pageyahoo, pagemsn, nbrdelicious,tagdelicious, linkexalead, pageexalead, linkgoogle, pagegoogle FROM crawlt_seo_position
-    WHERE  id_site='" . crawlt_sql_quote($connexion, $site) . "'
-    AND  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "' 
-    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2seo) . "'        
+    WHERE  id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+    AND  date >='" . crawlt_sql_quote($db->connexion, $daterequestseo) . "' 
+    AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest2seo) . "'        
     ORDER BY date";
 } else {
 	$sqlseo = "SELECT  linkyahoo, pageyahoo, pagemsn, nbrdelicious,tagdelicious, linkexalead, pageexalead, linkgoogle, pagegoogle FROM crawlt_seo_position
-    WHERE  id_site='" . crawlt_sql_quote($connexion, $site) . "' 
-    AND  date >='" . crawlt_sql_quote($connexion, $daterequestseo) . "'        
+    WHERE  id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "' 
+    AND  date >='" . crawlt_sql_quote($db->connexion, $daterequestseo) . "'        
     ORDER BY date";
 }
-$requeteseo = db_query($sqlseo, $connexion);
+$requeteseo = db_query($sqlseo, $db->connexion);
 $nbrresult = $requeteseo->num_rows;
 if ($nbrresult >= 1) {
 	$i = 1;
@@ -72,7 +68,7 @@ if ($nbrresult >= 1) {
 	}
 
 	//preparation of values for display
-	if ($period == 0 || $period >= 1000) {
+	if ($settings->period == 0 || $settings->period >= 1000) {
 		$linkgoogle = numbdisp($tablinkgoogle[0]);
 		$pagegoogle = numbdisp($tabpagegoogle[0]);
 	} else {
@@ -80,8 +76,7 @@ if ($nbrresult >= 1) {
 		$pagegoogle = numbdisp($tabpagegoogle[0]) . " --> " . numbdisp($tabpagegoogle[($nbrresult - 1) ]);
 	}
 }
-//mysql connexion close
-mysqli_close($connexion);
+// Don't close database here since mapgraph also needs the connection!
 
 //display
 echo "<div class=\"content2\"><br><hr>\n";
@@ -104,8 +99,8 @@ echo "" . $language['nbr_tot_pages_index'] . "\n";
 echo "</th></tr>\n";
 echo "<tr><td class='tableau3g'>&nbsp;&nbsp;&nbsp;<a href=\"http://www.google.com\">" . $language['google'] . "</a>\n";
 
-if (($nbrresult == 0) || ($period == 0 && ($linkgoogle == 0 || $pagegoogle == 0))) {
-	echo "<a href=\"./php/searchenginespositionrefresh.php?retry=google&amp;navig=$navig&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/refresh.png\" width=\"16\" height=\"16\" border=\"0\" ></a></td>\n";
+if (($nbrresult == 0) || ($settings->period == 0 && ($linkgoogle == 0 || $pagegoogle == 0))) {
+	echo "<a href=\"./php/searchenginespositionrefresh.php?retry=google&amp;navig=$settings->navig&amp;period=$settings->period&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\"><img src=\"./images/refresh.png\" width=\"16\" height=\"16\" border=\"0\" ></a></td>\n";
 } else {
 	echo "</td>\n";
 }
@@ -122,13 +117,13 @@ if (($nbrresult == 0) || (($tabpagegoogle[0] == $tabpagegoogle[($nbrresult - 1) 
 echo "</table><br>\n";
 echo "</div><br>\n";
 
-if ($period != 5) {
+if ($settings->period != 5) {
 	//graph
 	echo "<div class='graphvisits'>\n";
 	//mapgraph
 	$typegraph = 'link';
 	include("include/mapgraph2.php");
-	echo "<img src=\"./graphs/seo-graph.php?typegraph=$typegraph&amp;crawltlang=$crawltlang&amp;period=$period&amp;graphname=$graphname\" usemap=\"#seolink\" border=\"0\" alt=\"graph\" >\n";
+	echo "<img src=\"./graphs/seo-graph.php?typegraph=$typegraph&amp;crawltlang=$settings->language&amp;period=$settings->period&amp;graphname=$graphname\" usemap=\"#seolink\" border=\"0\" alt=\"graph\" >\n";
 	echo "&nbsp;</div><br>\n";
 	echo "<div class='imprimgraph'>\n";
 	echo "&nbsp;<br><br><br><br><br><br><br><br><br><br><br><br><br><br></div>\n";
@@ -137,11 +132,12 @@ if ($period != 5) {
 	//mapgraph
 	$typegraph = 'page';
 	include("include/mapgraph2.php");
-	echo "<img src=\"./graphs/seo-graph.php?typegraph=$typegraph&amp;crawltlang=$crawltlang&amp;period=$period&amp;graphname=$graphname\" usemap=\"#seopage\" border=\"0\" alt=\"graph\" >\n";
+	echo "<img src=\"./graphs/seo-graph.php?typegraph=$typegraph&amp;crawltlang=$settings->language&amp;period=$settings->period&amp;graphname=$graphname\" usemap=\"#seopage\" border=\"0\" alt=\"graph\" >\n";
 	echo "&nbsp;</div><br>\n";
 	echo "<div class='imprimgraph'>\n";
 	echo "&nbsp;<br><br><br><br>\n";
 } else {
 	echo "<div>\n";
 }
+$db->close(); // Close database
 ?>

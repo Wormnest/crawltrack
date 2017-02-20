@@ -22,9 +22,6 @@ if (!defined('IN_CRAWLT_ADMIN')) {
 }
 
 //crawlt_update table creation if not exist in case of upgrade from a previous version
-//check if table already exist
-require_once("jgbdb.php");
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 // Call the maintenance script which will do the job
 // Override the default tables_to_check array
@@ -43,14 +40,14 @@ $tables_to_check = array(
 
 $maintenance_mode = 'update';
 $tables_to_touch = array('crawlt_update_attack');
-include 'maintenance.php';
+include('maintenance.php');
 
 if($existing_crawlt_update_attack_table)
 {
 	//query to get the actual liste id
 	
 	$sqlupdate = "SELECT * FROM crawlt_update_attack";
-	$requeteupdate = db_query($sqlupdate, $connexion);
+	$requeteupdate = db_query($sqlupdate, $db->connexion);
 	$idlastupdate = 0;
 	while ($ligne = $requeteupdate->fetch_object()) {
 		$update = $ligne->update_id;
@@ -59,7 +56,7 @@ if($existing_crawlt_update_attack_table)
 		}
 	}
 }
-mysqli_close($connexion);
+$db->close(); // Close database
 if (!empty($tables_actions_error_messages)) {
 	//case we had a problem during table creation
 	echo "<br><br><h5>" . $language['step1_install_no_ok3'] . "</h5><br><br>";

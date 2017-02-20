@@ -21,7 +21,7 @@ if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>No direct access</h1>');
 }
 
-if ($validlogin == 0) {
+if ($settings->validlogin == 0) {
 	echo "<h1>" . $language['time_set_up'] . "</h1>\n";
 	$hre = Date("H");
 	$mn = Date("i");
@@ -151,7 +151,7 @@ if ($validlogin == 0) {
 	document.write("<p><?php echo $language['time_difference']; ?> " + diffh + "</p>");
 
 	<?php
-	if ($times == 0) {
+	if ($settings->timediff == 0) {
 	?>
 	document.write("<h5><?php echo $language['time_server']; ?></h5>");
 	document.write("<h2><a href='index.php?decal=" + diffh + "&amp;navig=6&amp;validform=18&amp;validlogin=1'><?php echo $language['yes']; ?></a>&nbsp;&nbsp;&nbsp;<a href='index.php?navig=6'><?php echo $language['no']; ?></a></h2><br><br>");
@@ -169,37 +169,29 @@ if ($validlogin == 0) {
 	</noscript>
 
 	<?php
-} elseif ($validlogin == 1) {
+} elseif ($settings->validlogin == 1) {
 	$decal = (int)$_GET['decal'];
 	//update the crawlt_config_table
-	
-	//database connection
-	require_once("jgbdb.php");
-	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-	
-	$sqltime = "UPDATE crawlt_config SET timeshift='" . crawlt_sql_quote($connexion, $decal) . "'";
-	$requetetime = db_query($sqltime, $connexion);
+	$sqltime = "UPDATE crawlt_config SET timeshift='" . crawlt_sql_quote($db->connexion, $decal) . "'";
+	$requetetime = db_query($sqltime, $db->connexion);
+	$settings->timediff = $decal;
 	
 	//empty the cache table
 	$sqlcache = "TRUNCATE TABLE crawlt_cache";
-	$requetecache = db_query($sqlcache, $connexion);
-	mysqli_close($connexion);
+	$requetecache = db_query($sqlcache, $db->connexion);
+	$db->close(); // Close database
 	echo "<h1>" . $language['time_set_up'] . "</h1>\n";
 	echo "<p>" . $language['decal_ok'] . "</p><br>\n";
-} elseif ($validlogin == 2) {
+} elseif ($settings->validlogin == 2) {
 	//update the crawlt_config_table
-	
-	//database connection
-	require_once("jgbdb.php");
-	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-	
 	$sqltime2 = "UPDATE crawlt_config SET timeshift='0'";
-	$requetetime2 = db_query($sqltime2, $connexion);
+	$requetetime2 = db_query($sqltime2, $db->connexion);
+	$settings->timediff = 0;
 	
 	//empty the cache table
 	$sqlcache = "TRUNCATE TABLE crawlt_cache";
-	$requetecache = db_query($sqlcache, $connexion);
-	mysqli_close($connexion);
+	$requetecache = db_query($sqlcache, $db->connexion);
+	$db->close(); // Close database
 	echo "<h1>" . $language['time_set_up'] . "</h1>\n";
 	echo "<p>" . $language['nodecal_ok'] . "</p><br>\n";
 }

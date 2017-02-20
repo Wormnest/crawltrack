@@ -19,77 +19,77 @@
 //  Last update: 19/09/2010
 //----------------------------------------------------------------------
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
-$crawlencode = urlencode($crawler);
+$crawlencode = urlencode($settings->crawler);
 ?>
 <div class="menumain">
 <?php
 //specific menu according pages
-if ($navig == 0 || $navig == 23) //dashboard menu
+if ($settings->navig == 0 || $settings->navig == 23) //dashboard menu
 {
 	$title = '';
 ?>
   <div id="menum4">
   	<dl>
-  		<dt onmouseover="javascript:montre('smenu7');"><a href="index.php?navig=0&amp;period=<?php echo $period ?>&amp;site=<?php echo $site ?>&amp;graphpos=<?php echo $graphpos ?>"><?php echo $language['display_period2'] ?></a></dt>
+  		<dt onmouseover="javascript:montre('smenu7');"><a href="index.php?navig=0&amp;period=<?php echo $settings->period ?>&amp;site=<?php echo $settings->siteid ?>&amp;graphpos=<?php echo $settings->graphpos ?>"><?php echo $language['display_period2'] ?></a></dt>
   			<dd id="smenu7">
   				<ul>
 
-    					<li><a href="index.php?navig=<?php echo $navig ?>&amp;period=0&amp;site=<?php echo $site ?>&amp;crawler=<?php echo $crawlencode ?>&amp;graphpos=<?php echo $graphpos ?>"><?php echo $language['today'] ?></a></li>
-    					<li><a href="index.php?navig=<?php echo $navig ?>&amp;period=4&amp;site=<?php echo $site ?>&amp;crawler=<?php echo $crawlencode ?>&amp;graphpos=<?php echo $graphpos ?>"><?php echo $language['8days'] ?></a></li>
-    					<li><a href="index.php?navig=<?php echo $navig ?>&amp;period=1&amp;site=<?php echo $site ?>&amp;crawler=<?php echo $crawlencode ?>&amp;graphpos=<?php echo $graphpos ?>"><?php echo $language['days'] ?></a></li>
-    					<li><a href="index.php?navig=<?php echo $navig ?>&amp;period=2&amp;site=<?php echo $site ?>&amp;crawler=<?php echo $crawlencode ?>&amp;graphpos=<?php echo $graphpos ?>"><?php echo $language['month'] ?></a></li>
-    					<li><a href="index.php?navig=<?php echo $navig ?>&amp;period=3&amp;site=<?php echo $site ?>&amp;crawler=<?php echo $crawlencode ?>&amp;graphpos=<?php echo $graphpos ?>"><?php echo $language['one_year'] ?></a></li>
-    					<li><a href="index.php?navig=<?php echo $navig ?>&amp;period=5&amp;site=<?php echo $site ?>&amp;crawler=<?php echo $crawlencode ?>&amp;graphpos=<?php echo $graphpos ?>"><?php echo $language['since_beginning'] ?></a></li>
+    					<li><a href="index.php?navig=<?php echo $settings->navig ?>&amp;period=0&amp;site=<?php echo $settings->siteid ?>&amp;crawler=<?php echo $crawlencode ?>&amp;graphpos=<?php echo $settings->graphpos ?>"><?php echo $language['today'] ?></a></li>
+    					<li><a href="index.php?navig=<?php echo $settings->navig ?>&amp;period=4&amp;site=<?php echo $settings->siteid ?>&amp;crawler=<?php echo $crawlencode ?>&amp;graphpos=<?php echo $settings->graphpos ?>"><?php echo $language['8days'] ?></a></li>
+    					<li><a href="index.php?navig=<?php echo $settings->navig ?>&amp;period=1&amp;site=<?php echo $settings->siteid ?>&amp;crawler=<?php echo $crawlencode ?>&amp;graphpos=<?php echo $settings->graphpos ?>"><?php echo $language['days'] ?></a></li>
+    					<li><a href="index.php?navig=<?php echo $settings->navig ?>&amp;period=2&amp;site=<?php echo $settings->siteid ?>&amp;crawler=<?php echo $crawlencode ?>&amp;graphpos=<?php echo $settings->graphpos ?>"><?php echo $language['month'] ?></a></li>
+    					<li><a href="index.php?navig=<?php echo $settings->navig ?>&amp;period=3&amp;site=<?php echo $settings->siteid ?>&amp;crawler=<?php echo $crawlencode ?>&amp;graphpos=<?php echo $settings->graphpos ?>"><?php echo $language['one_year'] ?></a></li>
+    					<li><a href="index.php?navig=<?php echo $settings->navig ?>&amp;period=5&amp;site=<?php echo $settings->siteid ?>&amp;crawler=<?php echo $crawlencode ?>&amp;graphpos=<?php echo $settings->graphpos ?>"><?php echo $language['since_beginning'] ?></a></li>
 
   				</ul>
   			</dd>
   	</dl>
   </div>
 <?php
-} elseif ($navig == 1 || $navig == 2 || $navig == 3 || $navig == 4 || $navig == 8 || $navig == 9) //crawler menu
+} elseif ($settings->navig == 1 || $settings->navig == 2 || $settings->navig == 3 || $settings->navig == 4 || $settings->navig == 8 || $settings->navig == 9) //crawler menu
 {
 	$logodisplay = 'bug.png';
 ?>
   <div id="menum7">
   <dl>
-  		<dt onmouseover="javascript:montre();"><a href="index.php?navig=0&amp;period=<?php echo $period ?>&amp;site=<?php echo $site ?>&amp;crawler=<?php echo $crawlencode ?>&amp;graphpos=<?php echo $graphpos ?>"><img src="./images/house.png" width="16" height="16" border="0" title="<?php echo $language['home'] ?>" alt="<?php echo $language['home'] ?>"></a></dt>
+  		<dt onmouseover="javascript:montre();"><a href="index.php?navig=0&amp;period=<?php echo $settings->period ?>&amp;site=<?php echo $settings->siteid ?>&amp;crawler=<?php echo $crawlencode ?>&amp;graphpos=<?php echo $settings->graphpos ?>"><img src="./images/house.png" width="16" height="16" border="0" title="<?php echo $language['home'] ?>" alt="<?php echo $language['home'] ?>"></a></dt>
   	</dl>
   </div>
 <?php
-	if ($navig == 1) {
+	if ($settings->navig == 1) {
 		$title = 'crawler_name';
-	} elseif ($navig == 2) {
-		$title = htmlentities($crawler);
-	} elseif ($navig == 3) {
+	} elseif ($settings->navig == 2) {
+		$title = htmlentities($settings->crawler);
+	} elseif ($settings->navig == 3) {
 		$title = 'nbr_pages';
-	} elseif ($navig == 4) {
-		$title = crawltcuturl($crawler, '55');
-	} elseif ($navig == 8) {
+	} elseif ($settings->navig == 4) {
+		$title = crawltcuturl($settings->crawler, '55', $settings->useutf8);
+	} elseif ($settings->navig == 8) {
 		$title = 'origin';
-	} elseif ($navig == 9) {
+	} elseif ($settings->navig == 9) {
 		$title = 'nbr_pages';
 	}
 	echo "<div id=\"menum6\">\n";
 	echo "	<dl>\n";
-	echo "		<dt onmouseover=\"javascript:montre('smenu7');\"><a href=\"index.php?navig=1&amp;period=$period&amp;site=$site&amp;graphpos=$graphpos\">" . $language['crawler_name'] . "</a></dt>\n";
+	echo "		<dt onmouseover=\"javascript:montre('smenu7');\"><a href=\"index.php?navig=1&amp;period=$settings->period&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['crawler_name'] . "</a></dt>\n";
 	echo "			<dd id=\"smenu7\">\n";
 	echo "				<ul>\n";
-	if ($navig == 2) {
-		echo "					<li><a href=\"index.php?navig=2&amp;period=0&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['today'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=2&amp;period=4&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['8days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=2&amp;period=1&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=2&amp;period=2&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['month'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=2&amp;period=3&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['one_year'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=2&amp;period=5&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['since_beginning'] . "</a></li>\n";
+	if ($settings->navig == 2) {
+		echo "					<li><a href=\"index.php?navig=2&amp;period=0&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['today'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=2&amp;period=4&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['8days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=2&amp;period=1&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=2&amp;period=2&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['month'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=2&amp;period=3&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['one_year'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=2&amp;period=5&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['since_beginning'] . "</a></li>\n";
 	} else {
-		echo "					<li><a href=\"index.php?navig=1&amp;period=0&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['today'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=1&amp;period=4&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['8days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=1&amp;period=1&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=1&amp;period=2&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['month'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=1&amp;period=3&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['one_year'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=1&amp;period=5&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['since_beginning'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=1&amp;period=0&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['today'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=1&amp;period=4&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['8days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=1&amp;period=1&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=1&amp;period=2&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['month'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=1&amp;period=3&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['one_year'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=1&amp;period=5&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['since_beginning'] . "</a></li>\n";
 	}
 	echo "				</ul>\n";
 	echo "			</dd>\n";
@@ -97,23 +97,23 @@ if ($navig == 0 || $navig == 23) //dashboard menu
 	echo "</div>\n";
 	echo "<div id=\"menum5\">\n";
 	echo "	<dl>\n";
-	echo "		<dt onmouseover=\"javascript:montre('smenu2');\"><a href=\"index.php?navig=3&amp;period=$period&amp;site=$site&amp;graphpos=$graphpos\">" . $language['nbr_pages'] . "</a></dt>\n";
+	echo "		<dt onmouseover=\"javascript:montre('smenu2');\"><a href=\"index.php?navig=3&amp;period=$settings->period&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['nbr_pages'] . "</a></dt>\n";
 	echo "			<dd id=\"smenu2\" >\n";
 	echo "				<ul>\n";
-	if ($navig == 4) {
-		echo "					<li><a href=\"index.php?navig=4&amp;period=0&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['today'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=4&amp;period=4&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['8days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=4&amp;period=1&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=4&amp;period=2&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['month'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=4&amp;period=3&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['one_year'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=4&amp;period=5&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['since_beginning'] . "</a></li>\n";
+	if ($settings->navig == 4) {
+		echo "					<li><a href=\"index.php?navig=4&amp;period=0&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['today'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=4&amp;period=4&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['8days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=4&amp;period=1&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=4&amp;period=2&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['month'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=4&amp;period=3&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['one_year'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=4&amp;period=5&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['since_beginning'] . "</a></li>\n";
 	} else {
-		echo "					<li><a href=\"index.php?navig=3&amp;period=0&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['today'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=3&amp;period=4&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['8days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=3&amp;period=1&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=3&amp;period=2&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['month'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=3&amp;period=3&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['one_year'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=3&amp;period=5&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['since_beginning'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=3&amp;period=0&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['today'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=3&amp;period=4&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['8days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=3&amp;period=1&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=3&amp;period=2&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['month'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=3&amp;period=3&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['one_year'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=3&amp;period=5&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['since_beginning'] . "</a></li>\n";
 	}
 	echo "				</ul>\n";
 	echo "			</dd>\n";
@@ -121,159 +121,159 @@ if ($navig == 0 || $navig == 23) //dashboard menu
 	echo "</div>\n";
 	echo "<div id=\"menum4\">\n";
 	echo "	<dl>\n";
-	echo "		<dt onmouseover=\"javascript:montre('smenu3');\"><a href=\"index.php?navig=8&amp;period=$period&amp;site=$site&amp;graphpos=$graphpos\">" . $language['origin'] . "</a></dt>\n";
+	echo "		<dt onmouseover=\"javascript:montre('smenu3');\"><a href=\"index.php?navig=8&amp;period=$settings->period&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['origin'] . "</a></dt>\n";
 	echo "			<dd id=\"smenu3\">\n";
 	echo "				<ul>\n";
-	echo "					<li><a href=\"index.php?navig=8&amp;period=0&amp;site=$site&amp;graphpos=$graphpos\">" . $language['today'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=8&amp;period=4&amp;site=$site&amp;graphpos=$graphpos\">" . $language['8days'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=8&amp;period=1&amp;site=$site&amp;graphpos=$graphpos\">" . $language['days'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=8&amp;period=2&amp;site=$site&amp;graphpos=$graphpos\">" . $language['month'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=8&amp;period=3&amp;site=$site&amp;graphpos=$graphpos\">" . $language['one_year'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=8&amp;period=5&amp;site=$site&amp;graphpos=$graphpos\">" . $language['since_beginning'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=8&amp;period=0&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['today'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=8&amp;period=4&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['8days'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=8&amp;period=1&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['days'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=8&amp;period=2&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['month'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=8&amp;period=3&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['one_year'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=8&amp;period=5&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['since_beginning'] . "</a></li>\n";
 	echo "				</ul>\n";
 	echo "			</dd>\n";
 	echo "	</dl>\n";
 	echo "</div>\n";
-} elseif ($navig == 11) //indexation menu
+} elseif ($settings->navig == 11) //indexation menu
 {
 	$logodisplay = 'report_magnify.png';
 	$title = 'index';
 	echo "<div id=\"menum8\">\n";
 	echo "	<dl>\n";
-	echo "		<dt onmouseover=\"javascript:montre();\"><a href=\"index.php?navig=0&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/house.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['home'] . "\" alt=\"" . $language['home'] . "\"></a></dt>\n";
+	echo "		<dt onmouseover=\"javascript:montre();\"><a href=\"index.php?navig=0&amp;period=$settings->period&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\"><img src=\"./images/house.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['home'] . "\" alt=\"" . $language['home'] . "\"></a></dt>\n";
 	echo "	</dl>\n";
 	echo "</div>\n";
 	echo "<div id=\"menum4\">\n";
 	echo "	<dl>\n";
-	echo "		<dt onmouseover=\"javascript:montre('smenu7');\"><a href=\"index.php?navig=11&amp;period=$period&amp;site=$site&amp;graphpos=$graphpos\">" . $language['index'] . "</a></dt>\n";
+	echo "		<dt onmouseover=\"javascript:montre('smenu7');\"><a href=\"index.php?navig=11&amp;period=$settings->period&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['index'] . "</a></dt>\n";
 	echo "			<dd id=\"smenu7\">\n";
 	echo "				<ul>\n";
-	echo "					<li><a href=\"index.php?navig=11&amp;period=0&amp;site=$site&amp;graphpos=$graphpos\">" . $language['today'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=11&amp;period=4&amp;site=$site&amp;graphpos=$graphpos\">" . $language['8days'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=11&amp;period=1&amp;site=$site&amp;graphpos=$graphpos\">" . $language['days'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=11&amp;period=2&amp;site=$site&amp;graphpos=$graphpos\">" . $language['month'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=11&amp;period=3&amp;site=$site&amp;graphpos=$graphpos\">" . $language['one_year'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=11&amp;period=5&amp;site=$site&amp;graphpos=$graphpos\">" . $language['since_beginning'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=11&amp;period=0&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['today'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=11&amp;period=4&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['8days'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=11&amp;period=1&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['days'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=11&amp;period=2&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['month'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=11&amp;period=3&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['one_year'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=11&amp;period=5&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['since_beginning'] . "</a></li>\n";
 	echo "				</ul>\n";
 	echo "			</dd>\n";
 	echo "	</dl>\n";
 	echo "</div>\n";
-} elseif ($navig == 17 || $navig == 18 || $navig == 19) //hacking attempts menu
+} elseif ($settings->navig == 17 || $settings->navig == 18 || $settings->navig == 19) //hacking attempts menu
 {
 	$logodisplay = 'hacker.png';
 	echo "<div id=\"menum8\">\n";
 	echo "	<dl>\n";
-	echo "		<dt onmouseover=\"javascript:montre();\"><a href=\"index.php?navig=0&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/house.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['home'] . "\" alt=\"" . $language['home'] . "\"></a></dt>\n";
+	echo "		<dt onmouseover=\"javascript:montre();\"><a href=\"index.php?navig=0&amp;period=$settings->period&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\"><img src=\"./images/house.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['home'] . "\" alt=\"" . $language['home'] . "\"></a></dt>\n";
 	echo "	</dl>\n";
 	echo "</div>\n";
-	if ($navig == 17) {
+	if ($settings->navig == 17) {
 		$title = 'hacking2';
-	} elseif ($navig == 18) {
+	} elseif ($settings->navig == 18) {
 		$title = 'hacking3';
-	} elseif ($navig == 19) {
+	} elseif ($settings->navig == 19) {
 		$title = 'hacking4';
 	}
 	echo "<div id=\"menum4\">\n";
 	echo "	<dl>\n";
-	echo "		<dt onmouseover=\"javascript:montre('smenu7');\"><a href=\"index.php?navig=17&amp;period=$period&amp;site=$site&amp;graphpos=$graphpos\">" . $language['hacking'] . "</a></dt>\n";
+	echo "		<dt onmouseover=\"javascript:montre('smenu7');\"><a href=\"index.php?navig=17&amp;period=$settings->period&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['hacking'] . "</a></dt>\n";
 	echo "			<dd id=\"smenu7\">\n";
 	echo "				<ul>\n";
-	if ($navig == 18) {
-		echo "					<li><a href=\"index.php?navig=18&amp;period=0&amp;site=$site&amp;graphpos=$graphpos\">" . $language['today'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=18&amp;period=4&amp;site=$site&amp;graphpos=$graphpos\">" . $language['8days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=18&amp;period=1&amp;site=$site&amp;graphpos=$graphpos\">" . $language['days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=18&amp;period=2&amp;site=$site&amp;graphpos=$graphpos\">" . $language['month'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=18&amp;period=3&amp;site=$site&amp;graphpos=$graphpos\">" . $language['one_year'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=18&amp;period=5&amp;site=$site&amp;graphpos=$graphpos\">" . $language['since_beginning'] . "</a></li>\n";
-	} elseif ($navig == 19) {
-		echo "					<li><a href=\"index.php?navig=19&amp;period=0&amp;site=$site&amp;graphpos=$graphpos\">" . $language['today'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=19&amp;period=4&amp;site=$site&amp;graphpos=$graphpos\">" . $language['8days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=19&amp;period=1&amp;site=$site&amp;graphpos=$graphpos\">" . $language['days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=19&amp;period=2&amp;site=$site&amp;graphpos=$graphpos\">" . $language['month'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=19&amp;period=3&amp;site=$site&amp;graphpos=$graphpos\">" . $language['one_year'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=19&amp;period=5&amp;site=$site&amp;graphpos=$graphpos\">" . $language['since_beginning'] . "</a></li>\n";
+	if ($settings->navig == 18) {
+		echo "					<li><a href=\"index.php?navig=18&amp;period=0&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['today'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=18&amp;period=4&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['8days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=18&amp;period=1&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=18&amp;period=2&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['month'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=18&amp;period=3&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['one_year'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=18&amp;period=5&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['since_beginning'] . "</a></li>\n";
+	} elseif ($settings->navig == 19) {
+		echo "					<li><a href=\"index.php?navig=19&amp;period=0&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['today'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=19&amp;period=4&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['8days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=19&amp;period=1&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=19&amp;period=2&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['month'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=19&amp;period=3&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['one_year'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=19&amp;period=5&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['since_beginning'] . "</a></li>\n";
 	} else {
-		echo "					<li><a href=\"index.php?navig=17&amp;period=0&amp;site=$site&amp;graphpos=$graphpos\">" . $language['today'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=17&amp;period=4&amp;site=$site&amp;graphpos=$graphpos\">" . $language['8days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=17&amp;period=1&amp;site=$site&amp;graphpos=$graphpos\">" . $language['days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=17&amp;period=2&amp;site=$site&amp;graphpos=$graphpos\">" . $language['month'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=17&amp;period=3&amp;site=$site&amp;graphpos=$graphpos\">" . $language['one_year'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=17&amp;period=5&amp;site=$site&amp;graphpos=$graphpos\">" . $language['since_beginning'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=17&amp;period=0&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['today'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=17&amp;period=4&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['8days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=17&amp;period=1&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=17&amp;period=2&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['month'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=17&amp;period=3&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['one_year'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=17&amp;period=5&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['since_beginning'] . "</a></li>\n";
 	}
 	echo "				</ul>\n";
 	echo "			</dd>\n";
 	echo "	</dl>\n";
 	echo "</div>\n";
-} elseif ($navig == 20 || $navig == 12 || $navig == 13 || $navig == 14 || $navig == 16 || $navig == 21) //visitors menu
+} elseif ($settings->navig == 20 || $settings->navig == 12 || $settings->navig == 13 || $settings->navig == 14 || $settings->navig == 16 || $settings->navig == 21) //visitors menu
 {
 	$logodisplay = 'group.png';
 	echo "<div id=\"menum10\">\n";
 	echo "	<dl>\n";
-	echo "		<dt onmouseover=\"javascript:montre();\"><a href=\"index.php?navig=0&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/house.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['home'] . "\" alt=\"" . $language['home'] . "\"></a></dt>\n";
+	echo "		<dt onmouseover=\"javascript:montre();\"><a href=\"index.php?navig=0&amp;period=$settings->period&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\"><img src=\"./images/house.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['home'] . "\" alt=\"" . $language['home'] . "\"></a></dt>\n";
 	echo "	</dl>\n";
 	echo "</div>\n";
-	if ($navig == 20) {
+	if ($settings->navig == 20) {
 		$title = 'visitors';
-	} elseif ($navig == 12) {
+	} elseif ($settings->navig == 12) {
 		$title = 'keyword';
-	} elseif ($navig == 13) {
+	} elseif ($settings->navig == 13) {
 		$title = 'entry-page';
-	} elseif ($navig == 14) {
-		$title = crawltcuturl($crawler, '55');
-	} elseif ($navig == 16) {
-		$title = crawltcuturl($crawler, '55');
-	} elseif ($navig == 21) {
+	} elseif ($settings->navig == 14) {
+		$title = crawltcuturl($settings->crawler, '55', $settings->useutf8);
+	} elseif ($settings->navig == 16) {
+		$title = crawltcuturl($settings->crawler, '55', $settings->useutf8);
+	} elseif ($settings->navig == 21) {
 		$title = 'nbr_pages';
 	}
 	echo "<div id=\"menum11\">\n";
 	echo "	<dl>\n";
-	echo "		<dt onmouseover=\"javascript:montre('smenu4');\"><a href=\"index.php?navig=20&amp;period=$period&amp;site=$site&amp;graphpos=$graphpos\">" . $language['visitors'] . "</a></dt>\n";
+	echo "		<dt onmouseover=\"javascript:montre('smenu4');\"><a href=\"index.php?navig=20&amp;period=$settings->period&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['visitors'] . "</a></dt>\n";
 	echo "			<dd id=\"smenu4\">\n";
 	echo "				<ul>\n";
-	echo "					<li><a href=\"index.php?navig=20&amp;period=0&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['today'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=20&amp;period=4&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['8days'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=20&amp;period=1&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['days'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=20&amp;period=2&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['month'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=20&amp;period=3&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['one_year'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=20&amp;period=5&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['since_beginning'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=20&amp;period=0&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['today'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=20&amp;period=4&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['8days'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=20&amp;period=1&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['days'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=20&amp;period=2&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['month'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=20&amp;period=3&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['one_year'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=20&amp;period=5&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['since_beginning'] . "</a></li>\n";
 	echo "				</ul>\n";
 	echo "			</dd>\n";
 	echo "	</dl>\n";
 	echo "</div>\n";
 	echo "<div id=\"menum6\">\n";
 	echo "	<dl>\n";
-	echo "		<dt onmouseover=\"javascript:montre('smenu7');\"><a href=\"index.php?navig=21&amp;period=$period&amp;site=$site&amp;graphpos=$graphpos\">" . $language['nbr_pages'] . "</a></dt>\n";
+	echo "		<dt onmouseover=\"javascript:montre('smenu7');\"><a href=\"index.php?navig=21&amp;period=$settings->period&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['nbr_pages'] . "</a></dt>\n";
 	echo "			<dd id=\"smenu7\">\n";
 	echo "				<ul>\n";
-	echo "					<li><a href=\"index.php?navig=21&amp;period=0&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['today'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=21&amp;period=4&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['8days'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=21&amp;period=1&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['days'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=21&amp;period=2&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['month'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=21&amp;period=3&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['one_year'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=21&amp;period=5&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['since_beginning'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=21&amp;period=0&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['today'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=21&amp;period=4&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['8days'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=21&amp;period=1&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['days'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=21&amp;period=2&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['month'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=21&amp;period=3&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['one_year'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=21&amp;period=5&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['since_beginning'] . "</a></li>\n";
 	echo "				</ul>\n";
 	echo "			</dd>\n";
 	echo "	</dl>\n";
 	echo "</div>\n";
 	echo "<div id=\"menum5\">\n";
 	echo "	<dl>\n";
-	echo "		<dt onmouseover=\"javascript:montre('smenu2');\"><a href=\"index.php?navig=12&amp;period=$period&amp;site=$site&amp;graphpos=$graphpos\">" . $language['keyword'] . "</a></dt>\n";
+	echo "		<dt onmouseover=\"javascript:montre('smenu2');\"><a href=\"index.php?navig=12&amp;period=$settings->period&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['keyword'] . "</a></dt>\n";
 	echo "			<dd id=\"smenu2\" >\n";
 	echo "				<ul>\n";
-	if ($navig == 16) {
-		echo "					<li><a href=\"index.php?navig=16&amp;period=0&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['today'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=16&amp;period=4&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['8days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=16&amp;period=1&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=16&amp;period=2&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['month'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=16&amp;period=3&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['one_year'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=16&amp;period=5&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['since_beginning'] . "</a></li>\n";
+	if ($settings->navig == 16) {
+		echo "					<li><a href=\"index.php?navig=16&amp;period=0&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['today'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=16&amp;period=4&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['8days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=16&amp;period=1&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=16&amp;period=2&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['month'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=16&amp;period=3&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['one_year'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=16&amp;period=5&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['since_beginning'] . "</a></li>\n";
 	} else {
-		echo "					<li><a href=\"index.php?navig=12&amp;period=0&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['today'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=12&amp;period=4&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['8days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=12&amp;period=1&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=12&amp;period=2&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['month'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=12&amp;period=3&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['one_year'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=12&amp;period=5&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['since_beginning'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=12&amp;period=0&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['today'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=12&amp;period=4&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['8days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=12&amp;period=1&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=12&amp;period=2&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['month'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=12&amp;period=3&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['one_year'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=12&amp;period=5&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['since_beginning'] . "</a></li>\n";
 	}
 	echo "				</ul>\n";
 	echo "			</dd>\n";
@@ -281,88 +281,88 @@ if ($navig == 0 || $navig == 23) //dashboard menu
 	echo "</div>\n";
 	echo "<div id=\"menum4\">\n";
 	echo "	<dl>\n";
-	echo "		<dt onmouseover=\"javascript:montre('smenu3');\"><a href=\"index.php?navig=13&amp;period=$period&amp;site=$site&amp;graphpos=$graphpos\">" . $language['entry-page'] . "</a></dt>\n";
+	echo "		<dt onmouseover=\"javascript:montre('smenu3');\"><a href=\"index.php?navig=13&amp;period=$settings->period&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['entry-page'] . "</a></dt>\n";
 	echo "			<dd id=\"smenu3\">\n";
 	echo "				<ul>\n";
-	if ($navig == 14) {
-		echo "					<li><a href=\"index.php?navig=14&amp;period=0&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['today'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=14&amp;period=4&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['8days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=14&amp;period=1&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=14&amp;period=2&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['month'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=14&amp;period=3&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['one_year'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=14&amp;period=5&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\">" . $language['since_beginning'] . "</a></li>\n";
+	if ($settings->navig == 14) {
+		echo "					<li><a href=\"index.php?navig=14&amp;period=0&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['today'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=14&amp;period=4&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['8days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=14&amp;period=1&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=14&amp;period=2&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['month'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=14&amp;period=3&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['one_year'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=14&amp;period=5&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\">" . $language['since_beginning'] . "</a></li>\n";
 	} else {
-		echo "					<li><a href=\"index.php?navig=13&amp;period=0&amp;site=$site&amp;graphpos=$graphpos\">" . $language['today'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=13&amp;period=4&amp;site=$site&amp;graphpos=$graphpos\">" . $language['8days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=13&amp;period=1&amp;site=$site&amp;graphpos=$graphpos\">" . $language['days'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=13&amp;period=2&amp;site=$site&amp;graphpos=$graphpos\">" . $language['month'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=13&amp;period=3&amp;site=$site&amp;graphpos=$graphpos\">" . $language['one_year'] . "</a></li>\n";
-		echo "					<li><a href=\"index.php?navig=13&amp;period=5&amp;site=$site&amp;graphpos=$graphpos\">" . $language['since_beginning'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=13&amp;period=0&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['today'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=13&amp;period=4&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['8days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=13&amp;period=1&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['days'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=13&amp;period=2&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['month'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=13&amp;period=3&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['one_year'] . "</a></li>\n";
+		echo "					<li><a href=\"index.php?navig=13&amp;period=5&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['since_beginning'] . "</a></li>\n";
 	}
 	echo "				</ul>\n";
 	echo "			</dd>\n";
 	echo "	</dl>\n";
 	echo "</div>\n";
-} elseif ($navig == 22) //error menu
+} elseif ($settings->navig == 22) //error menu
 {
 	$logodisplay = 'error.png';
 	$title = 'error';
 	echo "<div id=\"menum8\">\n";
 	echo "	<dl>\n";
-	echo "		<dt onmouseover=\"javascript:montre();\"><a href=\"index.php?navig=0&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/house.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['home'] . "\" alt=\"" . $language['home'] . "\"></a></dt>\n";
+	echo "		<dt onmouseover=\"javascript:montre();\"><a href=\"index.php?navig=0&amp;period=$settings->period&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\"><img src=\"./images/house.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['home'] . "\" alt=\"" . $language['home'] . "\"></a></dt>\n";
 	echo "	</dl>\n";
 	echo "</div>\n";
 	echo "<div id=\"menum4\">\n";
 	echo "	<dl>\n";
-	echo "		<dt onmouseover=\"javascript:montre('smenu7');\"><a href=\"index.php?navig=22&amp;period=$period&amp;site=$site&amp;graphpos=$graphpos\">" . $language['error'] . "</a></dt>\n";
+	echo "		<dt onmouseover=\"javascript:montre('smenu7');\"><a href=\"index.php?navig=22&amp;period=$settings->period&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['error'] . "</a></dt>\n";
 	echo "			<dd id=\"smenu7\">\n";
 	echo "				<ul>\n";
-	echo "					<li><a href=\"index.php?navig=22&amp;period=0&amp;site=$site&amp;graphpos=$graphpos\">" . $language['today'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=22&amp;period=4&amp;site=$site&amp;graphpos=$graphpos\">" . $language['8days'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=22&amp;period=1&amp;site=$site&amp;graphpos=$graphpos\">" . $language['days'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=22&amp;period=2&amp;site=$site&amp;graphpos=$graphpos\">" . $language['month'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=22&amp;period=3&amp;site=$site&amp;graphpos=$graphpos\">" . $language['one_year'] . "</a></li>\n";
-	echo "					<li><a href=\"index.php?navig=22&amp;period=5&amp;site=$site&amp;graphpos=$graphpos\">" . $language['since_beginning'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=22&amp;period=0&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['today'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=22&amp;period=4&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['8days'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=22&amp;period=1&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['days'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=22&amp;period=2&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['month'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=22&amp;period=3&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['one_year'] . "</a></li>\n";
+	echo "					<li><a href=\"index.php?navig=22&amp;period=5&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\">" . $language['since_beginning'] . "</a></li>\n";
 	echo "				</ul>\n";
 	echo "			</dd>\n";
 	echo "	</dl>\n";
 	echo "</div>\n";
-} elseif ($navig == 6 || $navig == 5) {
+} elseif ($settings->navig == 6 || $settings->navig == 5) {
 	echo "<div id=\"menum9\">\n";
 	echo "	<dl>\n";
-	echo "		<dt onmouseover=\"javascript:montre();\"><a href=\"index.php?navig=0&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/house.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['home'] . "\" alt=\"" . $language['home'] . "\"></a></dt>\n";
+	echo "		<dt onmouseover=\"javascript:montre();\"><a href=\"index.php?navig=0&amp;period=$settings->period&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\"><img src=\"./images/house.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['home'] . "\" alt=\"" . $language['home'] . "\"></a></dt>\n";
 	echo "	</dl>\n";
 	echo "</div>\n";
 	$title = '';
 }
 
 //part of the menu common to all pages
-if ($navig != 6 && $navig != 5) {
+if ($settings->navig != 6 && $settings->navig != 5) {
 	echo "<div class=\"dashboard\"><br>\n";
-	echo crawltbackforward($title, $period, $daytodaylocal, $monthtodaylocal, $yeartodaylocal, $daybeginlocal, $monthbeginlocal, $yearbeginlocal, $dayendweek, $monthendweek, $yearendweek, $crawler, $navig, $site, $graphpos);
+	echo crawltbackforward($title, $settings->period, $daytodaylocal, $monthtodaylocal, $yeartodaylocal, $daybeginlocal, $monthbeginlocal, $yearbeginlocal, $dayendweek, $monthendweek, $yearendweek, $settings->crawler, $settings->navig, $settings->siteid, $settings->graphpos);
 	echo "</div><br>\n";
 }
 echo "<div id=\"menud2\">\n";
 echo "	<dl>\n";
-echo "		<dt onmouseover=\"javascript:montre();\"><a href=\"index.php?navig=5&amp;site=$site&amp;graphpos=$graphpos\"><img src=\"./images/magnifier.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['magnifier'] . "\" alt=\"" . $language['magnifier'] . "\"></a></dt>\n";
+echo "		<dt onmouseover=\"javascript:montre();\"><a href=\"index.php?navig=5&amp;site=$settings->siteid&amp;graphpos=$settings->graphpos\"><img src=\"./images/magnifier.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['magnifier'] . "\" alt=\"" . $language['magnifier'] . "\"></a></dt>\n";
 echo "	</dl>\n";
 echo "	<dl>\n";
-echo "		<dt onmouseover=\"javascript:montre();\"><a href=\"./php/refresh.php?navig=$navig&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/refresh.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['refresh'] . "\" alt=\"" . $language['refresh'] . "\"></a></dt>\n";
+echo "		<dt onmouseover=\"javascript:montre();\"><a href=\"./php/refresh.php?navig=$settings->navig&amp;period=$settings->period&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\"><img src=\"./images/refresh.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['refresh'] . "\" alt=\"" . $language['refresh'] . "\"></a></dt>\n";
 echo "	</dl>\n";
 echo "	<dl>\n";
-echo "		<dt onmouseover=\"javascript:montre();\"><a href=\"index.php?navig=6&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos\"><img src=\"./images/wrench.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['wrench'] . "\" alt=\"" . $language['wrench'] . "\"></a></dt>\n";
+echo "		<dt onmouseover=\"javascript:montre();\"><a href=\"index.php?navig=6&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos\"><img src=\"./images/wrench.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['wrench'] . "\" alt=\"" . $language['wrench'] . "\"></a></dt>\n";
 echo "	</dl>\n";
 echo "	<dl>\n";
 echo "		<dt onmouseover=\"javascript:montre();\" onclick=\"window.print()\"><a href=\"#\"><img src=\"./images/printer.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['printer'] . "\" alt=\"" . $language['printer'] . "\"></a></dt>\n";
 echo "	</dl>\n";
 echo "	<dl>\n";
-if ($crawltlang == 'french' || $crawltlang == 'frenchiso') {
+if ($settings->language == 'french' || $settings->language == 'frenchiso') {
 	echo "		<dt onmouseover=\"javascript:montre();\"><a href=\"http://www.crawltrack.net/fr/documentation.php\"><img src=\"./images/information.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['information'] . "\" alt=\"" . $language['information'] . "\"></a></dt>\n";
 } else {
 	echo "		<dt onmouseover=\"javascript:montre();\"><a href=\"http://www.crawltrack.net/documentation.php\"><img src=\"./images/information.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['information'] . "\" alt=\"" . $language['information'] . "\"></a></dt>\n";
 }
 echo "	</dl>\n";
-if ($crawltlang == 'french' || $crawltlang == 'frenchiso') {
+if ($settings->language == 'french' || $settings->language == 'frenchiso') {
 	echo "	<dl>\n";
 	echo "		<dt onmouseover=\"javascript:montre();\" onclick=\"return window.open('./html/infofr.htm','CrawlTrack','top=300,left=350,height=200,width=350')\"><a href=\"#\"><img src=\"./images/help.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['help'] . "\" alt=\"" . $language['help'] . "\"></a></dt>\n";
 	echo "	</dl>\n";
@@ -379,12 +379,12 @@ echo "<br><br><br>\n";
 echo "</div>\n";
 
 //printing
-if ($navig != 6 && $navig != 5) {
+if ($settings->navig != 6 && $settings->navig != 5) {
 	echo "<div class=\"dashboardprint\"><br><br>\n";
-	echo crawltbackforward($title, $period, $daytodaylocal, $monthtodaylocal, $yeartodaylocal, $daybeginlocal, $monthbeginlocal, $yearbeginlocal, $dayendweek, $monthendweek, $yearendweek, $crawler, $navig, $site, $graphpos);
+	echo crawltbackforward($title, $settings->period, $daytodaylocal, $monthtodaylocal, $yeartodaylocal, $daybeginlocal, $monthbeginlocal, $yearbeginlocal, $dayendweek, $monthendweek, $yearendweek, $settings->crawler, $settings->navig, $settings->siteid, $settings->graphpos);
 	echo "<br></div>\n";
 }
-if ($navig != 6) {
+if ($settings->navig != 6) {
 	echo "<br>\n";
 }
 ?>

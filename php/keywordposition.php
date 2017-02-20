@@ -16,6 +16,9 @@
 //----------------------------------------------------------------------
 // file: keywordposition.php
 //----------------------------------------------------------------------
+// This is used as a popup window so we can't reuse any variables.
+// TODO: Add lang and charset as _GET parameters so we save a database call!
+//----------------------------------------------------------------------
 
 // Set debugging to non zero to turn it on.
 // DON'T FORGET TO TURN IT OFF AFTER YOU FINISH DEBUGGING OR WHEN COMMITTING CHANGES!
@@ -86,7 +89,7 @@ echo "</div>\n";
 //get the dataa
 if (isset($_GET['keyword'])) {
 	$keyword = $_GET['keyword'];
-	$keyworddisplay = stripslashes(crawltcuturl($keyword, '55'));
+	$keyworddisplay = stripslashes(crawltcuturl($keyword, '55', $crawltcharset));
 	$keywordurl = urlencode(stripslashes($keyword));
 } else {
 	exit('<h1>Hacking attempt !!!!</h1>');

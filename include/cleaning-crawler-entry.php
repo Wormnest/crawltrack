@@ -45,28 +45,23 @@ if (!isset($_SESSION['cleaning'])) {
 }
 
 // We need $datetolookfor even if the check for period == 0 etc returns false
-// Since we need the connexion for crawlt_sql_quote we have to move db_connect outside that if too.
-//database connection
-require_once("jgbdb.php");
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-
 //date for the mysql query
-if ($period >= 10) {
-	$datetolookfor = " `date` >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
-	AND `date` <'" . crawlt_sql_quote($connexion, $daterequest2) . "'";
+if ($settings->period >= 10) {
+	$datetolookfor = " `date` >'" . crawlt_sql_quote($db->connexion, $daterequest) . "' 
+	AND `date` <'" . crawlt_sql_quote($db->connexion, $daterequest2) . "'";
 } else {
-	$datetolookfor = " `date` >'" . crawlt_sql_quote($connexion, $daterequest) . "'";
+	$datetolookfor = " `date` >'" . crawlt_sql_quote($db->connexion, $daterequest) . "'";
 }
 
-if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
+if ((($settings->period == 0) || ($settings->period >= 1000)) && $_SESSION['cleaning'] == 0) {
 	/*cleaning of the crawlt_visits_human table
 	to suppress bot using IE6 user agent with several different IP, cleaning done per site
 	*/
 	$sqlcleaning = "SELECT  id_visit,crawlt_site_id_site,crawlt_ip, crawlt_browser
 		FROM crawlt_visits_human
 		WHERE $datetolookfor
-		LIMIT 0," . crawlt_sql_quote($connexion, $maxlimit) . "";
-	$requetecleaning = db_query($sqlcleaning, $connexion);
+		LIMIT 0," . crawlt_sql_quote($db->connexion, $maxlimit) . "";
+	$requetecleaning = db_query($sqlcleaning, $db->connexion);
 	$visitstotal = $requetecleaning->num_rows;
 	if ($visitstotal >= 50) {
 		while ($ligne = $requetecleaning->fetch_row()) {
@@ -92,7 +87,7 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
  {
 					$listidtosuppress = implode("','", ${$value . 'idtosuppress'});
 					$sqlsuppress = "DELETE FROM crawlt_visits_human WHERE id_visit IN ('$listidtosuppress')";
-					$requetesuppress = db_query($sqlsuppress, $connexion);
+					$requetesuppress = db_query($sqlsuppress, $db->connexion);
 				}
 			}
 		}
@@ -104,11 +99,11 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 		FROM crawlt_visits_human
 		INNER JOIN crawlt_keyword
 		ON crawlt_visits_human.crawlt_keyword_id_keyword = crawlt_keyword.id_keyword
-		AND `date` >'" . crawlt_sql_quote($connexion, $datecleaning) . "'
+		AND `date` >'" . crawlt_sql_quote($db->connexion, $settings->datecleaning) . "'
 		AND crawlt_id_crawler IN ('1,2,3,4')
 		AND keyword !='(not provided)'
-		LIMIT 0," . crawlt_sql_quote($connexion, $maxlimit) . "";
-	$requetecleaning = db_query($sqlcleaning, $connexion);
+		LIMIT 0," . crawlt_sql_quote($db->connexion, $maxlimit) . "";
+	$requetecleaning = db_query($sqlcleaning, $db->connexion);
 	$visitstotal = $requetecleaning->num_rows;
 	if ($visitstotal >= 50) {
 		while ($ligne = $requetecleaning->fetch_row()) {
@@ -132,7 +127,7 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 			//request to suppress double entry in the visit table
 			$listidtosuppress = implode("','", $idtosuppress);
 			$sqlsuppress = "DELETE FROM crawlt_visits_human WHERE id_visit IN ('$listidtosuppress')";
-			$requetesuppress = db_query($sqlsuppress, $connexion);
+			$requetesuppress = db_query($sqlsuppress, $db->connexion);
 		}
 	}
 	//---------------------------------------------------------------------------------------------------
@@ -148,10 +143,10 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 		FROM crawlt_visits_human
 		INNER JOIN crawlt_keyword
 		ON crawlt_visits_human.crawlt_keyword_id_keyword = crawlt_keyword.id_keyword
-		AND `date` >'" . crawlt_sql_quote($connexion, $datecleaning) . "'
+		AND `date` >'" . crawlt_sql_quote($db->connexion, $settings->datecleaning) . "'
 		AND crawlt_id_crawler ='0'
-		LIMIT 0," . crawlt_sql_quote($connexion, $maxlimit) . "";
-	$requetecleaning = db_query($sqlcleaning, $connexion);
+		LIMIT 0," . crawlt_sql_quote($db->connexion, $maxlimit) . "";
+	$requetecleaning = db_query($sqlcleaning, $db->connexion);
 	$visitstotal = $requetecleaning->num_rows;
 	if ($visitstotal >= 50) {
 		while ($ligne = $requetecleaning->fetch_row()) {
@@ -176,7 +171,7 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 			//request to suppress double entry in the visit table
 			$listidtosuppress = implode("','", $idtosuppress);
 			$sqlsuppress = "DELETE FROM crawlt_visits_human WHERE id_visit IN ('$listidtosuppress')";
-			$requetesuppress = db_query($sqlsuppress, $connexion);
+			$requetesuppress = db_query($sqlsuppress, $db->connexion);
 		}
 	}
 	//---------------------------------------------------------------------------------------------------
@@ -186,8 +181,8 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 		FROM crawlt_visits_human
 		WHERE $datetolookfor
 		AND crawlt_ip !=''
-		LIMIT 0," . crawlt_sql_quote($connexion, $maxlimit) . "";
-	$requete = db_query($sql, $connexion);
+		LIMIT 0," . crawlt_sql_quote($db->connexion, $maxlimit) . "";
+	$requete = db_query($sql, $db->connexion);
 	$resultnumber = $requete->num_rows;
 	
 	if ($resultnumber >= 50) {
@@ -209,8 +204,8 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 		WHERE $datetolookfor
 		AND crawlt_ip !=''    
 		GROUP BY crawlt_ip
-		LIMIT 0," . crawlt_sql_quote($connexion, $maxlimit) . "";
-	$requete = db_query($sql, $connexion);
+		LIMIT 0," . crawlt_sql_quote($db->connexion, $maxlimit) . "";
+	$requete = db_query($sql, $db->connexion);
 	while ($ligne = $requete->fetch_row()) {
 		$timeperpage[$ligne[0]] = (strtotime($ligne[2]) - strtotime($ligne[3])) / $ligne[1];
 		$nbvisits[$ligne[0]] = $ligne[1];
@@ -227,8 +222,8 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 		AND crawlt_ip !=''
 		AND crawlt_id_crawler IN ('1,2,3,4,5')    
 		GROUP BY crawlt_ip
-		LIMIT 0," . crawlt_sql_quote($connexion, $maxlimit) . "";
-	$requete = db_query($sql, $connexion);
+		LIMIT 0," . crawlt_sql_quote($db->connexion, $maxlimit) . "";
+	$requete = db_query($sql, $db->connexion);
 	while ($ligne = $requete->fetch_row()) {
 		if ($ligne[1] > 5) {
 			$listbadip[$ligne[0]] = $ligne[0];
@@ -239,7 +234,7 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 	//---------------------------------------------------------------------------------------------------
 	//query to get the referer spammer site list
 	$sql = "SELECT referer FROM crawlt_badreferer";
-	$requete = $connexion->query($sql);
+	$requete = $db->connexion->query($sql);
 	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
 		while ($ligne = $requete->fetch_row()) {
@@ -264,8 +259,8 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 		ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
 		AND $datetolookfor
 		AND crawlt_id_crawler=0
-		LIMIT 0," . crawlt_sql_quote($connexion, $maxlimit) . "";
-	$requete = db_query($sql, $connexion);
+		LIMIT 0," . crawlt_sql_quote($db->connexion, $maxlimit) . "";
+	$requete = db_query($sql, $db->connexion);
 	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
 		while ($ligne = $requete->fetch_row()) {
@@ -274,7 +269,7 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 				if (in_array($parseurl['host'], $listspamreferer) && (!preg_match("/google/i", $parseurl['host']) || (preg_match("/google/i", $parseurl['host']) && !preg_match("/imgres/i", $ligne[0])))) {
 					$listbadip[$ligne[2]] = $ligne[2];
 					$referertosuppress[$ligne[1]] = $ligne[1];
-				} elseif ($parseurl['host'] == $urlsite[$site]) //to remove from referer table all the internal referer
+				} elseif ($parseurl['host'] == $urlsite[$settings->siteid]) //to remove from referer table all the internal referer
 				{
 					$referertosuppress[$ligne[1]] = $ligne[1];
 				}
@@ -288,7 +283,7 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 		$crawltreferertosuppress = implode("','", $referertosuppress);
 		$sql = "DELETE FROM crawlt_referer
 			WHERE id_referer IN ('$crawltreferertosuppress')";
-		$requete = db_query($sql, $connexion);
+		$requete = db_query($sql, $db->connexion);
 	}
 	
 	//---------------------------------------------------------------------------------------------------
@@ -297,14 +292,14 @@ if ((($period == 0) || ($period >= 1000)) && $_SESSION['cleaning'] == 0) {
 		$crawltlistip = implode("','", $listbadip);
 		$sql = "DELETE FROM crawlt_visits_human
 			WHERE crawlt_ip IN ('$crawltlistip')";
-		$requete = db_query($sql, $connexion);
+		$requete = db_query($sql, $db->connexion);
 	}
 	
 	//---------------------------------------------------------------------------------------------------
 	//update the crawlt_config table to enter the last cleaning date (now - 1.5 hour)
-	$datecleaning = date("Y-m-d H:i:s", (time() - 5400));
-	$sqlupdate = "UPDATE crawlt_config SET datelastcleaning='" . crawlt_sql_quote($connexion, $datecleaning) . "'";
-	$requeteupdate = db_query($sqlupdate, $connexion);
+	$settings->datecleaning = date("Y-m-d H:i:s", (time() - 5400));
+	$sqlupdate = "UPDATE crawlt_config SET datelastcleaning='" . crawlt_sql_quote($db->connexion, $settings->datecleaning) . "'";
+	$requeteupdate = db_query($sqlupdate, $db->connexion);
 	$_SESSION['cleaning'] = 1;
 }
 ?>

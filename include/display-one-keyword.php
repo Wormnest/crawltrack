@@ -36,7 +36,7 @@ $positioncd = array();
 $positionstart = array();
 $position = array();
 $countvisithost = array();
-$crawlencode = urlencode($crawler);
+$crawlencode = urlencode($settings->crawler);
 $nbrresultgoogle=0;
 $nbrresultMSN=0;
 $nbrresultYahoo=0;
@@ -108,14 +108,10 @@ else
 	$aolkeyword = 1;
 	}
 
-$cachename = $navig . $period . $site . $order.$rowdisplay . $crawlencode . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang. $askkeyword. $baidukeyword. $googlekeyword.$googleimagekeyword.$msnkeyword.$yahookeyword.$yandexkeyword.$aolkeyword;
+$cachename = $settings->navig . $settings->period . $settings->siteid . $settings->displayorder.$settings->displayrows . $crawlencode . $settings->displayall . $settings->firstdayweek . $localday . $settings->graphpos . $settings->language. $askkeyword. $baidukeyword. $googlekeyword.$googleimagekeyword.$msnkeyword.$yahookeyword.$yandexkeyword.$aolkeyword;
 
 //start the caching
 cache($cachename);
-
-//database connection
-require_once("jgbdb.php");
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //include menu
 include ("include/menumain.php");
@@ -126,30 +122,30 @@ include ("include/timecache.php");
 include ("include/cleaning-crawler-entry.php");
 
 //limite to
-if ($displayall == 'no') {
-	$limitquery = 'LIMIT ' . $rowdisplay;
+if ($settings->displayall == 'no') {
+	$limitquery = 'LIMIT ' . $settings->displayrows;
 } else {
 	$limitquery = '';
 }
 //date for the mysql query
-if ($period >= 10) {
-	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
-	AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "'";
+if ($settings->period >= 10) {
+	$datetolookfor = " date >'" . crawlt_sql_quote($db->connexion, $daterequest) . "' 
+	AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest2) . "'";
 } else {
-	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($db->connexion, $daterequest) . "'";
 }
 //date for mysql query for keyword position one month ago (5 days sample)
 $daterequest3 = date("Y-m-d H:i:s", (strtotime($daterequest) - (35 * 86400)));
 $daterequest4 = date("Y-m-d H:i:s", (strtotime($daterequest) - (30 * 86400)));
-$datetolookfor2 = " date >'" . crawlt_sql_quote($connexion, $daterequest3) . "' AND  date <'" . crawlt_sql_quote($connexion, $daterequest4) . "'";
+$datetolookfor2 = " date >'" . crawlt_sql_quote($db->connexion, $daterequest3) . "' AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest4) . "'";
 //date for mysql query for keyword position two monthes ago (5 days sample)
 $daterequest5 = date("Y-m-d H:i:s", (strtotime($daterequest) - (65 * 86400)));
 $daterequest6 = date("Y-m-d H:i:s", (strtotime($daterequest) - (60 * 86400)));
-$datetolookfor3 = " date >'" . crawlt_sql_quote($connexion, $daterequest5) . "' AND  date <'" . crawlt_sql_quote($connexion, $daterequest6) . "'";
+$datetolookfor3 = " date >'" . crawlt_sql_quote($db->connexion, $daterequest5) . "' AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest6) . "'";
 //date for mysql query for keyword position three monthes ago (5 days sample)
 $daterequest7 = date("Y-m-d H:i:s", (strtotime($daterequest) - (95 * 86400)));
 $daterequest8 = date("Y-m-d H:i:s", (strtotime($daterequest) - (90 * 86400)));
-$datetolookfor4 = " date >'" . crawlt_sql_quote($connexion, $daterequest7) . "' AND  date <'" . crawlt_sql_quote($connexion, $daterequest8) . "'";
+$datetolookfor4 = " date >'" . crawlt_sql_quote($db->connexion, $daterequest7) . "' AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest8) . "'";
 
 //query to have the keyword for Google
 if($googlekeyword==1)
@@ -161,11 +157,11 @@ ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 INNER JOIN crawlt_keyword
 ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword
 WHERE  $datetolookfor
-AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
-AND keyword='" . crawlt_sql_quote($connexion, $crawler2) . "' 
+AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+AND keyword='" . crawlt_sql_quote($db->connexion, $settings->crawler2) . "' 
 AND crawlt_id_crawler= '1'    
 GROUP BY url_page";
-$requetegoogle = db_query($sqlgoogle, $connexion);
+$requetegoogle = db_query($sqlgoogle, $db->connexion);
 $nbrresultgoogle = $requetegoogle->num_rows;
 if ($nbrresultgoogle >= 1) {
 	while ($ligne = $requetegoogle->fetch_row()) {
@@ -184,11 +180,11 @@ ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 INNER JOIN crawlt_keyword
 ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword
 WHERE  $datetolookfor
-AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
-AND keyword='" . crawlt_sql_quote($connexion, $crawler2) . "' 
+AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+AND keyword='" . crawlt_sql_quote($db->connexion, $settings->crawler2) . "' 
 AND crawlt_id_crawler= '6'    
 GROUP BY url_page";
-$requetegoogleimage = db_query($sqlgoogleimage, $connexion);
+$requetegoogleimage = db_query($sqlgoogleimage, $db->connexion);
 $nbrresultgoogleimage = $requetegoogleimage->num_rows;
 if ($nbrresultgoogleimage >= 1) {
 	while ($ligne = $requetegoogleimage->fetch_row()) {
@@ -205,10 +201,10 @@ ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword
 LEFT OUTER JOIN crawlt_referer
 ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
 WHERE  $datetolookfor
-AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
-AND keyword ='" . crawlt_sql_quote($connexion, $crawler2) . "' 
+AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+AND keyword ='" . crawlt_sql_quote($db->connexion, $settings->crawler2) . "' 
 AND crawlt_id_crawler= '1'";
-$requetegoogle2 = db_query($sqlgoogle2, $connexion);
+$requetegoogle2 = db_query($sqlgoogle2, $db->connexion);
 $nbrresult = $requetegoogle2->num_rows;
 if ($nbrresult >= 1) {
 	while ($ligne = $requetegoogle2->fetch_row()) {
@@ -268,10 +264,10 @@ ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword
 LEFT OUTER JOIN crawlt_referer
 ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
 WHERE  $datetolookfor2
-AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
-AND keyword ='" . crawlt_sql_quote($connexion, $crawler2) . "' 
+AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+AND keyword ='" . crawlt_sql_quote($db->connexion, $settings->crawler2) . "' 
 AND crawlt_id_crawler= '1'";
-$requetegoogle3 = db_query($sqlgoogle3, $connexion);
+$requetegoogle3 = db_query($sqlgoogle3, $db->connexion);
 $nbrresult = $requetegoogle3->num_rows;
 if ($nbrresult >= 1) {
 	while ($ligne = $requetegoogle3->fetch_row()) {
@@ -329,10 +325,10 @@ ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword
 LEFT OUTER JOIN crawlt_referer
 ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
 WHERE  $datetolookfor3
-AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
-AND keyword ='" . crawlt_sql_quote($connexion, $crawler2) . "' 
+AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+AND keyword ='" . crawlt_sql_quote($db->connexion, $settings->crawler2) . "' 
 AND crawlt_id_crawler= '1'";
-$requetegoogle4 = db_query($sqlgoogle4, $connexion);
+$requetegoogle4 = db_query($sqlgoogle4, $db->connexion);
 $nbrresult = $requetegoogle4->num_rows;
 if ($nbrresult >= 1) {
 	while ($ligne = $requetegoogle4->fetch_row()) {
@@ -390,10 +386,10 @@ ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword
 LEFT OUTER JOIN crawlt_referer
 ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
 WHERE  $datetolookfor4
-AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
-AND keyword ='" . crawlt_sql_quote($connexion, $crawler2) . "' 
+AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+AND keyword ='" . crawlt_sql_quote($db->connexion, $settings->crawler2) . "' 
 AND crawlt_id_crawler= '1'";
-$requetegoogle5 = db_query($sqlgoogle5, $connexion);
+$requetegoogle5 = db_query($sqlgoogle5, $db->connexion);
 $nbrresult = $requetegoogle5->num_rows;
 if ($nbrresult >= 1) {
 	while ($ligne = $requetegoogle5->fetch_row()) {
@@ -453,11 +449,11 @@ ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 INNER JOIN crawlt_keyword
 ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword 
 WHERE  $datetolookfor
-AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
-AND keyword='" . crawlt_sql_quote($connexion, $crawler2) . "'
+AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+AND keyword='" . crawlt_sql_quote($db->connexion, $settings->crawler2) . "'
 AND crawlt_id_crawler= '2'    
 GROUP BY url_page";
-$requeteYahoo = db_query($sqlYahoo, $connexion);
+$requeteYahoo = db_query($sqlYahoo, $db->connexion);
 $nbrresultYahoo = $requeteYahoo->num_rows;
 if ($nbrresultYahoo >= 1) {
 	while ($ligne = $requeteYahoo->fetch_row()) {
@@ -475,11 +471,11 @@ ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 INNER JOIN crawlt_keyword
 ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword 
 WHERE  $datetolookfor 
-AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
-AND keyword='" . crawlt_sql_quote($connexion, $crawler2) . "'
+AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+AND keyword='" . crawlt_sql_quote($db->connexion, $settings->crawler2) . "'
 AND crawlt_id_crawler= '3'    
 GROUP BY url_page";
-$requeteMSN = db_query($sqlMSN, $connexion);
+$requeteMSN = db_query($sqlMSN, $db->connexion);
 $nbrresultMSN = $requeteMSN->num_rows;
 if ($nbrresultMSN >= 1) {
 	while ($ligne = $requeteMSN->fetch_row()) {
@@ -498,11 +494,11 @@ ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 INNER JOIN crawlt_keyword
 ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword 
 WHERE  $datetolookfor 
-AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
-AND keyword='" . crawlt_sql_quote($connexion, $crawler2) . "'
+AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+AND keyword='" . crawlt_sql_quote($db->connexion, $settings->crawler2) . "'
 AND crawlt_id_crawler= '4'    
 GROUP BY url_page";
-$requeteask = db_query($sqlask, $connexion);
+$requeteask = db_query($sqlask, $db->connexion);
 $nbrresultask = $requeteask->num_rows;
 if ($nbrresultask >= 1) {
 	while ($ligne = $requeteask->fetch_row()) {
@@ -521,11 +517,11 @@ ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 INNER JOIN crawlt_keyword
 ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword 
 WHERE  $datetolookfor 
-AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
-AND keyword='" . crawlt_sql_quote($connexion, $crawler2) . "'
+AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+AND keyword='" . crawlt_sql_quote($db->connexion, $settings->crawler2) . "'
 AND crawlt_id_crawler= '5'    
 GROUP BY url_page";
-$requeteexalead = db_query($sqlexalead, $connexion);
+$requeteexalead = db_query($sqlexalead, $db->connexion);
 $nbrresultexalead = $requeteexalead->num_rows;
 if ($nbrresultexalead >= 1) {
 	while ($ligne = $requeteexalead->fetch_row()) {
@@ -544,11 +540,11 @@ ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 INNER JOIN crawlt_keyword
 ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword 
 WHERE  $datetolookfor 
-AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
-AND keyword='" . crawlt_sql_quote($connexion, $crawler2) . "'
+AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+AND keyword='" . crawlt_sql_quote($db->connexion, $settings->crawler2) . "'
 AND crawlt_id_crawler= '7'    
 GROUP BY url_page";
-$requeteyandex = db_query($sqlyandex, $connexion);
+$requeteyandex = db_query($sqlyandex, $db->connexion);
 $nbrresultyandex = $requeteyandex->num_rows;
 if ($nbrresultyandex >= 1) {
 	while ($ligne = $requeteyandex->fetch_row()) {
@@ -567,11 +563,11 @@ ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 INNER JOIN crawlt_keyword
 ON crawlt_visits_human.crawlt_keyword_id_keyword=crawlt_keyword.id_keyword 
 WHERE  $datetolookfor 
-AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
-AND keyword='" . crawlt_sql_quote($connexion, $crawler2) . "'
+AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
+AND keyword='" . crawlt_sql_quote($db->connexion, $settings->crawler2) . "'
 AND crawlt_id_crawler= '8'    
 GROUP BY url_page";
-$requeteaol = db_query($sqlaol, $connexion);
+$requeteaol = db_query($sqlaol, $db->connexion);
 $nbrresultaol = $requeteaol->num_rows;
 if ($nbrresultaol >= 1) {
 	while ($ligne = $requeteaol->fetch_row()) {
@@ -580,8 +576,7 @@ if ($nbrresultaol >= 1) {
 }
 }
 
-//mysql connexion close
-mysqli_close($connexion);
+$db->close(); // Close database
 
 //calculation of total number of entry per keyword
 $visitkeyword = array();
@@ -661,7 +656,7 @@ if (count($countvisithost) >= 1) {
 	$comptligne = 2;
 	foreach ($countvisithost as $key => $value) {
 		
-		if($crawler2 =='(not provided)')
+		if($settings->crawler2 =='(not provided)')
 			{
 			$position[$key]='-';
 			$position3[$key]='-';
@@ -719,10 +714,10 @@ if (count($countvisithost) >= 1) {
 	echo "<div width='70%' align='center'><form action=\"index.php\" method=\"POST\"  style=\" font-size:13px; font-weight:bold; color: #003399;
 		font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif; \">\n";
 	echo "<input type=\"hidden\" name ='navig' value=\"16\">\n";
-	echo "<input type=\"hidden\" name ='site' value=\"".$site."\">\n";
-	echo "<input type=\"hidden\" name ='period' value=\"".$period."\">\n";	
-	echo "<input type=\"hidden\" name ='graphpos' value=\"".$graphpos."\">\n";
-	echo "<input type=\"hidden\" name ='crawler' value=\"".$crawler."\">\n";
+	echo "<input type=\"hidden\" name ='site' value=\"".$settings->siteid."\">\n";
+	echo "<input type=\"hidden\" name ='period' value=\"".$settings->period."\">\n";	
+	echo "<input type=\"hidden\" name ='graphpos' value=\"".$settings->graphpos."\">\n";
+	echo "<input type=\"hidden\" name ='crawler' value=\"".$settings->crawler."\">\n";
 	echo "<input type=\"hidden\" name ='choosekeyword' value=\"1\">\n";								
 	echo "<table>";
 	if($aolkeyword==1)
@@ -833,7 +828,7 @@ if (count($visitkeyword) >= 1) {
 	$comptdata = 0;
 	foreach ($visitkeyword as $keyword => $value) {
 		$crawlencode = urlencode($keyword);
-		$keyworddisplay = stripslashes(crawltcutkeyword($keyword, 60));
+		$keyworddisplay = stripslashes(crawltcutkeyword($keyword, 60, $settings->useutf8));
 		if (isset($visitkeywordask[$keyword])) {
 			$visitask = $visitkeywordask[$keyword];
 		} else {
@@ -875,17 +870,17 @@ if (count($visitkeyword) >= 1) {
 			$visitaol = '-';
 		}				
 		//to avoid problem if the url is enter in the database with http://
-		if (!preg_match('#^http://#i', $urlsite[$site])) {
-			$urlpage = "http://" . $urlsite[$site] . $keyword;
+		if (!preg_match('#^http://#i', $urlsite[$settings->siteid])) {
+			$urlpage = "http://" . $urlsite[$settings->siteid] . $keyword;
 		} else {
-			$urlpage = $urlsite[$site] . $keyword;
+			$urlpage = $urlsite[$settings->siteid] . $keyword;
 		}
 		if ($comptligne % 2 == 0) {
 			echo "<tr><td class='tableau3g'";
 			if ($keywordcut == 1) {
 				echo "onmouseover=\"javascript:montre('smenu" . ($comptligne + 9) . "');\"   onmouseout=\"javascript:montre();\"";
 			}
-			echo ">&nbsp;&nbsp;<a href='index.php?navig=14&amp;period=" . $period . "&amp;site=" . $site . "&amp;crawler=" . $crawlencode . "&amp;graphpos=" . $graphpos . "' >" . $keyworddisplay . "</a></td>\n";
+			echo ">&nbsp;&nbsp;<a href='index.php?navig=14&amp;period=" . $settings->period . "&amp;site=" . $settings->siteid . "&amp;crawler=" . $crawlencode . "&amp;graphpos=" . $settings->graphpos . "' >" . $keyworddisplay . "</a></td>\n";
 			echo "<td class='tableau6' width=\"8%\">\n";
 			echo "<a href='" . $urlpage . "'><img src=\"./images/page.png\" width=\"16\" height=\"16\" border=\"0\" ></a>\n";
 			echo "</td> \n";
@@ -902,7 +897,7 @@ if (count($visitkeyword) >= 1) {
 			if ($keywordcut == 1) {
 				echo "onmouseover=\"javascript:montre('smenu" . ($comptligne + 9) . "');\"   onmouseout=\"javascript:montre();\"";
 			}
-			echo ">&nbsp;&nbsp;<a href='index.php?navig=14&amp;period=" . $period . "&amp;site=" . $site . "&amp;crawler=" . $crawlencode . "&amp;graphpos=" . $graphpos . "'  >" . $keyworddisplay . "</a></td>\n";
+			echo ">&nbsp;&nbsp;<a href='index.php?navig=14&amp;period=" . $settings->period . "&amp;site=" . $settings->siteid . "&amp;crawler=" . $crawlencode . "&amp;graphpos=" . $settings->graphpos . "'  >" . $keyworddisplay . "</a></td>\n";
 			echo "<td class='tableau60' width=\"8%\">\n";
 			echo "<a href='" . $urlpage . "'><img src=\"./images/page.png\" width=\"16\" height=\"16\" border=\"0\" ></a>\n";
 			echo "</td> \n";
@@ -916,7 +911,7 @@ if (count($visitkeyword) >= 1) {
 			echo "<td class='tableau50' width=\"7%\">" . numbdisp($visityandex) . "</td></tr>\n";
 		}
 		if ($keywordcut == 1) {
-			if ($period == 0 || $period >= 1000) {
+			if ($settings->period == 0 || $settings->period >= 1000) {
 				$step = 25;
 			} else {
 				$step = 30;
@@ -926,17 +921,17 @@ if (count($visitkeyword) >= 1) {
 			echo "</div>\n";
 		}
 		$comptligne++;
-		if ($displayall == 'no') {
+		if ($settings->displayall == 'no') {
 			$comptdata++;
 		}
 	}
 	echo "</table>\n";
-	if (count($visitkeyword) >= $rowdisplay && $displayall == 'no') {
+	if (count($visitkeyword) >= $settings->displayrows && $settings->displayall == 'no') {
 		echo "<h2><span class=\"smalltext\">\n";
-		printf($language['100_lines'], $rowdisplay);
+		printf($language['100_lines'], $settings->displayrows);
 		echo "<br>\n";
-		$crawlencode = urlencode($crawler);
-		echo "<a href=\"index.php?navig=$navig&period=$period&site=$site&crawler=$crawlencode&order=$order&displayall=yes&graphpos=$graphpos\">" . $language['show_all'] . "</a></span></h2>";
+		$crawlencode = urlencode($settings->crawler);
+		echo "<a href=\"index.php?navig=$settings->navig&period=$settings->period&site=$settings->siteid&crawler=$crawlencode&order=$settings->displayorder&displayall=yes&graphpos=$settings->graphpos\">" . $language['show_all'] . "</a></span></h2>";
 	}
 	echo "<br><br><br><br><br>\n";
 } else {	

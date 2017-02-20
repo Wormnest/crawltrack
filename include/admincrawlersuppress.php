@@ -32,6 +32,7 @@ if (isset($_POST['suppresscrawlerok'])) {
 	$suppresscrawlerok = 0;
 }
 if ($suppresscrawler == 1) {
+	// TODO: Make safe!
 	if (isset($_POST['crawlertosuppress'])) {
 		$crawlertosuppress = $_POST['crawlertosuppress'];
 	} else {
@@ -45,24 +46,21 @@ if ($suppresscrawler == 1) {
 		exit;
 	}
 	if ($suppresscrawlerok == 1) {
-		//crawler suppression
-		//database connection
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+		// Delete crawler
 		
 		//database query to suppress the crawler
-		$sqldelete = "DELETE FROM crawlt_crawler WHERE id_crawler= '" . crawlt_sql_quote($connexion, $idcrawlertosuppress) . "'";
-		$requetedelete = db_query($sqldelete, $connexion);
-		$sqldelete2 = "DELETE FROM crawlt_visits WHERE crawlt_crawler_id_crawler= '" . crawlt_sql_quote($connexion, $idcrawlertosuppress) . "'";
-		$requetedelete2 = db_query($sqldelete2, $connexion);
+		$sqldelete = "DELETE FROM crawlt_crawler WHERE id_crawler= '" . crawlt_sql_quote($db->connexion, $idcrawlertosuppress) . "'";
+		$requetedelete = db_query($sqldelete, $db->connexion);
+		$sqldelete2 = "DELETE FROM crawlt_visits WHERE crawlt_crawler_id_crawler= '" . crawlt_sql_quote($db->connexion, $idcrawlertosuppress) . "'";
+		$requetedelete2 = db_query($sqldelete2, $db->connexion);
 		
 		//database query to optimize the table
 		$sqloptimize = "OPTIMIZE TABLE crawlt_visits";
-		$requeteoptimize = db_query($sqloptimize, $connexion);
+		$requeteoptimize = db_query($sqloptimize, $db->connexion);
 		
 		//empty the cache table
 		$sqlcache = "TRUNCATE TABLE crawlt_cache";
-		$requetecache = db_query($sqlcache, $connexion);
+		$requetecache = db_query($sqlcache, $db->connexion);
 		if ($requetedelete && $requetedelete2) {
 			echo "<br><br><h1>" . $language['crawler_suppress_ok'] . "</h1>\n";
 			echo "<div class=\"form\">\n";
@@ -80,7 +78,7 @@ if ($suppresscrawler == 1) {
 			echo "</form>\n";
 			echo "</div><br><br>\n";
 		}
-mysqli_close($connexion);
+		$db->close(); // Close database
 	} else {
 		//validation of suppression
 		//display
@@ -122,18 +120,9 @@ mysqli_close($connexion);
 		echo "</div><br><br>";
 	}
 } else {
-	//database connection
-	if (isset($crawlthost)) {
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-	} else {
-		require_once("jgbdb.php");
-		$connexion = db_connect($host, $tuser, $password, $db);
-	}
-	
 	//database query to get crawler list
 	$sqldeletecrawler = "SELECT * FROM crawlt_crawler";
-	$requetedeletecrawler = db_query($sqldeletecrawler, $connexion);
+	$requetedeletecrawler = db_query($sqldeletecrawler, $db->connexion);
 	$nbrresult = $requetedeletecrawler->num_rows;
 	if ($nbrresult >= 1) {
 		while ($ligne = $requetedeletecrawler->fetch_object()) {
@@ -148,7 +137,7 @@ mysqli_close($connexion);
 				$uacrawler[$idcrawler] = $crawlerip;
 			}
 		}
-		mysqli_close($connexion);
+		$db->close(); // Close database
 		asort($namecrawler);
 		$current = current($namecrawler);
 		do {
@@ -176,8 +165,8 @@ mysqli_close($connexion);
 			echo "$uadisplay\n";
 			echo "</td><td class='tableau45' width='15%'>\n";
 			echo "<form action=\"index.php\" method=\"POST\" >\n";
-			echo "<input type=\"hidden\" name ='period' value=\"$period\">\n";
-			echo "<input type=\"hidden\" name ='navig' value=\"$navig\">\n";
+			echo "<input type=\"hidden\" name ='period' value=\"$settings->period\">\n";
+			echo "<input type=\"hidden\" name ='navig' value=\"$settings->navig\">\n";
 			echo "<input type=\"hidden\" name ='validform' value=\"10\">\n";
 			echo "<input type=\"hidden\" name ='suppresscrawler' value=\"1\">\n";
 			echo "<input type=\"hidden\" name ='crawlertosuppress' value=\"" . $namecrawler[$crawler1] . "\">\n";

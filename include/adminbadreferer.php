@@ -21,7 +21,7 @@ if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>No direct access</h1>');
 }
 
-$siteurldisplay = htmlentities($siteurl);
+$siteurldisplay = htmlentities($settings->siteurl);
 if (isset($_POST['suppresscrawler'])) {
 	$suppresscrawler = (int)$_POST['suppresscrawler'];
 } else {
@@ -48,16 +48,16 @@ if ($suppresscrawler == 1) {
 	if ($suppresscrawlerok == 1) {
 		//good site suppression
 		//database connection
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+		//require_once("jgbdb.php");
+		//$db->connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 		
 		//database query to suppress the good site
-		$sqldelete = "DELETE FROM crawlt_badreferer WHERE id_referer= '" . crawlt_sql_quote($connexion, $idcrawlertosuppress) . "'";
-		$requetedelete = db_query($sqldelete, $connexion);
+		$sqldelete = "DELETE FROM crawlt_badreferer WHERE id_referer= '" . crawlt_sql_quote($db->connexion, $idcrawlertosuppress) . "'";
+		$requetedelete = db_query($sqldelete, $db->connexion);
 		
 		//empty the cache table
 		$sqlcache = "TRUNCATE TABLE crawlt_cache";
-		$requetecache = db_query($sqlcache, $connexion);
+		$requetecache = db_query($sqlcache, $db->connexion);
 		if ($requetedelete) {
 			echo "<br><br><h1>" . $language['goodsite_suppress_ok'] . "</h1>\n";
 			echo "<div class=\"form\">\n";
@@ -117,9 +117,9 @@ if ($suppresscrawler == 1) {
 		echo "</form>\n";
 		echo "</div><br><br>";
 	}
-} elseif ($validsite == 1 && empty($siteurl)) {
+} elseif ($settings->validsite == 1 && empty($settings->siteurl)) {
 	echo "<br><br><p>" . $language['goodsite_no_ok'] . "</p>";
-	$validsite = 0;
+	$settings->validsite = 0;
 	echo "<div class=\"form\">\n";
 	echo "<form action=\"index.php\" method=\"POST\" >\n";
 	echo "<input type=\"hidden\" name ='validform' value='32'>\n";
@@ -128,21 +128,17 @@ if ($suppresscrawler == 1) {
 	echo "<input name='ok' type='submit'  value=' " . $language['back_to_form'] . " ' size='20'>\n";
 	echo "</form>\n";
 	echo "</div><br><br>\n";
-} elseif ($validsite == 1 && !empty($siteurl)) {
+} elseif ($settings->validsite == 1 && !empty($settings->siteurl)) {
 	//add the site in the database
 	//treat the url to have only the host
-	$siteurl = ltrim($siteurl, "http://");
-	$parseurl = parse_url('http://' . $siteurl);
-	$siteurl = $parseurl['host'];
+	$settings->siteurl = ltrim($settings->siteurl, "http://");
+	$parseurl = parse_url('http://' . $settings->siteurl);
+	$settings->siteurl = $parseurl['host'];
 	
-	//database connection
-	require_once("jgbdb.php");
-	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-
 	//check if site already exist
 	$sqlexist = "SELECT * FROM crawlt_badreferer
-		WHERE referer='" . crawlt_sql_quote($connexion, $siteurl) . "'";
-	$requeteexist = db_query($sqlexist, $connexion);
+		WHERE referer='" . crawlt_sql_quote($db->connexion, $settings->siteurl) . "'";
+	$requeteexist = db_query($sqlexist, $db->connexion);
 	$nbrresult = $requeteexist->num_rows;
 	if ($nbrresult >= 1) {
 		//site already exist
@@ -160,8 +156,8 @@ if ($suppresscrawler == 1) {
 		echo "</form><br><br>\n";
 	} else {
 		//the site didn't exist, we can add it in the database
-		$sqlsite2 = "INSERT INTO crawlt_badreferer (referer) VALUES ('" . crawlt_sql_quote($connexion, $siteurl) . "')";
-		$requetesite2 = db_query($sqlsite2, $connexion);
+		$sqlsite2 = "INSERT INTO crawlt_badreferer (referer) VALUES ('" . crawlt_sql_quote($db->connexion, $siteurl) . "')";
+		$requetesite2 = db_query($sqlsite2, $db->connexion);
 		//check is requete is successfull
 		if ($requetesite2 == 1) {
 			echo "<br><br><p>" . $language['site_ok'] . "</p>\n";
@@ -179,21 +175,17 @@ if ($suppresscrawler == 1) {
 			echo "</form><br><br>\n";
 		}
 	}
-mysqli_close($connexion);
+	$db->close(); // Close database
 } else {
-	//database connection
-	require_once("jgbdb.php");
-	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-
 	//database query to get good sites list
 	$sql = "SELECT id_referer, referer FROM crawlt_badreferer";
-	$requete = db_query($sql, $connexion);
+	$requete = db_query($sql, $db->connexion);
 	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
 		while ($ligne = $requete->fetch_row()) {
 			$listgoodsite[$ligne[0]] = $ligne[1];
 		}
-		mysqli_close($connexion);
+		$db->close(); // Close database
 		//display
 		echo "<br><br><h1>" . $language['badreferer_list'] . "<br><span class='smalltext'>" . $language['badreferer_list2'] . "</span></h1>\n";
 		echo "<div class='tableau' align='center' width='550px'>\n";
@@ -206,8 +198,8 @@ mysqli_close($connexion);
 			echo "" . $goodsite . "\n";
 			echo "</td><td class='tableau45' width='15%'>\n";
 			echo "<form action=\"index.php\" method=\"POST\" >\n";
-			echo "<input type=\"hidden\" name ='period' value=\"$period\">\n";
-			echo "<input type=\"hidden\" name ='navig' value=\"$navig\">\n";
+			echo "<input type=\"hidden\" name ='period' value=\"$settings->period\">\n";
+			echo "<input type=\"hidden\" name ='navig' value=\"$settings->navig\">\n";
 			echo "<input type=\"hidden\" name ='validform' value=\"32\">\n";
 			echo "<input type=\"hidden\" name ='suppresscrawler' value=\"1\">\n";
 			echo "<input type=\"hidden\" name ='crawlertosuppress' value=\"" . $goodsite . "\">\n";

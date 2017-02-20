@@ -106,6 +106,8 @@ function linkmapgraph($monthdate, $actualmonth, $yeardate, $actualyear) {
 	return $value;
 }
 
+// TODO: Use cache class that has access to our db class.
+// TODO: Don't open a new connection but use existing connection!
 //function to put the page in cache (http://spellbook.infinitiv.it/2006/07/03/caching-your-queries-with-php.htm)
 function cache($cachename) {
 	global $nocachetest, $crawlthost, $crawltuser, $crawltpassword, $crawltdb, $caching, $numbquery, $language;
@@ -122,10 +124,8 @@ function cache($cachename) {
 			echo "</html>\n";
 			exit();
 		}
-	$connexion = mysqli_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb) or die("MySQL connection to database problem");
-	if (mysqli_connect_errno()) {
-		die(mysqli_connect_error());
-	}
+	$db = new ctDb();
+	$connexion = $db->connexion;
 	$sqlcache = "SELECT time FROM crawlt_cache WHERE cachename='$cachename'";
 	$requetecache = $connexion->query($sqlcache);
 	$nbrresult = $requetecache->num_rows;
@@ -157,7 +157,7 @@ function cache($cachename) {
 		$caching = 'true';
 		ob_start();
 	}
-mysqli_close($connexion);
+	$db->close();
 }
 
 function close() {
@@ -230,14 +230,15 @@ function crawlt_sql_quote($connexion, $value) {
 	return $value;
 }
 
+// WARNING: Next to functions have similar functions in mail.php
 //function to know if the string is encoded in utf8
 function isutf8($string) {
 	return (utf8_encode(utf8_decode($string)) == $string);
 }
 
 //function to cut and wrap the url to avoid oversize display
-function crawltcuturl($url, $length) {
-	global $crawltcharset;
+function crawltcuturl($url, $length, $crawltcharset) {
+	//global $crawltcharset;
 	if ($crawltcharset == 1) {
 		if (!isutf8($url)) {
 			if (function_exists("mb_convert_encoding")) {
@@ -265,8 +266,8 @@ function crawltcuturl($url, $length) {
 }
 
 //function to cut and wrap the keyword to avoid oversize display
-function crawltcutkeyword($keyword, $length) {
-	global $keywordcut, $keywordtoolong, $crawltcharset;
+function crawltcutkeyword($keyword, $length, $crawltcharset) {
+	global $keywordcut, $keywordtoolong; //, $crawltcharset;
 	if ($crawltcharset == 1) {
 		if (!isutf8($keyword)) {
 			if (function_exists("mb_convert_encoding")) {
@@ -304,7 +305,7 @@ function crawltkeywordwindow($keyword) {
 
 //function to treat xss attacks url
 // TODO: Also support https protocol
-function crawltattackxss($page) {
+function crawltattackxss($page, $crawltcharset) {
 	global $listattack, $tableurldisplay, $totallistattack, $listbadsite, $crawltcssaattack;
 	if (strncmp($page, 'http://', 7) == 0) {
 		$page = substr($page, 7);
@@ -352,12 +353,12 @@ function crawltattackxss($page) {
 		$totallistattack[' '] = "";
 		$listbadsite[' '] = "";
 	}
-	$tableurldisplay[crawltcuturl($page, '80') ] = crawltcuturl($page, '80');
+	$tableurldisplay[crawltcuturl($page, '80', $crawltcharset) ] = crawltcuturl($page, '80', $crawltcharset);
 }
 
 //function to treat sql attacks url
 // TODO: Also support https protocol
-function crawltattacksql($page) {
+function crawltattacksql($page, $crawltcharset) {
 	global $listattack, $tableurldisplay, $totallistattack, $listbadsite;
 	if (strncmp($page, 'http://', 7) == 0) {
 		$page = substr($page, 7);
@@ -396,7 +397,7 @@ function crawltattacksql($page) {
 		$totallistattack[] = "";
 		$listbadsite[] = "";
 	}
-	$tableurldisplay[] = crawltcuturl($page, '80');
+	$tableurldisplay[] = crawltcuturl($page, '80', $crawltcharset);
 }
 
 //function to check if the email address is valid from Christian Kruse
@@ -451,16 +452,16 @@ function crawltbackforward($title, $period, $daytodaylocal, $monthtodaylocal, $y
 			$jour='day0';
 		} elseif($dayenglish=='Tue') {
 			$jour='day1';
-		} elseif($dayenglish=='Wed') {		
+		} elseif($dayenglish=='Wed') {
 			$jour='day2';
-		} elseif($dayenglish=='Thu') {		
+		} elseif($dayenglish=='Thu') {
 			$jour='day3';
-		} elseif($dayenglish=='Fri') {		
+		} elseif($dayenglish=='Fri') {
 			$jour='day4';
-		} elseif($dayenglish=='Sat') {	
+		} elseif($dayenglish=='Sat') {
 			$jour='day5';
-		} elseif($dayenglish=='Sun') {			
-			$jour='day6';	}
+		} elseif($dayenglish=='Sun') {
+			$jour='day6';}
 		if ($period == 0) {
 			$value = "
             <h2>" . $language['display_period'] . "&nbsp;" .$language[$jour]."&nbsp;". $daytodaylocal . "/" . $monthtodaylocal . "/" . $yeartodaylocal . "</h2>           

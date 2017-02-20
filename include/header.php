@@ -16,7 +16,7 @@
 //----------------------------------------------------------------------
 //  Last update: 22/11/2011
 //----------------------------------------------------------------------
-if ($crawltcharset == 1) {
+if ($settings->useutf8 == 1) {
 	header('Content-Type: text/html; charset=utf-8');
 } else {
 	header('Content-Type: text/html; charset=iso-8859-1');
@@ -66,8 +66,8 @@ if ($crawltcharset == 1) {
 		{
 		echo"<meta http-equiv=\"Content-Language\" content=\"en\">\n";
 		}
-	 if (isset($crawltcharset)): ?>
-		<?php if ($crawltcharset == 1): ?>
+	 if (isset($settings->useutf8)): ?>
+		<?php if ($settings->useutf8 == 1): ?>
 			<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<?php else: ?>
 			<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />

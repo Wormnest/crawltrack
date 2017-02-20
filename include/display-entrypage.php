@@ -95,14 +95,10 @@ else
 	$aolkeyword = 1;
 	}
 
-$cachename = $navig . $period . $site . $order.$rowdisplay . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang. $askkeyword. $baidukeyword. $googlekeyword.$googleimagekeyword.$msnkeyword.$yahookeyword.$yandexkeyword.$aolkeyword;
+$cachename = $settings->navig . $settings->period . $settings->siteid . $settings->displayorder.$settings->displayrows . $settings->displayall . $settings->firstdayweek . $localday . $settings->graphpos . $settings->language. $askkeyword. $baidukeyword. $googlekeyword.$googleimagekeyword.$msnkeyword.$yahookeyword.$yandexkeyword.$aolkeyword;
 
 //start the caching
 cache($cachename);
-
-//database connection
-require_once("jgbdb.php");
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //include menu
 include ("include/menumain.php");
@@ -113,17 +109,17 @@ include ("include/timecache.php");
 include ("include/cleaning-crawler-entry.php");
 
 //limite to
-if ($displayall == 'no' && $choosekeyword==0) {
-	$limitquery = 'LIMIT ' . $rowdisplay;
+if ($settings->displayall == 'no' && $choosekeyword==0) {
+	$limitquery = 'LIMIT ' . $settings->displayrows;
 } else {
 	$limitquery = '';
 }
 //date for the mysql query
-if ($period >= 10) {
-	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
-    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "'";
+if ($settings->period >= 10) {
+	$datetolookfor = " date >'" . crawlt_sql_quote($db->connexion, $daterequest) . "' 
+    AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest2) . "'";
 } else {
-	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($db->connexion, $daterequest) . "'";
 }
 
 //query to have the number of entries per page
@@ -132,12 +128,12 @@ FROM crawlt_visits_human
 INNER JOIN crawlt_pages    
 ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 WHERE $datetolookfor
-AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "' 
+AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "' 
 AND  crawlt_id_crawler!='0'  
 GROUP BY url_page
 ORDER BY nbrvisits DESC 
 $limitquery";
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 $nbrresult = $requete->num_rows;
 if ($nbrresult >= 1) {
 	while ($ligne = $requete->fetch_row()) {
@@ -151,10 +147,10 @@ FROM crawlt_visits_human
 INNER JOIN crawlt_pages    
 ON crawlt_visits_human.crawlt_id_page=crawlt_pages.id_page
 WHERE $datetolookfor
-AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 AND  crawlt_id_crawler IN ('1','2','3','4','5','6','7','8')    
 GROUP BY url_page , crawlt_id_crawler";
-$requetegoogle = db_query($sqlgoogle, $connexion);
+$requetegoogle = db_query($sqlgoogle, $db->connexion);
 $nbrresult = $requetegoogle->num_rows;
 if ($nbrresult >= 1) {
 	while ($ligne = $requetegoogle->fetch_row()) {
@@ -177,8 +173,7 @@ if ($nbrresult >= 1) {
 		}
 	}
 }
-//mysql connexion close
-mysqli_close($connexion);
+$db->close(); // Close database
 
 //display-----------------------------------------------------------------------------------------------------------
 echo "<div class=\"content2\"><br><hr>\n";
@@ -187,9 +182,9 @@ echo "</div>\n";
 echo "<div width='70%' align='center'><form action=\"index.php\" method=\"POST\"  style=\" font-size:13px; font-weight:bold; color: #003399;
 	font-family: Verdana,Geneva, Arial, Helvetica, Sans-Serif; \">\n";
 echo "<input type=\"hidden\" name ='navig' value=\"13\">\n";
-echo "<input type=\"hidden\" name ='site' value=\"".$site."\">\n";
-echo "<input type=\"hidden\" name ='period' value=\"".$period."\">\n";
-echo "<input type=\"hidden\" name ='graphpos' value=\"".$graphpos."\">\n";
+echo "<input type=\"hidden\" name ='site' value=\"".$settings->siteid."\">\n";
+echo "<input type=\"hidden\" name ='period' value=\"".$settings->period."\">\n";
+echo "<input type=\"hidden\" name ='graphpos' value=\"".$settings->graphpos."\">\n";
 echo "<input type=\"hidden\" name ='choosekeyword' value=\"1\">\n";
 echo "<table>";
 if($aolkeyword==1)
@@ -303,7 +298,7 @@ if (count($visitkeyword) >= 1) {
 	$comptdata = 0;
 	foreach ($visitkeyword as $keyword => $value) {
 		$crawlencode = urlencode($keyword);
-		$keyworddisplay = stripslashes(crawltcutkeyword($keyword, 60));
+		$keyworddisplay = stripslashes(crawltcutkeyword($keyword, 60, $settings->useutf8));
 		$i=0;
 		if (isset($visitkeywordask[$keyword])) {
 			$visitask = $visitkeywordask[$keyword];
@@ -355,19 +350,19 @@ if (count($visitkeyword) >= 1) {
 		}
 		
 		//to avoid problem if the url is enter in the database with http://
-		if (!preg_match('#^http://#i', $urlsite[$site])) {
-			$urlpage = "http://" . $urlsite[$site] . $keyword;
+		if (!preg_match('#^http://#i', $urlsite[$settings->siteid])) {
+			$urlpage = "http://" . $urlsite[$settings->siteid] . $keyword;
 		} else {
-			$urlpage = $urlsite[$site] . $keyword;
+			$urlpage = $urlsite[$settings->siteid] . $keyword;
 		}
 		//to limit the display to the selected number
-		if ($comptdata < $rowdisplay && $i>0) {
+		if ($comptdata < $settings->displayrows && $i>0) {
 			if ($comptligne % 2 == 0) {
 				echo "<tr><td class='tableau3g'";
 				if ($keywordcut == 1) {
 					echo "onmouseover=\"javascript:montre('smenu" . ($comptligne + 9) . "');\"   onmouseout=\"javascript:montre();\"";
 				}
-				echo ">&nbsp;&nbsp;<a href='index.php?navig=14&amp;period=" . $period . "&amp;site=" . $site . "&amp;crawler=" . $crawlencode . "&amp;graphpos=" . $graphpos . "' >" . $keyworddisplay . "</a></td>\n";
+				echo ">&nbsp;&nbsp;<a href='index.php?navig=14&amp;period=" . $settings->period . "&amp;site=" . $settings->siteid . "&amp;crawler=" . $crawlencode . "&amp;graphpos=" . $settings->graphpos . "' >" . $keyworddisplay . "</a></td>\n";
 				echo "<td class='tableau6' width=\"4%\">\n";
 				echo "<a href='" . $urlpage . "'><img src=\"./images/page.png\" width=\"16\" height=\"16\" border=\"0\" ></a>\n";
 				echo "</td> \n";
@@ -384,7 +379,7 @@ if (count($visitkeyword) >= 1) {
 				if ($keywordcut == 1) {
 					echo "onmouseover=\"javascript:montre('smenu" . ($comptligne + 9) . "');\"   onmouseout=\"javascript:montre();\"";
 				}
-				echo ">&nbsp;&nbsp;<a href='index.php?navig=14&amp;period=" . $period . "&amp;site=" . $site . "&amp;crawler=" . $crawlencode . "&amp;graphpos=" . $graphpos . "'  >" . $keyworddisplay . "</a></td>\n";
+				echo ">&nbsp;&nbsp;<a href='index.php?navig=14&amp;period=" . $settings->period . "&amp;site=" . $settings->siteid . "&amp;crawler=" . $crawlencode . "&amp;graphpos=" . $settings->graphpos . "'  >" . $keyworddisplay . "</a></td>\n";
 				echo "<td class='tableau60' width=\"4%\">\n";
 				echo "<a href='" . $urlpage . "'><img src=\"./images/page.png\" width=\"16\" height=\"16\" border=\"0\" ></a>\n";
 				echo "</td> \n";
@@ -403,18 +398,18 @@ if (count($visitkeyword) >= 1) {
 				echo "</div>\n";
 			}
 			$comptligne++;
-			if ($displayall == 'no') {
+			if ($settings->displayall == 'no') {
 				$comptdata++;
 			}
 		}
 	}
 	echo "</table>\n";
-	if (count($visitkeyword) >= $rowdisplay && $displayall == 'no') {
+	if (count($visitkeyword) >= $settings->displayrows && $settings->displayall == 'no') {
 		echo "<h2><span class=\"smalltext\">\n";
-		printf($language['100_lines'], $rowdisplay);
+		printf($language['100_lines'], $settings->displayrows);
 		echo "<br>\n";
-		$crawlencode = urlencode($crawler);
-		echo "<a href=\"index.php?navig=$navig&period=$period&site=$site&crawler=$crawlencode&order=$order&displayall=yes&graphpos=$graphpos\">" . $language['show_all'] . "</a></span></h2>";
+		$crawlencode = urlencode($settings->crawler);
+		echo "<a href=\"index.php?navig=$settings->navig&period=$settings->period&site=$settings->siteid&crawler=$crawlencode&order=$settings->displayorder&displayall=yes&graphpos=$settings->graphpos\">" . $language['show_all'] . "</a></span></h2>";
 	}
 	echo "<br>\n";
 } else {

@@ -34,34 +34,34 @@ session_name('crawlt');
 session_start();
 //access control
 if (!isset($_SESSION['rightsite'])) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
 
 //get url data
 if (isset($_GET['navig'])) {
 	$navig = (int)$_GET['navig'];
 } else {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
 if (isset($_GET['period'])) {
 	$period = (int)$_GET['period'];
 } else {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
 if (isset($_GET['site'])) {
 	$site = (int)$_GET['site'];
 } else {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
 if (isset($_GET['crawler'])) {
 	$crawler = stripslashes($_GET['crawler']);
 } else {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
 if (isset($_GET['graphpos'])) {
 	$graphpos = $_GET['graphpos'];
 } else {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
 if (isset($_GET['checklink'])) {
 	$checklink = (int)$_GET['checklink'];
@@ -69,22 +69,20 @@ if (isset($_GET['checklink'])) {
 	$checklink = 0;
 }
 
-// include
-include ("../include/configconnect.php");
-//database connection
-require_once("../include/jgbdb.php");
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
+define('IN_CRAWLT', TRUE);
+
+require_once("../include/db.class.php");
+$db = new ctDb();
 
 //clear cache table
 $sqlcache = "TRUNCATE TABLE crawlt_cache";
-$requetecache = $connexion->query($sqlcache) or die("MySQL query error");
+$requetecache = $db->connexion->query($sqlcache) or die("MySQL query error");
 
 //clear graph table
 $sqlcache = "TRUNCATE TABLE crawlt_graph";
-$requetecache = $connexion->query($sqlcache);
+$requetecache = $db->connexion->query($sqlcache);
 
-//mysql connexion close
-mysqli_close($connexion);
+$db->close(); // Close database
 
 //clear the cache folder
 require_once("../include/functions.php");

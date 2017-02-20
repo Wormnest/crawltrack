@@ -185,7 +185,7 @@ if(!isset($tables_to_check) || empty($tables_to_check))
 				PRIMARY KEY  (id_config)
 				)",
 			'insert_query' => "INSERT INTO crawlt_config (id_config, timeshift, public, mail, datelastmail, addressmail, lang, version, firstdayweek, rowdisplay, orderdisplay, typemail, typecharset, blockattack, sessionid, includeparameter) 
-			VALUES ('1','0','0','0','0','','".crawlt_sql_quote($connexion, $crawltlang)."','".crawlt_sql_quote($connexion, $versionid)."','Monday','30','0','1','1','0','0','0')"
+			VALUES ('1','0','0','0','0','','".crawlt_sql_quote($db->connexion, $settings->language)."','".crawlt_sql_quote($db->connexion, $versionid)."','Monday','30','0','1','1','0','0','0')"
 		),
 		array(
 			'table_name' => 'crawlt_update_attack',
@@ -715,7 +715,7 @@ $indexes_to_check = array(
 
 // Get the tables list
 $tables_list_sql = "SHOW TABLES ";
-$tables = $connexion->query($tables_list_sql);
+$tables = $db->connexion->query($tables_list_sql);
 
 $tables_names = array();
 while (list($tablename)=$tables->fetch_array()) 
@@ -737,7 +737,7 @@ if($maintenance_mode == 'install') {
 				if($table_to_check['table_name'] == 'crawlt_update')
 					$existing_crawlt_update_table = false;
 				// The table isn't in the existing tables list, create it
-				$result_create = $connexion->query($table_to_check['create_delete_query']);
+				$result_create = $db->connexion->query($table_to_check['create_delete_query']);
 				if (!$result_create) {
 					// Query failed, add the error message
 					$tables_actions_error_messages[] = mysqli_error();
@@ -746,10 +746,10 @@ if($maintenance_mode == 'install') {
 				if (!empty($table_to_check['insert_query'])) {
 					// Check if the insert query is a filename or a standard query
 					if (strpos($table_to_check['insert_query'], 'INSERT') !== false) {
-						$result_insert = $connexion->query($table_to_check['insert_query']);
+						$result_insert = $db->connexion->query($table_to_check['insert_query']);
 					} else {
 						// use the SQL file in data directory
-						$result_insert = $connexion->query(file_get_contents(dirname(__FILE__) . '/data/' . $table_to_check['insert_query']));
+						$result_insert = $db->connexion->query(file_get_contents(dirname(__FILE__) . '/data/' . $table_to_check['insert_query']));
 					}
 					if (!$result_insert) {
 						// Query failed, add the error message
@@ -759,7 +759,7 @@ if($maintenance_mode == 'install') {
 			}
 		}
 		if (isset($table_to_check['execute_after']) && !empty($table_to_check['execute_after'])) {
-			call_user_func($table_to_check['execute_after'], $connexion);
+			call_user_func($table_to_check['execute_after'], $db->connexion);
 		}
 	}
 } else {
@@ -778,14 +778,14 @@ if($maintenance_mode == 'install') {
 					if($table_to_check['table_name'] == 'crawlt_update')
 						$existing_crawlt_update_table = false;
 					// The table isn't in the existing tables list, create it
-					$result_create = $connexion->query($table_to_check['create_delete_query']);
+					$result_create = $db->connexion->query($table_to_check['create_delete_query']);
 					if (!$result_create) {
 						// Query failed, add the error message
 						$tables_actions_error_messages[] = mysqli_error();
 					}
 					// Add data in the table if needed
 					if(!empty($table_to_check['insert_query'])) {
-						$result_insert = $connexion->query($table_to_check['insert_query']);
+						$result_insert = $db->connexion->query($table_to_check['insert_query']);
 						if (!$result_insert) {
 							// Query failed, add the error message
 							$tables_actions_error_messages[] = mysqli_error();
@@ -794,14 +794,14 @@ if($maintenance_mode == 'install') {
 				}
 			} else {
 				// Action is to delete (drop) the table
-				$result_delete = $connexion->query($table_to_check['create_delete_query']);
+				$result_delete = $db->connexion->query($table_to_check['create_delete_query']);
 				if (!$result_delete) {
 					// Query failed, add the error message
 					$tables_actions_error_messages[] = mysqli_error();
 				}
 			}
 			if(isset($table_to_check['execute_after']) && !empty($table_to_check['execute_after'])) {
-				call_user_func($table_to_check['execute_after'], $connexion);
+				call_user_func($table_to_check['execute_after'], $db->connexion);
 			}
 		}
 	}
@@ -810,7 +810,7 @@ if($maintenance_mode == 'install') {
 	foreach ($fields_to_check as $table_name => $fields) {
 		if ($tables_to_touch == 'all' || (is_array($tables_to_touch) && in_array($table_name, $tables_to_touch))) {
 			// Either all the tables are to be modified or the current table is in the restricted tables array
-			$table_info_res = $connexion->query("SHOW COLUMNS FROM " . $table_name . "");
+			$table_info_res = $db->connexion->query("SHOW COLUMNS FROM " . $table_name . "");
 			$table_field_names = array();
 			while ($table_info = $table_info_res->fetch_assoc()) {
 				$table_field_names[] = $table_info['Field'];
@@ -821,7 +821,7 @@ if($maintenance_mode == 'install') {
 					if($table_name == 'crawlt_site' && $a_field['field_name'] == 'url')
 						$existing_crawlt_site_url_field = false;
 					// The field isn't in the existing tables list, create it
-					$result_update = $connexion->query($a_field['add_query']);
+					$result_update = $db->connexion->query($a_field['add_query']);
 					if (!$result_update) {
 						// Query failed, add the error message
 						$fields_actions_error_messages[] = mysqli_error();
@@ -835,7 +835,7 @@ if($maintenance_mode == 'install') {
 	foreach ($indexes_to_check as $table_name => $indexes) {
 		if ($tables_to_touch == 'all' || (is_array($tables_to_touch) && in_array($table_name, $tables_to_touch))) {
 			// Either all the tables are to be modified or the current table is in the restricted tables array
-			$table_info_res = $connexion->query("SHOW INDEX FROM " . $table_name . "");
+			$table_info_res = $db->connexion->query("SHOW INDEX FROM " . $table_name . "");
 			$table_field_names = array();
 			while ($table_info = $table_info_res->fetch_assoc()) {
 				$table_index_names[] = $table_info['Column_name'];
@@ -843,7 +843,7 @@ if($maintenance_mode == 'install') {
 			foreach ($indexes as $an_index) {
 				if (!in_array($an_index['index_name'], $table_index_names)) {
 					// The field isn't in the existing tables list, create it
-					$result_update = $connexion->query($an_index['add_query']);
+					$result_update = $db->connexion->query($an_index['add_query']);
 					if (!$result_update) {
 						// Query failed, add the error message
 						$index_actions_error_messages[] = mysqli_error();

@@ -51,33 +51,29 @@ if ($suppresssite == 1) {
 		exit;
 	}
 	if ($suppresssiteok == 1) {
-		//database connection
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-
 		//empty the cache table
 		$sqlcache = "TRUNCATE TABLE crawlt_cache";
-		$requetecache = db_query($sqlcache, $connexion);
+		$requetecache = db_query($sqlcache, $db->connexion);
 		//site suppression
 		
 		//database query to suppress the site
-		$sqldelete = "DELETE FROM crawlt_site WHERE name= '" . crawlt_sql_quote($connexion, $sitetosuppress) . "'";
-		$requetedelete = db_query($sqldelete, $connexion);
+		$sqldelete = "DELETE FROM crawlt_site WHERE name= '" . crawlt_sql_quote($db->connexion, $sitetosuppress) . "'";
+		$requetedelete = db_query($sqldelete, $db->connexion);
 		
 		//database query to suppress the site visits in the visit table
-		$sqldelete2 = "DELETE FROM crawlt_visits WHERE crawlt_site_id_site= '" . crawlt_sql_quote($connexion, $idsitetosuppress) . "'";
-		$requetedelete2 = db_query($sqldelete2, $connexion);
+		$sqldelete2 = "DELETE FROM crawlt_visits WHERE crawlt_site_id_site= '" . crawlt_sql_quote($db->connexion, $idsitetosuppress) . "'";
+		$requetedelete2 = db_query($sqldelete2, $db->connexion);
 		
 		//database query to optimize the table
 		$sqloptimize = "OPTIMIZE TABLE crawlt_visits";
-		$requeteoptimize = db_query($sqloptimize, $connexion);
+		$requeteoptimize = db_query($sqloptimize, $db->connexion);
 		
 		//database query to list the pages no more used in visit table
 		$sql = "SELECT id_page FROM  crawlt_pages
 			LEFT OUTER JOIN crawlt_visits
 			ON crawlt_visits.crawlt_pages_id_page=crawlt_pages.id_page 
 			WHERE crawlt_visits.crawlt_pages_id_page IS NULL";
-		$requete = db_query($sql, $connexion);
+		$requete = db_query($sql, $db->connexion);
 		$nbrresult = $requete->num_rows;
 		if ($nbrresult >= 1) {
 			while ($ligne = $requete->fetch_row()) {
@@ -87,13 +83,13 @@ if ($suppresssite == 1) {
 			
 			//database query to suppress the data in page table
 			$sqldelete3 = "DELETE FROM crawlt_pages WHERE id_page IN ('$crawltlistpage')";
-			$requetedelete3 = db_query($sqldelete3, $connexion);
+			$requetedelete3 = db_query($sqldelete3, $db->connexion);
 			
 			//database query to optimize the table
 			$sqloptimize2 = "OPTIMIZE TABLE crawlt_pages";
-			$requeteoptimize2 = db_query($sqloptimize2, $connexion);
+			$requeteoptimize2 = db_query($sqloptimize2, $db->connexion);
 		}
-		mysqli_close($connexion);
+		$db->close(); // Close database
 		if ($requetedelete && $requetedelete2 ) {
 			echo "<br><br><h1>" . $language['site_suppress_ok'] . "</h1>\n";
 			echo "<div class=\"form\">\n";
@@ -153,13 +149,9 @@ if ($suppresssite == 1) {
 		echo "</div><br><br>";
 	}
 } else {
-	//database connection
-	require_once("jgbdb.php");
-	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-	
 	//database query to get site list
 	$sqldeletesite = "SELECT * FROM crawlt_site";
-	$requetedeletesite = db_query($sqldeletesite, $connexion);
+	$requetedeletesite = db_query($sqldeletesite, $db->connexion);
 	$nbrresult = $requetedeletesite->num_rows;
 	if ($nbrresult >= 1) {
 		while ($ligne = $requetedeletesite->fetch_object()) {
@@ -182,8 +174,8 @@ if ($suppresssite == 1) {
 			echo "" . $site1display . "\n";
 			echo "</td><td class='tableau4'>\n";
 			echo "<form action=\"index.php\" method=\"POST\" >\n";
-			echo "<input type=\"hidden\" name ='period' value=\"$period\">\n";
-			echo "<input type=\"hidden\" name ='navig' value=\"$navig\">\n";
+			echo "<input type=\"hidden\" name ='period' value=\"$settings->period\">\n";
+			echo "<input type=\"hidden\" name ='navig' value=\"$settings->navig\">\n";
 			echo "<input type=\"hidden\" name ='validform' value=\"9\">\n";
 			echo "<input type=\"hidden\" name ='suppresssite' value=\"1\">\n";
 			echo "<input type=\"hidden\" name ='sitetosuppress' value=\"$site1\">\n";
@@ -205,6 +197,6 @@ if ($suppresssite == 1) {
 		echo "</table></div>\n";
 		echo "<br><br>\n";
 	}
-mysqli_close($connexion);
+	$db->close(); // Close database
 }
 ?>

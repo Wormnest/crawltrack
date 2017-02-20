@@ -18,7 +18,7 @@
 //----------------------------------------------------------------------
 
 if (!defined('IN_CRAWLT')) {
-	exit('<h1>Hacking attempt !!!!</h1>');
+	exit('<h1>No direct access</h1>');
 }
 
 //initialize array
@@ -37,20 +37,20 @@ if (preg_match('#^http://www.#i', $hostsite)) {
 	$hostsite3 = str_replace("http:", "https:", $hostsite);
 	$lengthurl3 = ($lengthurl + 1);	
 	$notinternalreferercondition = "
-    AND Substring(referer From 1 For " . $lengthurl . ") != '" . crawlt_sql_quote($connexion, $hostsite) . "'
-    AND Substring(referer From 1 For " . $lengthurl2 . ") != '" . crawlt_sql_quote($connexion, $hostsite2) . "'
-    AND Substring(referer From 1 For " . $lengthurl3 . ") != '" . crawlt_sql_quote($connexion, $hostsite3) . "'";   
+    AND Substring(referer From 1 For " . $lengthurl . ") != '" . crawlt_sql_quote($db->connexion, $hostsite) . "'
+    AND Substring(referer From 1 For " . $lengthurl2 . ") != '" . crawlt_sql_quote($db->connexion, $hostsite2) . "'
+    AND Substring(referer From 1 For " . $lengthurl3 . ") != '" . crawlt_sql_quote($db->connexion, $hostsite3) . "'";   
 } else {
 	$notinternalreferercondition = "
-    AND Substring(referer From 1 For " . $lengthurl . ") != '" . crawlt_sql_quote($connexion, $hostsite) . "'";
+    AND Substring(referer From 1 For " . $lengthurl . ") != '" . crawlt_sql_quote($db->connexion, $hostsite) . "'";
 }
 
-if ($navig != 21) {
+if ($settings->navig != 21) {
 	//prepare X axis label for graph (we use graph calculation to calculate everything to avoid double calcul)
 	//number of days (or months) for the period
 	$nbday2 = 0;
 	$date = $datebeginlocalcut[0];
-	if (($period == 0 || $period >= 1000) && $navig != 0) {
+	if (($settings->period == 0 || $settings->period >= 1000) && $settings->navig != 0) {
 		$nbday = 8;
 		$daterequest3seo = date("Y-m-d H:i:s", (strtotime($daterequest) - 604800));
 		$datebeginlocalseo = date("Y-m-d H:i:s", (strtotime($datebeginlocal) - 604800));
@@ -67,19 +67,19 @@ if ($navig != 21) {
 		}
 		//-------------------------------------------
 		
-	} elseif ($period == 1 || ($period >= 300 && $period < 400)) {
+	} elseif ($settings->period == 1 || ($settings->period >= 300 && $settings->period < 400)) {
 		$nbday = 7;
 		$daterequest3seo = $daterequest;
-	} elseif ($period == 2 || ($period >= 100 && $period < 200)) {
+	} elseif ($settings->period == 2 || ($settings->period >= 100 && $settings->period < 200)) {
 		$nbday = date("t", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
 		$daterequest3seo = $daterequest;
-	} elseif ($period == 3 || ($period >= 200 && $period < 300)) {
+	} elseif ($settings->period == 3 || ($settings->period >= 200 && $settings->period < 300)) {
 		$nbday = 12;
 		$daterequest3seo = $daterequest;
-	} elseif ($period == 4) {
+	} elseif ($settings->period == 4) {
 		$nbday = 8;
 		$daterequest3seo = $daterequest;
-	} elseif ($period == 5 || (($period == 0 || $period >= 1000) && $navig == 0)) {
+	} elseif ($settings->period == 5 || (($settings->period == 0 || $settings->period >= 1000) && $settings->navig == 0)) {
 		$nbday = 2;
 		$daterequest3seo = $daterequest;
 	}
@@ -199,15 +199,15 @@ if ($navig != 21) {
 	} while ($nbday2 < $nbday);
 	
 	//query to count the number of entry
-	if ($period == 3) //case one year
+	if ($settings->period == 3) //case one year
 	{
-		$sql = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%m\/%Y') , count(DISTINCT CONCAT(crawlt_ip, crawlt_browser)), crawlt_id_crawler
+		$sql = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%m\/%Y') , count(DISTINCT CONCAT(crawlt_ip, crawlt_browser)), crawlt_id_crawler
 			FROM crawlt_visits_human
-			WHERE `date` >='" . crawlt_sql_quote($connexion, $daterequest3seo) . "'       
-			AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+			WHERE `date` >='" . crawlt_sql_quote($db->connexion, $daterequest3seo) . "'       
+			AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 			AND  crawlt_id_crawler IN ('1','2','3','4','5','6','7','8')               
-			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%m\/%Y'),crawlt_id_crawler";
-		$requete = db_query($sql, $connexion);
+			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%m\/%Y'),crawlt_id_crawler";
+		$requete = db_query($sql, $db->connexion);
 		while ($ligne = $requete->fetch_row()) {
 			if ($ligne[2] == 1) {
 				$googlevisit[$ligne[0]] = $ligne[1];
@@ -236,55 +236,55 @@ if ($navig != 21) {
 		}
 		
 		//query to have the referer visits
-		$sqlreferer = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%m\/%Y') , count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))
+		$sqlreferer = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%m\/%Y') , count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))
 			FROM crawlt_visits_human
 			INNER JOIN crawlt_referer    
 			ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
-			AND  `date` >='" . crawlt_sql_quote($connexion, $daterequest3seo) . "'       
-			AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+			AND  `date` >='" . crawlt_sql_quote($db->connexion, $daterequest3seo) . "'       
+			AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 			AND  crawlt_id_crawler='0'
 			$notinternalreferercondition
 			AND referer !=''       
-			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%m\/%Y')";
-		$requetereferer = db_query($sqlreferer, $connexion);
+			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%m\/%Y')";
+		$requetereferer = db_query($sqlreferer, $db->connexion);
 		while ($ligne = $requetereferer->fetch_row()) {
 			$referervisit[$ligne[0]] = $ligne[1];
 		}
 		mysqli_free_result($requetereferer);
 		
 		//query to have the direct visits
-		$sqldirect = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%m\/%Y'), count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))
+		$sqldirect = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%m\/%Y'), count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))
 			FROM crawlt_visits_human
-			WHERE `date` >='" . crawlt_sql_quote($connexion, $daterequest3seo) . "'   
-			AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+			WHERE `date` >='" . crawlt_sql_quote($db->connexion, $daterequest3seo) . "'   
+			AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 			AND  crawlt_id_crawler='0'
 			AND  crawlt_id_referer='0'
-			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%m\/%Y')";
-		$requetedirect = db_query($sqldirect, $connexion);
+			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%m\/%Y')";
+		$requetedirect = db_query($sqldirect, $db->connexion);
 		while ($ligne = $requetedirect->fetch_row()) {
 			$directvisit[$ligne[0]] = $ligne[1];
 		}
 		mysqli_free_result($requetedirect);
 		
 		//query to have the unique visitor
-		$sql = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%m\/%Y'), count(DISTINCT CONCAT(crawlt_ip, crawlt_browser)) 
+		$sql = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%m\/%Y'), count(DISTINCT CONCAT(crawlt_ip, crawlt_browser)) 
 			FROM crawlt_visits_human
 			LEFT OUTER JOIN crawlt_referer
 			ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
-			WHERE (`date` >='" . crawlt_sql_quote($connexion, $daterequest3seo) . "'
-			AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+			WHERE (`date` >='" . crawlt_sql_quote($db->connexion, $daterequest3seo) . "'
+			AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 			AND  crawlt_id_crawler='0'
 			AND  crawlt_id_referer='0')
-			OR (`date` >='" . crawlt_sql_quote($connexion, $daterequest3seo) . "' 
-			AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+			OR (`date` >='" . crawlt_sql_quote($db->connexion, $daterequest3seo) . "' 
+			AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 			AND  crawlt_id_crawler IN ('1','2','3','4','5','6','7','8'))
-			OR (`date` >='" . crawlt_sql_quote($connexion, $daterequest3seo) . "' 
-			AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+			OR (`date` >='" . crawlt_sql_quote($db->connexion, $daterequest3seo) . "' 
+			AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 			AND  crawlt_id_crawler='0'
 			$notinternalreferercondition
 			AND referer !='' )
-			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%m\/%Y')";
-		$requete = db_query($sql, $connexion);
+			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%m\/%Y')";
+		$requete = db_query($sql, $db->connexion);
 		while ($ligne = $requete->fetch_row()) {
 			$uniquevisitor[$ligne[0]] = $ligne[1];
 		}
@@ -298,7 +298,7 @@ if ($navig != 21) {
 		$visitsendyahoo = 0;
 		$visitsendexalead = 0;
 		$visitsendyandex = 0;
-		$visitsendaol = 0;				
+		$visitsendaol = 0;
 		$visitsendother = 0;
 		$visitdirect = 0;
 		$nbrvisitor = 0;
@@ -306,26 +306,26 @@ if ($navig != 21) {
 			$totalvisit[$key] = $askvisit[$key] + $googlevisit[$key]+ $googleimagevisit[$key] + $msnvisit[$key] + $yahoovisit[$key] + $exaleadvisit[$key] + $yandexvisit[$key] + $aolvisit[$key] + $referervisit[$key] + $directvisit[$key];
 			$visitsendask = $visitsendask + $askvisit[$key];
 			$visitsendgoogle = $visitsendgoogle + $googlevisit[$key];
-			$visitsendgoogleimage = $visitsendgoogleimage + $googleimagevisit[$key];			
+			$visitsendgoogleimage = $visitsendgoogleimage + $googleimagevisit[$key];
 			$visitsendmsn = $visitsendmsn + $msnvisit[$key];
 			$visitsendyahoo = $visitsendyahoo + $yahoovisit[$key];
 			$visitsendexalead = $visitsendexalead + $exaleadvisit[$key];
 			$visitsendyandex = $visitsendyandex + $yandexvisit[$key];
-			$visitsendaol = $visitsendaol + $aolvisit[$key];						
+			$visitsendaol = $visitsendaol + $aolvisit[$key];
 			$visitsendother = $visitsendother + $referervisit[$key];
 			$visitdirect = $visitdirect + $directvisit[$key];
 			$nbrvisitor = $nbrvisitor + $uniquevisitor[$key];
 		}
-	} elseif ($period >= 200 && $period < 300) //case one year back and forward
+	} elseif ($settings->period >= 200 && $settings->period < 300) //case one year back and forward
 	{
-		$sql = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%m\/%Y') , count(DISTINCT CONCAT(crawlt_ip, crawlt_browser)),  crawlt_id_crawler 
+		$sql = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%m\/%Y') , count(DISTINCT CONCAT(crawlt_ip, crawlt_browser)),  crawlt_id_crawler 
 			FROM crawlt_visits_human
-			WHERE `date` >='" . crawlt_sql_quote($connexion, $daterequest3seo) . "'
-			AND `date` <'" . crawlt_sql_quote($connexion, $daterequest2) . "'        
-			AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+			WHERE `date` >='" . crawlt_sql_quote($db->connexion, $daterequest3seo) . "'
+			AND `date` <'" . crawlt_sql_quote($db->connexion, $daterequest2) . "'        
+			AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 			AND  crawlt_id_crawler IN ('1','2','3','4','5','6','7','8')          
-			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%m\/%Y'),crawlt_id_crawler";
-		$requete = db_query($sql, $connexion);
+			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%m\/%Y'),crawlt_id_crawler";
+		$requete = db_query($sql, $db->connexion);
 		while ($ligne = $requete->fetch_row()) {
 			if ($ligne[2] == 1) {
 				$googlevisit[$ligne[0]] = $ligne[1];
@@ -350,64 +350,64 @@ if ($navig != 21) {
 			}	
 			if ($ligne[2] == 8) {
 				$aolvisit[$ligne[0]] = $ligne[1];
-			}					
+			}
 		}
 		mysqli_free_result($requete);
 		
 		//query to have the referer visits
-		$sqlreferer = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%m\/%Y') , count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))  
+		$sqlreferer = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%m\/%Y') , count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))  
 			FROM crawlt_visits_human
 			INNER JOIN crawlt_referer    
 			ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
-			AND  `date` >='" . crawlt_sql_quote($connexion, $daterequest3seo) . "'
-			AND `date` <'" . crawlt_sql_quote($connexion, $daterequest2) . "'        
-			AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+			AND  `date` >='" . crawlt_sql_quote($db->connexion, $daterequest3seo) . "'
+			AND `date` <'" . crawlt_sql_quote($db->connexion, $daterequest2) . "'        
+			AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 			AND  crawlt_id_crawler='0'
 			$notinternalreferercondition
 			AND referer !=''       
-			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%m\/%Y')";
-		$requetereferer = db_query($sqlreferer, $connexion);
+			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%m\/%Y')";
+		$requetereferer = db_query($sqlreferer, $db->connexion);
 		while ($ligne = $requetereferer->fetch_row()) {
 			$referervisit[$ligne[0]] = $ligne[1];
 		}
 		mysqli_free_result($requetereferer);
 		
 		//query to have the direct visits
-		$sqldirect = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%m\/%Y'), count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))  
+		$sqldirect = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%m\/%Y'), count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))  
 			FROM crawlt_visits_human
-			WHERE `date` >='" . crawlt_sql_quote($connexion, $daterequest3seo) . "'
-			AND `date` <'" . crawlt_sql_quote($connexion, $daterequest2) . "'    
-			AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+			WHERE `date` >='" . crawlt_sql_quote($db->connexion, $daterequest3seo) . "'
+			AND `date` <'" . crawlt_sql_quote($db->connexion, $daterequest2) . "'    
+			AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 			AND  crawlt_id_crawler='0'
 			AND  crawlt_id_referer='0'
-			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%m\/%Y')";
-		$requetedirect = db_query($sqldirect, $connexion);
+			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%m\/%Y')";
+		$requetedirect = db_query($sqldirect, $db->connexion);
 		while ($ligne = $requetedirect->fetch_row()) {
 			$directvisit[$ligne[0]] = $ligne[1];
 		}
 		
 		//query to have the unique visitor
-		$sql = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%m\/%Y'), count(DISTINCT CONCAT(crawlt_ip, crawlt_browser)) 
+		$sql = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%m\/%Y'), count(DISTINCT CONCAT(crawlt_ip, crawlt_browser)) 
 			FROM crawlt_visits_human
 			LEFT OUTER JOIN crawlt_referer
 			ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
-			WHERE (`date` >='" . crawlt_sql_quote($connexion, $daterequest3seo) . "'
-			AND `date` <'" . crawlt_sql_quote($connexion, $daterequest2) . "'
-			AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+			WHERE (`date` >='" . crawlt_sql_quote($db->connexion, $daterequest3seo) . "'
+			AND `date` <'" . crawlt_sql_quote($db->connexion, $daterequest2) . "'
+			AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 			AND  crawlt_id_crawler='0'
 			AND  crawlt_id_referer='0')
-			OR (`date` >='" . crawlt_sql_quote($connexion, $daterequest3seo) . "'
-			AND `date` <'" . crawlt_sql_quote($connexion, $daterequest2) . "'   
-			AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+			OR (`date` >='" . crawlt_sql_quote($db->connexion, $daterequest3seo) . "'
+			AND `date` <'" . crawlt_sql_quote($db->connexion, $daterequest2) . "'   
+			AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 			AND  crawlt_id_crawler IN ('1','2','3','4','5','6','7','8'))
-			OR (`date` >='" . crawlt_sql_quote($connexion, $daterequest3seo) . "'
-			AND `date` <'" . crawlt_sql_quote($connexion, $daterequest2) . "'   
-			AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+			OR (`date` >='" . crawlt_sql_quote($db->connexion, $daterequest3seo) . "'
+			AND `date` <'" . crawlt_sql_quote($db->connexion, $daterequest2) . "'   
+			AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 			AND  crawlt_id_crawler='0'
 			$notinternalreferercondition
 			AND referer !='' )
-			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%m\/%Y')";
-		$requete = db_query($sql, $connexion);
+			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%m\/%Y')";
+		$requete = db_query($sql, $db->connexion);
 		while ($ligne = $requete->fetch_row()) {
 			$uniquevisitor[$ligne[0]] = $ligne[1];
 		}
@@ -440,13 +440,13 @@ if ($navig != 21) {
 			$nbrvisitor = $nbrvisitor + $uniquevisitor[$key];
 		}
 	} else {
-		$sql = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%d-%m-%Y') , count(DISTINCT CONCAT(crawlt_ip, crawlt_browser)), crawlt_id_crawler 
+		$sql = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%d-%m-%Y') , count(DISTINCT CONCAT(crawlt_ip, crawlt_browser)), crawlt_id_crawler 
 			FROM crawlt_visits_human
-			WHERE `date` >='" . crawlt_sql_quote($connexion, $daterequest3seo) . "'
-			AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+			WHERE `date` >='" . crawlt_sql_quote($db->connexion, $daterequest3seo) . "'
+			AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 			AND   crawlt_id_crawler IN ('1','2','3','4','5','6','7','8')        
-			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%d-%m-%Y'),crawlt_id_crawler";
-		$requete = db_query($sql, $connexion);
+			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%d-%m-%Y'),crawlt_id_crawler";
+		$requete = db_query($sql, $db->connexion);
 		
 		while ($ligne = $requete->fetch_row()) {
 			if ($ligne[2] == 1) {
@@ -477,55 +477,55 @@ if ($navig != 21) {
 		mysqli_free_result($requete);
 		
 		//query to have the referer visits
-		$sqlreferer = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%d-%m-%Y') , count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))
+		$sqlreferer = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%d-%m-%Y') , count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))
 			FROM crawlt_visits_human
 			INNER JOIN crawlt_referer    
 			ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
-			WHERE `date` >='" . crawlt_sql_quote($connexion, $daterequest3seo) . "'
-			AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+			WHERE `date` >='" . crawlt_sql_quote($db->connexion, $daterequest3seo) . "'
+			AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 			AND  crawlt_id_crawler='0'
 			$notinternalreferercondition
 			AND referer !=''       
-			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%d-%m-%Y')";
-		$requetereferer = db_query($sqlreferer, $connexion);
+			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%d-%m-%Y')";
+		$requetereferer = db_query($sqlreferer, $db->connexion);
 		while ($ligne = $requetereferer->fetch_row()) {
 			$referervisit[$ligne[0]] = $ligne[1];
 		}
 		mysqli_free_result($requetereferer);
 		
 		//query to have the direct visits
-		$sqldirect = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%d-%m-%Y'), count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))
+		$sqldirect = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%d-%m-%Y'), count(DISTINCT CONCAT(crawlt_ip, crawlt_browser))
 			FROM crawlt_visits_human
-			WHERE `date` >='" . crawlt_sql_quote($connexion, $daterequest3seo) . "'
-			AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+			WHERE `date` >='" . crawlt_sql_quote($db->connexion, $daterequest3seo) . "'
+			AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 			AND  crawlt_id_crawler='0'
 			AND  crawlt_id_referer='0'
-			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%d-%m-%Y')";
-		$requetedirect = db_query($sqldirect, $connexion);
+			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%d-%m-%Y')";
+		$requetedirect = db_query($sqldirect, $db->connexion);
 		while ($ligne = $requetedirect->fetch_row()) {
 			$directvisit[$ligne[0]] = $ligne[1];
 		}
 		mysqli_free_result($requetedirect);
 		
 		//query to have the unique visitor
-		$sql = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%d-%m-%Y'), count(DISTINCT CONCAT(crawlt_ip, crawlt_browser)) 
+		$sql = "SELECT FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%d-%m-%Y'), count(DISTINCT CONCAT(crawlt_ip, crawlt_browser)) 
 			FROM crawlt_visits_human
 			LEFT OUTER JOIN crawlt_referer
 			ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
-			WHERE (`date` >='" . crawlt_sql_quote($connexion, $daterequest3seo) . "'
-			AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+			WHERE (`date` >='" . crawlt_sql_quote($db->connexion, $daterequest3seo) . "'
+			AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 			AND  crawlt_id_crawler='0'
 			AND  crawlt_id_referer='0')
-			OR (`date` >='" . crawlt_sql_quote($connexion, $daterequest3seo) . "'   
-			AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+			OR (`date` >='" . crawlt_sql_quote($db->connexion, $daterequest3seo) . "'   
+			AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 			AND  crawlt_id_crawler IN ('1','2','3','4','5','6','7','8'))
-			OR (`date` >='" . crawlt_sql_quote($connexion, $daterequest3seo) . "'   
-			AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+			OR (`date` >='" . crawlt_sql_quote($db->connexion, $daterequest3seo) . "'   
+			AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 			AND  crawlt_id_crawler='0'
 			$notinternalreferercondition
 			AND referer !='' )
-			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($times*3600), '%d-%m-%Y')";
-		$requete = db_query($sql, $connexion);
+			GROUP BY FROM_UNIXTIME(UNIX_TIMESTAMP(`date`)-($settings->timediff*3600), '%d-%m-%Y')";
+		$requete = db_query($sql, $db->connexion);
 		while ($ligne = $requete->fetch_row()) {
 			$uniquevisitor[$ligne[0]] = $ligne[1];
 		}
@@ -565,18 +565,18 @@ $sql = "SELECT crawlt_ip
 	LEFT OUTER JOIN crawlt_referer
 	ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
 	WHERE  ($datetolookfor
-	AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+	AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 	AND  crawlt_id_crawler='0'
 	AND  crawlt_id_referer='0')
 	OR ($datetolookfor    
-	AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+	AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 	AND  crawlt_id_crawler IN ('1','2','3','4','5','6','7','8'))
 	OR ($datetolookfor      
-	AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+	AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 	AND  crawlt_id_crawler='0'
 	$notinternalreferercondition
 	AND referer !='' )";
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 while ($ligne = $requete->fetch_row()) {
 	$listip[$ligne[0]] = $ligne[0];
 }
@@ -590,35 +590,35 @@ if (count($listip) < 10000) //test to avoid overload in case of more than 10000 
 	$sql = "SELECT  COUNT(crawlt_id_page) as numrow  
 		FROM crawlt_visits_human
 		WHERE  $datetolookfor 
-		AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+		AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 		AND crawlt_ip IN ('$crawltlistip')";
 } else {
 	$nottoomuchip = 0;
 	$sql = "SELECT  COUNT(crawlt_id_page) as numrow  
 		FROM crawlt_visits_human
 		WHERE  $datetolookfor 
-		AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'";
+		AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'";
 }
 require_once("jgbdb.php");
-$nbrpage = db_result(db_query($sql, $connexion),0,"numrow");
+$nbrpage = db_result(db_query($sql, $db->connexion),0,"numrow");
 
 //query to have the number of visitor with only one page view (to caculate bounce rate)
 if ($nottoomuchip == 1) {
 	$sql = "SELECT crawlt_ip, count(id_visit)
 		FROM crawlt_visits_human
 		WHERE  $datetolookfor 
-		AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+		AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 		AND crawlt_ip IN ('$crawltlistip')
 		GROUP BY crawlt_ip";
 } else {
 	$sql = "SELECT crawlt_ip, count(id_visit)
 		FROM crawlt_visits_human
 		WHERE  $datetolookfor 
-		AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+		AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 		GROUP BY crawlt_ip";
 }
 $onepage = 0;
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 while ($ligne = $requete->fetch_row()) {
 	if ($ligne[1] == 1) {
 		$onepage++;
@@ -631,23 +631,23 @@ if ($nottoomuchip == 1) {
 	$sql = "SELECT crawlt_browser, count(DISTINCT crawlt_ip)
 		FROM crawlt_visits_human
 		WHERE  $datetolookfor 
-		AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+		AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 		AND crawlt_ip IN ('$crawltlistip')
 		GROUP BY crawlt_browser";
 } else {
 	$sql = "SELECT crawlt_browser, count(DISTINCT crawlt_ip)
 		FROM crawlt_visits_human
 		WHERE  $datetolookfor 
-		AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+		AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 		GROUP BY crawlt_browser";
 }
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 while ($ligne = $requete->fetch_row()) {
 	$nbrvisitorbrowser[$ligne[0]] = $ligne[1];
 }
 mysqli_free_result($requete);
 $datetoused = date("d-m-Y", (strtotime($datebeginlocal)));
-if (($period == 0 || $period >= 1000) && $navig != 21) {
+if (($settings->period == 0 || $settings->period >= 1000) && $settings->navig != 21) {
 	$datetoused = date("d-m-Y", (strtotime($datebeginlocal)));
 	$visitsendask = $askvisit[$datetoused];
 	$visitsendyahoo = $yahoovisit[$datetoused];
@@ -656,24 +656,24 @@ if (($period == 0 || $period >= 1000) && $navig != 21) {
 	$visitsendgoogleimage = $googleimagevisit[$datetoused];	
 	$visitsendexalead = $exaleadvisit[$datetoused];
 	$visitsendyandex = $yandexvisit[$datetoused];
-	$visitsendaol = $aolvisit[$datetoused];		
+	$visitsendaol = $aolvisit[$datetoused];
 	$visitsendother = $referervisit[$datetoused];
 	$visitdirect = $directvisit[$datetoused];
 	$nbrvisitor = $uniquevisitor[$datetoused];
-} elseif ($period == 5 && $navig != 21) {
+} elseif ($settings->period == 5 && $settings->navig != 21) {
 	$visitsendask = array_sum($askvisit);
 	$visitsendyahoo = array_sum($yahoovisit);
 	$visitsendmsn = array_sum($msnvisit);
 	$visitsendgoogle = array_sum($googlevisit);
-	$visitsendgoogleimage = array_sum($googleimagevisit);	
+	$visitsendgoogleimage = array_sum($googleimagevisit);
 	$visitsendexalead = array_sum($exaleadvisit);
 	$visitsendyandex = array_sum($yandexvisit);
-	$visitsendaol = array_sum($aolvisit);		
+	$visitsendaol = array_sum($aolvisit);
 	$visitsendother = array_sum($referervisit);
 	$visitdirect = array_sum($directvisit);
 	$nbrvisitor = array_sum($uniquevisitor);
 }
-if ($navig != 21) {
+if ($settings->navig != 21) {
 	$totalvisitor = $visitsendask + $visitsendyahoo + $visitsendmsn + $visitsendgoogle + $visitsendgoogleimage + $visitsendexalead + $visitsendyandex + $visitsendaol + $visitsendother + $visitdirect;
 	if ($totalvisitor == 0) {
 		$nbrpage = 0;

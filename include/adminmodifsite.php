@@ -21,9 +21,9 @@ if (!defined('IN_CRAWLT_ADMIN')) {
 	exit('<h1>No direct access</h1>');
 }
 
-$sitenamedisplay = htmlentities($sitename);
-$siteurldisplay = htmlentities($siteurl);
-if ($validsite == 1) {
+$sitenamedisplay = htmlentities($settings->sitename);
+$siteurldisplay = htmlentities($settings->siteurl);
+if ($settings->validsite == 1) {
 	//form to enter the new data
 	echo "<br><br><h1>" . $language['modif_site'] . "</h1>\n";
 	echo "</div>\n";
@@ -32,7 +32,7 @@ if ($validsite == 1) {
 	echo "<input type=\"hidden\" name ='navig' value='6'>\n";
 	echo "<input type=\"hidden\" name ='validform' value=\"23\">\n";
 	echo "<input type=\"hidden\" name ='validsite' value=\"2\">\n";
-	echo "<input type=\"hidden\" name ='site' value='$site'>\n";
+	echo "<input type=\"hidden\" name ='site' value='$settings->siteid'>\n";
 	echo "<table class=\"centrer\">\n";
 	echo "<tr>\n";
 	echo "<td>" . $language['site_name'] . "</td>\n";
@@ -50,9 +50,9 @@ if ($validsite == 1) {
 	echo "</tr>\n";
 	echo "</table>\n";
 	echo "</form><br><br>\n";
-} elseif ($validsite == 2) {
+} elseif ($settings->validsite == 2) {
 	//check if data is empty
-	if (empty($sitename) || empty($siteurl)) {
+	if (empty($settings->sitename) || empty($settings->siteurl)) {
 		//go back to form
 		echo "<br><br><p>" . $language['site_no_ok'] . "</p>";
 		echo "<div class=\"form\">\n";
@@ -67,15 +67,10 @@ if ($validsite == 1) {
 		echo "</div><br><br>\n";
 	} else {
 		//update database
-		
-		//database connection
-		require_once("jgbdb.php");
-		$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-		
-		$sql = "UPDATE crawlt_site SET name='" . crawlt_sql_quote($connexion, $sitename) . "',url='" . crawlt_sql_quote($connexion, $siteurl) . "'
-			WHERE id_site= '" . crawlt_sql_quote($connexion, $site) . "'";
-		$requete = db_query($sql, $connexion);
-		mysqli_close($connexion);
+		$sql = "UPDATE crawlt_site SET name='" . crawlt_sql_quote($db->connexion, $settings->sitename) . "',url='" . crawlt_sql_quote($db->connexion, $settings->siteurl) . "'
+			WHERE id_site= '" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'";
+		$requete = db_query($sql, $db->connexion);
+		$db->close(); // Close database
 		echo "<br><br><h1>" . $language['modif_site'] . "</h1>\n";
 		echo "<br><br><p>" . $language['update'] . "</p><br><br>";
 		
@@ -93,13 +88,9 @@ if ($validsite == 1) {
 	}
 } else {
 	//first arrival on the page
-	//database connection
-	require_once("jgbdb.php");
-	$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-	
 	//request to get the sites datas
 	$sql = "SELECT id_site, name, url FROM crawlt_site";
-	$requete = db_query($sql, $connexion);
+	$requete = db_query($sql, $db->connexion);
 	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
 		while ($ligne = $requete->fetch_row()) {
@@ -108,7 +99,7 @@ if ($validsite == 1) {
 			$urlsite[$ligne[0]] = $ligne[2];
 		}
 	}
-	mysqli_close($connexion);
+	$db->close(); // Close database
 	echo "<br><br><h1>" . $language['modif_site'] . "</h1>\n";
 	echo "</div>\n";
 	echo "<div align=\"center\"><table cellpadding='0px' cellspacing='0'>\n";

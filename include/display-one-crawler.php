@@ -31,42 +31,38 @@ $agent = array();
 $ip = array();
 $uagent = array();
 $table = array();
-$crawlencode = urlencode($crawler);
+$crawlencode = urlencode($settings->crawler);
 
-if ($period >= 1000) {
-	$cachename = "permanent-" . $navig . "-" . $site . "-" . $crawlencode."-" . $order."-" . $rowdisplay . "-".$crawltlang . "-".$displayall . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
-} elseif ($period >= 100 && $period < 200) //previous month
+if ($settings->period >= 1000) {
+	$cachename = "permanent-" . $settings->navig . "-" . $settings->siteid . "-" . $crawlencode."-" . $settings->displayorder."-" . $settings->displayrows . "-".$settings->language . "-".$settings->displayall . "-" . date("Y-m-d", (strtotime($reftime) - ($shiftday * 86400)));
+} elseif ($settings->period >= 100 && $settings->period < 200) //previous month
 {
-	$cachename = "permanent-month" . $navig . "-" . $site . "-" . $crawlencode."-" . $order."-" . $rowdisplay . "-".$crawltlang . "-".$displayall . "-" . date("Y-m", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
-} elseif ($period >= 200 && $period < 300) //previous year
+	$cachename = "permanent-month" . $settings->navig . "-" . $settings->siteid . "-" . $crawlencode."-" . $settings->displayorder."-" . $settings->displayrows . "-".$settings->language . "-".$settings->displayall . "-" . date("Y-m", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
+} elseif ($settings->period >= 200 && $settings->period < 300) //previous year
 {
-	$cachename = "permanent-year" . $navig . "-" . $site . "-" . $crawlencode."-" . $order."-" . $rowdisplay . "-".$crawltlang . "-".$displayall . "-" . date("Y", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
+	$cachename = "permanent-year" . $settings->navig . "-" . $settings->siteid . "-" . $crawlencode."-" . $settings->displayorder."-" . $settings->displayrows . "-".$settings->language . "-".$settings->displayall . "-" . date("Y", mktime(0, 0, 0, $monthrequest, $dayrequest, $yearrequest));
 } else {
-	$cachename = $navig . $period . $site . $order.$rowdisplay . $crawlencode . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang;
+	$cachename = $settings->navig . $settings->period . $settings->siteid . $settings->displayorder.$settings->displayrows . $crawlencode . $settings->displayall . $settings->firstdayweek . $localday . $settings->graphpos . $settings->language;
 }
 
 //start the caching
 cache($cachename);
 
-//database connection
-require_once("jgbdb.php");
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
-
 //case change of name of MSN Bot
-if( urldecode($crawler)=='MSN Bot - Bingbot' || urldecode($crawler)=='MSN Bot' || urldecode($crawler)=='Bingbot') {
+if( urldecode($settings->crawler)=='MSN Bot - Bingbot' || urldecode($settings->crawler)=='MSN Bot' || urldecode($settings->crawler)=='Bingbot') {
 	$crawlertolookfor= "AND crawlt_crawler.crawler_name IN ('MSN Bot','Bingbot')";
-	$crawler='MSN Bot - Bingbot';
+	$settings->crawler='MSN Bot - Bingbot';
 }
 else {
-	$crawlertolookfor="AND crawlt_crawler.crawler_name='" . crawlt_sql_quote($connexion, $crawler) . "'";
+	$crawlertolookfor="AND crawlt_crawler.crawler_name='" . crawlt_sql_quote($db->connexion, $settings->crawler) . "'";
 }
 
 //date for the mysql query
-if ($period >= 10) {
-	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
-    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "'";
+if ($settings->period >= 10) {
+	$datetolookfor = " date >'" . crawlt_sql_quote($db->connexion, $daterequest) . "' 
+    AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest2) . "'";
 } else {
-	$datetolookfor = " date >'" . crawlt_sql_quote($connexion, $daterequest) . "'";
+	$datetolookfor = " date >'" . crawlt_sql_quote($db->connexion, $daterequest) . "'";
 }
 
 //include menu
@@ -77,20 +73,20 @@ include ("include/timecache.php");
 //mysql query
 //query to count the number of crawler per page and to list the page viewed and to count the number of visits per page and to have the date of last visit for each pages
 $sqlstats = "SELECT  url_page,   COUNT(id_visit) as maxvisites,
-MAX(UNIX_TIMESTAMP(date)-($times*3600)), MIN(UNIX_TIMESTAMP(date)-($times*3600)) 
+MAX(UNIX_TIMESTAMP(date)-($settings->timediff*3600)), MIN(UNIX_TIMESTAMP(date)-($settings->timediff*3600)) 
 FROM crawlt_visits 
 INNER JOIN crawlt_crawler 
 ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler 
 INNER JOIN crawlt_pages
 ON crawlt_visits.crawlt_pages_id_page=crawlt_pages.id_page 
 WHERE $datetolookfor    
-AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 $crawlertolookfor
 GROUP BY crawlt_pages_id_page
 ORDER BY maxvisites DESC
 LIMIT 0, 200
 ";
-$requetestats = db_query($sqlstats, $connexion);
+$requetestats = db_query($sqlstats, $db->connexion);
 $nbrresult = $requetestats->num_rows;
 if ($nbrresult >= 1) {
 	$onlyarchive = 0;
@@ -106,10 +102,10 @@ if ($nbrresult >= 1) {
     INNER JOIN crawlt_crawler 
     ON crawlt_visits.crawlt_crawler_id_crawler=crawlt_crawler.id_crawler 
     WHERE  $datetolookfor          
-    AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+    AND crawlt_visits.crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
     $crawlertolookfor
     GROUP BY robot";
-	$requetestats2 = db_query($sqlstats2, $connexion);
+	$requetestats2 = db_query($sqlstats2, $db->connexion);
 	$nbrtotvisits = 0;
 	$nbrtotpages = 0;
 	while ($ligne = $requetestats2->fetch_row()) {
@@ -126,11 +122,10 @@ if ($nbrresult >= 1) {
 			$uagent[] = $ip;
 		}
 	}
-	//mysql connexion close
-	mysqli_close($connexion);
+	// Don't close database here since mapgraph3 also needs the connection!
 
 	//display--------------------------------------------------------------------------------------------------
-	$crawlerdisplay = htmlentities($crawler);
+	$settings->crawlerdisplay = htmlentities($settings->crawler);
 	$addressdisplay = htmlentities($address);
 	$infodisplay = htmlentities($info);
 	echo "<br><br><div class=\"content2\"><br><hr>\n";
@@ -159,7 +154,7 @@ if ($nbrresult >= 1) {
 	echo "</div>\n";
 	//graph
 	echo "<div align='center'>\n";
-	echo "<img src=\"./graphs/page-graph.php?nbrpageview=$nbrtotpages&amp;nbrpagestotal=$nbrpagestotal&amp;crawltlang=$crawltlang\" alt=\"graph\"  width=\"500\" height=\"200\"/>\n";
+	echo "<img src=\"./graphs/page-graph.php?nbrpageview=$nbrtotpages&amp;nbrpagestotal=$nbrpagestotal&amp;crawltlang=$settings->language\" alt=\"graph\"  width=\"500\" height=\"200\"/>\n";
 	echo "</div><br>\n";
 	echo "<div class='tableau' align='center'>\n";
 	echo "<table   cellpadding='0px' cellspacing='0' width='550px'>\n";
@@ -178,37 +173,37 @@ if ($nbrresult >= 1) {
 	echo "<td class='tableau5'>" . $pcvis . "%</td></tr> \n";
 	echo "</table></div><br>\n";
 
-	if ($period != 5) {
+	if ($settings->period != 5) {
 		//graph
 		echo "<div class='graphvisits'>\n";
 		//mapgraph
 		include "include/mapgraph.php";
-		echo "<img src=\"./graphs/visit-graph.php?crawltlang=$crawltlang&period=$period&navig=$navig&graphname=$graphname\" USEMAP=\"#visit\" alt=\"graph\" width=\"700\" height=\"300\"  border=\"0\"/>\n";
+		echo "<img src=\"./graphs/visit-graph.php?crawltlang=$settings->language&period=$settings->period&navig=$settings->navig&graphname=$graphname\" USEMAP=\"#visit\" alt=\"graph\" width=\"700\" height=\"300\"  border=\"0\"/>\n";
 		echo "</div>\n";
 		echo "<div class='imprimgraph'>\n";
 		echo "&nbsp;<br><br><br><br><br><br></div>\n";
 	}
 	//change text if more than x crawlers	and display limited (value of x can be change in function.php,,it's displaynumber)
-	if ($nbrtotpages >= $rowdisplay && $displayall == 'no' && $period != 5) {
+	if ($nbrtotpages >= $settings->displayrows && $settings->displayall == 'no' && $settings->period != 5) {
 		echo "<br><h2>";
-		printf($language['100_visit_per-crawler'], $rowdisplay);
+		printf($language['100_visit_per-crawler'], $settings->displayrows);
 		echo "<br>\n";
-		$crawlencode = urlencode($crawler);
-		echo "<span class=\"smalltext\"><a href=\"index.php?navig=$navig&period=$period&site=$site&crawler=$crawlencode&order=$order&displayall=yes&graphpos=$graphpos\">" . $language['show_all'] . "</a></span></h2>";
+		$crawlencode = urlencode($settings->crawler);
+		echo "<span class=\"smalltext\"><a href=\"index.php?navig=$settings->navig&period=$settings->period&site=$settings->siteid&crawler=$crawlencode&order=$settings->displayorder&displayall=yes&graphpos=$settings->graphpos\">" . $language['show_all'] . "</a></span></h2>";
 	} else {
 		echo "<h2>" . $language['visit_per-crawler'] . "</h2>\n";
 	}
 	echo "<div class='tableaularge' align='center'>\n";
 	echo "<table   cellpadding='0px'; cellspacing='0' width='100%'>\n";
-	if ($order == 3) {
+	if ($settings->displayorder == 3) {
 		echo "<tr><th class='tableau1' colspan=\"2\">\n";
 		echo "<form action=\"index.php\" method=\"POST\" >\n";
 		echo "<input type=\"hidden\" name ='order' value=\"3\">\n";
-		echo "<input type=\"hidden\" name ='period' value=\"$period\">\n";
-		echo "<input type=\"hidden\" name ='graphpos' value=\"$graphpos\">\n";
-		echo "<input type=\"hidden\" name ='navig' value=\"$navig\">\n";
-		echo "<input type=\"hidden\" name ='crawler' value=\"$crawler\">\n";
-		echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+		echo "<input type=\"hidden\" name ='period' value=\"$settings->period\">\n";
+		echo "<input type=\"hidden\" name ='graphpos' value=\"$settings->graphpos\">\n";
+		echo "<input type=\"hidden\" name ='navig' value=\"$settings->navig\">\n";
+		echo "<input type=\"hidden\" name ='crawler' value=\"$settings->crawler\">\n";
+		echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 		echo "<input type='submit' class='orderselect' value='" . $language['page'] . "'>\n";
 		echo "</form>\n";
 		echo "</th>\n";
@@ -216,58 +211,58 @@ if ($nbrresult >= 1) {
 		echo "<tr><th class='tableau1' colspan=\"2\">\n";
 		echo "<form action=\"index.php\" method=\"POST\" >\n";
 		echo "<input type=\"hidden\" name ='order' value=\"3\">\n";
-		echo "<input type=\"hidden\" name ='period' value=\"$period\">\n";
-		echo "<input type=\"hidden\" name ='graphpos' value=\"$graphpos\">\n";
-		echo "<input type=\"hidden\" name ='navig' value=\"$navig\">\n";
-		echo "<input type=\"hidden\" name ='crawler' value=\"$crawler\">\n";
-		echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+		echo "<input type=\"hidden\" name ='period' value=\"$settings->period\">\n";
+		echo "<input type=\"hidden\" name ='graphpos' value=\"$settings->graphpos\">\n";
+		echo "<input type=\"hidden\" name ='navig' value=\"$settings->navig\">\n";
+		echo "<input type=\"hidden\" name ='crawler' value=\"$settings->crawler\">\n";
+		echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 		echo "<input type='submit' class='order' value='" . $language['page'] . "'>\n";
 		echo "</form>\n";
 		echo "</th>\n";
 	}
-	if ($order == 2) {
-		if ($period != 5) {
+	if ($settings->displayorder == 2) {
+		if ($settings->period != 5) {
 			echo "<th class='tableau1' >\n";
 		} else {
 			echo "<th class='tableau2' >\n";
 		}
 		echo "<form action=\"index.php\" method=\"POST\" >\n";
 		echo "<input type=\"hidden\" name ='order' value=\"2\">\n";
-		echo "<input type=\"hidden\" name ='period' value=\"$period\">\n";
-		echo "<input type=\"hidden\" name ='graphpos' value=\"$graphpos\">\n";
-		echo "<input type=\"hidden\" name ='navig' value=\"$navig\">\n";
-		echo "<input type=\"hidden\" name ='crawler' value=\"$crawler\">\n";
-		echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+		echo "<input type=\"hidden\" name ='period' value=\"$settings->period\">\n";
+		echo "<input type=\"hidden\" name ='graphpos' value=\"$settings->graphpos\">\n";
+		echo "<input type=\"hidden\" name ='navig' value=\"$settings->navig\">\n";
+		echo "<input type=\"hidden\" name ='crawler' value=\"$settings->crawler\">\n";
+		echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 		echo "<input type='submit' class='orderselect' value='" . $language['nbr_visits'] . "'>\n";
 		echo "</form>\n";
 		echo "</th>\n";
 	} else {
-		if ($period != 5) {
+		if ($settings->period != 5) {
 			echo "<th class='tableau1' >\n";
 		} else {
 			echo "<th class='tableau2' >\n";
 		}
 		echo "<form action=\"index.php\" method=\"POST\" >\n";
 		echo "<input type=\"hidden\" name ='order' value=\"2\">\n";
-		echo "<input type=\"hidden\" name ='period' value=\"$period\">\n";
-		echo "<input type=\"hidden\" name ='graphpos' value=\"$graphpos\">\n";
-		echo "<input type=\"hidden\" name ='navig' value=\"$navig\">\n";
-		echo "<input type=\"hidden\" name ='crawler' value=\"$crawler\">\n";
-		echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+		echo "<input type=\"hidden\" name ='period' value=\"$settings->period\">\n";
+		echo "<input type=\"hidden\" name ='graphpos' value=\"$settings->graphpos\">\n";
+		echo "<input type=\"hidden\" name ='navig' value=\"$settings->navig\">\n";
+		echo "<input type=\"hidden\" name ='crawler' value=\"$settings->crawler\">\n";
+		echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 		echo "<input type='submit' class='order' value='" . $language['nbr_visits'] . "'>\n";
 		echo "</form>\n";
 		echo "</th>\n";
 	}
-	if ($period != 5) {
-		if ($order == 4) {
+	if ($settings->period != 5) {
+		if ($settings->displayorder == 4) {
 			echo "<th class='tableau1'>\n";
 			echo "<form action=\"index.php\" method=\"POST\" >\n";
 			echo "<input type=\"hidden\" name ='order' value=\"4\">\n";
-			echo "<input type=\"hidden\" name ='period' value=\"$period\">\n";
-			echo "<input type=\"hidden\" name ='graphpos' value=\"$graphpos\">\n";
-			echo "<input type=\"hidden\" name ='navig' value=\"$navig\">\n";
-			echo "<input type=\"hidden\" name ='crawler' value=\"$crawler\">\n";
-			echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+			echo "<input type=\"hidden\" name ='period' value=\"$settings->period\">\n";
+			echo "<input type=\"hidden\" name ='graphpos' value=\"$settings->graphpos\">\n";
+			echo "<input type=\"hidden\" name ='navig' value=\"$settings->navig\">\n";
+			echo "<input type=\"hidden\" name ='crawler' value=\"$settings->crawler\">\n";
+			echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 			echo "<input type='submit' class='orderselect' value='" . $language['first_date_visits'] . "'>\n";
 			echo "</form>\n";
 			echo "</th>\n";
@@ -276,24 +271,24 @@ if ($nbrresult >= 1) {
 			echo "<th class='tableau1'>\n";
 			echo "<form action=\"index.php\" method=\"POST\" >\n";
 			echo "<input type=\"hidden\" name ='order' value=\"4\">\n";
-			echo "<input type=\"hidden\" name ='period' value=\"$period\">\n";
-			echo "<input type=\"hidden\" name ='graphpos' value=\"$graphpos\">\n";
-			echo "<input type=\"hidden\" name ='navig' value=\"$navig\">\n";
-			echo "<input type=\"hidden\" name ='crawler' value=\"$crawler\">\n";
-			echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+			echo "<input type=\"hidden\" name ='period' value=\"$settings->period\">\n";
+			echo "<input type=\"hidden\" name ='graphpos' value=\"$settings->graphpos\">\n";
+			echo "<input type=\"hidden\" name ='navig' value=\"$settings->navig\">\n";
+			echo "<input type=\"hidden\" name ='crawler' value=\"$settings->crawler\">\n";
+			echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 			echo "<input type='submit' class='order' value='" . $language['first_date_visits'] . "'>\n";
 			echo "</form>\n";
 			echo "</th>\n";
 		}
-		if ($order == 0) {
+		if ($settings->displayorder == 0) {
 			echo "<th class='tableau1'>\n";
 			echo "<form action=\"index.php\" method=\"POST\" >\n";
 			echo "<input type=\"hidden\" name ='order' value=\"0\">\n";
-			echo "<input type=\"hidden\" name ='period' value=\"$period\">\n";
-			echo "<input type=\"hidden\" name ='graphpos' value=\"$graphpos\">\n";
-			echo "<input type=\"hidden\" name ='navig' value=\"$navig\">\n";
-			echo "<input type=\"hidden\" name ='crawler' value=\"$crawler\">\n";
-			echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+			echo "<input type=\"hidden\" name ='period' value=\"$settings->period\">\n";
+			echo "<input type=\"hidden\" name ='graphpos' value=\"$settings->graphpos\">\n";
+			echo "<input type=\"hidden\" name ='navig' value=\"$settings->navig\">\n";
+			echo "<input type=\"hidden\" name ='crawler' value=\"$settings->crawler\">\n";
+			echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 			echo "<input type='submit' class='orderselect' value='" . $language['date_visits'] . "'>\n";
 			echo "</form>\n";
 			echo "</th>\n";
@@ -301,11 +296,11 @@ if ($nbrresult >= 1) {
 			echo "<th class='tableau1'>\n";
 			echo "<form action=\"index.php\" method=\"POST\" >\n";
 			echo "<input type=\"hidden\" name ='order' value=\"0\">\n";
-			echo "<input type=\"hidden\" name ='period' value=\"$period\">\n";
-			echo "<input type=\"hidden\" name ='graphpos' value=\"$graphpos\">\n";
-			echo "<input type=\"hidden\" name ='navig' value=\"$navig\">\n";
-			echo "<input type=\"hidden\" name ='crawler' value=\"$crawler\">\n";
-			echo "<input type=\"hidden\" name ='site' value=\"$site\">\n";
+			echo "<input type=\"hidden\" name ='period' value=\"$settings->period\">\n";
+			echo "<input type=\"hidden\" name ='graphpos' value=\"$settings->graphpos\">\n";
+			echo "<input type=\"hidden\" name ='navig' value=\"$settings->navig\">\n";
+			echo "<input type=\"hidden\" name ='crawler' value=\"$settings->crawler\">\n";
+			echo "<input type=\"hidden\" name ='site' value=\"$settings->siteid\">\n";
 			echo "<input type='submit' class='order' value='" . $language['date_visits'] . "'>\n";
 			echo "</form>\n";
 			echo "</th>\n";
@@ -314,23 +309,23 @@ if ($nbrresult >= 1) {
 		echo $language['deltatime'];
 		echo "</th></tr>\n";
 	}
-	if ($order == 0) {
+	if ($settings->displayorder == 0) {
 		arsort($lastdatedisplay);
 		$sorttab = $lastdatedisplay;
-	} elseif ($order == 2) {
+	} elseif ($settings->displayorder == 2) {
 		arsort($nbvisits);
 		$sorttab = $nbvisits;
-	} elseif ($order == 3) {
+	} elseif ($settings->displayorder == 3) {
 		asort($listpages);
 		$sorttab = $listpages;
-	} elseif ($order == 4) {
+	} elseif ($settings->displayorder == 4) {
 		arsort($firstdatedisplay);
 		$sorttab = $firstdatedisplay;
 	}
 	//counter for alternate color lane
 	$comptligne = 2;
 	foreach ($sorttab as $key => $value) {
-		if ($comptligne < ($rowdisplay + 2) || $displayall == 'yes') {
+		if ($comptligne < ($settings->displayrows + 2) || $settings->displayall == 'yes') {
 			//calculation of averagetime between visits
 			$deltadate = $lastdatedisplay[$key] - $firstdatedisplay[$key];
 			if ($deltadate == 0) {
@@ -364,24 +359,24 @@ if ($nbrresult >= 1) {
 				}
 				$deltatime = $hourdisplay . $minutesdisplay . $secondesdisplay;
 			}
-			$page1display = crawltcutkeyword($key, '40');
+			$page1display = crawltcutkeyword($key, '40', $settings->useutf8);
 			$page1encode = urlencode($key);
 			//to avoid problem if the url is enter in the database with http://
-			if (!preg_match('#^http://#i', $urlsite[$site])) {
-				$urlpage = "http://" . $urlsite[$site] . $key;
+			if (!preg_match('#^http://#i', $urlsite[$settings->siteid])) {
+				$urlpage = "http://" . $urlsite[$settings->siteid] . $key;
 			} else {
-				$urlpage = $urlsite[$site] . $key;
+				$urlpage = $urlsite[$settings->siteid] . $key;
 			}
 			if ($comptligne % 2 == 0) {
 				echo "<tr><td class='tableau3g'";
 				if ($keywordcut == 1) {
 					echo "onmouseover=\"javascript:montre('smenu" . ($comptligne + 40) . "');\"   onmouseout=\"javascript:montre();\"";
 				}
-				echo ">&nbsp;&nbsp;<a href='index.php?navig=4&amp;period=" . $period . "&amp;site=" . $site . "&amp;crawler=" . $page1encode . "&amp;graphpos=" . $graphpos . "' rel='nofollow'>" . $page1display . "</a></td>\n";
+				echo ">&nbsp;&nbsp;<a href='index.php?navig=4&amp;period=" . $settings->period . "&amp;site=" . $settings->siteid . "&amp;crawler=" . $page1encode . "&amp;graphpos=" . $settings->graphpos . "' rel='nofollow'>" . $page1display . "</a></td>\n";
 				echo "<td class='tableau6' width=\"8%\">\n";
 				echo "<a href='" . $urlpage . "' rel='nofollow'><img src=\"./images/page.png\" width=\"16\" height=\"16\" border=\"0\" ></a>\n";
 				echo "</td> \n";
-				if ($period != 5) {
+				if ($settings->period != 5) {
 					echo "<td class='tableau3' width='60px'>" . numbdisp($nbvisits[$key]) . "</td> \n";
 					echo "<td class='tableau3'>" . date("d/m/Y", $firstdatedisplay[$key]) . "<br>" . date("G:i", $firstdatedisplay[$key]) . "</td>\n";
 					echo "<td class='tableau3'>" . date("d/m/Y", $lastdatedisplay[$key]) . "<br>" . date("G:i", $lastdatedisplay[$key]) . "</td>\n";
@@ -395,11 +390,11 @@ if ($nbrresult >= 1) {
 				if ($keywordcut == 1) {
 					echo "onmouseover=\"javascript:montre('smenu" . ($comptligne + 40) . "');\"   onmouseout=\"javascript:montre();\"";
 				}
-				echo ">&nbsp;&nbsp;<a href='index.php?navig=4&amp;period=" . $period . "&amp;site=" . $site . "&amp;crawler=" . $page1encode . "&amp;graphpos=" . $graphpos . "' rel='nofollow'>" . $page1display . "</a></td>\n";
+				echo ">&nbsp;&nbsp;<a href='index.php?navig=4&amp;period=" . $settings->period . "&amp;site=" . $settings->siteid . "&amp;crawler=" . $page1encode . "&amp;graphpos=" . $settings->graphpos . "' rel='nofollow'>" . $page1display . "</a></td>\n";
 				echo "<td class='tableau60' width=\"8%\">\n";
 				echo "<a href='" . $urlpage . "' rel='nofollow'><img src=\"./images/page.png\" width=\"16\" height=\"16\" border=\"0\" ></a>\n";
 				echo "</td> \n";
-				if ($period != 5) {
+				if ($settings->period != 5) {
 					echo "<td class='tableau30' width='60px'>" . numbdisp($nbvisits[$key]) . "</td> \n";
 					echo "<td class='tableau30'>" . date("d/m/Y", $firstdatedisplay[$key]) . "<br>" . date("G:i", $firstdatedisplay[$key]) . "</td>\n";
 					echo "<td class='tableau30'>" . date("d/m/Y", $lastdatedisplay[$key]) . "<br>" . date("G:i", $lastdatedisplay[$key]) . "</td>\n";
@@ -410,13 +405,13 @@ if ($nbrresult >= 1) {
 				}
 			}
 			if ($keywordcut == 1) {
-				if ($period == 0 || $period >= 1000) {
+				if ($settings->period == 0 || $settings->period >= 1000) {
 					$step = 25;
 				} else {
 					$step = 30;
 				}
 				echo "<div id=\"smenu" . ($comptligne + 40) . "\"  style=\"display:none; font-size:14px; font-weight:bold; color:#ff0000; font-family:Verdana,Geneva, Arial, Helvetica, Sans-Serif; text-align:left; border:2px solid navy; position:absolute; top:" . (900 + (($comptligne - 3) * $step)) . "px; left:5px; background:#fff;\">\n";
-				echo "&nbsp;" . crawltcuturl($key, '92') . "&nbsp;\n";
+				echo "&nbsp;" . crawltcuturl($key, '92', $settings->useutf8) . "&nbsp;\n";
 				echo "</div>\n";
 			}
 		}
@@ -426,11 +421,10 @@ if ($nbrresult >= 1) {
 	echo "<br>\n";
 } else {
 	$sqlstats2 = "SELECT * FROM crawlt_crawler
-	WHERE crawlt_crawler.crawler_name='" . crawlt_sql_quote($connexion, $crawler) . "'
+	WHERE crawlt_crawler.crawler_name='" . crawlt_sql_quote($db->connexion, $settings->crawler) . "'
 	ORDER BY crawler_name ASC";
-	$requetestats2 = db_query($sqlstats2, $connexion);
-	//mysql connexion close
-	mysqli_close($connexion);
+	$requetestats2 = db_query($sqlstats2, $db->connexion);
+	$db->close(); // Close database
 	$nbrresult2 = $requetestats2->num_rows;
 	if ($nbrresult2 == 0) {
 		exit('<h1>Hacking attempt !!!!</h1>');
@@ -441,7 +435,7 @@ if ($nbrresult >= 1) {
 		$agent = $ligne->crawler_user_agent;
 		$uagent[] = $agent;
 	}
-	$crawlerdisplay = htmlentities($crawler);
+	$settings->crawlerdisplay = htmlentities($settings->crawler);
 	$addressdisplay = htmlentities($address);
 	$infodisplay = htmlentities($info);
 	echo "<div class=\"content2\"><br><hr>\n";
@@ -471,4 +465,5 @@ if ($nbrresult >= 1) {
 	echo "<h1>" . $language['no_visit'] . "</h1>\n";
 	echo "<br>\n";
 }
+$db->close(); // Close database
 ?>

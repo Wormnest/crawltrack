@@ -39,14 +39,10 @@ $refererlist = array();
 $nbrvisitorbrowser = array();
 $crawltbrowserlist3 = array();
 
-$cachename = $navig . $period . $site . $order . $displayall . $firstdayweek . $localday . $graphpos . $crawltlang;
+$cachename = $settings->navig . $settings->period . $settings->siteid . $settings->displayorder . $settings->displayall . $settings->firstdayweek . $localday . $settings->graphpos . $settings->language;
 
 //start the caching
 cache($cachename);
-
-//database connection
-require_once("jgbdb.php");
-$connexion = db_connect($crawlthost, $crawltuser, $crawltpassword, $crawltdb);
 
 //include menu
 include ("include/menumain.php");
@@ -61,8 +57,8 @@ include ("include/visitors-calculation.php");
 if (isset($_SESSION['rightspamreferer']) && $_SESSION['rightspamreferer'] == 1) {
 	$sql = "SELECT referer 
   FROM crawlt_goodreferer 
-  WHERE id_site='" . crawlt_sql_quote($connexion, $site) . "'";
-	$requete = db_query($sql, $connexion);
+  WHERE id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'";
+	$requete = db_query($sql, $db->connexion);
 	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
 		while ($ligne = $requete->fetch_row()) {
@@ -71,14 +67,14 @@ if (isset($_SESSION['rightspamreferer']) && $_SESSION['rightspamreferer'] == 1) 
 	}
 }
 //query to get the referer list
-if ($period >= 10) {
+if ($settings->period >= 10) {
 	$sql = "SELECT  referer
     FROM crawlt_visits_human
     INNER JOIN crawlt_referer    
     ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
-    WHERE  date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
-    AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "' 
-    AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+    WHERE  date >'" . crawlt_sql_quote($db->connexion, $daterequest) . "' 
+    AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest2) . "' 
+    AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
     AND crawlt_id_crawler= '0' 
     $notinternalreferercondition
     AND referer !=''
@@ -88,16 +84,16 @@ if ($period >= 10) {
     FROM crawlt_visits_human
     INNER JOIN crawlt_referer    
     ON crawlt_visits_human.crawlt_id_referer=crawlt_referer.id_referer
-    WHERE  date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
-    AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "' 
+    WHERE  date >'" . crawlt_sql_quote($db->connexion, $daterequest) . "' 
+    AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "' 
     AND crawlt_id_crawler= '0'     
     $notinternalreferercondition
     AND referer !=''";
 }
-$requete = db_query($sql, $connexion);
+$requete = db_query($sql, $db->connexion);
 $nbrresult = $requete->num_rows;
 if ($nbrresult >= 1) {
-	if ($period == 0 || $period >= 1000 || $period == 1 || ($period >= 300 && $period < 400)) {
+	if ($settings->period == 0 || $settings->period >= 1000 || $settings->period == 1 || ($settings->period >= 300 && $settings->period < 400)) {
 		// we search for referer details only for 1 day or 1 week period
 		while ($ligne = $requete->fetch_row()) {
 			$parseurl = parse_url(htmlspecialchars($ligne[0]));
@@ -105,7 +101,7 @@ if ($nbrresult >= 1) {
 				@$refererlist[$parseurl['host']]++;
 				${'detailreferer' . $parseurl['host']}[] = urldecode($ligne[0]);
 				if (!isset($linkstatut[$parseurl['host']])) {
-					if ($checklink == 1 && (isset($_SESSION['rightspamreferer']) && $_SESSION['rightspamreferer'] == 1)) {
+					if ($settings->checklink == 1 && (isset($_SESSION['rightspamreferer']) && $_SESSION['rightspamreferer'] == 1)) {
 						if (!isset($_SESSION[$parseurl['host']])) {
 							if (islinking($ligne[0], $hostsite)) {
 								$linkstatut[$parseurl['host']] = 'ok';
@@ -148,15 +144,15 @@ if ($nbrresult >= 1) {
 	$refererlist = array();
 }
 //query to update the goodreferer table
-if ($checklink == 1 && (isset($_SESSION['rightspamreferer']) && $_SESSION['rightspamreferer'] == 1)) {
+if ($settings->checklink == 1 && (isset($_SESSION['rightspamreferer']) && $_SESSION['rightspamreferer'] == 1)) {
 	if (count($goodrefererlist) >= 1) {
 		$goodreferervalues = '';
 		foreach ($goodrefererlist as $goodreferer) {
-			$goodreferervalues.= "('" . $site . "','" . $goodreferer . "'),";
+			$goodreferervalues.= "('" . $settings->siteid . "','" . $goodreferer . "'),";
 		}
 		$goodreferervalues = rtrim($goodreferervalues, ',');
 		$sql = "INSERT INTO crawlt_goodreferer (id_site, referer) VALUES $goodreferervalues";
-		$requete = db_query($sql, $connexion);
+		$requete = db_query($sql, $db->connexion);
 	}
 }
 //-------------------------------------------------------------------------------------------------
@@ -238,16 +234,16 @@ $datatransferttograph = addslashes(urlencode(serialize($values)));
 $piegraphname2 = "origin2-" . $cachename;
 //check if this graph already exists in the table
 $sql = "SELECT name  FROM crawlt_graph
-          WHERE name= '" . crawlt_sql_quote($connexion, $piegraphname2) . "'";
-$requete = db_query($sql, $connexion);
+          WHERE name= '" . crawlt_sql_quote($db->connexion, $piegraphname2) . "'";
+$requete = db_query($sql, $db->connexion);
 $nbrresult = $requete->num_rows;
 if ($nbrresult >= 1) {
-	$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($connexion, $datatransferttograph) . "'
-            WHERE name= '" . crawlt_sql_quote($connexion, $piegraphname2) . "'";
+	$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($db->connexion, $datatransferttograph) . "'
+            WHERE name= '" . crawlt_sql_quote($db->connexion, $piegraphname2) . "'";
 } else {
-	$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($connexion, $piegraphname2) . "','" . crawlt_sql_quote($connexion, $datatransferttograph) . "')";
+	$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($db->connexion, $piegraphname2) . "','" . crawlt_sql_quote($db->connexion, $datatransferttograph) . "')";
 }
-$requete2 = db_query($sql2, $connexion);
+$requete2 = db_query($sql2, $db->connexion);
 //browser calculation===================================================================================
 arsort($nbrvisitorbrowser);
 require_once ("include/searchenginelist.php");
@@ -267,38 +263,38 @@ $datatransferttograph = addslashes(urlencode(serialize($crawltbrowserlist3)));
 $piegraphname3 = "browser-" . $cachename;
 //check if this graph already exists in the table
 $sql = "SELECT name  FROM crawlt_graph
-          WHERE name= '" . crawlt_sql_quote($connexion, $piegraphname3) . "'";
-$requete = db_query($sql, $connexion);
+          WHERE name= '" . crawlt_sql_quote($db->connexion, $piegraphname3) . "'";
+$requete = db_query($sql, $db->connexion);
 $nbrresult = $requete->num_rows;
 if ($nbrresult >= 1) {
-	$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($connexion, $datatransferttograph) . "'
-            WHERE name= '" . crawlt_sql_quote($connexion, $piegraphname3) . "'";
+	$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($db->connexion, $datatransferttograph) . "'
+            WHERE name= '" . crawlt_sql_quote($db->connexion, $piegraphname3) . "'";
 } else {
-	$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($connexion, $piegraphname3) . "','" . crawlt_sql_quote($connexion, $datatransferttograph) . "')";
+	$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($db->connexion, $piegraphname3) . "','" . crawlt_sql_quote($db->connexion, $datatransferttograph) . "')";
 }
-$requete2 = db_query($sql2, $connexion);
+$requete2 = db_query($sql2, $db->connexion);
 
 //visits per hour graph calculation========================================================================
-if ($period == 0 || $period >= 1000) {
+if ($settings->period == 0 || $settings->period >= 1000) {
 	$nbvisitsgraph = array("0" => "0", "1" => "0", "2" => "0", "3" => "0", "4" => "0", "5" => "0", "6" => "0", "7" => "0", "8" => "0", "9" => "0", "10" => "0", "11" => "0", "12" => "0", "13" => "0", "14" => "0", "15" => "0", "16" => "0", "17" => "0", "18" => "0", "19" => "0", "20" => "0", "21" => "0", "22" => "0", "23" => "0","100" => "0", "101" => "0", "102" => "0", "103" => "0", "104" => "0", "105" => "0", "106" => "0", "107" => "0", "108" => "0", "109" => "0", "110" => "0", "111" => "0", "112" => "0", "113" => "0", "114" => "0", "115" => "0", "116" => "0", "117" => "0", "118" => "0", "119" => "0", "120" => "0", "121" => "0", "122" => "0", "123" => "0");
 	//actual period
-if ($period == 0) {
+if ($settings->period == 0) {
 		//query to count the number of  visits
 		$sqlstats = "SELECT  HOUR(date), COUNT(id_visit) FROM crawlt_visits_human
-		WHERE  date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
-		AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+		WHERE  date >'" . crawlt_sql_quote($db->connexion, $daterequest) . "' 
+		AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 		GROUP BY HOUR(date)";
-	} elseif ($period >= 1000) {
+	} elseif ($settings->period >= 1000) {
 		//query to count the number of  visits
 		$sqlstats = "SELECT  HOUR(date), COUNT(id_visit) FROM crawlt_visits_human
-		WHERE  date >'" . crawlt_sql_quote($connexion, $daterequest) . "' 
-    		AND  date <'" . crawlt_sql_quote($connexion, $daterequest2) . "' 
-		AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "' 
+		WHERE  date >'" . crawlt_sql_quote($db->connexion, $daterequest) . "' 
+    		AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest2) . "' 
+		AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "' 
 		GROUP BY HOUR(date)";
 	}
-	$requetestats = db_query($sqlstats, $connexion);
+	$requetestats = db_query($sqlstats, $db->connexion);
 	while ($ligne = $requetestats->fetch_row()) {
-		$hour = $ligne[0] - $times;
+		$hour = $ligne[0] - $settings->timediff;
 		if ($hour < 0) {
 			$hour = 24 + $hour;
 		}
@@ -311,14 +307,14 @@ if ($period == 0) {
 	$daterequest3 = date("Y-m-d H:i:s", (strtotime($daterequest)) - 604800);
 		//query to count the number of  visits
 		$sqlstats = "SELECT  HOUR(date), COUNT(id_visit), COUNT(DISTINCT DATE(date)) FROM crawlt_visits_human
-		WHERE  date >'" . crawlt_sql_quote($connexion, $daterequest3) . "' 
-    		AND  date <'" . crawlt_sql_quote($connexion, $daterequest) . "' 
-    		AND crawlt_site_id_site='" . crawlt_sql_quote($connexion, $site) . "'
+		WHERE  date >'" . crawlt_sql_quote($db->connexion, $daterequest3) . "' 
+    		AND  date <'" . crawlt_sql_quote($db->connexion, $daterequest) . "' 
+    		AND crawlt_site_id_site='" . crawlt_sql_quote($db->connexion, $settings->siteid) . "'
 		GROUP BY HOUR(date)";
 		
-	$requetestats = db_query($sqlstats, $connexion);
+	$requetestats = db_query($sqlstats, $db->connexion);
 	while ($ligne = $requetestats->fetch_row()) {
-		$hour = $ligne[0] - $times;
+		$hour = $ligne[0] - $settings->timediff;
 		if ($hour < 0) {
 			$hour = 24 + $hour;
 		}
@@ -335,16 +331,16 @@ if ($period == 0) {
 	$graphname2 = "visitshours-" . $cachename;
 	//check if this graph already exists in the table
 	$sql = "SELECT name  FROM crawlt_graph
-		WHERE name= '" . crawlt_sql_quote($connexion, $graphname2) . "'";
-	$requete = db_query($sql, $connexion);
+		WHERE name= '" . crawlt_sql_quote($db->connexion, $graphname2) . "'";
+	$requete = db_query($sql, $db->connexion);
 	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
-		$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($connexion, $datatransferttograph) . "'
-			WHERE name= '" . crawlt_sql_quote($connexion, $graphname2) . "'";
+		$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($db->connexion, $datatransferttograph) . "'
+			WHERE name= '" . crawlt_sql_quote($db->connexion, $graphname2) . "'";
 	} else {
-		$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($connexion, $graphname2) . "','" . crawlt_sql_quote($connexion, $datatransferttograph) . "')";
+		$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($db->connexion, $graphname2) . "','" . crawlt_sql_quote($db->connexion, $datatransferttograph) . "')";
 	}
-	$requete2 = db_query($sql2, $connexion);
+	$requete2 = db_query($sql2, $db->connexion);
 }
 //display=======================================================================================================
 if ($totalvisitor > 0) {
@@ -412,37 +408,37 @@ if ($totalvisitor > 0) {
 	$piegraphname = "searchengine-" . $cachename;
 	//check if this graph already exists in the table
 	$sql = "SELECT name  FROM crawlt_graph
-                  WHERE name= '" . crawlt_sql_quote($connexion, $piegraphname) . "'";
-	$requete = db_query($sql, $connexion);
+                  WHERE name= '" . crawlt_sql_quote($db->connexion, $piegraphname) . "'";
+	$requete = db_query($sql, $db->connexion);
 	$nbrresult = $requete->num_rows;
 	if ($nbrresult >= 1) {
-		$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($connexion, $datatransferttograph) . "'
-                    WHERE name= '" . crawlt_sql_quote($connexion, $piegraphname) . "'";
+		$sql2 = "UPDATE crawlt_graph SET graph_values='" . crawlt_sql_quote($db->connexion, $datatransferttograph) . "'
+                    WHERE name= '" . crawlt_sql_quote($db->connexion, $piegraphname) . "'";
 	} else {
-		$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($connexion, $piegraphname) . "','" . crawlt_sql_quote($connexion, $datatransferttograph) . "')";
+		$sql2 = "INSERT INTO crawlt_graph (name,graph_values) VALUES ( '" . crawlt_sql_quote($db->connexion, $piegraphname) . "','" . crawlt_sql_quote($db->connexion, $datatransferttograph) . "')";
 	}
-	$requete2 = db_query($sql2, $connexion);
-	mysqli_close($connexion);
+	$requete2 = db_query($sql2, $db->connexion);
+	// Don't close database here since mapgraph3 also needs the connection!
 
 	echo "<div class='tableaularge' align='center' onmouseout=\"javascript:montre();\">\n";
-	if ($period != 5) {
+	if ($settings->period != 5) {
 		//graph
 		echo "<div class='graphvisits'>\n";
 		//mapgraph
 		$typegraph = 'entry';
 		include "include/mapgraph3.php";
-		echo "<img src=\"./graphs/seo-graph.php?typegraph=$typegraph&amp;crawltlang=$crawltlang&amp;period=$period&amp;graphname=$graphname\" USEMAP=\"#seoentry\" border=\"0\" alt=\"graph\" >\n";
+		echo "<img src=\"./graphs/seo-graph.php?typegraph=$typegraph&amp;crawltlang=$settings->language&amp;period=$settings->period&amp;graphname=$graphname\" USEMAP=\"#seoentry\" border=\"0\" alt=\"graph\" >\n";
 		echo "&nbsp;<br><br>\n";
 		echo "&nbsp;</div><br>\n";
 		echo "<div class='imprimgraph'>\n";
 		echo "&nbsp;<br><br><br><br></div>\n";
 	}
 	//graph hits per hour
-	if ($period == 0 || $period >= 1000) {
+	if ($settings->period == 0 || $settings->period >= 1000) {
 		echo "<hr><h2>" . $language['hits-per-hour'] . "</h2><br>";
 		//graph
 		echo "<div class='graphvisits'>\n";
-		echo "<img src=\"./graphs/visit-graph.php?crawltlang=$crawltlang&period=$period&navig=$navig&graphname=$graphname2\"  alt=\"graph\" width=\"700\" height=\"300\"  border=\"0\"/>\n";
+		echo "<img src=\"./graphs/visit-graph.php?crawltlang=$settings->language&period=$settings->period&navig=$settings->navig&graphname=$graphname2\"  alt=\"graph\" width=\"700\" height=\"300\"  border=\"0\"/>\n";
 		echo "</div>\n";
 		echo "<div class='imprimgraph'>\n";
 		echo "&nbsp;<br><br><br><br><br><br></div><br>\n";
@@ -472,13 +468,13 @@ if ($totalvisitor > 0) {
 	}
 	echo "</table><br>\n";
 	echo "</td><td>&nbsp;</td><td valign='top' width='48%'>";
-	echo "<img src=\"./graphs/origine-graph.php?graphname=$piegraphname3&amp;crawltlang=$crawltlang\" alt=\"graph\" style=\"border:0; width:450px; height:200px\" >\n";
+	echo "<img src=\"./graphs/origine-graph.php?graphname=$piegraphname3&amp;crawltlang=$settings->language\" alt=\"graph\" style=\"border:0; width:450px; height:200px\" >\n";
 	echo "</td></tr></table>";
 	//graph
 	echo "<hr><div align=\"center\">\n";
 	echo "<h2>" . $language['nbr_tot_visit_seo'] . "<br>";
-	echo "<img src=\"./graphs/crawler-graph.php?graphname=$piegraphname&amp;crawltlang=$crawltlang\" alt=\"graph\"   style=\"border:0; width:450px; height:200px\">\n";
-	echo "<img src=\"./graphs/origine-graph.php?graphname=$piegraphname2&amp;crawltlang=$crawltlang\" alt=\"graph\" style=\"border:0; width:450px; height:200px\" >\n";
+	echo "<img src=\"./graphs/crawler-graph.php?graphname=$piegraphname&amp;crawltlang=$settings->language\" alt=\"graph\"   style=\"border:0; width:450px; height:200px\">\n";
+	echo "<img src=\"./graphs/origine-graph.php?graphname=$piegraphname2&amp;crawltlang=$settings->language\" alt=\"graph\" style=\"border:0; width:450px; height:200px\" >\n";
 	echo "</h2></div>\n";
 	echo "<table   cellpadding='0px' cellspacing='0' width='100%'>\n";
 	echo "<tr onmouseover=\"javascript:montre();\"><td width='48%' valign='top'>\n";
@@ -527,7 +523,7 @@ if ($totalvisitor > 0) {
 	echo "</td><td>&nbsp;</td><td valign='top' width='48%'>";
 	echo "<a name=\"top\"></a>";
 	//-----------------------------
-	if ($period == 0 || $period >= 1000 || $period == 1 || ($period >= 300 && $period < 400)) {
+	if ($settings->period == 0 || $settings->period >= 1000 || $settings->period == 1 || ($settings->period >= 300 && $settings->period < 400)) {
 		// we display referer details only for 1 day or 1 week period
 		echo "<table cellpadding='0px' cellspacing='0' width='100%'>\n";
 		echo "<tr onmouseover=\"javascript:montre();\">\n";
@@ -539,7 +535,7 @@ if ($totalvisitor > 0) {
 			echo ($nbrreferer - $nbrnooksite - $nbrunknownsite) . " " . $language['website2'] . "<img src=\"./images/tick.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['linkok'] . "\" alt=\"" . $language['linkok'] . "\">\n";
 			echo " -- " . $nbrunknownsite . " " . $language['website2'] . "<img src=\"./images/help.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['notcheck'] . "\" alt=\"" . $language['notcheck'] . "\">\n";
 			echo " -- " . $nbrnooksite . " " . $language['website2'] . "<img src=\"./images/cancel.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['spamreferer'] . "\" alt=\"" . $language['spamreferer'] . "\"><br>\n";
-			echo "<a href=\"./php/refresh.php?navig=$navig&period=$period&site=$site&crawler=$crawlencode&graphpos=$graphpos&checklink=1\" rel='nofollow'>" . $language['checklink'] . "</a></th>\n";
+			echo "<a href=\"./php/refresh.php?navig=$settings->navig&period=$settings->period&site=$settings->siteid&crawler=$crawlencode&graphpos=$settings->graphpos&checklink=1\" rel='nofollow'>" . $language['checklink'] . "</a></th>\n";
 		} elseif (isset($_SESSION['rightspamreferer']) && $_SESSION['rightspamreferer'] == 1 && (in_array('?', $linkstatut) || in_array('no-ok', $linkstatut))) {
 			echo ($nbrreferer - $nbrnooksite - $nbrunknownsite) . " " . $language['website2'] . "<img src=\"./images/tick.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['linkok'] . "\" alt=\"" . $language['linkok'] . "\">\n";
 			echo " -- " . $nbrunknownsite . " " . $language['website2'] . "<img src=\"./images/help.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['notcheck'] . "\" alt=\"" . $language['notcheck'] . "\">\n";
@@ -552,7 +548,7 @@ if ($totalvisitor > 0) {
 		$comptligne = 2;
 		foreach ($refererlist as $key => $value) {
 			if ($comptligne % 2 == 0) {
-				echo "<tr><td class='tableau3g'>&nbsp;&nbsp;" . @crawltcuturl($key, 50) . "<br>\n";
+				echo "<tr><td class='tableau3g'>&nbsp;&nbsp;" . @crawltcuturl($key, 50, $settings->useutf8) . "<br>\n";
 				${'detailreferer' . $key} = array_unique(${'detailreferer' . $key});
 				foreach (${'detailreferer' . $key} as $value2) {
 					$value2 = str_replace("&", "&amp;", $value2);
@@ -572,11 +568,11 @@ if ($totalvisitor > 0) {
 					echo "<img src=\"./images/help.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['notcheck'] . "\" alt=\"" . $language['notcheck'] . "\">\n";
 				}
 				if ($linkstatut[$key] == 'no-ok' || $linkstatut[$key] == 'not-check') {
-					echo "<a href=\"#\" onclick=\"if(confirm('" . $language['goodreferer'] . "')) document.location.href='./php/goodreferer.php?navig=$navig&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos&amp;referer=$key'\"><img src=\"./images/accept.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['goodreferer2'] . "\" alt=\"" . $language['goodreferer2'] . "\"></a>&nbsp;<a href=\"#\" onclick=\"if(confirm('" . $language['badreferer'] . "')) document.location.href='./php/badreferer.php?navig=$navig&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos&amp;referer=$key'\"><img src=\"./images/cancel.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['spamreferer'] . "\" alt=\"" . $language['spamreferer'] . "\"></a>\n";
+					echo "<a href=\"#\" onclick=\"if(confirm('" . $language['goodreferer'] . "')) document.location.href='./php/goodreferer.php?navig=$settings->navig&amp;period=$settings->period&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos&amp;referer=$key'\"><img src=\"./images/accept.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['goodreferer2'] . "\" alt=\"" . $language['goodreferer2'] . "\"></a>&nbsp;<a href=\"#\" onclick=\"if(confirm('" . $language['badreferer'] . "')) document.location.href='./php/badreferer.php?navig=$settings->navig&amp;period=$settings->period&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos&amp;referer=$key'\"><img src=\"./images/cancel.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['spamreferer'] . "\" alt=\"" . $language['spamreferer'] . "\"></a>\n";
 				}
 				echo "</td><td class='tableau5'>&nbsp;" . numbdisp($value) . "&nbsp;</td></tr>\n";
 			} else {
-				echo "<tr><td class='tableau30g'>&nbsp;&nbsp;" . @crawltcuturl($key, 50) . "<br>\n";
+				echo "<tr><td class='tableau30g'>&nbsp;&nbsp;" . @crawltcuturl($key, 50, $settings->useutf8) . "<br>\n";
 				${'detailreferer' . $key} = array_unique(${'detailreferer' . $key});
 				foreach (${'detailreferer' . $key} as $value2) {
 					$value2 = str_replace("&", "&amp;", $value2);
@@ -596,7 +592,7 @@ if ($totalvisitor > 0) {
 					echo "<img src=\"./images/help.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['notcheck'] . "\" alt=\"" . $language['notcheck'] . "\">\n";
 				}
 				if ($linkstatut[$key] == 'no-ok' || $linkstatut[$key] == 'not-check') {
-					echo "<a href=\"#\" onclick=\"if(confirm('" . $language['goodreferer'] . "')) document.location.href='./php/goodreferer.php?navig=$navig&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos&amp;referer=$key'\"><img src=\"./images/accept.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['goodreferer2'] . "\" alt=\"" . $language['goodreferer2'] . "\"></a>&nbsp;<a href=\"#\" onclick=\"if(confirm('" . $language['badreferer'] . "')) document.location.href='./php/badreferer.php?navig=$navig&amp;period=$period&amp;site=$site&amp;crawler=$crawlencode&amp;graphpos=$graphpos&amp;referer=$key'\"><img src=\"./images/cancel.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['spamreferer'] . "\" alt=\"" . $language['spamreferer'] . "\"></a>\n";
+					echo "<a href=\"#\" onclick=\"if(confirm('" . $language['goodreferer'] . "')) document.location.href='./php/goodreferer.php?navig=$settings->navig&amp;period=$settings->period&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos&amp;referer=$key'\"><img src=\"./images/accept.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['goodreferer2'] . "\" alt=\"" . $language['goodreferer2'] . "\"></a>&nbsp;<a href=\"#\" onclick=\"if(confirm('" . $language['badreferer'] . "')) document.location.href='./php/badreferer.php?navig=$settings->navig&amp;period=$settings->period&amp;site=$settings->siteid&amp;crawler=$crawlencode&amp;graphpos=$settings->graphpos&amp;referer=$key'\"><img src=\"./images/cancel.png\" width=\"16\" height=\"16\" border=\"0\" title=\"" . $language['spamreferer'] . "\" alt=\"" . $language['spamreferer'] . "\"></a>\n";
 				}
 				echo "</td><td class='tableau50'>&nbsp;" . numbdisp($value) . "&nbsp;</td></tr>\n";
 			}
@@ -617,10 +613,10 @@ if ($totalvisitor > 0) {
 		$comptligne = 2;
 		foreach ($refererlist as $key => $value) {
 			if ($comptligne % 2 == 0) {
-				echo "<tr><td class='tableau3g'>&nbsp;&nbsp;<a href=\"http://" . $key . "\" rel='nofollow'>" . @crawltcuturl($key, 50) . "</a>\n";
+				echo "<tr><td class='tableau3g'>&nbsp;&nbsp;<a href=\"http://" . $key . "\" rel='nofollow'>" . @crawltcuturl($key, 50, $settings->useutf8) . "</a>\n";
 				echo "</td><td class='tableau5'>&nbsp;" . numbdisp($value) . "&nbsp;</td></tr>\n";
 			} else {
-				echo "<tr><td class='tableau30g'>&nbsp;&nbsp;<a href=\"http://\"" . $key . "\" rel='nofollow'>" . @crawltcuturl($key, 50) . "</a>\n";
+				echo "<tr><td class='tableau30g'>&nbsp;&nbsp;<a href=\"http://\"" . $key . "\" rel='nofollow'>" . @crawltcuturl($key, 50, $settings->useutf8) . "</a>\n";
 				echo "</td><td class='tableau50'>&nbsp;" . numbdisp($value) . "&nbsp;</td></tr>\n";
 			}
 			$comptligne++;
@@ -636,4 +632,5 @@ if ($totalvisitor > 0) {
 	echo "<h1>" . $language['no_visit'] . "</h1>\n";
 	echo "<br>\n";
 }
+$db->close(); // Close database
 ?>
