@@ -5,3 +5,4 @@ cachecloseperiod/*.gz
 composer.lock
 vendor/autoload.php
 vendor/composer/
+include/configconnect-WEBVERSION.php
